@@ -19,35 +19,26 @@
  */
 package org.neo4j.gds.doc.syntax;
 
-import org.immutables.value.Value;
+import io.soabase.recordbuilder.core.RecordBuilder;
 import org.neo4j.configuration.GraphDatabaseSettings;
-import org.neo4j.gds.annotation.ValueClass;
+import org.neo4j.gds.annotation.GenerateBuilder;
 
 /**
  * A doc query has query text and an optional operator
  */
-@ValueClass
-public interface DocQuery {
-    String DEFAULT_OPERATOR = "";
+@GenerateBuilder
+public record DocQuery(
+    String query,
+    @RecordBuilder.Initializer("DEFAULT_OPERATOR") String operator,
+    @RecordBuilder.Initializer(value = "DEFAULT_DATABASE_NAME", source = GraphDatabaseSettings.class) String database
+) {
+    public static final String DEFAULT_OPERATOR = "";
 
-    String query();
-
-    @Value.Derived
-    default boolean runAsOperator() {
+    public boolean runAsOperator() {
         return !operator().isEmpty();
     }
 
-    @Value.Default
-    default String operator() {
-        return DEFAULT_OPERATOR;
-    }
-
-    @Value.Default
-    default String database() {
-        return GraphDatabaseSettings.DEFAULT_DATABASE_NAME;
-    }
-
-    static ImmutableDocQuery.Builder builder() {
-        return ImmutableDocQuery.builder();
+    public static DocQueryBuilder builder() {
+        return DocQueryBuilder.builder();
     }
 }
