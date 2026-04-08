@@ -165,19 +165,19 @@ public abstract class MultiFileDocTestBase {
         });
     }
 
-    private void runQueryExampleWithResultConsumer(QueryExample queryExample, Consumer<Result> check) {
-        if (queryExample.runAsOperator()) {
+    private void runQueryExampleWithResultConsumer(DocQuery docQuery, Consumer<Result> check) {
+        if (docQuery.runAsOperator()) {
             QueryRunner.runQueryWithResultConsumer(
-                dbms.database(queryExample.database()),
-                queryExample.operator(),
-                queryExample.query(),
+                dbms.database(docQuery.database()),
+                docQuery.operator(),
+                docQuery.query(),
                 Map.of(),
                 check
             );
         } else {
             QueryRunner.runQueryWithResultConsumer(
-                dbms.database(queryExample.database()),
-                queryExample.query(),
+                dbms.database(docQuery.database()),
+                docQuery.query(),
                 Map.of(),
                 check
             );
@@ -185,8 +185,8 @@ public abstract class MultiFileDocTestBase {
     }
 
     private void runQueryExampleAndAssertResults(QueryExample queryExample) {
-        runQueryExampleWithResultConsumer(queryExample, result -> new QueryResultValidator(
-            queryExample.query(),
+        runQueryExampleWithResultConsumer(queryExample.docQuery(), result -> new QueryResultValidator(
+            queryExample.docQuery().query(),
             queryExample.resultColumns(),
             queryExample.results(),
             result.columns(),
@@ -199,7 +199,7 @@ public abstract class MultiFileDocTestBase {
         if (queryExample.assertResults()) {
             runQueryExampleAndAssertResults(queryExample);
         } else {
-            assertThatNoException().isThrownBy(() -> runDocQuery(queryExample));
+            assertThatNoException().isThrownBy(() -> runDocQuery(queryExample.docQuery()));
         }
     }
 

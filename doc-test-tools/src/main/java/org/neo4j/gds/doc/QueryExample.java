@@ -19,8 +19,8 @@
  */
 package org.neo4j.gds.doc;
 
-import org.immutables.value.Value;
-import org.neo4j.gds.annotation.ValueClass;
+import io.soabase.recordbuilder.core.RecordBuilder;
+import org.neo4j.gds.annotation.GenerateBuilder;
 import org.neo4j.gds.doc.syntax.DocQuery;
 
 import java.util.List;
@@ -49,37 +49,16 @@ import java.util.List;
  * The sections are turned into the query and assertions about the query result, respectively, and they then get turned
  * into a single test case.
  */
-@ValueClass
-public interface QueryExample extends DocQuery {
+@GenerateBuilder
+public record QueryExample(
+    DocQuery docQuery,
+    List<List<String>> results,
+    List<String> resultColumns,
+    @RecordBuilder.Initializer("DEFAULT_ASSERT_RESULTS") boolean assertResults
+) {
+    public static final boolean DEFAULT_ASSERT_RESULTS = true;
 
-    String query();
-
-    @Value.Default
-    default List<String> resultColumns() {
-        return List.of();
-    }
-
-    @Value.Default
-    default List<List<String>> results() {
-        return List.of();
-    }
-
-    @Value.Default
-    default boolean assertResults() {
-        return true;
-    }
-
-    @Value.Derived
-    default boolean runAsOperator() {
-        return !operator().equals("");
-    }
-
-    @Value.Default
-    default String operator() {
-        return "";
-    }
-
-    static ImmutableQueryExample.Builder builder() {
-        return ImmutableQueryExample.builder();
+    static QueryExampleBuilder builder() {
+        return QueryExampleBuilder.builder();
     }
 }

@@ -83,10 +83,14 @@ class QueryCollectingTreeProcessorTest {
                     .addQueryExample(
                         QueryExample
                             .builder()
-                            .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
+                            .docQuery(
+                                DocQuery
+                                    .builder()
+                                    .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
+                                    .build())
                             .resultColumns(List.of("Person1", "Person2", "similarity"))
-                            .addResult(List.of("\"Alice\"", "\"Dave\"", "1.0"))
-                            .addResult(List.of("\"Dave\"", "\"Alice\"", "1.0"))
+                            .addResults(List.of("\"Alice\"", "\"Dave\"", "1.0"))
+                            .addResults(List.of("\"Dave\"", "\"Alice\"", "1.0"))
                             .assertResults(true)
                             .build())
                     .build(),
@@ -95,19 +99,26 @@ class QueryCollectingTreeProcessorTest {
                     .addQueryExample(
                         QueryExample
                             .builder()
-                            .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
+                            .docQuery(
+                                DocQuery
+                                    .builder()
+                                    .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
+                                    .build())
                             .resultColumns(List.of("Person1", "Person2", "similarity"))
-                            .addResult(List.of("\"Alice\"", "\"Dave\"", "1.0"))
-                            .addResult(List.of("\"Dave\"", "\"Alice\"", "1.0"))
+                            .addResults(List.of("\"Alice\"", "\"Dave\"", "1.0"))
+                            .addResults(List.of("\"Dave\"", "\"Alice\"", "1.0"))
                             .assertResults(true)
                             .build())
                     .addQueryExample(
                         QueryExample
                             .builder()
-                            .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
+                            .docQuery(
+                                DocQuery.builder()
+                                    .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
+                                    .build())
                             .resultColumns(List.of("Person1", "Person2", "similarity"))
-                            .addResult(List.of("\"Alice\"", "\"Dave\"", "1.0"))
-                            .addResult(List.of("\"Dave\"", "\"Alice\"", "1.0"))
+                            .addResults(List.of("\"Alice\"", "\"Dave\"", "1.0"))
+                            .addResults(List.of("\"Dave\"", "\"Alice\"", "1.0"))
                             .assertResults(true)
                             .build())
                     .build(),
@@ -116,7 +127,10 @@ class QueryCollectingTreeProcessorTest {
                     .addQueryExample(
                         QueryExample
                             .builder()
-                            .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
+                            .docQuery(
+                                DocQuery.builder()
+                                    .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
+                                    .build())
                             .resultColumns(List.of())
                             .results(List.of())
                             .assertResults(false)
@@ -137,7 +151,10 @@ class QueryCollectingTreeProcessorTest {
 
         assertThat(processor.getQueryExampleGroups()).hasSize(1);
         assertThat(processor.getQueryExampleGroups().get(0).queryExamples()).containsExactly(
-            QueryExample.builder().query("SHOW DATABASES").database("system").assertResults(false).build()
+            QueryExample.builder()
+                .docQuery(DocQuery.builder().query("SHOW DATABASES").database("system").build())
+                .assertResults(false)
+                .build()
         );
     }
 
@@ -153,41 +170,50 @@ class QueryCollectingTreeProcessorTest {
                 QueryExampleGroup.builder()
                     .displayName("This is a test code block")
                     .addQueryExample(
-                        QueryExample
-                            .builder()
-                            .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
+                        QueryExample.builder()
+                            .docQuery(
+                                DocQuery.builder()
+                                    .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
+                                    .build())
                             .resultColumns(List.of("Person1", "Person2", "similarity"))
-                            .addResult(List.of("\"Alice\"", "\"Dave\"", "1.0"))
-                            .addResult(List.of("\"Dave\"", "\"Alice\"", "1.0"))
+                            .addResults(List.of("\"Alice\"", "\"Dave\"", "1.0"))
+                            .addResults(List.of("\"Dave\"", "\"Alice\"", "1.0"))
                             .assertResults(true)
                             .build())
                     .build(),
                 QueryExampleGroup.builder()
                     .displayName("testGroup")
                     .addQueryExample(
-                        QueryExample
-                            .builder()
-                            .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
+                        QueryExample.builder()
+                            .docQuery(
+                                DocQuery.builder()
+                                    .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
+                                    .build()
+                            )
                             .resultColumns(List.of("Person1", "Person2", "similarity"))
-                            .addResult(List.of("\"Alice\"", "\"Dave\"", "1.0"))
-                            .addResult(List.of("\"Dave\"", "\"Alice\"", "1.0"))
+                            .addResults(List.of("\"Alice\"", "\"Dave\"", "1.0"))
+                            .addResults(List.of("\"Dave\"", "\"Alice\"", "1.0"))
                             .assertResults(true)
                             .build())
                     .addQueryExample(
-                        QueryExample
-                            .builder()
-                            .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
+                        QueryExample.builder()
+                            .docQuery(
+                                DocQuery.builder()
+                                    .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
+                                    .build())
                             .resultColumns(List.of("Person1", "Person2", "similarity"))
-                            .addResult(List.of("\"Alice\"", "\"Dave\"", "1.0"))
-                            .addResult(List.of("\"Dave\"", "\"Alice\"", "1.0"))
+                            .addResults(List.of("\"Alice\"", "\"Dave\"", "1.0"))
+                            .addResults(List.of("\"Dave\"", "\"Alice\"", "1.0"))
                             .assertResults(true)
                             .build())
                     .addQueryExample(
-                        QueryExample
-                            .builder()
-                            .query("CALL my.dummy.stream()")
+                        QueryExample.builder()
+                            .docQuery(
+                                DocQuery.builder()
+                                    .query("CALL my.dummy.stream()")
+                                    .build())
                             .resultColumns(List.of("Col1"))
-                            .addResult(List.of("\"Alice\""))
+                            .addResults(List.of("\"Alice\""))
                             .assertResults(true)
                             .build()
                     )
@@ -195,9 +221,11 @@ class QueryCollectingTreeProcessorTest {
                 QueryExampleGroup.builder()
                     .displayName("This is a no-results test code block")
                     .addQueryExample(
-                        QueryExample
-                            .builder()
-                            .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
+                        QueryExample.builder()
+                            .docQuery(
+                                DocQuery.builder()
+                                    .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
+                                    .build())
                             .resultColumns(List.of())
                             .results(List.of())
                             .assertResults(false)
@@ -206,9 +234,11 @@ class QueryCollectingTreeProcessorTest {
                 QueryExampleGroup.builder()
                     .displayName("groupSecond")
                     .addQueryExample(
-                        QueryExample
-                            .builder()
-                            .query("CALL my.other.dummy()")
+                        QueryExample.builder()
+                            .docQuery(
+                                DocQuery.builder()
+                                    .query("CALL my.other.dummy()")
+                                    .build())
                             .assertResults(false)
                             .build())
                     .build()

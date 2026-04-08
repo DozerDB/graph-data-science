@@ -174,17 +174,19 @@ public class QueryCollectingTreeProcessor extends Treeprocessor {
         var codeBlock = findByContext(queryExampleNode, CODE_BLOCK_CONTEXT);
         var query = parseQuery(codeBlock);
 
-        var queryExampleBuilder = QueryExample.builder().query(query);
+        var docQueryBuilder = DocQuery.builder().query(query);
 
         if (queryExampleNode.hasAttribute(TEST_OPERATOR_ATTRIBUTE)) {
-            queryExampleBuilder.operator(queryExampleNode.getAttribute(TEST_OPERATOR_ATTRIBUTE).toString());
+            docQueryBuilder.operator(queryExampleNode.getAttribute(TEST_OPERATOR_ATTRIBUTE).toString());
         }
 
         if (queryExampleNode.hasAttribute(TEST_DATABASE_ATTRIBUTE)) {
-            queryExampleBuilder.database(queryExampleNode.getAttribute(TEST_DATABASE_ATTRIBUTE).toString());
+            docQueryBuilder.database(queryExampleNode.getAttribute(TEST_DATABASE_ATTRIBUTE).toString());
         }
 
-        if (Boolean.parseBoolean(queryExampleNode.getAttribute(TEST_TYPE_NO_RESULT, false).toString())) {
+        var queryExampleBuilder = QueryExample.builder().docQuery(docQueryBuilder.build());
+        var hasNoResult = Boolean.parseBoolean(queryExampleNode.getAttribute(TEST_TYPE_NO_RESULT, false).toString());
+        if (hasNoResult) {
             queryExampleBuilder.assertResults(false);
         } else {
             parseResultTable(queryExampleNode, queryExampleBuilder);
@@ -193,7 +195,7 @@ public class QueryCollectingTreeProcessor extends Treeprocessor {
         return queryExampleBuilder.build();
     }
 
-    private void parseResultTable(StructuralNode queryExampleNode, ImmutableQueryExample.Builder queryExampleBuilder) {
+    private void parseResultTable(StructuralNode queryExampleNode, QueryExampleBuilder queryExampleBuilder) {
         var resultsTable = (Table) findByContext(queryExampleNode, TABLE_CONTEXT);
 
         var resultColumns = resultsTable.getHeader().get(0).getCells()
@@ -205,7 +207,7 @@ public class QueryCollectingTreeProcessor extends Treeprocessor {
 
         var body = resultsTable.getBody();
         for (Row resultRow : body) {
-            queryExampleBuilder.addResult(
+            queryExampleBuilder.addResults(
                 resultRow.getCells()
                     .stream()
                     .map(Cell::getText)
