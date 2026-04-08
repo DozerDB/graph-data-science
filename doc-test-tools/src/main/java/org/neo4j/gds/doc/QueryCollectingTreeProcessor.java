@@ -111,10 +111,7 @@ public class QueryCollectingTreeProcessor extends Treeprocessor {
      */
     public List<QueryExampleGroup> getQueryExampleGroups() {
         return queryExamples.entrySet().stream()
-            .map(e -> QueryExampleGroup.builder()
-                .displayName(e.getKey())
-                .queryExamples(e.getValue())
-                .build())
+            .map(e -> new QueryExampleGroup(e.getKey(), e.getValue()))
             .collect(Collectors.toList());
     }
 

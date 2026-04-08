@@ -69,18 +69,17 @@ class QueryCollectingTreeProcessorOperatorsTest {
     void loadsQueryExamplesCorrectly() {
         var queryExampleGroups = processor.getQueryExampleGroups();
 
-        var expected = QueryExampleGroup.builder()
-            .displayName("This is a test code block").addQueryExample(
-                QueryExample.builder()
-                    .docQuery(
-                        DocQuery.builder()
-                            .query("CALL my.dummy.stream()")
-                            .operator("gdsteam").build())
-                    .resultColumns(List.of("Col1"))
-                    .addResults(List.of("\"Alice\""))
-                    .assertResults(true).build())
-            .build();
-        System.out.println(expected);
+        var expected = new QueryExampleGroup(
+            "This is a test code block", List.of(
+            QueryExample.builder()
+                .docQuery(
+                    DocQuery.builder()
+                        .query("CALL my.dummy.stream()")
+                        .operator("gdsteam").build())
+                .resultColumns(List.of("Col1"))
+                .addResults(List.of("\"Alice\""))
+                .assertResults(true).build())
+        );
         assertThat(queryExampleGroups)
             .containsExactlyInAnyOrder(expected);
     }

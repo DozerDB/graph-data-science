@@ -19,8 +19,6 @@
  */
 package org.neo4j.gds.doc;
 
-import org.neo4j.gds.annotation.ValueClass;
-
 import java.util.List;
 
 /**
@@ -44,16 +42,10 @@ import java.util.List;
  *
  * If you do not specify the group attribute, your query is assigned a dummy displayName and executed in isolation.
  */
-@ValueClass
-public interface QueryExampleGroup {
-    /**
+public record QueryExampleGroup(
+    /*
      * Only used for test names in JUnit
      */
-    String displayName();
-
-    List<QueryExample> queryExamples();
-
-    static ImmutableQueryExampleGroup.Builder builder() {
-        return ImmutableQueryExampleGroup.builder();
-    }
-}
+    String displayName,
+    List<QueryExample> queryExamples
+) { }

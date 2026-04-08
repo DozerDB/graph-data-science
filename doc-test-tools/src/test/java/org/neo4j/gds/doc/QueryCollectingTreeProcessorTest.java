@@ -78,64 +78,52 @@ class QueryCollectingTreeProcessorTest {
 
         assertThat(queryExampleGroups)
             .containsExactlyInAnyOrder(
-                QueryExampleGroup.builder()
-                    .displayName("This is a test code block")
-                    .addQueryExample(
-                        QueryExample
-                            .builder()
-                            .docQuery(
-                                DocQuery
-                                    .builder()
-                                    .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
-                                    .build())
-                            .resultColumns(List.of("Person1", "Person2", "similarity"))
-                            .addResults(List.of("\"Alice\"", "\"Dave\"", "1.0"))
-                            .addResults(List.of("\"Dave\"", "\"Alice\"", "1.0"))
-                            .assertResults(true)
-                            .build())
-                    .build(),
-                QueryExampleGroup.builder()
-                    .displayName("testGroup")
-                    .addQueryExample(
-                        QueryExample
-                            .builder()
-                            .docQuery(
-                                DocQuery
-                                    .builder()
-                                    .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
-                                    .build())
-                            .resultColumns(List.of("Person1", "Person2", "similarity"))
-                            .addResults(List.of("\"Alice\"", "\"Dave\"", "1.0"))
-                            .addResults(List.of("\"Dave\"", "\"Alice\"", "1.0"))
-                            .assertResults(true)
-                            .build())
-                    .addQueryExample(
-                        QueryExample
-                            .builder()
-                            .docQuery(
-                                DocQuery.builder()
-                                    .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
-                                    .build())
-                            .resultColumns(List.of("Person1", "Person2", "similarity"))
-                            .addResults(List.of("\"Alice\"", "\"Dave\"", "1.0"))
-                            .addResults(List.of("\"Dave\"", "\"Alice\"", "1.0"))
-                            .assertResults(true)
-                            .build())
-                    .build(),
-                QueryExampleGroup.builder()
-                    .displayName("This is a no-results test code block")
-                    .addQueryExample(
-                        QueryExample
-                            .builder()
-                            .docQuery(
-                                DocQuery.builder()
-                                    .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
-                                    .build())
-                            .resultColumns(List.of())
-                            .results(List.of())
-                            .assertResults(false)
-                            .build())
-                    .build()
+                new QueryExampleGroup("This is a test code block", List.of(
+                    QueryExample.builder()
+                        .docQuery(
+                            DocQuery
+                                .builder()
+                                .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
+                                .build())
+                        .resultColumns(List.of("Person1", "Person2", "similarity"))
+                        .addResults(List.of("\"Alice\"", "\"Dave\"", "1.0"))
+                        .addResults(List.of("\"Dave\"", "\"Alice\"", "1.0"))
+                        .assertResults(true)
+                        .build()
+                )),
+                new QueryExampleGroup("testGroup", List.of(
+                    QueryExample.builder()
+                        .docQuery(
+                            DocQuery.builder()
+                                .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
+                                .build())
+                        .resultColumns(List.of("Person1", "Person2", "similarity"))
+                        .addResults(List.of("\"Alice\"", "\"Dave\"", "1.0"))
+                        .addResults(List.of("\"Dave\"", "\"Alice\"", "1.0"))
+                        .assertResults(true)
+                        .build(),
+                    QueryExample.builder()
+                        .docQuery(
+                            DocQuery.builder()
+                                .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
+                                .build())
+                        .resultColumns(List.of("Person1", "Person2", "similarity"))
+                        .addResults(List.of("\"Alice\"", "\"Dave\"", "1.0"))
+                        .addResults(List.of("\"Dave\"", "\"Alice\"", "1.0"))
+                        .assertResults(true)
+                        .build()
+                    )
+                ), new QueryExampleGroup("This is a no-results test code block", List.of(
+                    QueryExample.builder()
+                        .docQuery(
+                            DocQuery.builder()
+                                .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
+                                .build())
+                        .resultColumns(List.of())
+                        .results(List.of())
+                        .assertResults(false)
+                        .build()
+                ))
             );
     }
 
@@ -167,81 +155,66 @@ class QueryCollectingTreeProcessorTest {
 
         assertThat(processor.getQueryExampleGroups())
             .containsExactlyInAnyOrder(
-                QueryExampleGroup.builder()
-                    .displayName("This is a test code block")
-                    .addQueryExample(
-                        QueryExample.builder()
-                            .docQuery(
-                                DocQuery.builder()
-                                    .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
-                                    .build())
-                            .resultColumns(List.of("Person1", "Person2", "similarity"))
-                            .addResults(List.of("\"Alice\"", "\"Dave\"", "1.0"))
-                            .addResults(List.of("\"Dave\"", "\"Alice\"", "1.0"))
-                            .assertResults(true)
-                            .build())
-                    .build(),
-                QueryExampleGroup.builder()
-                    .displayName("testGroup")
-                    .addQueryExample(
-                        QueryExample.builder()
-                            .docQuery(
-                                DocQuery.builder()
-                                    .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
-                                    .build()
-                            )
-                            .resultColumns(List.of("Person1", "Person2", "similarity"))
-                            .addResults(List.of("\"Alice\"", "\"Dave\"", "1.0"))
-                            .addResults(List.of("\"Dave\"", "\"Alice\"", "1.0"))
-                            .assertResults(true)
-                            .build())
-                    .addQueryExample(
-                        QueryExample.builder()
-                            .docQuery(
-                                DocQuery.builder()
-                                    .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
-                                    .build())
-                            .resultColumns(List.of("Person1", "Person2", "similarity"))
-                            .addResults(List.of("\"Alice\"", "\"Dave\"", "1.0"))
-                            .addResults(List.of("\"Dave\"", "\"Alice\"", "1.0"))
-                            .assertResults(true)
-                            .build())
-                    .addQueryExample(
-                        QueryExample.builder()
-                            .docQuery(
-                                DocQuery.builder()
-                                    .query("CALL my.dummy.stream()")
-                                    .build())
-                            .resultColumns(List.of("Col1"))
-                            .addResults(List.of("\"Alice\""))
-                            .assertResults(true)
-                            .build()
-                    )
-                    .build(),
-                QueryExampleGroup.builder()
-                    .displayName("This is a no-results test code block")
-                    .addQueryExample(
-                        QueryExample.builder()
-                            .docQuery(
-                                DocQuery.builder()
-                                    .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
-                                    .build())
-                            .resultColumns(List.of())
-                            .results(List.of())
-                            .assertResults(false)
-                            .build())
-                    .build(),
-                QueryExampleGroup.builder()
-                    .displayName("groupSecond")
-                    .addQueryExample(
-                        QueryExample.builder()
-                            .docQuery(
-                                DocQuery.builder()
-                                    .query("CALL my.other.dummy()")
-                                    .build())
-                            .assertResults(false)
-                            .build())
-                    .build()
+                new QueryExampleGroup("This is a test code block", List.of(
+                    QueryExample.builder()
+                        .docQuery(
+                            DocQuery.builder()
+                                .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
+                                .build()
+                        ).resultColumns(List.of("Person1", "Person2", "similarity"))
+                        .addResults(List.of("\"Alice\"", "\"Dave\"", "1.0"))
+                        .addResults(List.of("\"Dave\"", "\"Alice\"", "1.0"))
+                        .assertResults(true)
+                        .build()
+                )), new QueryExampleGroup("testGroup", List.of(
+                    QueryExample.builder()
+                        .docQuery(
+                            DocQuery.builder()
+                                .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
+                                .build()
+                        ).resultColumns(List.of("Person1", "Person2", "similarity"))
+                        .addResults(List.of("\"Alice\"", "\"Dave\"", "1.0"))
+                        .addResults(List.of("\"Dave\"", "\"Alice\"", "1.0"))
+                        .assertResults(true)
+                        .build(),
+                    QueryExample.builder()
+                        .docQuery(
+                            DocQuery.builder()
+                                .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
+                                .build())
+                        .resultColumns(List.of("Person1", "Person2", "similarity"))
+                        .addResults(List.of("\"Alice\"", "\"Dave\"", "1.0"))
+                        .addResults(List.of("\"Dave\"", "\"Alice\"", "1.0"))
+                        .assertResults(true)
+                        .build(),
+                    QueryExample.builder()
+                        .docQuery(
+                            DocQuery.builder()
+                                .query("CALL my.dummy.stream()")
+                                .build())
+                        .resultColumns(List.of("Col1"))
+                        .addResults(List.of("\"Alice\""))
+                        .assertResults(true)
+                        .build()
+                )), new QueryExampleGroup("This is a no-results test code block", List.of(
+                    QueryExample.builder()
+                        .docQuery(
+                            DocQuery.builder()
+                                .query("CALL gds.nodeSimilarity.stream() YIELD node1, node2, similarity")
+                                .build())
+                        .resultColumns(List.of())
+                        .results(List.of())
+                        .assertResults(false)
+                        .build()
+                )), new QueryExampleGroup("groupSecond", List.of(
+                    QueryExample.builder()
+                        .docQuery(
+                            DocQuery.builder()
+                                .query("CALL my.other.dummy()")
+                                .build())
+                        .assertResults(false)
+                        .build()
+                ))
             );
     }
 }
