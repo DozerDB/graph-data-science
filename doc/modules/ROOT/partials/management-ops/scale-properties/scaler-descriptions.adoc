@@ -57,6 +57,27 @@ image::equations/scale-properties/center.svg[p minus average value of p,align="c
 The average value is reported as statistic when this scaler is used.
 
 
+[[algorithms-scale-properties-l1norm]]
+=== L1 Norm
+
+Scales all property values using the https://en.wikipedia.org/wiki/Norm_(mathematics)#Taxicab_norm_or_Manhattan_norm[L1 Norm (Wikipedia)], also known as Manhattan norm.
+
+image::equations/scale-properties/l1norm.svg[scaled p equals p divided by l1 norm of p ,align="center"]
+
+The L1 norm is useful for getting a discrete probability distribution of properties whose values are non-negative, such as PageRank or ArticleRank.
+
+The scaler is still applicable when negative values are present, but will not produce a probability distribution. In either case, the sum of scaled absolute values will equal 1.
+
+
+[[algorithms-scale-properties-l2norm]]
+=== L2 Norm
+
+Scales all property values using the https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm[L2 Norm (Wikipedia)], also known as Euclidean norm.
+
+image::equations/scale-properties/l2norm.svg[scaled p equals p divided by l2 norm of p ,align="center"]
+
+The sum of squares of scaled values will equal 1 when the L2 norm is used.
+
 [NOTE]
 ====
 Some scalers must do divisions as part of their computation.
