@@ -24,7 +24,6 @@ import org.asciidoctor.Options;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.neo4j.gds.ResourceUtil;
-import org.neo4j.gds.doc.syntax.DocQuery;
 
 import java.util.List;
 

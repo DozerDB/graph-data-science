@@ -21,7 +21,6 @@ package org.neo4j.gds.doc;
 
 import io.soabase.recordbuilder.core.RecordBuilder;
 import org.neo4j.gds.annotation.GenerateBuilder;
-import org.neo4j.gds.doc.syntax.DocQuery;
 
 import java.util.List;
 

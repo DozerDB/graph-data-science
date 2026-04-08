@@ -22,7 +22,6 @@ package org.neo4j.gds.doc;
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.Options;
 import org.asciidoctor.SafeMode;
-import org.neo4j.gds.doc.syntax.DocQuery;
 
 import java.io.File;
 import java.nio.file.Path;

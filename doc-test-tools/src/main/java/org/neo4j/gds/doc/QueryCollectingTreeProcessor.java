@@ -27,7 +27,6 @@ import org.asciidoctor.ast.StructuralNode;
 import org.asciidoctor.ast.Table;
 import org.asciidoctor.extension.Treeprocessor;
 import org.jetbrains.annotations.NotNull;
-import org.neo4j.gds.doc.syntax.DocQuery;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

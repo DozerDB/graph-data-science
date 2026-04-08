@@ -29,7 +29,6 @@ import org.neo4j.dbms.api.DatabaseManagementService;
 import org.neo4j.gds.QueryRunner;
 import org.neo4j.gds.compat.GraphDatabaseApiProxy;
 import org.neo4j.gds.core.loading.GraphStoreCatalog;
-import org.neo4j.gds.doc.syntax.DocQuery;
 import org.neo4j.gds.settings.Neo4jSettings;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Result;
