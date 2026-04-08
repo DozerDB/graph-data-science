@@ -20,7 +20,6 @@
 package org.neo4j.gds.doc.syntax;
 
 import org.neo4j.gds.annotation.CustomProcedure;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.procedure.Name;
 import org.neo4j.procedure.Procedure;
 import org.reflections.Reflections;
@@ -47,7 +46,7 @@ final class ProcedureLookup {
                 r.getMethodsAnnotatedWith(Procedure.class).stream().map(ProcedureLookup::specFromProcedure),
                 r.getMethodsAnnotatedWith(CustomProcedure.class).stream().map(ProcedureLookup::specFromCustomProcedure)
             )).collect(Collectors.toMap(
-                p -> ImmutableProcedureKey.of(p.name(), p.namespace()),
+                p -> new ProcedureKey(p.name(), p.namespace()),
                 s -> s,
                 (keep, first) -> keep
             ));
@@ -105,7 +104,7 @@ final class ProcedureLookup {
             resultType = ((Class<?>) actualResultType);
         }
 
-        return ImmutableProcedureSpec.of(
+        return new ProcedureSpec(
             name,
             (Class<?>) resultType,
             parameterNames(method),
@@ -117,7 +116,7 @@ final class ProcedureLookup {
         var customProcedure = method.getAnnotation(CustomProcedure.class);
         var name = customProcedure.value();
         var resultType = method.getReturnType();
-        return ImmutableProcedureSpec.of(name, resultType, parameterNames(method), customProcedure.namespace());
+        return new ProcedureSpec(name, resultType, parameterNames(method), customProcedure.namespace());
     }
 
     private static List<String> parameterNames(Method method) {
@@ -132,7 +131,7 @@ final class ProcedureLookup {
         String fullyQualifiedProcedureName,
         CustomProcedure.Namespace namespace
     ) {
-        return Optional.ofNullable(this.procedureSpecs.get(ImmutableProcedureKey.of(
+        return Optional.ofNullable(this.procedureSpecs.get(new ProcedureKey(
             fullyQualifiedProcedureName,
             namespace
         )));
@@ -145,23 +144,15 @@ final class ProcedureLookup {
         ));
     }
 
-    @ValueClass
-    interface ProcedureSpec {
+    record ProcedureSpec(
+        String name,
+        Class<?> resultType,
+        List<String> argumentNames,
+        CustomProcedure.Namespace namespace
+    ) {}
 
-        String name();
-
-        Class<?> resultType();
-
-        List<String> argumentNames();
-
-        CustomProcedure.Namespace namespace();
-    }
-
-    @ValueClass
-    interface ProcedureKey {
-
-        String name();
-
-        CustomProcedure.Namespace namespace();
-    }
+    record ProcedureKey(
+        String name,
+        CustomProcedure.Namespace namespace
+    ) {}
 }
