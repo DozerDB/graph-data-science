@@ -38,8 +38,6 @@ import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.extension.GdlExtension;
 import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
-import org.neo4j.gds.scaling.L1Norm;
-import org.neo4j.gds.scaling.L2Norm;
 import org.neo4j.gds.scaling.MinMax;
 import org.neo4j.gds.scaling.ScalerFactory;
 import org.neo4j.gds.termination.TerminationFlag;
@@ -217,7 +215,7 @@ class ScalePropertiesTest {
         Function<List<String>, ScalePropertiesParameters> paramBuilder = (nodeProps) -> new ScalePropertiesParameters(
             new Concurrency(4),
             nodeProps,
-            ScalerFactory.ALL_SCALERS.get(scaler).apply(CypherMapWrapper.empty())
+            ScalerFactory.SUPPORTED_SCALERS.get(scaler).apply(CypherMapWrapper.empty())
         );
 
         var bParams = paramBuilder.apply(List.of("b"));
@@ -244,52 +242,6 @@ class ScalePropertiesTest {
             .compute()
             .scaledProperties();
 
-        var actualDouble = new ScaleProperties(
-            graph,
-            doubleArrayBParams,
-            ProgressTracker.NULL_TRACKER,
-            DefaultPool.INSTANCE,
-            TerminationFlag.RUNNING_TRUE
-        )
-            .compute()
-            .scaledProperties();
-
-        LongStream.range(0, graph.nodeCount()).forEach(id -> assertArrayEquals(expected.get(id), actualLong.get(id)));
-        LongStream.range(0, graph.nodeCount()).forEach(id -> assertArrayEquals(expected.get(id), actualDouble.get(id)));
-    }
-
-    @ParameterizedTest
-    @MethodSource("scalersL1L2")
-    void supportLongAndFloatArraysForL1L2(String scaler) {
-
-        Function<List<String>, ScalePropertiesParameters> paramBuilder = (nodeProps) -> new ScalePropertiesParameters(
-            new Concurrency(4),
-            nodeProps,
-            ScalerFactory.ALL_SCALERS.get(scaler).apply(CypherMapWrapper.empty())
-        );
-
-        var bParams = paramBuilder.apply(List.of("b"));
-        var longArrayBParams = paramBuilder.apply(List.of("longArrayB"));
-        var doubleArrayBParams = paramBuilder.apply(List.of("floatArrayB"));
-
-        var expected = new ScaleProperties(
-            graph,
-            bParams,
-            ProgressTracker.NULL_TRACKER,
-            DefaultPool.INSTANCE,
-            TerminationFlag.RUNNING_TRUE
-        )
-            .compute()
-            .scaledProperties();
-        var actualLong = new ScaleProperties(
-            graph,
-            longArrayBParams,
-            ProgressTracker.NULL_TRACKER,
-            DefaultPool.INSTANCE,
-            TerminationFlag.RUNNING_TRUE
-        )
-            .compute()
-            .scaledProperties();
         var actualDouble = new ScaleProperties(
             graph,
             doubleArrayBParams,
@@ -448,17 +400,8 @@ class ScalePropertiesTest {
     }
 
     public static Stream<Arguments> scalers() {
-        return ScalerFactory.ALL_SCALERS.keySet()
+        return ScalerFactory.SUPPORTED_SCALERS.keySet()
             .stream()
-            .filter(s -> !(s.equals(L1Norm.TYPE) || s.equals(L2Norm.TYPE)))
             .map(Arguments::of);
     }
-
-    public static Stream<Arguments> scalersL1L2() {
-        return ScalerFactory.ALL_SCALERS.keySet()
-            .stream()
-            .filter(s -> (s.equals(L1Norm.TYPE) || s.equals(L2Norm.TYPE)))
-            .map(Arguments::of);
-    }
-
 }

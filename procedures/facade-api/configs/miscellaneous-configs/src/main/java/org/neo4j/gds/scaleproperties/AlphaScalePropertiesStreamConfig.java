@@ -28,10 +28,4 @@ public interface AlphaScalePropertiesStreamConfig extends ScalePropertiesStreamC
     static AlphaScalePropertiesStreamConfig of(CypherMapWrapper userInput) {
         return new AlphaScalePropertiesStreamConfigImpl(userInput);
     }
-
-    @Configuration.Ignore
-    @Override
-    default boolean allowL1L2(){
-        return  true;
-    }
 }

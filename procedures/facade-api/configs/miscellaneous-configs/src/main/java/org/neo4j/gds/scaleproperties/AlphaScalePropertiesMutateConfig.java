@@ -23,16 +23,9 @@ import org.neo4j.gds.annotation.Configuration;
 import org.neo4j.gds.core.CypherMapWrapper;
 
 @Configuration
-public interface AlphaScalePropertiesMutateConfig extends  ScalePropertiesMutateConfig {
+public interface AlphaScalePropertiesMutateConfig extends ScalePropertiesMutateConfig {
 
     static AlphaScalePropertiesMutateConfig of(CypherMapWrapper userInput) {
         return new AlphaScalePropertiesMutateConfigImpl(userInput);
     }
-
-    @Configuration.Ignore
-    @Override
-    default boolean allowL1L2(){
-        return  true;
-    }
-
 }
