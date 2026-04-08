@@ -34,8 +34,6 @@ import org.neo4j.gds.procedures.algorithms.miscellaneous.stubs.LocalScalePropert
 import org.neo4j.gds.procedures.algorithms.miscellaneous.stubs.LocalToUndirectedMutateStub;
 import org.neo4j.gds.procedures.algorithms.miscellaneous.stubs.MiscellaneousStubs;
 import org.neo4j.gds.procedures.algorithms.stubs.GenericStub;
-import org.neo4j.gds.scaleproperties.AlphaScalePropertiesMutateConfig;
-import org.neo4j.gds.scaleproperties.AlphaScalePropertiesStreamConfig;
 import org.neo4j.gds.scaleproperties.ScalePropertiesMutateConfig;
 import org.neo4j.gds.scaleproperties.ScalePropertiesStatsConfig;
 import org.neo4j.gds.scaleproperties.ScalePropertiesStreamConfig;
@@ -84,13 +82,6 @@ public final class LocalMiscellaneousProcedureFacade implements MiscellaneousPro
         ProcedureReturnColumns procedureReturnColumns,
         UserSpecificConfigurationParser configurationParser
     ) {
-        var alphaScalePropertiesMutateStub = new LocalScalePropertiesMutateStub(
-            genericStub,
-            applicationsFacade.miscellaneous().estimate(),
-            applicationsFacade.miscellaneous().mutate(),
-            procedureReturnColumns,
-            AlphaScalePropertiesMutateConfig::of
-        );
         var collapsePathMutateStub = new LocalCollapsePathMutateStub(
             genericStub,
             applicationsFacade.miscellaneous().estimate(),
@@ -117,7 +108,6 @@ public final class LocalMiscellaneousProcedureFacade implements MiscellaneousPro
         var stubs =  new MiscellaneousStubs(
             collapsePathMutateStub,
             indexInverseMutateStub,
-            alphaScalePropertiesMutateStub,
             scalePropertiesMutateStub,
             toUndirectedMutateStub
         );
@@ -137,28 +127,6 @@ public final class LocalMiscellaneousProcedureFacade implements MiscellaneousPro
     @Override
     public MiscellaneousStubs miscellaneousStubs() {
         return stubs;
-    }
-
-    @Override
-    public Stream<ScalePropertiesStreamResult> alphaScalePropertiesStream(
-        String graphName,
-        Map<String, Object> configuration
-    ) {
-        var resultBuilder = new ScalePropertiesResultBuilderForStreamMode();
-
-        return streamModeBusinessFacade.scaleProperties(
-            GraphName.parse(graphName),
-            configurationParser.parseConfiguration(configuration, AlphaScalePropertiesStreamConfig::of),
-            resultBuilder
-        );
-    }
-
-    @Override
-    public Stream<ScalePropertiesMutateResult> alphaScalePropertiesMutate(
-        String graphName,
-        Map<String, Object> configuration
-    ) {
-        return  stubs.alphaScaleProperties().execute(graphName,configuration);
     }
 
     @Override

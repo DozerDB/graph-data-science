@@ -22,7 +22,6 @@ package org.neo4j.gds.procedures.algorithms.miscellaneous.stubs;
 public record MiscellaneousStubs(
     CollapsePathMutateStub collapsePath,
     IndexInverseMutateStub indexInverse,
-    ScalePropertiesMutateStub alphaScaleProperties,
     ScalePropertiesMutateStub scaleProperties,
     ToUndirectedMutateStub toUndirected
 ) {}

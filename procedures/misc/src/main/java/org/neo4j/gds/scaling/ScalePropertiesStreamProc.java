@@ -67,6 +67,6 @@ public class ScalePropertiesStreamProc {
     ) {
         facade.deprecatedProcedures().called("gds.alpha.scaleProperties.stream");
 
-        return facade.algorithms().miscellaneous().alphaScalePropertiesStream(graphName, configuration);
+        return facade.algorithms().miscellaneous().scalePropertiesStream(graphName, configuration);
     }
 }

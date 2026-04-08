@@ -29,16 +29,6 @@ public interface MiscellaneousProcedureFacade {
 
     MiscellaneousStubs miscellaneousStubs();
 
-    Stream<ScalePropertiesStreamResult> alphaScalePropertiesStream(
-        String graphName,
-        Map<String, Object> configuration
-    );
-
-    Stream<ScalePropertiesMutateResult> alphaScalePropertiesMutate(
-        String graphName,
-        Map<String, Object> configuration
-    );
-
     Stream<CollapsePathMutateResult> collapsePathMutate(
         String graphName,
         Map<String, Object> configuration

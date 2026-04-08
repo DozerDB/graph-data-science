@@ -67,6 +67,6 @@ public class ScalePropertiesMutateProc {
     ) {
         facade.deprecatedProcedures().called("gds.alpha.scaleProperties.mutate");
 
-        return facade.algorithms().miscellaneous().alphaScalePropertiesMutate(graphName, configuration);
+        return facade.algorithms().miscellaneous().scalePropertiesMutate(graphName, configuration);
     }
 }
