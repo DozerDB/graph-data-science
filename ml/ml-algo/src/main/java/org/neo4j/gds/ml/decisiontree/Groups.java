@@ -19,11 +19,4 @@
  */
 package org.neo4j.gds.ml.decisiontree;
 
-import org.neo4j.gds.annotation.ValueClass;
-
-@ValueClass
-interface Groups {
-    Group left();
-
-    Group right();
-}
+record Groups(Group left, Group right) {}

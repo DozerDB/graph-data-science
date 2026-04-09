@@ -129,17 +129,17 @@ public class Splitter {
             }
         }
 
-        return ImmutableSplit.of(
+        return new DecisionTreeTrainer.Split(
             bestIdx,
             bestValue,
-            ImmutableGroups.of(
-                ImmutableGroup.of(
+            new Groups(
+                new Group(
                     bestLeftChildArray,
                     0,
                     bestLeftGroupSize,
                     bestLeftImpurityData
                 ),
-                ImmutableGroup.of(
+                new Group(
                     bestRightChildArray,
                     bestLeftGroupSize,
                     group.size() - bestLeftGroupSize,

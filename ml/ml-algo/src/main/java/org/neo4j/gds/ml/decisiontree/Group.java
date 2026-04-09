@@ -19,16 +19,11 @@
  */
 package org.neo4j.gds.ml.decisiontree;
 
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.collections.ha.HugeLongArray;
 
-@ValueClass
-interface Group {
-    HugeLongArray array();
-
-    long startIdx();
-
-    long size();
-
-    ImpurityCriterion.ImpurityData impurityData();
-}
+public record Group(
+    HugeLongArray array,
+    long startIdx,
+    long size,
+    ImpurityCriterion.ImpurityData impurityData
+) {}

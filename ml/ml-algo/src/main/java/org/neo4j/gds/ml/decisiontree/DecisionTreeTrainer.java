@@ -19,7 +19,6 @@
  */
 package org.neo4j.gds.ml.decisiontree;
 
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.mem.MemoryRange;
 import org.neo4j.gds.collections.ha.HugeLongArray;
 import org.neo4j.gds.core.utils.paged.ReadOnlyHugeLongArray;
@@ -71,7 +70,7 @@ public abstract class DecisionTreeTrainer<PREDICTION extends Number> {
         // Stack implies DFS, so will at most have 2 * normalizedMaxDepth entries for a binary tree.
         long maxItemsOnStack = 2L * normalizedMaxDepth;
         var maxStackSize = MemoryRange.of(sizeOfInstance(ArrayDeque.class))
-            .add(MemoryRange.of(1, maxItemsOnStack).times(sizeOfInstance(ImmutableStackRecord.class)))
+            .add(MemoryRange.of(1, maxItemsOnStack).times(sizeOfInstance(StackRecord.class)))
             .add(MemoryRange.of(
                 0, // Only the input trainSet array ever resides in stack
                 HugeLongArray.memoryEstimation(numberOfTrainingSamples / maxItemsOnStack) * maxItemsOnStack
@@ -132,7 +131,7 @@ public abstract class DecisionTreeTrainer<PREDICTION extends Number> {
             );
             root = splitAndPush(
                 stack,
-                ImmutableGroup.of(mutableTrainSetIndices, 0, mutableTrainSetIndices.size(), impurityData),
+                new Group(mutableTrainSetIndices, 0, mutableTrainSetIndices.size(), impurityData),
                 1
             );
         }
@@ -196,26 +195,12 @@ public abstract class DecisionTreeTrainer<PREDICTION extends Number> {
         }
 
         var node = new TreeNode<PREDICTION>(split.index(), split.value());
-        stack.push(ImmutableStackRecord.of(node, split, depth));
+        stack.push(new StackRecord<>(node, split, depth));
 
         return node;
     }
 
-    @ValueClass
-    interface Split {
-        int index();
+    record Split(int index, double value, Groups groups) {}
 
-        double value();
-
-        Groups groups();
-    }
-
-    @ValueClass
-    interface StackRecord<PREDICTION extends Number> {
-        TreeNode<PREDICTION> node();
-
-        Split split();
-
-        int depth();
-    }
+    private record StackRecord<PREDICTION extends Number>(TreeNode<PREDICTION> node, Split split, int depth){}
 }

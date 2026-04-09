@@ -165,7 +165,7 @@ class SplitterTest {
     ) {
         var splitter = new Splitter(NUM_SAMPLES, giniIndexLoss, featureBagger, features, minLeafSize);
         var impurityData = giniIndexLoss.groupImpurity(groupArray, startIdx, size);
-        var group = ImmutableGroup.of(groupArray, startIdx, size, impurityData);
+        var group = new Group(groupArray, startIdx, size, impurityData);
         var split = splitter.findBestSplit(group);
 
         assertThat(split.index()).isEqualTo(expectedIdx);
