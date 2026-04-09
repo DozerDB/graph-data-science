@@ -20,7 +20,6 @@
 package org.neo4j.gds.core.loading;
 
 import org.immutables.builder.Builder;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.api.PartialIdMap;
 import org.neo4j.gds.api.PropertyState;
 import org.neo4j.gds.api.properties.nodes.NodePropertyStore;
@@ -117,16 +116,12 @@ public final class LazyIdMapBuilder implements PartialIdMap {
             : OptionalLong.of(this.nodesBuilder.importedNodes());
     }
 
-    @ValueClass
-    public interface HighLimitIdMapAndProperties {
-        HighLimitIdMap idMap();
-
-        PartialIdMap intermediateIdMap();
-
-        MutableNodeSchema schema();
-
-        NodePropertyStore propertyStore();
-    }
+    public record HighLimitIdMapAndProperties(
+        HighLimitIdMap idMap,
+        PartialIdMap intermediateIdMap,
+        MutableNodeSchema schema,
+        NodePropertyStore propertyStore
+    ) {}
 
     public HighLimitIdMapAndProperties build() {
         var nodes = this.nodesBuilder.build();
@@ -152,12 +147,11 @@ public final class LazyIdMapBuilder implements PartialIdMap {
             }
         };
 
-        return ImmutableHighLimitIdMapAndProperties
-            .builder()
-            .idMap(idMap)
-            .intermediateIdMap(partialIdMap)
-            .schema(nodes.schema())
-            .propertyStore(nodes.properties())
-            .build();
+        return new HighLimitIdMapAndProperties(
+            idMap,
+            partialIdMap,
+            nodes.schema(),
+            nodes.properties()
+        );
     }
 }
