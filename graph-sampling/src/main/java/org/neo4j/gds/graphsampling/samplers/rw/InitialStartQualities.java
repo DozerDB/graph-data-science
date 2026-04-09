@@ -23,20 +23,14 @@ import com.carrotsearch.hppc.DoubleArrayList;
 import com.carrotsearch.hppc.DoubleCollection;
 import com.carrotsearch.hppc.LongArrayList;
 import com.carrotsearch.hppc.LongCollection;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.api.Graph;
 
 import java.util.List;
 import java.util.SplittableRandom;
 
-@ValueClass
-public
-interface InitialStartQualities {
-    LongCollection nodeIds();
+public record InitialStartQualities(LongCollection nodeIds, DoubleCollection qualities) {
 
-    DoubleCollection qualities();
-
-    static InitialStartQualities init(Graph inputGraph, SplittableRandom rng, List<Long> startNodes) {
+    public static InitialStartQualities init(Graph inputGraph, SplittableRandom rng, List<Long> startNodes) {
         var nodeIds = new LongArrayList();
         var qualities = new DoubleArrayList();
 
@@ -50,6 +44,6 @@ interface InitialStartQualities {
             qualities.add(1.0);
         }
 
-        return ImmutableInitialStartQualities.of(nodeIds, qualities);
+        return new InitialStartQualities(nodeIds, qualities);
     }
 }

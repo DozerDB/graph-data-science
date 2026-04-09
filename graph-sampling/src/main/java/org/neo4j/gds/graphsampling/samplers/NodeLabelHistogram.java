@@ -23,7 +23,6 @@ import com.carrotsearch.hppc.LongLongHashMap;
 import com.carrotsearch.hppc.procedures.LongLongProcedure;
 import org.neo4j.gds.ElementIdentifier;
 import org.neo4j.gds.NodeLabel;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.api.Graph;
 import org.neo4j.gds.api.IdMap;
 import org.neo4j.gds.core.concurrency.Concurrency;
@@ -38,12 +37,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public final class NodeLabelHistogram {
 
-    @ValueClass
-    interface Result {
-        NodeLabel[] availableNodeLabels();
-
-        LongLongHashMap histogram();
-    }
+    public record Result(
+        NodeLabel[] availableNodeLabels,
+        LongLongHashMap histogram
+    ) {}
 
     public static Result compute(Graph inputGraph, Concurrency concurrency, ProgressTracker progressTracker,
         TerminationFlag terminationFlag
@@ -89,10 +86,7 @@ public final class NodeLabelHistogram {
 
         progressTracker.endSubTask("Count node labels");
 
-        return ImmutableResult.builder()
-            .availableNodeLabels(availableNodeLabels)
-            .histogram(totalCounts)
-            .build();
+        return new Result(availableNodeLabels, totalCounts);
     }
 
     /**
