@@ -19,8 +19,6 @@
  */
 package org.neo4j.gds.core.utils;
 
-import org.neo4j.gds.annotation.ValueClass;
-
 import java.util.Objects;
 
 public final class ArrayLayout {
@@ -71,7 +69,7 @@ public final class ArrayLayout {
         dest[0] = -1;
         var secondaryDest = new int[secondary.length];
         eytzingerWithSecondary(input.length, input, dest, 0, 1, secondary, secondaryDest);
-        return ImmutableLayoutAndSecondary.of(dest, secondaryDest);
+        return new LayoutAndSecondary(dest, secondaryDest);
     }
 
     private static int eytzinger(int length, long[] source, long[] dest, int sourceIndex, int destIndex) {
@@ -130,12 +128,7 @@ public final class ArrayLayout {
         return index >>> (1 + Integer.numberOfTrailingZeros(index));
     }
 
-    @ValueClass
-    public interface LayoutAndSecondary {
-        long[] layout();
-
-        int[] secondary();
-    }
+    public record LayoutAndSecondary(long[] layout, int[] secondary) {}
 
     private ArrayLayout() {}
 }
