@@ -22,7 +22,6 @@ package org.neo4j.gds.beta.generator;
 import org.jetbrains.annotations.Nullable;
 import org.neo4j.gds.NodeLabel;
 import org.neo4j.gds.RelationshipType;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.api.DatabaseId;
 import org.neo4j.gds.api.DefaultValue;
 import org.neo4j.gds.api.GraphStore;
@@ -318,21 +317,13 @@ public final class RandomGraphGenerator {
         }
     }
 
-    @ValueClass
-    interface NodePropertiesAndSchema {
-        MutableNodeSchema nodeSchema();
-
-        Map<String, NodePropertyValues> nodeProperties();
-    }
+    record NodePropertiesAndSchema(MutableNodeSchema nodeSchema, Map<String, NodePropertyValues> nodeProperties) {}
 
     private NodePropertiesAndSchema generateNodeProperties(IdMap idMap) {
         if (this.nodePropertyProducers.isEmpty()) {
             var nodeSchema = MutableNodeSchema.empty();
             idMap.availableNodeLabels().forEach(nodeSchema::getOrCreateLabel);
-            return ImmutableNodePropertiesAndSchema.builder()
-                .nodeSchema(nodeSchema)
-                .nodeProperties(Map.of())
-                .build();
+            return new NodePropertiesAndSchema(nodeSchema, Map.of());
         }
 
         var propertyNameToLabels = new HashMap<String, List<NodeLabel>>();
@@ -397,10 +388,7 @@ public final class RandomGraphGenerator {
                 }
             }));
 
-        return ImmutableNodePropertiesAndSchema.builder()
-            .nodeProperties(generatedProperties)
-            .nodeSchema(nodeSchema)
-            .build();
+        return new NodePropertiesAndSchema(nodeSchema, generatedProperties);
     }
 
     @SuppressWarnings("unchecked")
