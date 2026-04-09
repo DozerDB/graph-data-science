@@ -27,7 +27,6 @@ import org.neo4j.gds.api.GraphLoaderContext;
 import org.neo4j.gds.api.IdMap;
 import org.neo4j.gds.core.GraphDimensions;
 import org.neo4j.gds.core.concurrency.Concurrency;
-import org.neo4j.gds.core.loading.ImmutableSingleTypeRelationshipImportContext;
 import org.neo4j.gds.core.loading.ImportSizing;
 import org.neo4j.gds.core.loading.RelationshipImportResult;
 import org.neo4j.gds.core.loading.SingleTypeRelationshipImporter;
@@ -37,6 +36,7 @@ import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 final class ScanningRelationshipsImporter extends ScanningRecordsImporter<RelationshipReference, RelationshipImportResult> {
@@ -121,11 +121,11 @@ final class ScanningRelationshipsImporter extends ScanningRecordsImporter<Relati
 
                     var contexts = new ArrayList<SingleTypeRelationshipImportContext>();
 
-                    contexts.add(ImmutableSingleTypeRelationshipImportContext.builder()
-                        .relationshipType(relationshipType)
-                        .relationshipProjection(projection)
-                        .singleTypeRelationshipImporter(importer)
-                        .build());
+                    contexts.add(new SingleTypeRelationshipImportContext(
+                        relationshipType,
+                        projection,
+                        importer
+                    ));
 
                     if (projection.indexInverse()) {
                         contexts.add(createInverseImporterContext(sizing, relationshipType, projection));
@@ -171,12 +171,12 @@ final class ScanningRelationshipsImporter extends ScanningRecordsImporter<Relati
             .importSizing(sizing)
             .build();
 
-        return ImmutableSingleTypeRelationshipImportContext.builder()
-            .relationshipType(relationshipType)
-            .relationshipProjection(inverseProjection)
-            .inverseOfRelationshipType(relationshipType)
-            .singleTypeRelationshipImporter(inverseImporter)
-            .build();
+        return new SingleTypeRelationshipImportContext(
+            relationshipType,
+            inverseProjection,
+            inverseImporter,
+            Optional.of(relationshipType)
+            );
     }
 
     @Override

@@ -47,9 +47,9 @@ import org.neo4j.gds.core.huge.HugeGraphBuilder;
 import org.neo4j.gds.core.loading.AdjacencyListBehavior;
 import org.neo4j.gds.core.loading.HighLimitIdMap;
 import org.neo4j.gds.core.loading.IdMapBuilder;
-import org.neo4j.gds.core.loading.ImmutableImportMetaData;
 import org.neo4j.gds.core.loading.ImportSizing;
 import org.neo4j.gds.core.loading.RecordsBatchBuffer;
+import org.neo4j.gds.core.loading.SingleTypeRelationshipImporter;
 import org.neo4j.gds.core.loading.SingleTypeRelationshipImporterBuilder;
 import org.neo4j.gds.core.loading.SingleTypeRelationships;
 
@@ -283,14 +283,14 @@ public final class GraphFactory {
 
         boolean skipDangling = skipDanglingRelationships.orElse(true);
 
-        var importMetaData = ImmutableImportMetaData.builder()
-            .projection(projection)
-            .aggregations(aggregations)
-            .propertyKeyIds(propertyKeyIds)
-            .defaultValues(defaultValues)
-            .typeTokenId(NO_SUCH_RELATIONSHIP_TYPE)
-            .skipDanglingRelationships(skipDangling)
-            .build();
+        var importMetaData = new SingleTypeRelationshipImporter.ImportMetaData(
+            projection,
+            aggregations,
+            propertyKeyIds,
+            defaultValues,
+            NO_SUCH_RELATIONSHIP_TYPE,
+            skipDangling
+        );
 
         var singleTypeRelationshipImporter = new SingleTypeRelationshipImporterBuilder()
             .importMetaData(importMetaData)
@@ -318,11 +318,14 @@ public final class GraphFactory {
                 .orientation(projection.orientation().inverse())
                 .build();
 
-            var inverseImportMetaData = ImmutableImportMetaData.builder()
-                .from(importMetaData)
-                .projection(inverseProjection)
-                .skipDanglingRelationships(skipDangling)
-                .build();
+            var inverseImportMetaData = new SingleTypeRelationshipImporter.ImportMetaData(
+                inverseProjection,
+                importMetaData.aggregations(),
+                importMetaData.propertyKeyIds(),
+                importMetaData.defaultValues(),
+                importMetaData.typeTokenId(),
+                skipDangling
+            );
 
             var inverseImporter = new SingleTypeRelationshipImporterBuilder()
                 .importMetaData(inverseImportMetaData)

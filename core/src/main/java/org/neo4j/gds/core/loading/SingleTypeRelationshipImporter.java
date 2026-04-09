@@ -23,7 +23,6 @@ import org.immutables.value.Value;
 import org.neo4j.gds.PropertyMapping;
 import org.neo4j.gds.RelationshipProjection;
 import org.neo4j.gds.RelationshipType;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.compression.api.AdjacencyCompressor;
 import org.neo4j.gds.api.compress.AdjacencyCompressorFactory;
 import org.neo4j.gds.api.compress.AdjacencyListsWithProperties;
@@ -130,35 +129,29 @@ public final class SingleTypeRelationshipImporter {
         return adjacencyCompressorFactory.build(true);
     }
 
-    @ValueClass
-    public interface ImportMetaData {
-        RelationshipProjection projection();
+    public record ImportMetaData(
+        RelationshipProjection projection,
+        Aggregation[] aggregations,
+        int[] propertyKeyIds,
+        double[] defaultValues,
+        int typeTokenId,
+        boolean skipDanglingRelationships
+    ) {
 
-        Aggregation[] aggregations();
-
-        int[] propertyKeyIds();
-
-        double[] defaultValues();
-
-        int typeTokenId();
-
-        boolean skipDanglingRelationships();
-
-        static ImportMetaData of(
+        public static ImportMetaData of(
             RelationshipProjection projection,
             int typeTokenId,
             Map<String, Integer> relationshipPropertyTokens,
             boolean skipDanglingRelationships
         ) {
-            return ImmutableImportMetaData
-                .builder()
-                .projection(projection)
-                .aggregations(aggregations(projection))
-                .propertyKeyIds(propertyKeyIds(projection, relationshipPropertyTokens))
-                .defaultValues(defaultValues(projection))
-                .typeTokenId(typeTokenId)
-                .skipDanglingRelationships(skipDanglingRelationships)
-                .build();
+            return new ImportMetaData(
+                projection,
+                aggregations(projection),
+                propertyKeyIds(projection, relationshipPropertyTokens),
+                defaultValues(projection),
+                typeTokenId,
+                skipDanglingRelationships
+            );
         }
 
         private static double[] defaultValues(RelationshipProjection projection) {
@@ -195,14 +188,18 @@ public final class SingleTypeRelationshipImporter {
         }
     }
 
-    @ValueClass
-    public interface SingleTypeRelationshipImportContext {
-        RelationshipType relationshipType();
-
-        Optional<RelationshipType> inverseOfRelationshipType();
-
-        RelationshipProjection relationshipProjection();
-
-        SingleTypeRelationshipImporter singleTypeRelationshipImporter();
+    public record SingleTypeRelationshipImportContext(
+        RelationshipType relationshipType,
+        RelationshipProjection relationshipProjection,
+        SingleTypeRelationshipImporter singleTypeRelationshipImporter,
+        Optional<RelationshipType> inverseOfRelationshipType
+    ) {
+        public SingleTypeRelationshipImportContext(
+            RelationshipType relationshipType,
+            RelationshipProjection relationshipProjection,
+            SingleTypeRelationshipImporter singleTypeRelationshipImporter
+        ) {
+            this(relationshipType, relationshipProjection, singleTypeRelationshipImporter, Optional.empty());
+        }
     }
 }

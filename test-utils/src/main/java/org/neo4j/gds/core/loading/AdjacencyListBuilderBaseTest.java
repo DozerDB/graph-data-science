@@ -156,14 +156,14 @@ public abstract class AdjacencyListBuilderBaseTest {
             ? new Aggregation[]{Aggregation.NONE}
             : propertyAggregations;
 
-        var importMetaData = ImmutableImportMetaData.builder()
-            .skipDanglingRelationships(false)
-            .projection(relationshipProjection)
-            .aggregations(importAggregations)
-            .propertyKeyIds(propertyKeyIds)
-            .defaultValues(defaultValues)
-            .typeTokenId(NO_SUCH_RELATIONSHIP_TYPE)
-            .build();
+        var importMetaData = new SingleTypeRelationshipImporter.ImportMetaData(
+            relationshipProjection,
+            importAggregations,
+            propertyKeyIds,
+            defaultValues,
+            NO_SUCH_RELATIONSHIP_TYPE,
+            false
+        );
 
         var adjacencyCompressorFactory = AdjacencyListBehavior.asConfigured(
             () -> originalNodeCount,
