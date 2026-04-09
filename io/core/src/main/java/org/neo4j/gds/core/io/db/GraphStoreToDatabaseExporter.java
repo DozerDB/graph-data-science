@@ -54,17 +54,17 @@ public final class GraphStoreToDatabaseExporter extends GraphStoreExporter {
         Log log,
         ProgressTracker progressTracker
     ) {
-        var pbiConfig = GdsParallelBatchImporter.Config.builder()
-            .databaseName(parameters.databaseName())
-            .batchSize(parameters.batchSize())
-            .enableDebugLog(parameters.enableDebugLog())
-            .defaultRelationshipType(parameters.defaultRelationshipType())
-            .writeConcurrency(parameters.writeConcurrency().value())
-            .databaseFormat(parameters.databaseFormat())
-            .force(false)
-            .highIO(false)
-            .useBadCollector(false)
-            .build();
+        var pbiConfig = new GdsParallelBatchImporter.Config(
+            parameters.databaseName(),
+            parameters.writeConcurrency().value(),
+            parameters.batchSize(),
+            parameters.defaultRelationshipType(),
+            parameters.enableDebugLog(),
+            parameters.databaseFormat(),
+            false,
+            false,
+            false
+        );
 
         var executionMonitor = new ProgressTrackerExecutionMonitor(graphStore, progressTracker);
 

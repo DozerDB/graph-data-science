@@ -28,7 +28,6 @@ import org.neo4j.common.EmptyDependencyResolver;
 import org.neo4j.configuration.GraphDatabaseSettings;
 import org.neo4j.dbms.api.DatabaseManagementService;
 import org.neo4j.gds.RelationshipType;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.compat.GraphDatabaseApiProxy;
 import org.neo4j.gds.core.utils.ProgressTimer;
 import org.neo4j.gds.logging.Log;
@@ -293,29 +292,18 @@ public final class GdsParallelBatchImporter {
         }
         return false;
     }
-    @ValueClass
-    public interface Config {
-        String databaseName();
 
-        int writeConcurrency();
-
-        int batchSize();
-
-        RelationshipType defaultRelationshipType();
-
-        boolean enableDebugLog();
-
-        String databaseFormat();
-
-        boolean useBadCollector();
-
-        boolean highIO();
-
-        boolean force();
-
-        static ImmutableConfig.Builder builder() {
-            return ImmutableConfig.builder();
-        }
+    public record Config(
+        String databaseName,
+        int writeConcurrency,
+        int batchSize,
+        RelationshipType defaultRelationshipType,
+        boolean enableDebugLog,
+        String databaseFormat,
+        boolean useBadCollector,
+        boolean highIO,
+        boolean force
+    ) {
 
         static org.neo4j.batchimport.api.Configuration toBatchImporterConfig(Config config) {
             return new org.neo4j.batchimport.api.Configuration() {
