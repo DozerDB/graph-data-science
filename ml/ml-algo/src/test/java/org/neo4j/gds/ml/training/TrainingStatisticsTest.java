@@ -68,12 +68,12 @@ class TrainingStatisticsTest {
             new TestTrainerConfig("lower average rmse"),
             Map.of(),
             Map.of(
-                ROOT_MEAN_SQUARED_ERROR, EvaluationScores.of(
+                ROOT_MEAN_SQUARED_ERROR, new EvaluationScores(
                     0.2,
                     0.2,
                     0.2
                 ),
-                AUCPR, EvaluationScores.of(
+                AUCPR, new EvaluationScores(
                     0.0,
                     1000,
                     1000
@@ -84,12 +84,12 @@ class TrainingStatisticsTest {
             new TestTrainerConfig("higher average aucpr"),
             Map.of(),
             Map.of(
-                ROOT_MEAN_SQUARED_ERROR, EvaluationScores.of(
+                ROOT_MEAN_SQUARED_ERROR, new EvaluationScores(
                     0.3,
                     0.1,
                     0.1
                 ),
-                AUCPR, EvaluationScores.of(
+                AUCPR, new EvaluationScores(
                     0.4,
                     0.2,
                     0.2
@@ -109,7 +109,7 @@ class TrainingStatisticsTest {
             Map.of(),
             Map.of(
                 AUCPR,
-                EvaluationScores.of(
+                new EvaluationScores(
                     0.1,
                     1000,
                     1000
@@ -121,7 +121,7 @@ class TrainingStatisticsTest {
             Map.of(),
             Map.of(
                 AUCPR,
-                EvaluationScores.of(
+                new EvaluationScores(
                     0.2,
                     0.2,
                     0.2
@@ -133,7 +133,7 @@ class TrainingStatisticsTest {
             Map.of(),
             Map.of(
                 AUCPR,
-                EvaluationScores.of(
+                new EvaluationScores(
                     0.2,
                     0.2,
                     0.2
@@ -144,12 +144,12 @@ class TrainingStatisticsTest {
             new TestTrainerConfig("notprimarymetric"),
             Map.of(),
             Map.of(
-                AUCPR, EvaluationScores.of(
+                AUCPR, new EvaluationScores(
                     0.0,
                     0.0,
                     0.0
                 ),
-                F1_WEIGHTED, EvaluationScores.of(
+                F1_WEIGHTED, new EvaluationScores(
                     5000,
                     5000,
                     5000
@@ -166,17 +166,17 @@ class TrainingStatisticsTest {
         var trainingStatistics = new TrainingStatistics(List.of(AUCPR, F1_WEIGHTED, OUT_OF_BAG_ERROR));
 
         var candidate = new TestTrainerConfig("train");
-        EvaluationScores trainStats = EvaluationScores.of(
+        EvaluationScores trainStats = new EvaluationScores(
             0.1,
             0.1,
             0.1
         );
-        EvaluationScores validationStats = EvaluationScores.of(
+        EvaluationScores validationStats = new EvaluationScores(
             0.4,
             0.3,
             0.5
         );
-        EvaluationScores oobStats = EvaluationScores.of(
+        EvaluationScores oobStats = new EvaluationScores(
             0.5,
             0.4,
             0.9
@@ -242,13 +242,13 @@ class TrainingStatisticsTest {
 
         selectResult.addCandidateStats(ModelCandidateStats.of(
             firstCandidate,
-            Map.of(ACCURACY, EvaluationScores.of(0.33, 0.1, 0.6)),
-            Map.of(ACCURACY, EvaluationScores.of(0.4, 0.3, 0.5))
+            Map.of(ACCURACY, new EvaluationScores(0.33, 0.1, 0.6)),
+            Map.of(ACCURACY, new EvaluationScores(0.4, 0.3, 0.5))
         ));
         selectResult.addCandidateStats(ModelCandidateStats.of(
             secondCandidate,
-            Map.of(ACCURACY, EvaluationScores.of(0.2, 0.01, 0.7)),
-            Map.of(ACCURACY, EvaluationScores.of(0.8, 0.7, 0.9))
+            Map.of(ACCURACY, new EvaluationScores(0.2, 0.01, 0.7)),
+            Map.of(ACCURACY, new EvaluationScores(0.8, 0.7, 0.9))
         ));
 
         var expectedTrainAccuracyStats1 = Map.of("avg", 0.33, "min", 0.1, "max", 0.6);

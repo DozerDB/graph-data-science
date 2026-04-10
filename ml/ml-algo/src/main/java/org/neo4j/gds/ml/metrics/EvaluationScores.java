@@ -19,33 +19,22 @@
  */
 package org.neo4j.gds.ml.metrics;
 
-import org.immutables.value.Value;
-import org.neo4j.gds.annotation.ValueClass;
-
 import java.util.Map;
 
 /**
  * Statistics of the metric of the model candidate over (inner) folds
  */
-@ValueClass
-public interface EvaluationScores {
+public record EvaluationScores(
+    double avg,
+    double min,
+    double max
+) {
 
-    double avg();
-
-    double min();
-
-    double max();
-
-    @Value.Derived
-    default Map<String, Object> toMap() {
+    public Map<String, Object> toMap() {
         return Map.of(
             "avg", avg(),
             "min", min(),
             "max", max()
         );
-    }
-
-    static EvaluationScores of(double avg, double min, double max) {
-        return ImmutableEvaluationScores.of(avg, min, max);
     }
 }

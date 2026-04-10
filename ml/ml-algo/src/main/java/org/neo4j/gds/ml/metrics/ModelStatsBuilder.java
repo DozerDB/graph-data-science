@@ -48,7 +48,7 @@ public class ModelStatsBuilder {
     }
 
     public EvaluationScores build(Metric metric) {
-        return EvaluationScores.of(
+        return new EvaluationScores(
             sum.get(metric) / numberOfSplits,
             min.get(metric),
             max.get(metric)

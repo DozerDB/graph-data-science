@@ -22,6 +22,7 @@ package org.neo4j.gds.ml.pipeline.linkPipeline.train;
 import org.jetbrains.annotations.NotNull;
 import org.neo4j.gds.api.Graph;
 import org.neo4j.gds.mem.Estimate;
+import org.neo4j.gds.ml.metrics.EvaluationScores;
 import org.neo4j.gds.termination.TerminationFlag;
 import org.neo4j.gds.mem.MemoryEstimation;
 import org.neo4j.gds.mem.MemoryEstimations;
@@ -34,7 +35,6 @@ import org.neo4j.gds.core.utils.progress.tasks.Tasks;
 import org.neo4j.gds.ml.core.ReadOnlyHugeLongIdentityArray;
 import org.neo4j.gds.ml.core.batch.BatchQueue;
 import org.neo4j.gds.ml.core.subgraph.LocalIdMap;
-import org.neo4j.gds.ml.metrics.ImmutableEvaluationScores;
 import org.neo4j.gds.ml.metrics.MetricConsumer;
 import org.neo4j.gds.ml.metrics.ModelSpecificMetricsHandler;
 import org.neo4j.gds.ml.metrics.ModelStatsBuilder;
@@ -326,7 +326,7 @@ public final class LinkPredictionTrain {
             .add("Outer train stats map", TrainingStatistics.memoryEstimationStatsMap(numberOfMetrics, 1, 1))
             .add("Test stats map", TrainingStatistics.memoryEstimationStatsMap(numberOfMetrics, 1, 1))
             .fixed("Best model stats", MemoryRange
-                .of(Estimate.sizeOfInstance(ImmutableEvaluationScores.class))
+                .of(Estimate.sizeOfInstance(EvaluationScores.class))
                 .times(2)
                 .add(Double.BYTES * 2)
                 .times(numberOfMetrics))

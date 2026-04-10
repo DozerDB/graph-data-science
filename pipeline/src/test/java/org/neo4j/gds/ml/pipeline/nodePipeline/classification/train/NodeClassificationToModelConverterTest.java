@@ -66,8 +66,8 @@ class NodeClassificationToModelConverterTest {
         trainingStatistics.addTestScore(metric, 0.799999);
         trainingStatistics.addOuterTrainScore(metric, 0.666666);
         trainingStatistics.addCandidateStats(ModelCandidateStats.of(modelCandidate,
-            Map.of(metric, EvaluationScores.of(0.89999, 0.79999, 0.99999)),
-            Map.of(metric, EvaluationScores.of(0.649999, 0.499999, 0.7999999))
+            Map.of(metric, new EvaluationScores(0.89999, 0.79999, 0.99999)),
+            Map.of(metric, new EvaluationScores(0.649999, 0.499999, 0.7999999))
         ));
         var ncResult = ImmutableNodeClassificationTrainResult.of(classifier, trainingStatistics, classIdMap, classCounts);
         var pipeline = new NodeClassificationTrainingPipeline();

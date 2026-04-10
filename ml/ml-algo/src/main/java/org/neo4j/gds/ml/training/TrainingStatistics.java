@@ -23,7 +23,6 @@ import org.jetbrains.annotations.TestOnly;
 import org.neo4j.gds.mem.MemoryEstimation;
 import org.neo4j.gds.mem.MemoryEstimations;
 import org.neo4j.gds.ml.metrics.EvaluationScores;
-import org.neo4j.gds.ml.metrics.ImmutableEvaluationScores;
 import org.neo4j.gds.ml.metrics.Metric;
 import org.neo4j.gds.ml.metrics.ModelCandidateStats;
 import org.neo4j.gds.ml.models.TrainerConfig;
@@ -153,7 +152,7 @@ public final class TrainingStatistics {
     public static MemoryEstimation memoryEstimationStatsMap(int numberOfMetricsSpecifications, int numberOfModelCandidates, int numberOfClasses) {
         var numberOfMetrics = numberOfMetricsSpecifications * numberOfClasses;
         var numberOfModelStats = numberOfMetrics * numberOfModelCandidates;
-        var sizeOfOneModelStatsInBytes = sizeOfInstance(ImmutableEvaluationScores.class);
+        var sizeOfOneModelStatsInBytes = sizeOfInstance(EvaluationScores.class);
         var sizeOfAllModelStatsInBytes = sizeOfOneModelStatsInBytes * numberOfModelStats;
         return MemoryEstimations.builder("StatsMap")
             .fixed("array list", sizeOfInstance(ArrayList.class))
