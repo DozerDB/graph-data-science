@@ -19,8 +19,6 @@
  */
 package org.neo4j.gds.ml.models.logisticregression;
 
-import org.immutables.value.Value;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.mem.MemoryEstimation;
 import org.neo4j.gds.mem.MemoryEstimations;
 import org.neo4j.gds.mem.MemoryRange;
@@ -33,24 +31,17 @@ import org.neo4j.gds.ml.models.Classifier;
 
 import java.io.Serializable;
 
-@ValueClass
-@SuppressWarnings("immutables:subtype")
-public interface LogisticRegressionData extends Classifier.ClassifierData, Serializable {
+public record LogisticRegressionData(int numberOfClasses, Weights<Matrix> weights, Weights<Vector> bias) implements Classifier.ClassifierData, Serializable {
 
-    Weights<Matrix> weights();
-    Weights<Vector> bias();
-
-    @Value.Derived
-    default TrainingMethod trainerMethod() {
+    public TrainingMethod trainerMethod() {
         return TrainingMethod.LogisticRegression;
     }
 
-    @Value.Derived
-    default int featureDimension() {
+    public int featureDimension() {
         return weights().dimension(Dimensions.COLUMNS_INDEX);
     }
 
-    static LogisticRegressionData standard(int featureCount, int numberOfClasses) {
+    public static LogisticRegressionData standard(int featureCount, int numberOfClasses) {
         return create(numberOfClasses, featureCount, false);
     }
 
@@ -61,20 +52,12 @@ public interface LogisticRegressionData extends Classifier.ClassifierData, Seria
 
     private static LogisticRegressionData create(int classCount, int featureCount, boolean skipLastClass) {
         var rows = skipLastClass ? classCount - 1 : classCount;
-
         var weights = Weights.ofMatrix(rows, featureCount);
-
         var bias = new Weights<>(new Vector(rows));
-
-        return ImmutableLogisticRegressionData
-            .builder()
-            .weights(weights)
-            .numberOfClasses(classCount)
-            .bias(bias)
-            .build();
+        return new LogisticRegressionData(classCount, weights, bias);
     }
 
-    static MemoryEstimation memoryEstimation(boolean isReduced, int numberOfClasses, MemoryRange featureDimension) {
+    public static MemoryEstimation memoryEstimation(boolean isReduced, int numberOfClasses, MemoryRange featureDimension) {
         int normalizedNumberOfClasses = isReduced ? (numberOfClasses - 1) : numberOfClasses;
         return MemoryEstimations.builder("Logistic regression model data")
             .fixed("weights", featureDimension.apply(featureDim -> Weights.sizeInBytes(
@@ -83,9 +66,5 @@ public interface LogisticRegressionData extends Classifier.ClassifierData, Seria
             )))
             .fixed("bias", Weights.sizeInBytes(normalizedNumberOfClasses, 1))
             .build();
-    }
-
-    static ImmutableLogisticRegressionData.Builder builder() {
-        return ImmutableLogisticRegressionData.builder();
     }
 }

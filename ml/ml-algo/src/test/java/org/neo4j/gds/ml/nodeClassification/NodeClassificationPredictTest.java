@@ -39,7 +39,6 @@ import org.neo4j.gds.ml.core.functions.Weights;
 import org.neo4j.gds.ml.core.tensor.Matrix;
 import org.neo4j.gds.ml.models.ClassifierFactory;
 import org.neo4j.gds.ml.models.FeaturesFactory;
-import org.neo4j.gds.ml.models.logisticregression.ImmutableLogisticRegressionData;
 import org.neo4j.gds.ml.models.logisticregression.LogisticRegressionClassifier;
 import org.neo4j.gds.ml.models.logisticregression.LogisticRegressionData;
 import org.neo4j.gds.termination.TerminationFlag;
@@ -86,21 +85,21 @@ class NodeClassificationPredictTest {
          * result
          */
         List<String> featureProperties = List.of("a", "b");
-        var modelData = ImmutableLogisticRegressionData.builder()
-            .weights(new Weights<>(new Matrix(new double[]{
+        var modelData = new LogisticRegressionData(
+            4,
+            new Weights<>(new Matrix(new double[]{
                 1.12730619, -0.84532386,
                 1.63908065, -0.08391665,
                 -1.07448415, 1.19160801,
                 -0.63303538, 0.08735695
-            }, 4, 2)))
-            .bias(Weights.ofVector(
+            }, 4, 2)),
+            Weights.ofVector(
                 0.93216654,
                 -1.46620738,
                 0.70054154,
                 -3.39978931
-            ))
-            .numberOfClasses(4)
-            .build();
+            )
+        );
 
         var result = new NodeClassificationPredict(
             LogisticRegressionClassifier.from(modelData),
@@ -148,13 +147,13 @@ class NodeClassificationPredictTest {
     @Test
     void singleClass() {
         List<String> featureProperties = List.of("a", "b");
-        var modelData = ImmutableLogisticRegressionData.builder()
-            .weights(new Weights<>(new Matrix(new double[]{
+        var modelData = new LogisticRegressionData(
+            1,
+            new Weights<>(new Matrix(new double[]{
                 1.12730619, -0.84532386
-            }, 1, 2)))
-            .bias(Weights.ofVector(0.93216654))
-            .numberOfClasses(1)
-            .build();
+            }, 1, 2)),
+            Weights.ofVector(0.93216654)
+        );
 
         var result = new NodeClassificationPredict(
             LogisticRegressionClassifier.from(modelData),
@@ -202,15 +201,15 @@ class NodeClassificationPredictTest {
     @Test
     void shouldLogProgress() {
         var featureProperties = List.of("a", "b");
-        LogisticRegressionData modelData = ImmutableLogisticRegressionData.builder()
-            .weights(new Weights<>(new Matrix(new double[]{
+        LogisticRegressionData modelData = new LogisticRegressionData(
+            1,
+            new Weights<>(new Matrix(new double[]{
                 1.12730619, -0.84532386
-            }, 1, 2)))
-            .bias(Weights.ofVector(
+            }, 1, 2)),
+            Weights.ofVector(
                 0.93216654
-            ))
-            .numberOfClasses(1)
-            .build();
+            )
+        );
 
         var log = new GdsTestLog();
         var concurrency = new Concurrency(1);

@@ -29,8 +29,8 @@ import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
 import org.neo4j.gds.ml.core.functions.Weights;
 import org.neo4j.gds.ml.core.tensor.Matrix;
-import org.neo4j.gds.ml.models.logisticregression.ImmutableLogisticRegressionData;
 import org.neo4j.gds.ml.models.logisticregression.LogisticRegressionClassifier;
+import org.neo4j.gds.ml.models.logisticregression.LogisticRegressionData;
 import org.neo4j.gds.ml.pipeline.linkPipeline.LinkFeatureExtractor;
 import org.neo4j.gds.ml.pipeline.linkPipeline.LinkFeatureStep;
 import org.neo4j.gds.ml.pipeline.linkPipeline.linkfunctions.CosineFeatureStep;
@@ -68,7 +68,7 @@ class LinkPredictionSimilarityComputerTest {
             new HadamardFeatureStep(List.of("prop1"))
         );
         var linkFeatureExtractor = LinkFeatureExtractor.of(graph, linkFeatureSteps);
-        var modelData = ImmutableLogisticRegressionData.of(
+        var modelData = new LogisticRegressionData(
             2,
             new Weights<>(new Matrix(
                 new double[]{-1, -0.0001},

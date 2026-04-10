@@ -31,7 +31,6 @@ import org.neo4j.gds.ml.core.tensor.Vector;
 import org.neo4j.gds.ml.metrics.ModelCandidateStats;
 import org.neo4j.gds.ml.metrics.classification.ClassificationMetricSpecification;
 import org.neo4j.gds.ml.models.Classifier;
-import org.neo4j.gds.ml.models.logisticregression.ImmutableLogisticRegressionData;
 import org.neo4j.gds.ml.models.logisticregression.LogisticRegressionData;
 import org.neo4j.gds.ml.models.logisticregression.LogisticRegressionTrainConfig;
 import org.neo4j.gds.ml.pipeline.NodePropertyStepFactory;
@@ -131,17 +130,17 @@ final class NodeClassificationPipelinePredictProcTestUtil {
     }
 
     static LogisticRegressionData createClassifierData(double[] weights, double[] bias) {
-        return ImmutableLogisticRegressionData.builder()
-            .weights(new Weights<>(
+        return new LogisticRegressionData(
+            2,
+            new Weights<>(
                 new Matrix(
                     weights,
                     2,
                     weights.length / 2
-                ))
-            )
-            .bias(new Weights<>(new Vector(bias)))
-            .numberOfClasses(2)
-            .build();
+                )
+            ),
+            new Weights<>(new Vector(bias))
+        );
     }
 
     static Stream<Arguments> graphNameOrConfigurations() {

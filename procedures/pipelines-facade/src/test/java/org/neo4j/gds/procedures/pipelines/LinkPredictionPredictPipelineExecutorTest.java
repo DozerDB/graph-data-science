@@ -49,8 +49,8 @@ import org.neo4j.gds.ml.core.tensor.Matrix;
 import org.neo4j.gds.ml.decisiontree.DecisionTreePredictor;
 import org.neo4j.gds.ml.decisiontree.TreeNode;
 import org.neo4j.gds.ml.metrics.ModelCandidateStats;
-import org.neo4j.gds.ml.models.logisticregression.ImmutableLogisticRegressionData;
 import org.neo4j.gds.ml.models.logisticregression.LogisticRegressionClassifier;
+import org.neo4j.gds.ml.models.logisticregression.LogisticRegressionData;
 import org.neo4j.gds.ml.models.logisticregression.LogisticRegressionTrainConfig;
 import org.neo4j.gds.ml.models.randomforest.ImmutableRandomForestClassifierData;
 import org.neo4j.gds.ml.models.randomforest.RandomForestClassifier;
@@ -135,7 +135,7 @@ class LinkPredictionPredictPipelineExecutorTest {
             Stream.of(new L2FeatureStep(List.of("a", "b", "c")))
         );
 
-        var modelData = ImmutableLogisticRegressionData.of(
+        var modelData = new LogisticRegressionData(
             2,
             new Weights<>(
                 new Matrix(
@@ -245,7 +245,7 @@ class LinkPredictionPredictPipelineExecutorTest {
             Stream.of(new L2FeatureStep(List.of("a", "b", "c", "degree")))
         );
 
-        var modelData = ImmutableLogisticRegressionData.of(
+        var modelData = new LogisticRegressionData(
             2,
             new Weights<>(
                 new Matrix(
@@ -303,7 +303,7 @@ class LinkPredictionPredictPipelineExecutorTest {
             Stream.of(new L2FeatureStep(List.of("a", "b", "c")))
         );
 
-        var modelData = ImmutableLogisticRegressionData.of(
+        var modelData = new LogisticRegressionData(
             2,
             new Weights<>(
                 new Matrix(
@@ -350,7 +350,7 @@ class LinkPredictionPredictPipelineExecutorTest {
             Stream.of(new L2FeatureStep(List.of("a", "b", "c", "degree")))
         );
 
-        var modelData = ImmutableLogisticRegressionData.of(
+        var modelData = new LogisticRegressionData(
             2,
             new Weights<>(
                 new Matrix(
@@ -436,7 +436,7 @@ class LinkPredictionPredictPipelineExecutorTest {
     @Test
     void shouldEstimateMemoryWithLogisticRegression() {
         var pipeline = LinkPredictionPredictPipeline.EMPTY;
-        var modelData = ImmutableLogisticRegressionData.of(
+        var modelData = new LogisticRegressionData(
             2,
             new Weights<>(
                 new Matrix(
@@ -503,7 +503,7 @@ class LinkPredictionPredictPipelineExecutorTest {
             5
         ));
 
-        var modelData = ImmutableLogisticRegressionData.of(
+        var modelData = new LogisticRegressionData(
             2,
             tooManyFeatureWeights,
             Weights.ofVector(0.0)

@@ -42,7 +42,7 @@ import org.neo4j.gds.extension.Neo4jModelCatalogExtension;
 import org.neo4j.gds.ml.core.functions.Weights;
 import org.neo4j.gds.ml.core.tensor.Matrix;
 import org.neo4j.gds.ml.metrics.ModelCandidateStats;
-import org.neo4j.gds.ml.models.logisticregression.ImmutableLogisticRegressionData;
+import org.neo4j.gds.ml.models.logisticregression.LogisticRegressionData;
 import org.neo4j.gds.ml.models.logisticregression.LogisticRegressionTrainConfig;
 import org.neo4j.gds.ml.pipeline.linkPipeline.LinkPredictionModelInfo;
 import org.neo4j.gds.ml.pipeline.linkPipeline.LinkPredictionPredictPipeline;
@@ -222,7 +222,7 @@ class LinkPredictionPipelineMutateProcTest extends BaseProcTest {
         var weights = new double[]{2.0, 1.0, -3.0};
         var pipeline = LinkPredictionPredictPipeline.from(Stream.of(), Stream.of(new L2FeatureStep(List.of("a", "b", "c"))));
 
-        var modelData = ImmutableLogisticRegressionData.of(
+        var modelData = new LogisticRegressionData(
             2,
             new Weights<>(new Matrix(
                 weights,

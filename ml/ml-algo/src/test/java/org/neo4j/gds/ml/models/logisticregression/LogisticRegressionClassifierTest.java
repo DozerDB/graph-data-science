@@ -65,7 +65,7 @@ class LogisticRegressionClassifierTest {
     @MethodSource("inputs")
     @ParameterizedTest
     void computesProbability(double[] features, double expectedResult) {
-        var modelData = ImmutableLogisticRegressionData.of(
+        var modelData = new LogisticRegressionData(
             2,
             new Weights<>(new Matrix(new double[]{-0.5, -0.6, -0.7, -0.8}, 1, 4)),
             Weights.ofVector(0)
@@ -81,7 +81,7 @@ class LogisticRegressionClassifierTest {
     @Test
     void batchingGivesEquivalentResults() {
         var featureCount = 4;
-        var modelData = ImmutableLogisticRegressionData.of(
+        var modelData = new LogisticRegressionData(
             2,
             new Weights<>(new Matrix(new double[]{
                 -0.5, -0.6, -0.7, -0.8,

@@ -36,8 +36,8 @@ import org.neo4j.gds.extension.Inject;
 import org.neo4j.gds.ml.core.functions.Weights;
 import org.neo4j.gds.ml.core.tensor.Matrix;
 import org.neo4j.gds.ml.linkmodels.PredictedLink;
-import org.neo4j.gds.ml.models.logisticregression.ImmutableLogisticRegressionData;
 import org.neo4j.gds.ml.models.logisticregression.LogisticRegressionClassifier;
+import org.neo4j.gds.ml.models.logisticregression.LogisticRegressionData;
 import org.neo4j.gds.ml.pipeline.linkPipeline.LinkFeatureExtractor;
 import org.neo4j.gds.ml.pipeline.linkPipeline.LinkPredictionTrainingPipeline;
 import org.neo4j.gds.ml.pipeline.linkPipeline.linkfunctions.L2FeatureStep;
@@ -86,7 +86,7 @@ class ApproximateLinkPredictionTest {
     @ParameterizedTest
     @CsvSource(value = {"1, 54, 3", "2, 90, 2"})
     void shouldPredictWithTopK(int topK, long expectedLinksConsidered, int ranIterations) {
-        var modelData = ImmutableLogisticRegressionData.of(
+        var modelData = new LogisticRegressionData(
             2,
             new Weights<>(
                 new Matrix(
@@ -157,7 +157,7 @@ class ApproximateLinkPredictionTest {
     void shouldPredictTwice() {
         double[] weights = {2.0, 1.0, -3.0};
 
-        var modelData = ImmutableLogisticRegressionData.of(
+        var modelData = new LogisticRegressionData(
             2,
             new Weights<>(new Matrix(
                 weights,
@@ -216,7 +216,7 @@ class ApproximateLinkPredictionTest {
         var pipeline = new LinkPredictionTrainingPipeline();
         pipeline.addFeatureStep(new L2FeatureStep(List.of("a", "b", "c")));
 
-        var modelData = ImmutableLogisticRegressionData.of(
+        var modelData = new LogisticRegressionData(
             2,
             new Weights<>(
                 new Matrix(
@@ -265,7 +265,7 @@ class ApproximateLinkPredictionTest {
         var pipeline = new LinkPredictionTrainingPipeline();
         pipeline.addFeatureStep(new L2FeatureStep(List.of("a", "b", "c")));
 
-        var modelData = ImmutableLogisticRegressionData.of(
+        var modelData = new LogisticRegressionData(
             2,
             new Weights<>(
                 new Matrix(
