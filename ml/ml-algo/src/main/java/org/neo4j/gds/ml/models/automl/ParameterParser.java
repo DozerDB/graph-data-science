@@ -19,7 +19,6 @@
  */
 package org.neo4j.gds.ml.models.automl;
 
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.ml.models.automl.hyperparameter.ConcreteParameter;
 import org.neo4j.gds.ml.models.automl.hyperparameter.DoubleParameter;
 import org.neo4j.gds.ml.models.automl.hyperparameter.DoubleRangeParameter;
@@ -79,10 +78,10 @@ final class ParameterParser {
                 var max = (Number) maxObject;
                 if (isFloatOrDouble(min) || isFloatOrDouble(max)) {
                     var logScale = LOG_SCALE_PARAMETERS.contains(key);
-                    doubleRanges.put(key, DoubleRangeParameter.of(min.doubleValue(), max.doubleValue(), logScale));
+                    doubleRanges.put(key, new DoubleRangeParameter(min.doubleValue(), max.doubleValue(), logScale));
                     return;
                 }
-                integerRanges.put(key, IntegerRangeParameter.of(min.intValue(), max.intValue()));
+                integerRanges.put(key, new IntegerRangeParameter(min.intValue(), max.intValue()));
             }
         });
         if (!incorrectParameters.isEmpty()) {
@@ -104,7 +103,7 @@ final class ParameterParser {
                 incorrectMaps.entrySet().stream().map(s -> "`" + s + "`").collect(Collectors.joining(", "))
             ));
         }
-        return ImmutableRangeParameters.of(
+        return new RangeParameters(
             Map.copyOf(doubleRanges),
             Map.copyOf(integerRanges)
         );
@@ -146,16 +145,16 @@ final class ParameterParser {
         }
 
         if (correctParameterType == String.class) {
-            return StringParameter.of((String) value);
+            return new StringParameter((String) value);
         }
 
         if (correctParameterType == List.class) {
             if (key.equals("hiddenLayerSizes")) {
                 var intValues = ((List<Number>) value).stream().map(Number::intValue).collect(Collectors.toList());
-                return ListParameter.of(intValues);
+                return new ListParameter(intValues);
             } else if (key.equals("classWeights")) {
                 var doubleValues = ((List<Number>) value).stream().map(Number::doubleValue).collect(Collectors.toList());
-                return ListParameter.of(doubleValues);
+                return new ListParameter(doubleValues);
             }
         }
 
@@ -167,13 +166,13 @@ final class ParameterParser {
 
     private static ConcreteParameter<?> parseConcreteNumericParameter(String key, Object value) {
         if (value instanceof Integer) {
-            return IntegerParameter.of((Integer) value);
+            return new IntegerParameter((Integer) value);
         }
         if (value instanceof Long) {
-            return IntegerParameter.of(Math.toIntExact((Long) value));
+            return new IntegerParameter(Math.toIntExact((Long) value));
         }
         if (value instanceof Double) {
-            return DoubleParameter.of((Double) value);
+            return new DoubleParameter((Double) value);
         }
         throw new IllegalArgumentException(formatWithLocale(
             "Parameter `%s` must be numeric or a map of the form {range: [min, max]}.",
@@ -181,10 +180,8 @@ final class ParameterParser {
         ));
     }
 
-    @ValueClass
-    interface RangeParameters {
-        Map<String, DoubleRangeParameter> doubleRanges();
-
-        Map<String, IntegerRangeParameter> integerRanges();
-    }
+    record RangeParameters(
+        Map<String, DoubleRangeParameter> doubleRanges,
+        Map<String, IntegerRangeParameter> integerRanges
+    ) {}
 }

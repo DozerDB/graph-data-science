@@ -19,14 +19,6 @@
  */
 package org.neo4j.gds.ml.models.automl.hyperparameter;
 
-import org.neo4j.gds.annotation.ValueClass;
-
 import java.util.List;
 
-@ValueClass
-@SuppressWarnings("immutables:from")
-public interface ListParameter extends ConcreteParameter<List<Integer>> {
-    static ListParameter of(List value) {
-        return ImmutableListParameter.of(value);
-    }
-}
+public record ListParameter(List value) implements ConcreteParameter<List<Integer>> {}

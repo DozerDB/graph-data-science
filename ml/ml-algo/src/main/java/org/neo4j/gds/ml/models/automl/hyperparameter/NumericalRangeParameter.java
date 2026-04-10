@@ -19,20 +19,14 @@
  */
 package org.neo4j.gds.ml.models.automl.hyperparameter;
 
-import org.immutables.value.Value;
-import org.neo4j.gds.annotation.ValueClass;
-
 import java.util.List;
 import java.util.Map;
 
-@ValueClass
 public interface NumericalRangeParameter<T extends Number> {
     T min();
     T max();
 
-    @Value.Derived
     default Map<String, Object> toMap() {
         return Map.of("range", List.of(min(), max()));
-
     }
 }

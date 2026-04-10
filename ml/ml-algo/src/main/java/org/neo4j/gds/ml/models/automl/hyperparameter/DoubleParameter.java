@@ -19,13 +19,4 @@
  */
 package org.neo4j.gds.ml.models.automl.hyperparameter;
 
-import org.neo4j.gds.annotation.ValueClass;
-
-@ValueClass
-@SuppressWarnings("immutables:from")
-public interface DoubleParameter extends ConcreteParameter<Double> {
-    static DoubleParameter of(double value) {
-        return ImmutableDoubleParameter.of(value);
-    }
-
-}
+public record DoubleParameter(Double value) implements ConcreteParameter<Double> {}

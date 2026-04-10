@@ -37,7 +37,7 @@ class ParameterParserTest {
         var rangeParameters = ParameterParser.parseRangeParameters(userInput);
         assertThat(rangeParameters.doubleRanges().values())
             .usingRecursiveFieldByFieldElementComparator()
-            .containsExactlyInAnyOrder(DoubleRangeParameter.of(1.0, 2.0));
+            .containsExactlyInAnyOrder(new DoubleRangeParameter(1.0, 2.0));
     }
 
     @Test
@@ -46,7 +46,7 @@ class ParameterParserTest {
         var rangeParameters = ParameterParser.parseRangeParameters(userInput);
         assertThat(rangeParameters.integerRanges().values())
             .usingRecursiveFieldByFieldElementComparator()
-            .containsExactlyInAnyOrder(IntegerRangeParameter.of(1, 2));
+            .containsExactlyInAnyOrder(new IntegerRangeParameter(1, 2));
     }
 
     @Test
@@ -55,9 +55,9 @@ class ParameterParserTest {
         var rangeParameters = ParameterParser.parseRangeParameters(userInput);
         assertThat(rangeParameters.doubleRanges().values())
             .usingRecursiveFieldByFieldElementComparator()
-            .containsExactlyInAnyOrder(DoubleRangeParameter.of(1.0, 2.0));
+            .containsExactlyInAnyOrder(new DoubleRangeParameter(1.0, 2.0));
         assertThat(ParameterParser.parseConcreteParameters(userInput).values())
             .usingRecursiveFieldByFieldElementComparator()
-            .containsExactlyInAnyOrder(IntegerParameter.of(5));
+            .containsExactlyInAnyOrder(new IntegerParameter(5));
     }
 }

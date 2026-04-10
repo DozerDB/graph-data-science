@@ -19,27 +19,9 @@
  */
 package org.neo4j.gds.ml.models.automl.hyperparameter;
 
-import org.immutables.value.Value;
-import org.neo4j.gds.annotation.ValueClass;
-
-import java.util.List;
-import java.util.Map;
-
-@ValueClass
-@SuppressWarnings({"immutables:subtype", "immutables:from"})
-public interface DoubleRangeParameter extends NumericalRangeParameter<Double> {
-    boolean logScale();
-
-    static DoubleRangeParameter of(double min, double max) {
-        return of(min, max, false);
-    }
-
-    static DoubleRangeParameter of(double min, double max, boolean logScale) {
-        return ImmutableDoubleRangeParameter.of(min, max, logScale);
-    }
-
-    @Value.Derived
-    default Map<String, Object> toMap() {
-        return Map.of("range", List.of(min(), max()));
+public record DoubleRangeParameter(Double min, Double max, boolean logScale)
+    implements NumericalRangeParameter<Double> {
+    public DoubleRangeParameter(Double min, Double max) {
+        this(min, max, false);
     }
 }

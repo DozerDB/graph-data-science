@@ -19,13 +19,4 @@
  */
 package org.neo4j.gds.ml.models.automl.hyperparameter;
 
-import org.neo4j.gds.annotation.ValueClass;
-
-@ValueClass
-@SuppressWarnings("immutables:from")
-public interface StringParameter extends ConcreteParameter<String> {
-    static StringParameter of(String value) {
-        return ImmutableStringParameter.of(value);
-    }
-
-}
+public record StringParameter(String value) implements ConcreteParameter<String> {}
