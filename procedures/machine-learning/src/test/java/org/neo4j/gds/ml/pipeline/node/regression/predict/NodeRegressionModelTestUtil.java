@@ -26,7 +26,7 @@ import org.neo4j.gds.ml.core.tensor.Matrix;
 import org.neo4j.gds.ml.core.tensor.Scalar;
 import org.neo4j.gds.ml.metrics.ModelCandidateStats;
 import org.neo4j.gds.ml.models.Regressor;
-import org.neo4j.gds.ml.models.linearregression.ImmutableLinearRegressionData;
+import org.neo4j.gds.ml.models.linearregression.LinearRegressionData;
 import org.neo4j.gds.ml.models.linearregression.LinearRegressionTrainConfig;
 import org.neo4j.gds.ml.models.linearregression.LinearRegressor;
 import org.neo4j.gds.ml.pipeline.nodePipeline.NodeFeatureStep;
@@ -78,16 +78,15 @@ final class NodeRegressionModelTestUtil {
     }
 
     static LinearRegressor createModelData(double[] weights, double bias) {
-        return new LinearRegressor(ImmutableLinearRegressionData.builder()
-            .weights(new Weights<>(
+        return new LinearRegressor(new LinearRegressionData(
+            new Weights<>(
                 new Matrix(
                     weights,
                     1,
                     weights.length
-                ))
-            )
-            .bias(new Weights<>(new Scalar(bias)))
-            .build()
-        );
+                )
+            ),
+            new Weights<>(new Scalar(bias))
+        ));
     }
 }

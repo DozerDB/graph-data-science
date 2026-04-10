@@ -19,34 +19,28 @@
  */
 package org.neo4j.gds.ml.models.linearregression;
 
-import org.immutables.value.Value;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.ml.api.TrainingMethod;
 import org.neo4j.gds.ml.core.functions.Weights;
 import org.neo4j.gds.ml.core.tensor.Matrix;
 import org.neo4j.gds.ml.core.tensor.Scalar;
 import org.neo4j.gds.ml.models.Regressor;
 
-@ValueClass
-public interface LinearRegressionData extends Regressor.RegressorData {
-    Weights<Matrix> weights();
+public record LinearRegressionData(Weights<Matrix> weights, Weights<Scalar> bias) implements Regressor.RegressorData {
 
-    Weights<Scalar> bias();
-
-    @Value.Derived
-    default TrainingMethod trainerMethod() {
+    @Override
+    public TrainingMethod trainerMethod() {
         return TrainingMethod.LinearRegression;
     }
 
-    @Value.Derived
-    default int featureDimension() {
+    @Override
+    public int featureDimension() {
         return weights().data().cols();
     }
 
-    static LinearRegressionData of(int featureDimension) {
-        return ImmutableLinearRegressionData.builder()
-            .weights(Weights.ofMatrix(1, featureDimension))
-            .bias(Weights.ofScalar(0D))
-            .build();
+    public static LinearRegressionData of(int featureDimension) {
+        return new LinearRegressionData(
+            Weights.ofMatrix(1, featureDimension),
+            Weights.ofScalar(0D)
+        );
     }
 }

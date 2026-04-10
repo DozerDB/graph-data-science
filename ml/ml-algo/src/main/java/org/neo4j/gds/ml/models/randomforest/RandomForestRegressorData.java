@@ -20,8 +20,6 @@
 package org.neo4j.gds.ml.models.randomforest;
 
 import com.carrotsearch.hppc.ObjectArrayList;
-import org.immutables.value.Value;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.mem.MemoryEstimation;
 import org.neo4j.gds.mem.MemoryEstimations;
 import org.neo4j.gds.mem.MemoryRange;
@@ -36,14 +34,12 @@ import java.util.function.LongUnaryOperator;
 
 import static org.neo4j.gds.mem.Estimate.sizeOfInstance;
 
-@ValueClass
-@SuppressWarnings("immutables:subtype")
-public interface RandomForestRegressorData extends Regressor.RegressorData {
+public record RandomForestRegressorData(
+    int featureDimension,
+    List<DecisionTreePredictor<Double>> decisionTrees
+) implements Regressor.RegressorData {
 
-    List<DecisionTreePredictor<Double>> decisionTrees();
-
-    @Value.Derived
-    default TrainingMethod trainerMethod() {
+    public TrainingMethod trainerMethod() {
         return TrainingMethod.RandomForestRegression;
     }
 

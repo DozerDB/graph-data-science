@@ -35,7 +35,7 @@ public class RandomForestRegressor implements Regressor {
         List<DecisionTreePredictor<Double>> decisionTrees,
         int featureDimension
     ) {
-        this(ImmutableRandomForestRegressorData.of(featureDimension, decisionTrees));
+        this(new RandomForestRegressorData(featureDimension, decisionTrees));
     }
 
     public RandomForestRegressor(RandomForestRegressorData data) {
