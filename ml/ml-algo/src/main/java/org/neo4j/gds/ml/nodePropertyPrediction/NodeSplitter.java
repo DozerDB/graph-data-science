@@ -19,7 +19,6 @@
  */
 package org.neo4j.gds.ml.nodePropertyPrediction;
 
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.collections.ha.HugeLongArray;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.utils.paged.HugeMergeSort;
@@ -75,12 +74,11 @@ public final class NodeSplitter {
             progressTracker
         );
 
-        return ImmutableNodeSplits.of(ReadOnlyHugeLongArray.of(allTrainingExamples), outerSplit);
+        return new NodeSplits(ReadOnlyHugeLongArray.of(allTrainingExamples), outerSplit);
     }
 
-    @ValueClass
-    public interface NodeSplits {
-        ReadOnlyHugeLongArray allTrainingExamples();
-        TrainingExamplesSplit outerSplit();
-    }
+    public record NodeSplits(
+        ReadOnlyHugeLongArray allTrainingExamples,
+        TrainingExamplesSplit outerSplit
+    ) {}
 }

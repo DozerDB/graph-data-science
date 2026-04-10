@@ -23,7 +23,6 @@ import com.carrotsearch.hppc.predicates.LongLongPredicate;
 import com.carrotsearch.hppc.predicates.LongPredicate;
 import org.apache.commons.lang3.mutable.MutableLong;
 import org.neo4j.gds.RelationshipType;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.api.DefaultValue;
 import org.neo4j.gds.api.Graph;
 import org.neo4j.gds.api.IdMap;
@@ -123,7 +122,7 @@ public abstract class EdgeSplitter {
             return true;
         });
 
-        return SplitResult.of(
+        return new SplitResult(
             remainingRelsBuilder,
             remainingRelCount.longValue(),
             selectedRelsBuilder,
@@ -175,21 +174,10 @@ public abstract class EdgeSplitter {
             .build();
     }
 
-    @ValueClass
-    public interface SplitResult {
-        RelationshipsBuilder remainingRels();
-
-        long remainingRelCount();
-        RelationshipsBuilder selectedRels();
-        long selectedRelCount();
-
-        static EdgeSplitter.SplitResult of(
-            RelationshipsBuilder remainingRels,
-            long remainingRelCount,
-            RelationshipsBuilder selectedRels,
-            long selectedRelCount
-        ) {
-            return ImmutableSplitResult.of(remainingRels, remainingRelCount, selectedRels, selectedRelCount);
-        }
-    }
+    public record SplitResult(
+        RelationshipsBuilder remainingRels,
+        long remainingRelCount,
+        RelationshipsBuilder selectedRels,
+        long selectedRelCount
+    ) {}
 }

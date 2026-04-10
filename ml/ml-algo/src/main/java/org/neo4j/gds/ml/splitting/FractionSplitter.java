@@ -44,7 +44,7 @@ public class FractionSplitter {
         long testSize = ids.size() - trainSize;
         var train = initHLA(trainSize, ids::get);
         var test = initHLA(testSize, i -> ids.get(i + trainSize));
-        return TrainingExamplesSplit.of(train, test);
+        return new TrainingExamplesSplit(train, test);
     }
 
     private ReadOnlyHugeLongArray initHLA(long size, Function<Long, Long> transform) {
