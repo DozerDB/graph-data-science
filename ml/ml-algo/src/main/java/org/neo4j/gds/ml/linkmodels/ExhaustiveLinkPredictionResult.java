@@ -58,7 +58,7 @@ public class ExhaustiveLinkPredictionResult implements LinkPredictionResult {
                 if (!elements1Iter.hasNext()) {
                     return done();
                 }
-                return PredictedLink.of(
+                return new PredictedLink(
                     elements1Iter.nextLong(),
                     elements2Iter.nextLong(),
                     prioritiesIter.nextDouble()

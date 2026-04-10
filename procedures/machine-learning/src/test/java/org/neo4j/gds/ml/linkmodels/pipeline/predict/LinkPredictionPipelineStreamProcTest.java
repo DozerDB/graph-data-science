@@ -232,7 +232,7 @@ class LinkPredictionPipelineStreamProcTest extends BaseProcTest {
             LinkPredictionModelInfo.of(
                 Map.of(),
                 Map.of(),
-                ModelCandidateStats.of(LogisticRegressionTrainConfig.DEFAULT, Map.of(), Map.of()),
+                new ModelCandidateStats(LogisticRegressionTrainConfig.DEFAULT, Map.of(), Map.of()),
                 pipeline
             )
         ));

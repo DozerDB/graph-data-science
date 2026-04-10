@@ -103,7 +103,7 @@ class NodeRegressionToModelConverterTest {
 
         trainStats.addTestScore(metric, 0.799999);
         trainStats.addOuterTrainScore(metric, 0.666666);
-        trainStats.addCandidateStats(ModelCandidateStats.of(modelCandidate,
+        trainStats.addCandidateStats(new ModelCandidateStats(modelCandidate,
             Map.of(metric, new EvaluationScores(0.89999, 0.79999, 0.99999)),
             Map.of(metric, new EvaluationScores(0.649999, 0.499999, 0.7999999))
         ));

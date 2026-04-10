@@ -499,7 +499,7 @@ class NodeClassificationPredictPipelineExecutorTest extends BaseProcTest {
             NodeClassificationPipelineModelInfo.of(
                 Map.of(),
                 Map.of(),
-                ModelCandidateStats.of(RandomForestClassifierTrainerConfig.DEFAULT, Map.of(), Map.of()),
+                new ModelCandidateStats(RandomForestClassifierTrainerConfig.DEFAULT, Map.of(), Map.of()),
                 NodePropertyPredictPipeline.EMPTY,
                 List.of(0L)
             )

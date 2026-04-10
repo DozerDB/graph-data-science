@@ -68,7 +68,7 @@ final class NodeRegressionModelTestUtil {
                    Stream.of(),
                    featureProperties.map(NodeFeatureStep::new))
                )
-               .bestCandidate(ModelCandidateStats.of(
+               .bestCandidate(new ModelCandidateStats(
                    LinearRegressionTrainConfig.DEFAULT,
                    Map.of(),
                    Map.of()

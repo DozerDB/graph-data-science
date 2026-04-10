@@ -19,17 +19,4 @@
  */
 package org.neo4j.gds.ml.linkmodels;
 
-import org.neo4j.gds.annotation.ValueClass;
-
-@ValueClass
-public interface PredictedLink {
-    static PredictedLink of(long sourceId, long targetId, double probability) {
-        return ImmutablePredictedLink.of(sourceId, targetId, probability);
-    }
-
-    long sourceId();
-
-    long targetId();
-
-    double probability();
-}
+public record PredictedLink(long sourceId, long targetId, double probability) {}

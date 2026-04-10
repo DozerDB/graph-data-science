@@ -135,16 +135,16 @@ class ApproximateLinkPredictionTest {
         assertThat(predictedLinks.size()).isLessThanOrEqualTo((int) (topK * graphN.nodeCount()));
 
         var expectedLinks = List.of(
-            PredictedLink.of(0, 4, 0.497),
-            PredictedLink.of(0, 1, 0.115),
-            PredictedLink.of(1, 4, 0.118),
-            PredictedLink.of(1, 0, 0.115),
-            PredictedLink.of(2, 1, 0.095),
-            PredictedLink.of(2, 4, 2.3398956314335528E-4),
-            PredictedLink.of(3, 4, 0.003),
-            PredictedLink.of(3, 0, 0.0024726231566347765),
-            PredictedLink.of(4, 0, 0.497),
-            PredictedLink.of(4, 1, 0.118)
+            new PredictedLink(0, 4, 0.497),
+            new PredictedLink(0, 1, 0.115),
+            new PredictedLink(1, 4, 0.118),
+            new PredictedLink(1, 0, 0.115),
+            new PredictedLink(2, 1, 0.095),
+            new PredictedLink(2, 4, 2.3398956314335528E-4),
+            new PredictedLink(3, 4, 0.003),
+            new PredictedLink(3, 0, 0.0024726231566347765),
+            new PredictedLink(4, 0, 0.497),
+            new PredictedLink(4, 1, 0.118)
         );
 
         assertThat(predictedLinks)
@@ -168,11 +168,11 @@ class ApproximateLinkPredictionTest {
         );
 
         var expectedLinks = List.of(
-            PredictedLink.of(0, 4, 0.497),
-            PredictedLink.of(1, 4, 0.118),
-            PredictedLink.of(2, 1, 0.095),
-            PredictedLink.of(3, 4, 0.003),
-            PredictedLink.of(4, 0, 0.4975)
+            new PredictedLink(0, 4, 0.497),
+            new PredictedLink(1, 4, 0.118),
+            new PredictedLink(2, 1, 0.095),
+            new PredictedLink(3, 4, 0.003),
+            new PredictedLink(4, 0, 0.4975)
         );
 
         for (int i = 0; i < 2; i++) {

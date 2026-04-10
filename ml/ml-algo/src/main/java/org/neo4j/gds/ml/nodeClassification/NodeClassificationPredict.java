@@ -20,7 +20,6 @@
 package org.neo4j.gds.ml.nodeClassification;
 
 import org.jetbrains.annotations.Nullable;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.collections.ha.HugeLongArray;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.termination.TerminationFlag;
@@ -141,7 +140,7 @@ public class NodeClassificationPredict {
         var predictedClasses = predictor.predict(predictedProbabilities);
         progressTracker.endSubTask();
 
-        return NodeClassificationResult.of(predictedClasses, predictedProbabilities);
+        return new NodeClassificationResult(predictedClasses, Optional.ofNullable(predictedProbabilities));
     }
 
     private @Nullable HugeObjectArray<double[]> initProbabilities() {
@@ -158,21 +157,8 @@ public class NodeClassificationPredict {
         }
     }
 
-    @ValueClass
-    public interface NodeClassificationResult {
-
-        HugeIntArray predictedClasses();
-
-        Optional<HugeObjectArray<double[]>> predictedProbabilities();
-
-        static NodeClassificationResult of(
-            HugeIntArray classes,
-            @Nullable HugeObjectArray<double[]> probabilities
-        ) {
-            return ImmutableNodeClassificationResult.builder()
-                .predictedProbabilities(Optional.ofNullable(probabilities))
-                .predictedClasses(classes)
-                .build();
-        }
-    }
+    public record NodeClassificationResult(
+        HugeIntArray predictedClasses,
+        Optional<HugeObjectArray<double[]>> predictedProbabilities
+    ) {}
 }

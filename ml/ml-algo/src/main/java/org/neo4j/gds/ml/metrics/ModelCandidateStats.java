@@ -19,8 +19,6 @@
  */
 package org.neo4j.gds.ml.metrics;
 
-import org.immutables.value.Value;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.config.ToMapConvertible;
 import org.neo4j.gds.ml.models.TrainerConfig;
 
@@ -31,24 +29,21 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@ValueClass
-public interface ModelCandidateStats extends ToMapConvertible {
-    TrainerConfig trainerConfig();
-    Map<Metric, EvaluationScores> trainingStats();
-    Map<Metric, EvaluationScores> validationStats();
+public record ModelCandidateStats(
+    TrainerConfig trainerConfig,
+    Map<Metric, EvaluationScores> trainingStats,
+    Map<Metric, EvaluationScores> validationStats
+) implements ToMapConvertible {
 
     @Override
-    @Value.Auxiliary
-    @Value.Derived
-    default Map<String, Object> toMap() {
+    public Map<String, Object> toMap() {
         return Map.of(
             "parameters", trainerConfig().toMapWithTrainerMethod(),
             "metrics", renderMetrics()
         );
     }
 
-    @Value.Derived
-    default Map<String, Map<String, Object>> renderMetrics(
+    public Map<String, Map<String, Object>> renderMetrics(
         Map<Metric, Double> testMetrics,
         Map<Metric, Double> outerTrainMetrics
     ) {
@@ -94,13 +89,5 @@ public interface ModelCandidateStats extends ToMapConvertible {
             .concat(trainingStats().keySet().stream(), validationStats().keySet().stream())
             .distinct()
             .collect(Collectors.toList());
-    }
-
-    static ModelCandidateStats of(
-        TrainerConfig trainerConfig,
-        Map<Metric, EvaluationScores> trainStats,
-        Map<Metric, EvaluationScores> validationStats
-    ) {
-        return ImmutableModelCandidateStats.of(trainerConfig, trainStats, validationStats);
     }
 }

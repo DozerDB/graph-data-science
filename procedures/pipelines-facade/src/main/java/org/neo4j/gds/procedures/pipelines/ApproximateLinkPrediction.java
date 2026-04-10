@@ -109,7 +109,7 @@ public class ApproximateLinkPrediction extends LinkPrediction {
         public Stream<PredictedLink> stream() {
             return predictions
                 .streamSimilarityResult()
-                .map(i -> PredictedLink.of(i.sourceNodeId(), i.targetNodeId(), i.similarity));
+                .map(i -> new PredictedLink(i.sourceNodeId(), i.targetNodeId(), i.similarity));
         }
 
         @Override

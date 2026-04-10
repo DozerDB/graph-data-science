@@ -135,7 +135,7 @@ public class CrossValidation<MODEL_TYPE> {
                 fold++;
             }
 
-            var candidateStats = ModelCandidateStats.of(
+            var candidateStats = new ModelCandidateStats(
                 modelParams,
                 trainStatsBuilder.build(),
                 validationStatsBuilder.build()

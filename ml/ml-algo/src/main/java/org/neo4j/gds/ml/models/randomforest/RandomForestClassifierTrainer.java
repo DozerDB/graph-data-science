@@ -20,7 +20,6 @@
 package org.neo4j.gds.ml.models.randomforest;
 
 import com.carrotsearch.hppc.BitSet;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.collections.ha.HugeLongArray;
 import org.neo4j.gds.collections.haa.HugeAtomicLongArray;
 import org.neo4j.gds.core.concurrency.Concurrency;
@@ -333,17 +332,9 @@ public class RandomForestClassifierTrainer implements ClassifierTrainer {
                 );
             }
 
-            return ImmutableBootstrappedDataset.of(
-                trainSetIndices,
-                allVectorsIndices
-            );
+            return new BootstrappedDataset(trainSetIndices, allVectorsIndices);
         }
 
-        @ValueClass
-        interface BootstrappedDataset {
-            BitSet trainSetIndices();
-
-            ReadOnlyHugeLongArray allVectorsIndices();
-        }
+        record BootstrappedDataset(BitSet trainSetIndices, ReadOnlyHugeLongArray allVectorsIndices) {}
     }
 }

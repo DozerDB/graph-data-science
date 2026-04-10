@@ -135,12 +135,12 @@ class ExhaustiveLinkPredictionTest {
         assertThat(predictedLinks).hasSize(Math.min(topN, 6));
 
         var expectedLinks = List.of(
-            PredictedLink.of(0, 4, 0.497),
-            PredictedLink.of(1, 4, 0.118),
-            PredictedLink.of(0, 1, 0.115),
-            PredictedLink.of(0, 3, 0.002),
-            PredictedLink.of(0, 2, 2.054710330936739E-4),
-            PredictedLink.of(2, 3, 2.8102289384435153E-9)
+            new PredictedLink(0, 4, 0.497),
+            new PredictedLink(1, 4, 0.118),
+            new PredictedLink(0, 1, 0.115),
+            new PredictedLink(0, 3, 0.002),
+            new PredictedLink(0, 2, 2.054710330936739E-4),
+            new PredictedLink(2, 3, 2.8102289384435153E-9)
         );
 
         var endIndex = Math.min(topN, expectedLinks.size());
@@ -244,8 +244,8 @@ class ExhaustiveLinkPredictionTest {
 
 
         var expectedLinks = List.of(
-            PredictedLink.of(0, 3, 0.5),
-            PredictedLink.of(3,5,0.5)
+            new PredictedLink(0, 3, 0.5),
+            new PredictedLink(3,5,0.5)
         );
 
         var expectedSize = Math.min(topN, expectedLinks.size());

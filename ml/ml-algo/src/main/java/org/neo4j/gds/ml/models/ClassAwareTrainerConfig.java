@@ -19,7 +19,6 @@
  */
 package org.neo4j.gds.ml.models;
 
-import org.immutables.value.Value;
 import org.neo4j.gds.annotation.Configuration;
 
 import java.util.List;
@@ -32,7 +31,6 @@ public interface ClassAwareTrainerConfig extends TrainerConfig {
         return 0;
     }
 
-    @Value.Default
     default List<Double> classWeights() {
         return List.of();
     }

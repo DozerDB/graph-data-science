@@ -64,7 +64,7 @@ class TrainingStatisticsTest {
     void selectsBestParametersAccordingToMainMetric(List<Metric> metrics, String expectedWinner) {
         var trainingStatistics = new TrainingStatistics(metrics);
 
-        trainingStatistics.addCandidateStats(ModelCandidateStats.of(
+        trainingStatistics.addCandidateStats(new ModelCandidateStats(
             new TestTrainerConfig("lower average rmse"),
             Map.of(),
             Map.of(
@@ -80,7 +80,7 @@ class TrainingStatisticsTest {
                 )
             )
         ));
-        trainingStatistics.addCandidateStats(ModelCandidateStats.of(
+        trainingStatistics.addCandidateStats(new ModelCandidateStats(
             new TestTrainerConfig("higher average aucpr"),
             Map.of(),
             Map.of(
@@ -104,7 +104,7 @@ class TrainingStatisticsTest {
     void getBestTrialStuff() {
         var trainingStatistics = new TrainingStatistics(List.of(AUCPR, F1_WEIGHTED));
 
-        trainingStatistics.addCandidateStats(ModelCandidateStats.of(
+        trainingStatistics.addCandidateStats(new ModelCandidateStats(
             new TestTrainerConfig("bad"),
             Map.of(),
             Map.of(
@@ -116,7 +116,7 @@ class TrainingStatisticsTest {
                 )
             )
         ));
-        trainingStatistics.addCandidateStats(ModelCandidateStats.of(
+        trainingStatistics.addCandidateStats(new ModelCandidateStats(
             new TestTrainerConfig("better"),
             Map.of(),
             Map.of(
@@ -128,7 +128,7 @@ class TrainingStatisticsTest {
                 )
             )
         ));
-        trainingStatistics.addCandidateStats(ModelCandidateStats.of(
+        trainingStatistics.addCandidateStats(new ModelCandidateStats(
             new TestTrainerConfig("same as better"),
             Map.of(),
             Map.of(
@@ -140,7 +140,7 @@ class TrainingStatisticsTest {
                 )
             )
         ));
-        trainingStatistics.addCandidateStats(ModelCandidateStats.of(
+        trainingStatistics.addCandidateStats(new ModelCandidateStats(
             new TestTrainerConfig("notprimarymetric"),
             Map.of(),
             Map.of(
@@ -181,7 +181,7 @@ class TrainingStatisticsTest {
             0.4,
             0.9
         );
-        trainingStatistics.addCandidateStats(ModelCandidateStats.of(
+        trainingStatistics.addCandidateStats(new ModelCandidateStats(
             candidate,
             Map.of(
                 AUCPR, trainStats,
@@ -240,12 +240,12 @@ class TrainingStatisticsTest {
 
         var selectResult = new TrainingStatistics(List.of(ACCURACY));
 
-        selectResult.addCandidateStats(ModelCandidateStats.of(
+        selectResult.addCandidateStats(new ModelCandidateStats(
             firstCandidate,
             Map.of(ACCURACY, new EvaluationScores(0.33, 0.1, 0.6)),
             Map.of(ACCURACY, new EvaluationScores(0.4, 0.3, 0.5))
         ));
-        selectResult.addCandidateStats(ModelCandidateStats.of(
+        selectResult.addCandidateStats(new ModelCandidateStats(
             secondCandidate,
             Map.of(ACCURACY, new EvaluationScores(0.2, 0.01, 0.7)),
             Map.of(ACCURACY, new EvaluationScores(0.8, 0.7, 0.9))

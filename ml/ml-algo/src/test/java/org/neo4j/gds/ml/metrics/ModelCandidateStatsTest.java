@@ -32,7 +32,7 @@ import static org.neo4j.gds.ml.metrics.regression.RegressionMetrics.ROOT_MEAN_SQ
 class ModelCandidateStatsTest {
     @Test
     void testRender() {
-        var candidateStats = ModelCandidateStats.of(
+        var candidateStats = new ModelCandidateStats(
             LogisticRegressionTrainConfig.DEFAULT,
             Map.of(OUT_OF_BAG_ERROR, new EvaluationScores(
                 0.33,
