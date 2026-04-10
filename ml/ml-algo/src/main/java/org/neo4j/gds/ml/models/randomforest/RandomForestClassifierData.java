@@ -20,8 +20,6 @@
 package org.neo4j.gds.ml.models.randomforest;
 
 import com.carrotsearch.hppc.ObjectArrayList;
-import org.immutables.value.Value;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.mem.MemoryEstimation;
 import org.neo4j.gds.mem.MemoryEstimations;
 import org.neo4j.gds.mem.MemoryRange;
@@ -37,18 +35,21 @@ import java.util.function.LongUnaryOperator;
 
 import static org.neo4j.gds.mem.Estimate.sizeOfInstance;
 
-@ValueClass
-@SuppressWarnings("immutables:subtype")
-public interface RandomForestClassifierData extends Classifier.ClassifierData, Serializable {
+public record RandomForestClassifierData(
+    int featureDimension,
+    int numberOfClasses,
+    List<DecisionTreePredictor<Integer>> decisionTrees
+) implements Classifier.ClassifierData, Serializable {
 
-    List<DecisionTreePredictor<Integer>> decisionTrees();
+    public RandomForestClassifierData(int featureDimension, int numberOfClasses) {
+        this(featureDimension, numberOfClasses, List.of());
+    }
 
-    @Value.Derived
-    default TrainingMethod trainerMethod() {
+    public TrainingMethod trainerMethod() {
         return TrainingMethod.RandomForestClassification;
     }
 
-    static MemoryEstimation memoryEstimation(
+    public static MemoryEstimation memoryEstimation(
         LongUnaryOperator numberOfTrainingExamples,
         RandomForestTrainerConfig config
     ) {
@@ -68,6 +69,4 @@ public interface RandomForestClassifierData extends Classifier.ClassifierData, S
             )
             .build();
     }
-
-    static ImmutableRandomForestClassifierData.Builder builder() { return ImmutableRandomForestClassifierData.builder(); }
 }

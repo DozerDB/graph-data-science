@@ -33,7 +33,7 @@ import org.neo4j.gds.ml.decisiontree.TreeNode;
 import org.neo4j.gds.ml.models.ClassifierFactory;
 import org.neo4j.gds.ml.models.Features;
 import org.neo4j.gds.ml.models.FeaturesFactory;
-import org.neo4j.gds.ml.models.randomforest.ImmutableRandomForestClassifierData;
+import org.neo4j.gds.ml.models.randomforest.RandomForestClassifierData;
 
 import java.util.List;
 
@@ -86,12 +86,11 @@ class NodeClassificationPredictConsumerTest {
     @Test
     void predictWithRandomForest() {
         var root = new TreeNode<>(1);
-        var modelData = ImmutableRandomForestClassifierData
-            .builder()
-            .addDecisionTree(new DecisionTreePredictor<>(root))
-            .featureDimension(1)
-            .numberOfClasses(2)
-            .build();
+        var modelData = new RandomForestClassifierData(
+            1,
+            2,
+            List.of(new DecisionTreePredictor<>(root))
+        );
 
         var classifier = ClassifierFactory.create(modelData);
 

@@ -38,32 +38,12 @@ class MLPClassifierObjectiveTest {
 
     @Test
     void shouldCalculateCrossEntropyLoss() {
-
-        //Fixed classifierData to avoid random weights&biases generation, in order to unit test objective function
-        class MLPObjectiveTestClassifierData implements MLPClassifierData {
-            @Override
-            public int numberOfClasses() {
-                return 3;
-            }
-            @Override
-            public int featureDimension() {
-                return 3;
-            }
-            @Override
-            public List<Weights<Matrix>> weights() {
-                return List.of(new Weights<>(Matrix.create(0.1,6,3)), new Weights<>(Matrix.create(0.1,3,6)));
-            }
-            @Override
-            public List<Weights<Vector>> biases() {
-                return List.of(new Weights<>(Vector.create(0.1,6)), new Weights<>(Vector.create(0.1,3)));
-            }
-            @Override
-            public int depth() {
-                return 3;
-            }
-        }
-
-        var classifier = new MLPClassifier(new MLPObjectiveTestClassifierData());
+        var classifier = new MLPClassifier(
+            new MLPClassifierData(
+                List.of(new Weights<>(Matrix.create(0.1,6,3)), new Weights<>(Matrix.create(0.1,3,6))),
+                List.of(new Weights<>(Vector.create(0.1,6)), new Weights<>(Vector.create(0.1,3)))
+            )
+        );
         var featuresHOA = HugeObjectArray.of(
             new double[]{1,1,1},
             new double[]{1,1,2},

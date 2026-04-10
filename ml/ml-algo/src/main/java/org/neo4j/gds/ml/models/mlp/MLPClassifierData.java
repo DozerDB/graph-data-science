@@ -19,8 +19,6 @@
  */
 package org.neo4j.gds.ml.models.mlp;
 
-import org.immutables.value.Value;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.ml.api.TrainingMethod;
 import org.neo4j.gds.ml.core.Dimensions;
 import org.neo4j.gds.ml.core.functions.Weights;
@@ -34,31 +32,22 @@ import java.util.List;
 import java.util.Random;
 import java.util.SplittableRandom;
 
-@ValueClass
-@SuppressWarnings("immutables:subtype")
-public interface MLPClassifierData extends Classifier.ClassifierData, Serializable {
+public record MLPClassifierData(List<Weights<Matrix>> weights, List<Weights<Vector>> biases) implements Classifier.ClassifierData, Serializable {
 
-    List<Weights<Matrix>> weights();
+    public int depth() {return biases().size() + 1;}
 
-    List<Weights<Vector>> biases();
-
-    @Value.Derived
-    default int depth() {return biases().size() + 1;}
-
-    @Value.Derived
     @Override
-    default int numberOfClasses() {return biases().get(biases().size()-1).dimension(0);}
+    public int numberOfClasses() {return biases().get(biases().size()-1).dimension(0);}
 
-    @Value.Derived
-    default int featureDimension() {
+    @Override
+    public int featureDimension() {
         return weights().get(0).dimension(Dimensions.COLUMNS_INDEX);
     }
 
-
-    default TrainingMethod trainerMethod() {return TrainingMethod.MLPClassification;}
+    @Override
+    public TrainingMethod trainerMethod() {return TrainingMethod.MLPClassification;}
 
     static MLPClassifierData create(int classCount, int featureCount, List<Integer> hiddenLayerSizes, SplittableRandom random) {
-
         var weights = new ArrayList<Weights<Matrix>>();
         var biases = new ArrayList<Weights<Vector>>();
         var hiddenDepth = hiddenLayerSizes.size();
@@ -71,11 +60,7 @@ public interface MLPClassifierData extends Classifier.ClassifierData, Serializab
         weights.add(generateWeights(classCount, hiddenLayerSizes.get(hiddenDepth-1), random.nextLong()));
         biases.add(generateBias(classCount, random.nextLong()));
 
-        return ImmutableMLPClassifierData
-            .builder()
-            .weights(weights)
-            .biases(biases)
-            .build();
+        return new MLPClassifierData(weights, biases);
     }
 
     //TODO: Refactor to use LayerFactory and ActivationFunction in algo.embeddings.graphsage
@@ -86,11 +71,7 @@ public interface MLPClassifierData extends Classifier.ClassifierData, Serializab
             .doubles(Math.multiplyExact(rows, cols), -weightBound, weightBound)
             .toArray();
 
-        return new Weights<>(new Matrix(
-            data,
-            rows,
-            cols
-        ));
+        return new Weights<>(new Matrix(data, rows, cols));
     }
 
     private static Weights<Vector> generateBias(int dim, long randomSeed) {
@@ -101,10 +82,4 @@ public interface MLPClassifierData extends Classifier.ClassifierData, Serializab
 
         return new Weights<>(new Vector(data));
     }
-
-    static ImmutableMLPClassifierData.Builder builder() {
-        return ImmutableMLPClassifierData.builder();
-    }
-
-
 }

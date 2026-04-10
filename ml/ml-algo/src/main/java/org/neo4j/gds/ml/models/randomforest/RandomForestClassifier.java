@@ -41,7 +41,7 @@ public class RandomForestClassifier implements Classifier {
         int numberOfClasses,
         int featureDimension
     ) {
-        this(ImmutableRandomForestClassifierData.of(featureDimension, numberOfClasses, decisionTrees));
+        this(new RandomForestClassifierData(featureDimension, numberOfClasses, decisionTrees));
     }
 
     public RandomForestClassifier(RandomForestClassifierData data) {

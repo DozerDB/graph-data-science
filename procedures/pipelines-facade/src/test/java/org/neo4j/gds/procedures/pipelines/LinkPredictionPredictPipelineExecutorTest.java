@@ -52,8 +52,8 @@ import org.neo4j.gds.ml.metrics.ModelCandidateStats;
 import org.neo4j.gds.ml.models.logisticregression.LogisticRegressionClassifier;
 import org.neo4j.gds.ml.models.logisticregression.LogisticRegressionData;
 import org.neo4j.gds.ml.models.logisticregression.LogisticRegressionTrainConfig;
-import org.neo4j.gds.ml.models.randomforest.ImmutableRandomForestClassifierData;
 import org.neo4j.gds.ml.models.randomforest.RandomForestClassifier;
+import org.neo4j.gds.ml.models.randomforest.RandomForestClassifierData;
 import org.neo4j.gds.ml.pipeline.ExecutableNodePropertyStep;
 import org.neo4j.gds.ml.pipeline.Stub;
 import org.neo4j.gds.ml.pipeline.linkPipeline.LinkPredictionModelInfo;
@@ -199,12 +199,11 @@ class LinkPredictionPredictPipelineExecutorTest {
         );
 
         var root = new TreeNode<>(0);
-        var modelData = ImmutableRandomForestClassifierData
-            .builder()
-            .addDecisionTree(new DecisionTreePredictor<>(root))
-            .featureDimension(3)
-            .numberOfClasses(2)
-            .build();
+        var modelData = new RandomForestClassifierData(
+            3,
+            2,
+            List.of(new DecisionTreePredictor<>(root))
+        );
 
         var pipelineExecutor = new LinkPredictionPredictPipelineExecutor(
             pipeline,
@@ -470,12 +469,11 @@ class LinkPredictionPredictPipelineExecutorTest {
     void shouldEstimateMemoryWithRandomForest() {
         var pipeline = LinkPredictionPredictPipeline.EMPTY;
         var root = new TreeNode<>(0);
-        var modelData = ImmutableRandomForestClassifierData
-            .builder()
-            .addDecisionTree(new DecisionTreePredictor<>(root))
-            .featureDimension(2)
-            .numberOfClasses(2)
-            .build();
+        var modelData = new RandomForestClassifierData(
+            2,
+            2,
+            List.of(new DecisionTreePredictor<>(root))
+        );
 
         var config = LinkPredictionPredictPipelineStreamConfigImpl.builder()
             .modelUser(username)

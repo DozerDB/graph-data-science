@@ -72,7 +72,7 @@ class MLPClassifierTest {
     @MethodSource("inputs")
     @ParameterizedTest
     void shouldPredictProbabilities(double[] features, double[] expectedResult) {
-        var modelData = ImmutableMLPClassifierData.of(weights, biases);
+        var modelData = new MLPClassifierData(weights, biases);
         var predictor = new MLPClassifier(modelData);
         var result = predictor.predictProbabilities(features);
         assertThat(result).containsExactly(expectedResult, Offset.offset(1e-8));
@@ -81,7 +81,7 @@ class MLPClassifierTest {
     @Test
     void batchingGivesEquivalentResults() {
         var featureCount = 4;
-        var modelData = ImmutableMLPClassifierData.of(weights, biases);
+        var modelData = new MLPClassifierData(weights, biases);
 
         var classifier = new MLPClassifier(modelData);
         var random = new Random();

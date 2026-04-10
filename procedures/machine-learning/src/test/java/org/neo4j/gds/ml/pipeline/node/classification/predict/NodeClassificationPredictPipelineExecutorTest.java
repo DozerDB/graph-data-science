@@ -59,7 +59,7 @@ import org.neo4j.gds.ml.decisiontree.TreeNode;
 import org.neo4j.gds.ml.metrics.ModelCandidateStats;
 import org.neo4j.gds.ml.metrics.classification.ClassificationMetricSpecification;
 import org.neo4j.gds.ml.models.Classifier;
-import org.neo4j.gds.ml.models.randomforest.ImmutableRandomForestClassifierData;
+import org.neo4j.gds.ml.models.randomforest.RandomForestClassifierData;
 import org.neo4j.gds.ml.models.randomforest.RandomForestClassifierTrainerConfig;
 import org.neo4j.gds.ml.pipeline.NodePropertyStepFactory;
 import org.neo4j.gds.ml.pipeline.nodePipeline.NodeFeatureStep;
@@ -214,12 +214,11 @@ class NodeClassificationPredictPipelineExecutorTest extends BaseProcTest {
             );
 
             var root = new TreeNode<>(0);
-            var modelData = ImmutableRandomForestClassifierData
-                .builder()
-                .addDecisionTree(new DecisionTreePredictor<>(root))
-                .featureDimension(3)
-                .numberOfClasses(2)
-                .build();
+            var modelData = new RandomForestClassifierData(
+                3,
+                2,
+                List.of(new DecisionTreePredictor<>(root))
+            );
 
             var pipelineExecutor = new NodeClassificationPredictPipelineExecutor(
                 pipeline,
@@ -479,12 +478,11 @@ class NodeClassificationPredictPipelineExecutorTest extends BaseProcTest {
     @Test
     void shouldEstimateMemoryWithRandomForest() {
         var root = new TreeNode<>(0);
-        var modelData = ImmutableRandomForestClassifierData
-            .builder()
-            .addDecisionTree(new DecisionTreePredictor<>(root))
-            .featureDimension(3)
-            .numberOfClasses(1)
-            .build();
+        var modelData = new RandomForestClassifierData(
+            3,
+            1,
+            List.of(new DecisionTreePredictor<>(root))
+        );
 
         Model<Classifier.ClassifierData, NodeClassificationPipelineTrainConfig, NodeClassificationPipelineModelInfo> model = Model.of(
             NodeClassificationTrainingPipeline.MODEL_TYPE,
