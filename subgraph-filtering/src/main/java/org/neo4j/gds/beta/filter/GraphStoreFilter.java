@@ -23,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 import org.neo4j.gds.ElementProjection;
 import org.neo4j.gds.NodeLabel;
 import org.neo4j.gds.RelationshipType;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.api.GraphStore;
 import org.neo4j.gds.api.schema.GraphSchema;
 import org.neo4j.gds.api.schema.MutableGraphSchema;
@@ -86,12 +85,7 @@ public final class GraphStoreFilter {
     private GraphStoreFilter() {
     }
 
-    @ValueClass
-    interface Expressions {
-        Expression nodeExpression();
-
-        Expression relationshipExpression();
-    }
+    public record Expressions(Expression nodeExpression, Expression relationshipExpression) {}
 
     public static Expressions parseAndValidate(
         GraphStore graphStore,
@@ -126,7 +120,7 @@ public final class GraphStoreFilter {
             throw new IllegalArgumentException("Invalid `relationshipFilter` expression. " + e.getMessage(), e);
         }
 
-        return ImmutableExpressions.of(nodeExpression, relationshipExpression);
+        return new Expressions(nodeExpression, relationshipExpression);
     }
 
     private static String replaceStarWithTrue(String filter) {

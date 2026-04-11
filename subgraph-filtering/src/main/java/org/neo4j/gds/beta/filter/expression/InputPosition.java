@@ -19,12 +19,4 @@
  */
 package org.neo4j.gds.beta.filter.expression;
 
-
-import org.neo4j.gds.annotation.ValueClass;
-
-@ValueClass
-public interface InputPosition {
-    int offset();
-    int line();
-    int column();
-}
+public record InputPosition(int offset, int line, int column) {}

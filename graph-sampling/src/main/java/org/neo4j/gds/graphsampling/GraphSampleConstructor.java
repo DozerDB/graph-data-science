@@ -24,7 +24,6 @@ import org.neo4j.gds.api.Graph;
 import org.neo4j.gds.api.GraphStore;
 import org.neo4j.gds.api.IdMap;
 import org.neo4j.gds.beta.filter.GraphStoreFilter;
-import org.neo4j.gds.beta.filter.ImmutableFilteredNodes;
 import org.neo4j.gds.beta.filter.NodesFilter;
 import org.neo4j.gds.beta.filter.RelationshipsFilter;
 import org.neo4j.gds.beta.filter.expression.EvaluationContext;
@@ -124,7 +123,7 @@ public class GraphSampleConstructor {
 
         var filteredSchema = GraphStoreFilter.filterSchema(
             inputGraphStore.schema(),
-            ImmutableFilteredNodes.of(idMap, nodePropertyStore),
+            new NodesFilter.FilteredNodes(idMap, nodePropertyStore),
             filteredRelationships.keySet()
         );
 

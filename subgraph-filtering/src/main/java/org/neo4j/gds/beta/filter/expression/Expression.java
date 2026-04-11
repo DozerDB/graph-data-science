@@ -75,14 +75,14 @@ public interface Expression {
             default ValidationContext validate(ValidationContext context) {
                 if (context.context() == ValidationContext.Context.NODE) {
                     if (!name().equals("n")) {
-                        return context.withError(SemanticErrors.SemanticError.of(formatWithLocale(
+                        return context.withError(new SemanticErrors.SemanticError(formatWithLocale(
                             "Invalid variable `%s`. Only `n` is allowed for nodes",
                             name()
                         )));
                     }
                 } else if (context.context() == ValidationContext.Context.RELATIONSHIP) {
                     if (!name().equals("r")) {
-                        return context.withError(SemanticErrors.SemanticError.of(formatWithLocale(
+                        return context.withError(new SemanticErrors.SemanticError(formatWithLocale(
                             "Invalid variable `%s`. Only `r` is allowed for relationships",
                             name()
                         )));
@@ -127,7 +127,7 @@ public interface Expression {
                 Set<String> availablePropertyKeys = context.availableProperties().keySet();
 
                 if (!availablePropertyKeys.contains(propertyKey())) {
-                    return context.withError(SemanticErrors.SemanticError.of(prettySuggestions(
+                    return context.withError(new SemanticErrors.SemanticError(prettySuggestions(
                         formatWithLocale(
                             "Unknown property `%s`.",
                             propertyKey()
@@ -138,7 +138,7 @@ public interface Expression {
                 }
                 var propertyType = context.availableProperties().get(propertyKey());
                 if (propertyType != ValueType.LONG && propertyType != ValueType.DOUBLE) {
-                    return context.withError(SemanticErrors.SemanticError.of(
+                    return context.withError(new SemanticErrors.SemanticError(
                         formatWithLocale(
                             "Unsupported property type `%s` for expression `%s`. Supported types %s",
                             propertyType.name(),
@@ -343,7 +343,7 @@ public interface Expression {
                         .map(s -> formatWithLocale(" Try changing the literal to `%s`.", s))
                         .orElse("");
 
-                    return context.withError(SemanticErrors.SemanticError.of(
+                    return context.withError(new SemanticErrors.SemanticError(
                         formatWithLocale(
                             "Incompatible types `%s` and `%s` in binary expression `%s`.%s",
                             leftType,
@@ -589,7 +589,7 @@ public interface Expression {
             ? "label"
             : "relationship type";
 
-        return context.withError(SemanticErrors.SemanticError.of(prettySuggestions(
+        return context.withError(new SemanticErrors.SemanticError(prettySuggestions(
             formatWithLocale(
                 "Unknown %s `%s`.",
                 elementType,

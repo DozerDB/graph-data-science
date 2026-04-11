@@ -19,12 +19,10 @@
  */
 package org.neo4j.gds.beta.filter.expression;
 
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.utils.StringFormatting;
 import org.neo4j.gds.utils.StringJoining;
 
 import java.util.List;
-
 
 public final class SemanticErrors extends Exception {
 
@@ -41,12 +39,5 @@ public final class SemanticErrors extends Exception {
         super(message);
     }
 
-    @ValueClass
-    public interface SemanticError {
-        String message();
-
-        static SemanticError of(String message) {
-            return ImmutableSemanticError.builder().message(message).build();
-        }
-    }
+    public record SemanticError(String message) {}
 }

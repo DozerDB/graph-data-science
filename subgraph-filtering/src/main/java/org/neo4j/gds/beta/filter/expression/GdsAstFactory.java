@@ -226,6 +226,6 @@ class GdsAstFactory extends AstFactoryAdapter {
 
     @Override
     public InputPosition inputPosition(int offset, int line, int column) {
-        return ImmutableInputPosition.of(offset, line, column);
+        return new InputPosition(offset, line, column);
     }
 }

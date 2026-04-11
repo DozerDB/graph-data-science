@@ -20,7 +20,6 @@
 package org.neo4j.gds.beta.filter;
 
 import com.carrotsearch.hppc.AbstractIterator;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.api.DefaultValue;
 import org.neo4j.gds.api.GraphStore;
 import org.neo4j.gds.api.IdMap;
@@ -54,12 +53,7 @@ import java.util.function.Function;
 
 public final class NodesFilter {
 
-    @ValueClass
-    public interface FilteredNodes {
-        IdMap idMap();
-
-        NodePropertyStore propertyStores();
-    }
+    public record FilteredNodes(IdMap idMap, NodePropertyStore propertyStores) {}
 
     public static FilteredNodes filterNodes(
         GraphStore inputGraphStore,
@@ -113,10 +107,7 @@ public final class NodesFilter {
         );
         progressTracker.endSubTask();
 
-        return ImmutableFilteredNodes.builder()
-            .idMap(filteredIdMap)
-            .propertyStores(filteredNodePropertyStores)
-            .build();
+        return new FilteredNodes(filteredIdMap, filteredNodePropertyStores);
     }
 
     public static NodePropertyStore filterNodeProperties(
