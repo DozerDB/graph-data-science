@@ -19,62 +19,40 @@
  */
 package org.neo4j.gds.beta.filter.expression;
 
-import org.immutables.value.Value;
 import org.neo4j.gds.NodeLabel;
 import org.neo4j.gds.RelationshipType;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.api.GraphStore;
 import org.neo4j.gds.api.nodeproperties.ValueType;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-@ValueClass
-public interface ValidationContext {
-    Context context();
+public record ValidationContext(
+    Context context,
+    Set<NodeLabel> availableNodeLabels,
+    Set<RelationshipType> availableRelationshipTypes,
+    Map<String, ValueType> availableProperties,
+    List<SemanticErrors.SemanticError> semanticError
+) {
 
-    Set<NodeLabel> availableNodeLabels();
-
-    Set<RelationshipType> availableRelationshipTypes();
-
-    @Value.Derived
-    default Set<String> availableLabelsOrTypes() {
-        return Stream
-            .concat(
-                availableNodeLabels().stream().map(NodeLabel::name),
-                availableRelationshipTypes().stream().map(RelationshipType::name)
-            )
-            .collect(Collectors.toSet());
+    public ValidationContext withError(SemanticErrors.SemanticError error) {
+        var errors = new ArrayList<SemanticErrors.SemanticError>();
+        errors.add(error);
+        errors.addAll(semanticError);
+        return new ValidationContext(context, availableNodeLabels, availableRelationshipTypes, availableProperties, errors);
     }
 
-    Map<String, ValueType> availableProperties();
-
-    @Value.Default
-    default List<SemanticErrors.SemanticError> errors() {
-        return List.of();
-    }
-
-    @Value.Derived
-    default ValidationContext withError(SemanticErrors.SemanticError error) {
-        return ImmutableValidationContext
-            .builder()
-            .from(this)
-            .addError(error)
-            .build();
-    }
-
-    @Value.Derived
-    default void validate() throws SemanticErrors {
-        if (!errors().isEmpty()) {
-            throw SemanticErrors.of(errors());
+    public void validate() throws SemanticErrors {
+        if (!semanticError.isEmpty()) {
+            throw SemanticErrors.of(semanticError);
         }
     }
 
-    static ValidationContext forNodes(GraphStore graphStore) {
+    public static ValidationContext forNodes(GraphStore graphStore) {
         var propertiesAndTypes = graphStore
             .schema()
             .nodeSchema()
@@ -86,15 +64,16 @@ public interface ValidationContext {
                 e -> e.getValue().valueType()
             ));
 
-        return ImmutableValidationContext
-            .builder()
-            .context(Context.NODE)
-            .addAllAvailableNodeLabels(new HashSet<>(graphStore.nodeLabels()))
-            .putAllAvailableProperties(propertiesAndTypes)
-            .build();
+        return new ValidationContext(
+            Context.NODE,
+            new HashSet<>(graphStore.nodeLabels()),
+            Set.of(),
+            propertiesAndTypes,
+            List.of()
+        );
     }
 
-    static ValidationContext forRelationships(GraphStore graphStore) {
+    public static ValidationContext forRelationships(GraphStore graphStore) {
         var propertiesAndTypes = graphStore
             .schema()
             .relationshipSchema()
@@ -106,12 +85,7 @@ public interface ValidationContext {
                 e -> e.getValue().valueType()
             ));
 
-        return ImmutableValidationContext
-            .builder()
-            .context(Context.RELATIONSHIP)
-            .addAllAvailableRelationshipTypes(new HashSet<>(graphStore.relationshipTypes()))
-            .putAllAvailableProperties(propertiesAndTypes)
-            .build();
+        return new ValidationContext(Context.RELATIONSHIP, Set.of(), new HashSet<>(graphStore.relationshipTypes()), propertiesAndTypes, List.of());
     }
 
     enum Context {

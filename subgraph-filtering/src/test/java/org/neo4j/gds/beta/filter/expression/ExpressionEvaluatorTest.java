@@ -41,7 +41,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.neo4j.gds.beta.filter.expression.Expression.FALSE;
@@ -347,12 +346,7 @@ class ExpressionEvaluatorTest {
         "bar,1.337,DOUBLE"
     })
     void property(String propertyKey, double propertyValue, ValueType propertyType) throws ParseException {
-        var validationContext = ImmutableValidationContext.builder()
-            .context(ValidationContext.Context.NODE)
-            .putAvailableProperty(propertyKey, propertyType)
-            .build();
-
-        var expr = ExpressionParser.parse("n." + propertyKey, validationContext.availableProperties());
+        var expr = ExpressionParser.parse("n." + propertyKey, Map.of(propertyKey, propertyType));
         var context = ImmutableTestContext.builder().propertyKey(propertyKey).propertyValue(propertyValue).build();
         assertThat(expr.evaluate(context) == propertyValue).isTrue();
     }
@@ -369,32 +363,18 @@ class ExpressionEvaluatorTest {
 
     @ParameterizedTest()
     @MethodSource("org.neo4j.gds.beta.filter.expression.ExpressionEvaluatorTest#hasLabelInput")
-    void hasNodeLabels(Iterable<String> actual, Collection<String> requested, boolean expected) throws ParseException {
+    void hasNodeLabels(List<String> actual, List<String> requested, boolean expected) throws ParseException {
         var labelExpression = requested.stream().map(label -> ":" + label).collect(Collectors.joining());
-
-        var validationContext = ImmutableValidationContext.builder()
-            .context(ValidationContext.Context.NODE)
-            .addAllAvailableNodeLabels(StreamSupport.stream(actual.spliterator(), false).map(NodeLabel::of).collect(Collectors.toList()))
-            .build();
-
-        var expr = ExpressionParser.parse("n" + labelExpression, validationContext.availableProperties());
-
+        var expr = ExpressionParser.parse("n" + labelExpression, Map.of());
         var evaluationContext = ImmutableTestContext.builder().addAllLabelsOrTypes(actual).build();
         assertThat(expr.evaluate(evaluationContext) == TRUE).isEqualTo(expected);
     }
 
     @ParameterizedTest()
     @MethodSource("org.neo4j.gds.beta.filter.expression.ExpressionEvaluatorTest#hasLabelInput")
-    void hasRelationshipTypes(Iterable<String> actual, Collection<String> requested, boolean expected) throws ParseException {
+    void hasRelationshipTypes(List<String> actual, List<String> requested, boolean expected) throws ParseException {
         var labelExpression = requested.stream().map(label -> ":" + label).collect(Collectors.joining());
-
-        var validationContext = ImmutableValidationContext.builder()
-            .context(ValidationContext.Context.RELATIONSHIP)
-            .addAllAvailableRelationshipTypes(StreamSupport.stream(actual.spliterator(), false).map(RelationshipType::of).collect(Collectors.toList()))
-            .build();
-
-        var expr = ExpressionParser.parse("r" + labelExpression, validationContext.availableProperties());
-
+        var expr = ExpressionParser.parse("r" + labelExpression, Map.of());
         var evaluationContext = ImmutableTestContext.builder().addAllLabelsOrTypes(actual).build();
         assertThat(expr.evaluate(evaluationContext) == TRUE).isEqualTo(expected);
     }

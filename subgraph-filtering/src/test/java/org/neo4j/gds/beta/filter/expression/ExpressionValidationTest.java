@@ -19,20 +19,19 @@
  */
 package org.neo4j.gds.beta.filter.expression;
 
-import org.immutables.value.Value;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.neo4j.gds.NodeLabel;
 import org.neo4j.gds.RelationshipType;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.api.nodeproperties.ValueType;
 import org.neo4j.gds.utils.StringJoining;
 import org.opencypher.v9_0.parser.javacc.ParseException;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.neo4j.gds.beta.filter.expression.ValidationContext.Context.NODE;
@@ -44,7 +43,13 @@ class ExpressionValidationTest {
     @ParameterizedTest
     @ValueSource(strings = {"r", "foo"})
     void nodeVariable(String variableName) {
-        var context = ImmutableTestValidationContext.builder().context(NODE).build();
+        var context = new ValidationContext(
+            NODE,
+            Set.of(),
+            Set.of(),
+            Map.of(),
+            List.of()
+        );
 
         assertThatExceptionOfType(SemanticErrors.class)
             .isThrownBy(() -> ImmutableVariable.builder().name(variableName).build().validate(context).validate())
@@ -57,7 +62,13 @@ class ExpressionValidationTest {
     @ParameterizedTest
     @ValueSource(strings = {"n", "foo"})
     void relationshipVariable(String variableName) {
-        var context = ImmutableTestValidationContext.builder().context(RELATIONSHIP).build();
+        var context = new ValidationContext(
+            RELATIONSHIP,
+            Set.of(),
+            Set.of(),
+            Map.of(),
+            List.of()
+        );
 
         assertThatExceptionOfType(SemanticErrors.class)
             .isThrownBy(() -> ImmutableVariable.builder().name(variableName).build().validate(context).validate())
@@ -69,10 +80,13 @@ class ExpressionValidationTest {
 
     @Test
     void property() {
-        var context = ImmutableTestValidationContext
-            .builder()
-            .putAvailableProperty("bar", ValueType.DOUBLE)
-            .build();
+        var context = new  ValidationContext(
+            NODE,
+            Set.of(),
+            Set.of(),
+            Map.of("bar", ValueType.DOUBLE),
+            List.of()
+        );
         var expr = ImmutableProperty
             .builder()
             .in(ImmutableVariable.builder().name("n").build())
@@ -86,10 +100,13 @@ class ExpressionValidationTest {
 
     @Test
     void hasLabels() {
-        var context = ImmutableTestValidationContext
-            .builder()
-            .addAvailableNodeLabels(NodeLabel.of("foo"), NodeLabel.of("bar"))
-            .build();
+        var context = new ValidationContext(
+            NODE,
+            Set.of(NodeLabel.of("foo"), NodeLabel.of("bar")),
+            Set.of(),
+            Map.of(),
+            List.of()
+        );
 
         var expr = ImmutableHasNodeLabels
             .builder()
@@ -104,10 +121,13 @@ class ExpressionValidationTest {
 
     @Test
     void hasTypes() {
-        var context = ImmutableTestValidationContext
-            .builder()
-            .addAvailableRelationshipTypes(RelationshipType.of("foo"), RelationshipType.of("bar"))
-            .build();
+        var context = new ValidationContext(
+            NODE,
+            Set.of(),
+            Set.of(RelationshipType.of("foo"), RelationshipType.of("bar")),
+            Map.of(),
+            List.of()
+        );
 
         var expr = ImmutableHasRelationshipTypes
             .builder()
@@ -125,11 +145,16 @@ class ExpressionValidationTest {
         var expressionString = "n:Baz AND n.foo = 42";
         var expr = ExpressionParser.parse(expressionString, Map.of());
 
-        var context = ImmutableTestValidationContext.builder()
-            .context(RELATIONSHIP)
-            .putAvailableProperty("bar", ValueType.DOUBLE)
-            .putAvailableProperty("foot", ValueType.DOUBLE)
-            .build();
+        var context = new ValidationContext(
+            RELATIONSHIP,
+            Set.of(),
+            Set.of(),
+            Map.of(
+                "bar", ValueType.DOUBLE,
+                "foot", ValueType.DOUBLE
+            ),
+            List.of()
+        );
 
         assertThatExceptionOfType(SemanticErrors.class)
             .isThrownBy(() -> expr.validate(context).validate())
@@ -158,11 +183,13 @@ class ExpressionValidationTest {
         "n.foo <> 42.0,LONG,DOUBLE",
     })
     void incompatibleTypes(String exprString, ValueType lhsType, ValueType rhsType) throws ParseException {
-        var context = ImmutableValidationContext
-            .builder()
-            .context(NODE)
-            .putAvailableProperty("foo", lhsType)
-            .build();
+        var context = new ValidationContext(
+            NODE,
+            Set.of(),
+            Set.of(),
+            Map.of("foo", lhsType),
+            List.of()
+        );
 
         var expr = ExpressionParser.parse(exprString, context.availableProperties());
 
@@ -186,11 +213,13 @@ class ExpressionValidationTest {
         ValueType rhsType,
         String literalHint
     ) throws ParseException {
-        var context = ImmutableValidationContext
-            .builder()
-            .context(NODE)
-            .putAvailableProperty("foo", lhsType)
-            .build();
+        var context = new ValidationContext(
+            NODE,
+            Set.of(),
+            Set.of(),
+            Map.of("foo", lhsType),
+            List.of()
+        );
 
         var expr = ExpressionParser.parse(exprString, context.availableProperties());
 
@@ -209,11 +238,14 @@ class ExpressionValidationTest {
         "n.foo,DOUBLE_ARRAY",
         "n.foo,LONG_ARRAY"})
     void unsupportedTypes(String exprString, ValueType valueType) throws ParseException {
-        var context = ImmutableValidationContext
-            .builder()
-            .context(NODE)
-            .putAvailableProperty("foo", valueType)
-            .build();
+        var context = new ValidationContext(
+            NODE,
+            Set.of(),
+            Set.of(),
+            Map.of("foo", valueType),
+            List.of()
+        );
+
         var expr = ExpressionParser.parse(exprString, context.availableProperties());
 
         assertThatExceptionOfType(SemanticErrors.class)
@@ -221,15 +253,5 @@ class ExpressionValidationTest {
             .withMessageContaining("Unsupported property type `%s` for expression", valueType.name())
             .withMessageContaining(exprString)
             .withMessageContaining(StringJoining.join(List.of(ValueType.LONG.name(), ValueType.DOUBLE.name())));
-    }
-
-    @ValueClass
-    @SuppressWarnings("immutables:subtype")
-    interface TestValidationContext extends ValidationContext {
-        @Override
-        @Value.Default
-        default Context context() {
-            return NODE;
-        }
     }
 }
