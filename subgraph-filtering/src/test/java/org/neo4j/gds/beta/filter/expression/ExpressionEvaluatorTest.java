@@ -23,7 +23,6 @@ import net.jqwik.api.ForAll;
 import net.jqwik.api.Property;
 import net.jqwik.api.constraints.DoubleRange;
 import net.jqwik.api.constraints.LongRange;
-import org.immutables.value.Value;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -32,10 +31,10 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.neo4j.gds.NodeLabel;
 import org.neo4j.gds.RelationshipType;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.api.nodeproperties.ValueType;
 import org.opencypher.v9_0.parser.javacc.ParseException;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -347,7 +346,7 @@ class ExpressionEvaluatorTest {
     })
     void property(String propertyKey, double propertyValue, ValueType propertyType) throws ParseException {
         var expr = ExpressionParser.parse("n." + propertyKey, Map.of(propertyKey, propertyType));
-        var context = ImmutableTestContext.builder().propertyKey(propertyKey).propertyValue(propertyValue).build();
+        var context = new TestContext(propertyKey, propertyValue);
         assertThat(expr.evaluate(context) == propertyValue).isTrue();
     }
 
@@ -366,7 +365,7 @@ class ExpressionEvaluatorTest {
     void hasNodeLabels(List<String> actual, List<String> requested, boolean expected) throws ParseException {
         var labelExpression = requested.stream().map(label -> ":" + label).collect(Collectors.joining());
         var expr = ExpressionParser.parse("n" + labelExpression, Map.of());
-        var evaluationContext = ImmutableTestContext.builder().addAllLabelsOrTypes(actual).build();
+        var evaluationContext = new TestContext(actual);
         assertThat(expr.evaluate(evaluationContext) == TRUE).isEqualTo(expected);
     }
 
@@ -375,14 +374,14 @@ class ExpressionEvaluatorTest {
     void hasRelationshipTypes(List<String> actual, List<String> requested, boolean expected) throws ParseException {
         var labelExpression = requested.stream().map(label -> ":" + label).collect(Collectors.joining());
         var expr = ExpressionParser.parse("r" + labelExpression, Map.of());
-        var evaluationContext = ImmutableTestContext.builder().addAllLabelsOrTypes(actual).build();
+        var evaluationContext = new TestContext(actual);
         assertThat(expr.evaluate(evaluationContext) == TRUE).isEqualTo(expected);
     }
 
     @Test
     void degree() throws ParseException {
         var expr = ExpressionParser.parse("degree('REL')", Map.of());
-        var evaluationContext = ImmutableTestContext.builder().addLabelsOrType("REL").build();
+        var evaluationContext = new TestContext(List.of("REL"));
         assertThat(expr.evaluate(evaluationContext)).isEqualTo(Double.longBitsToDouble(42));
     }
 
@@ -413,31 +412,36 @@ class ExpressionEvaluatorTest {
         }
     };
 
-    @ValueClass
     static class TestContext extends EvaluationContext {
+        private String propertyKey = "";
+        private double propertyValue = Double.NaN;
+        private List<String> labelsOrTypes = new ArrayList<>();
 
-        TestContext() {
+        TestContext(String propertyKey, double propertyValue) {
             super(Map.of());
+            this.propertyKey = propertyKey;
+            this.propertyValue = propertyValue;
         }
 
-        @Value.Default
-        public String propertyKey() {
-            return "";
+        TestContext(List<String> labelsOrTypes) {
+            super(Map.of());
+            this.labelsOrTypes = labelsOrTypes;
         }
 
-        @Value.Default
-        public double propertyValue() {
-            return Double.NaN;
+        String propertyKey() {
+            return propertyKey;
         }
 
-        @Value.Default
-        public List<String> labelsOrTypes() {
-            return List.of();
+        double propertyValue() {
+            return propertyValue;
+        }
+
+        List<String> labelsOrTypes() {
+            return labelsOrTypes;
         }
 
         // TODO: do we need some test that actually use the valueType?
         @Override
-        @Value.Derived
         double getProperty(String propertyKey, ValueType valueType) {
             assertThat(propertyKey).isEqualTo(propertyKey());
             return propertyValue();
@@ -445,16 +449,15 @@ class ExpressionEvaluatorTest {
 
         @Override
         public boolean hasNodeLabels(List<NodeLabel> labels) {
-            return hasLabelsOrTypes(labels.stream().map(NodeLabel::name).collect(Collectors.toList()));
+            return hasLabelsOrTypes(labels.stream().map(NodeLabel::name).toList());
         }
 
         @Override
         public boolean hasRelationshipTypes(List<RelationshipType> types) {
-            return hasLabelsOrTypes(types.stream().map(RelationshipType::name).collect(Collectors.toList()));
+            return hasLabelsOrTypes(types.stream().map(RelationshipType::name).toList());
         }
 
         @Override
-        @Value.Derived
         public boolean hasLabelsOrTypes(List<String> labelsOrTypes) {
             return labelsOrTypes().containsAll(labelsOrTypes);
         }

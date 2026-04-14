@@ -22,6 +22,33 @@ package org.neo4j.gds.beta.filter.expression;
 import org.neo4j.gds.NodeLabel;
 import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.api.nodeproperties.ValueType;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyAnd;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyEqual;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyGreaterThan;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyGreaterThanOrEquals;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyLessThan;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyLessThanOrEquals;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyNotEqual;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyOr;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyXor;
+import org.neo4j.gds.beta.filter.expression.Expression.Function.Degree;
+import org.neo4j.gds.beta.filter.expression.Expression.Function.MyDegree;
+import org.neo4j.gds.beta.filter.expression.Expression.LeafExpression.MyVariable;
+import org.neo4j.gds.beta.filter.expression.Expression.LeafExpression.Variable;
+import org.neo4j.gds.beta.filter.expression.Expression.Literal.DoubleLiteral;
+import org.neo4j.gds.beta.filter.expression.Expression.Literal.FalseLiteral;
+import org.neo4j.gds.beta.filter.expression.Expression.Literal.LongLiteral;
+import org.neo4j.gds.beta.filter.expression.Expression.Literal.MyDoubleLiteral;
+import org.neo4j.gds.beta.filter.expression.Expression.Literal.MyLongLiteral;
+import org.neo4j.gds.beta.filter.expression.Expression.Literal.MyStringLiteral;
+import org.neo4j.gds.beta.filter.expression.Expression.Literal.StringLiteral;
+import org.neo4j.gds.beta.filter.expression.Expression.Literal.TrueLiteral;
+import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.MyHasNodeLabels;
+import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.MyHasRelationshipTypes;
+import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.MyNewParameter;
+import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.MyNot;
+import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.MyProperty;
+import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.Property;
 import org.opencypher.v9_0.ast.factory.ASTFactory;
 
 import java.util.List;
@@ -44,31 +71,31 @@ class GdsAstFactory extends AstFactoryAdapter {
     }
 
     @Override
-    public Expression.LeafExpression.Variable newVariable(InputPosition p, String name) {
-        return ImmutableVariable.builder().name(name).build();
+    public Variable newVariable(InputPosition p, String name) {
+        return new MyVariable(name);
     }
 
 
     @Override
     public Expression newParameter(
-        InputPosition p, Expression.LeafExpression.Variable v
+        InputPosition p, Variable v
     ) {
-        return ImmutableNewParameter.of(v);
+        return new MyNewParameter(v);
     }
 
     @Override
-    public Expression.Literal.DoubleLiteral newDouble(InputPosition p, String image) {
-        return ImmutableDoubleLiteral.builder().value(Double.parseDouble(image)).build();
+    public DoubleLiteral newDouble(InputPosition p, String image) {
+        return new MyDoubleLiteral(Double.parseDouble(image));
     }
 
     @Override
-    public Expression.Literal.LongLiteral newDecimalInteger(InputPosition p, String image, boolean negated) {
+    public LongLiteral newDecimalInteger(InputPosition p, String image, boolean negated) {
         try {
             long value = Long.parseLong(image);
-            return ImmutableLongLiteral.builder().value(negated ? -value : value).build();
+            return new MyLongLiteral(negated ? -value : value);
         } catch (NumberFormatException e) {
             if (negated && LONG_MIN_VALUE_DECIMAL_STRING.equals(image)) {
-                return ImmutableLongLiteral.builder().value(Long.MIN_VALUE).build();
+                return new MyLongLiteral(Long.MIN_VALUE);
             } else {
                 throw e;
             }
@@ -77,37 +104,33 @@ class GdsAstFactory extends AstFactoryAdapter {
 
     @Override
     public Expression newTrueLiteral(InputPosition p) {
-        return Expression.Literal.TrueLiteral.INSTANCE;
+        return TrueLiteral.INSTANCE;
     }
 
     @Override
     public Expression newFalseLiteral(InputPosition p) {
-        return Expression.Literal.FalseLiteral.INSTANCE;
+        return FalseLiteral.INSTANCE;
     }
 
     @Override
     public Expression newString(InputPosition p, String image) {
-        return ImmutableStringLiteral.builder().value(image).build();
+        return new MyStringLiteral(image);
     }
 
     @Override
     public Expression hasLabelsOrTypes(Expression subject, List<ASTFactory.StringPos<InputPosition>> labels) {
-        if (subject instanceof Expression.LeafExpression.Variable) {
-            var variable = (Expression.LeafExpression.Variable) subject;
+        if (subject instanceof Variable) {
+            var variable = (Variable) subject;
             if (variable.name().equals("n")) {
-                var nodeLabels = labels.stream().map(l -> l.string).map(NodeLabel::of).collect(Collectors.toList());
-                return ImmutableHasNodeLabels.builder().in(subject).addAllNodeLabels(nodeLabels).build();
+                var nodeLabels = labels.stream().map(l -> l.string).map(NodeLabel::of).toList();
+                return new MyHasNodeLabels(subject, nodeLabels);
             } else if (variable.name().equals("r")) {
                 var relationshipTypes = labels
                     .stream()
                     .map(l -> l.string)
                     .map(RelationshipType::of)
-                    .collect(Collectors.toList());
-                return ImmutableHasRelationshipTypes
-                    .builder()
-                    .in(subject)
-                    .addAllRelationshipTypes(relationshipTypes)
-                    .build();
+                    .toList();
+                return new MyHasRelationshipTypes(subject, relationshipTypes);
             }
             throw new IllegalArgumentException(formatWithLocale(
                 "Invalid variable `%s`. Use `n` for nodes and `r` for relationships.",
@@ -119,14 +142,11 @@ class GdsAstFactory extends AstFactoryAdapter {
     }
 
     @Override
-    public Expression.UnaryExpression.Property property(
-        Expression subject,
-        ASTFactory.StringPos<InputPosition> propertyKeyName
-    ) {
+    public Property property(Expression subject, ASTFactory.StringPos<InputPosition> propertyKeyName) {
         var propertyKey = propertyKeyName.string;
         var propertyType = properties.getOrDefault(propertyKey, ValueType.UNKNOWN);
 
-        return ImmutableProperty.builder().in(subject).propertyKey(propertyKey).valueType(propertyType).build();
+        return new MyProperty(subject, propertyKey, propertyType);
     }
 
     @Override
@@ -137,91 +157,88 @@ class GdsAstFactory extends AstFactoryAdapter {
         boolean distinct,
         List<Expression> arguments
     ) {
-        switch (toLowerCaseWithLocale(name)) {
-            case Expression.Function.Degree.NAME: {
-                var relationshipTypes = arguments
-                    .stream()
-                    .filter(expr -> {
-                        if (expr instanceof Expression.Literal.StringLiteral) {
-                            return true;
-                        }
-                        throw new IllegalArgumentException(formatWithLocale(
-                            "Invalid argument for `%s`. Only strings are allowed. Got `%s`.",
-                            Expression.Function.Degree.NAME,
-                            expr.prettyString()
-                        ));
-
-                    })
-                    .map(expr -> (Expression.Literal.StringLiteral) expr)
-                    .map(Expression.Literal.StringLiteral::value)
-                    .map(RelationshipType::of)
-                    .collect(Collectors.toSet());
-
-                return ImmutableDegree.builder().typeSelection(relationshipTypes).build();
-            }
-            default:
-                throw new UnsupportedOperationException(
-                    prettySuggestions(
-                        formatWithLocale("Unknown function `%s`.", name),
-                        name,
-                        Set.of(Expression.Function.Degree.NAME)
+        if (toLowerCaseWithLocale(name).equals(Degree.NAME)) {
+            var relationshipTypes = arguments
+                .stream()
+                .filter(expr -> {
+                    if (expr instanceof StringLiteral) {
+                        return true;
+                    }
+                    throw new IllegalArgumentException(formatWithLocale(
+                        "Invalid argument for `%s`. Only strings are allowed. Got `%s`.",
+                        Degree.NAME,
+                        expr.prettyString()
                     ));
+
+                })
+                .map(expr -> (StringLiteral) expr)
+                .map(StringLiteral::value)
+                .map(RelationshipType::of)
+                .collect(Collectors.toSet());
+
+            return new MyDegree(relationshipTypes);
         }
+        throw new UnsupportedOperationException(
+            prettySuggestions(
+                formatWithLocale("Unknown function `%s`.", name),
+                name,
+                Set.of(Degree.NAME)
+            ));
     }
 
     @Override
     public Expression or(InputPosition p, Expression lhs, Expression rhs) {
-        return ImmutableOr.builder().lhs(lhs).rhs(rhs).build();
+        return new MyOr(lhs, rhs);
     }
 
     @Override
     public Expression xor(InputPosition p, Expression lhs, Expression rhs) {
-        return ImmutableXor.builder().lhs(lhs).rhs(rhs).build();
+        return new MyXor(lhs, rhs);
     }
 
     @Override
     public Expression and(InputPosition p, Expression lhs, Expression rhs) {
-        return ImmutableAnd.builder().lhs(lhs).rhs(rhs).build();
+        return new MyAnd(lhs, rhs);
     }
 
     @Override
     public Expression not(Expression e) {
-        return ImmutableNot.builder().in(e).build();
+        return new MyNot(e);
     }
 
     @Override
     public Expression eq(InputPosition p, Expression lhs, Expression rhs) {
-        return ImmutableEqual.builder().lhs(lhs).rhs(rhs).build();
+        return new MyEqual(lhs, rhs);
     }
 
     @Override
     public Expression neq(InputPosition p, Expression lhs, Expression rhs) {
-        return ImmutableNotEqual.builder().lhs(lhs).rhs(rhs).build();
+        return new MyNotEqual(lhs, rhs);
     }
 
     @Override
     public Expression neq2(InputPosition p, Expression lhs, Expression rhs) {
-        return ImmutableNotEqual.builder().lhs(lhs).rhs(rhs).build();
+        return new MyNotEqual(lhs, rhs);
     }
 
     @Override
     public Expression lte(InputPosition p, Expression lhs, Expression rhs) {
-        return ImmutableLessThanOrEquals.builder().lhs(lhs).rhs(rhs).build();
+        return new MyLessThanOrEquals(lhs, rhs);
     }
 
     @Override
     public Expression gte(InputPosition p, Expression lhs, Expression rhs) {
-        return ImmutableGreaterThanOrEquals.builder().lhs(lhs).rhs(rhs).build();
+        return new MyGreaterThanOrEquals(lhs, rhs);
     }
 
     @Override
     public Expression lt(InputPosition p, Expression lhs, Expression rhs) {
-        return ImmutableLessThan.builder().lhs(lhs).rhs(rhs).build();
+        return new MyLessThan(lhs, rhs);
     }
 
     @Override
     public Expression gt(InputPosition p, Expression lhs, Expression rhs) {
-        return ImmutableGreaterThan.builder().lhs(lhs).rhs(rhs).build();
+        return new MyGreaterThan(lhs, rhs);
     }
 
     @Override

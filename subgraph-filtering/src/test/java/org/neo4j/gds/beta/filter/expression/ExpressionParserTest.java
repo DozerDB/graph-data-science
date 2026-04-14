@@ -26,12 +26,39 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.api.nodeproperties.ValueType;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.And;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.Equal;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyAnd;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyEqual;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyGreaterThan;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyGreaterThanOrEquals;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyLessThan;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyLessThanOrEquals;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyNotEqual;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyOr;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyXor;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.NotEqual;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.Or;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.Xor;
+import org.neo4j.gds.beta.filter.expression.Expression.Function.MyDegree;
+import org.neo4j.gds.beta.filter.expression.Expression.LeafExpression.MyVariable;
+import org.neo4j.gds.beta.filter.expression.Expression.Literal.DoubleLiteral;
+import org.neo4j.gds.beta.filter.expression.Expression.Literal.FalseLiteral;
+import org.neo4j.gds.beta.filter.expression.Expression.Literal.LongLiteral;
+import org.neo4j.gds.beta.filter.expression.Expression.Literal.MyDoubleLiteral;
+import org.neo4j.gds.beta.filter.expression.Expression.Literal.MyLongLiteral;
+import org.neo4j.gds.beta.filter.expression.Expression.Literal.MyStringLiteral;
+import org.neo4j.gds.beta.filter.expression.Expression.Literal.TrueLiteral;
+import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.MyNot;
+import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.MyProperty;
+import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.Not;
 import org.neo4j.gds.utils.StringJoining;
 import org.opencypher.v9_0.parser.javacc.ParseException;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -45,18 +72,13 @@ class ExpressionParserTest {
 
     static Stream<Arguments> nots() {
         return Stream.of(
-            Arguments.of("NOT TRUE", ImmutableNot.builder().in(ImmutableTrueLiteral.INSTANCE).build()),
-            Arguments.of("NOT FALSE", ImmutableNot.builder().in(ImmutableFalseLiteral.INSTANCE).build()),
+            Arguments.of("NOT TRUE", new MyNot(TrueLiteral.INSTANCE)),
+            Arguments.of("NOT FALSE", new MyNot(FalseLiteral.INSTANCE)),
             Arguments.of(
                 "NOT (TRUE OR FALSE)",
-                ImmutableNot
-                    .builder()
-                    .in(ImmutableOr
-                        .builder()
-                        .lhs(ImmutableTrueLiteral.INSTANCE)
-                        .rhs(ImmutableFalseLiteral.INSTANCE)
-                        .build())
-                    .build()
+                new MyNot(
+                    new MyOr(TrueLiteral.INSTANCE, FalseLiteral.INSTANCE)
+                )
             )
         );
     }
@@ -64,7 +86,7 @@ class ExpressionParserTest {
 
     @ParameterizedTest
     @MethodSource("nots")
-    void nots(String cypher, Expression.UnaryExpression.Not expected) throws ParseException {
+    void nots(String cypher, Not expected) throws ParseException {
         var actual = ExpressionParser.parse(cypher, Map.of());
         assertThat(actual).isEqualTo(expected);
     }
@@ -74,44 +96,44 @@ class ExpressionParserTest {
     @Test
     void trueLiteral() throws ParseException {
         var actual = ExpressionParser.parse("TRUE", Map.of());
-        assertThat(actual).isEqualTo(Expression.Literal.TrueLiteral.INSTANCE);
+        assertThat(actual).isEqualTo(TrueLiteral.INSTANCE);
     }
 
     @Test
     void falseLiteral() throws ParseException {
         var actual = ExpressionParser.parse("FALSE", Map.of());
-        assertThat(actual).isEqualTo(Expression.Literal.FalseLiteral.INSTANCE);
+        assertThat(actual).isEqualTo(FalseLiteral.INSTANCE);
     }
 
     static Stream<Arguments> longs() {
         return Stream.of(
-            Arguments.of("42", ImmutableLongLiteral.of(42)),
-            Arguments.of("-42", ImmutableLongLiteral.of(-42)),
-            Arguments.of("0", ImmutableLongLiteral.of(0)),
-            Arguments.of("1337", ImmutableLongLiteral.of(1337))
+            Arguments.of("42", new MyLongLiteral(42)),
+            Arguments.of("-42", new MyLongLiteral(-42)),
+            Arguments.of("0", new MyLongLiteral(0)),
+            Arguments.of("1337", new MyLongLiteral(1337))
         );
     }
 
     @ParameterizedTest
     @MethodSource("longs")
-    void longLiteral(String cypher, Expression.Literal.LongLiteral expected) throws ParseException {
+    void longLiteral(String cypher, LongLiteral expected) throws ParseException {
         var actual = ExpressionParser.parse(cypher, Map.of());
         assertThat(actual).isEqualTo(expected);
     }
 
     static Stream<Arguments> doubles() {
         return Stream.of(
-            Arguments.of("42.0", ImmutableDoubleLiteral.of(42.0)),
-            Arguments.of("-42.0", ImmutableDoubleLiteral.of(-42.0)),
-            Arguments.of("0.0", ImmutableDoubleLiteral.of(0.0)),
-            Arguments.of("13.37", ImmutableDoubleLiteral.of(13.37)),
-            Arguments.of("-13.37", ImmutableDoubleLiteral.of(-13.37))
+            Arguments.of("42.0", new MyDoubleLiteral(42.0)),
+            Arguments.of("-42.0", new MyDoubleLiteral(-42.0)),
+            Arguments.of("0.0", new MyDoubleLiteral(0.0)),
+            Arguments.of("13.37", new MyDoubleLiteral(13.37)),
+            Arguments.of("-13.37", new MyDoubleLiteral(-13.37))
         );
     }
 
     @ParameterizedTest
     @MethodSource("doubles")
-    void doubleLiteral(String cypher, Expression.Literal.DoubleLiteral expected) throws ParseException {
+    void doubleLiteral(String cypher, DoubleLiteral expected) throws ParseException {
         var actual = ExpressionParser.parse(cypher, Map.of());
         assertThat(actual).isEqualTo(expected);
     }
@@ -120,7 +142,7 @@ class ExpressionParserTest {
     @ValueSource(strings = {"Foo", "bar", "BAZ", "42"})
     void stringLiteral(String string) throws ParseException {
         var actual = ExpressionParser.parse("'" + string + "'", Map.of());
-        assertThat(actual).isEqualTo(ImmutableStringLiteral.builder().value(string).build());
+        assertThat(actual).isEqualTo(new MyStringLiteral(string));
     }
 
     // binary
@@ -129,31 +151,27 @@ class ExpressionParserTest {
         return Stream.of(
             Arguments.of(
                 "TRUE AND FALSE",
-                ImmutableAnd.builder().lhs(ImmutableTrueLiteral.INSTANCE).rhs(ImmutableFalseLiteral.INSTANCE).build()
+                new MyAnd(TrueLiteral.INSTANCE, FalseLiteral.INSTANCE)
             ),
             Arguments.of(
                 "TRUE AND TRUE",
-                ImmutableAnd.builder().lhs(ImmutableTrueLiteral.INSTANCE).rhs(ImmutableTrueLiteral.INSTANCE).build()
+                new MyAnd(TrueLiteral.INSTANCE, TrueLiteral.INSTANCE)
             ),
             Arguments.of(
                 "TRUE AND TRUE AND FALSE",
-                ImmutableAnd.builder()
-                    .lhs(
-                        ImmutableAnd
-                            .builder()
-                            .lhs(ImmutableTrueLiteral.INSTANCE)
-                            .rhs(ImmutableTrueLiteral.INSTANCE)
-                            .build()
-                    )
-                    .rhs(ImmutableFalseLiteral.INSTANCE)
-                    .build()
+                new MyAnd(
+                    new MyAnd(
+                        TrueLiteral.INSTANCE,
+                        TrueLiteral.INSTANCE
+                    ), FalseLiteral.INSTANCE
+                )
             )
         );
     }
 
     @ParameterizedTest
     @MethodSource("ands")
-    void and(String cypher, Expression.BinaryExpression.And expected) throws ParseException {
+    void and(String cypher, And expected) throws ParseException {
         var actual = ExpressionParser.parse(cypher, Map.of());
         assertThat(actual).isEqualTo(expected);
     }
@@ -162,29 +180,27 @@ class ExpressionParserTest {
         return Stream.of(
             Arguments.of(
                 "TRUE OR FALSE",
-                ImmutableOr.builder().lhs(ImmutableTrueLiteral.INSTANCE).rhs(ImmutableFalseLiteral.INSTANCE).build()
+                new MyOr(TrueLiteral.INSTANCE, FalseLiteral.INSTANCE)
             ),
             Arguments.of(
                 "TRUE OR TRUE",
-                ImmutableOr.builder().lhs(ImmutableTrueLiteral.INSTANCE).rhs(ImmutableTrueLiteral.INSTANCE).build()
+                new MyOr(TrueLiteral.INSTANCE, TrueLiteral.INSTANCE)
             ),
             Arguments.of(
                 "TRUE OR TRUE OR FALSE",
-                ImmutableOr.builder()
-                    .lhs(
-                        ImmutableOr.builder()
-                            .lhs(ImmutableTrueLiteral.INSTANCE)
-                            .rhs(ImmutableTrueLiteral.INSTANCE)
-                            .build()
-                    ).rhs(ImmutableFalseLiteral.INSTANCE)
-                    .build()
+                new MyOr(
+                    new MyOr(
+                        TrueLiteral.INSTANCE,
+                        TrueLiteral.INSTANCE
+                    ), FalseLiteral.INSTANCE
+                )
             )
         );
     }
 
     @ParameterizedTest
     @MethodSource("ors")
-    void or(String cypher, Expression.BinaryExpression.Or expected) throws ParseException {
+    void or(String cypher, Or expected) throws ParseException {
         var actual = ExpressionParser.parse(cypher, Map.of());
         assertThat(actual).isEqualTo(expected);
     }
@@ -193,29 +209,27 @@ class ExpressionParserTest {
         return Stream.of(
             Arguments.of(
                 "TRUE XOR FALSE",
-                ImmutableXor.builder().lhs(ImmutableTrueLiteral.INSTANCE).rhs(ImmutableFalseLiteral.INSTANCE).build()
+                new MyXor(TrueLiteral.INSTANCE, FalseLiteral.INSTANCE)
             ),
             Arguments.of(
                 "TRUE XOR TRUE",
-                ImmutableXor.builder().lhs(ImmutableTrueLiteral.INSTANCE).rhs(ImmutableTrueLiteral.INSTANCE).build()
+                new MyXor(TrueLiteral.INSTANCE, TrueLiteral.INSTANCE)
             ),
             Arguments.of(
                 "TRUE XOR TRUE XOR FALSE",
-                ImmutableXor.builder()
-                    .lhs(ImmutableXor
-                        .builder()
-                        .lhs(ImmutableTrueLiteral.INSTANCE)
-                        .rhs(ImmutableTrueLiteral.INSTANCE)
-                        .build())
-                    .rhs(ImmutableFalseLiteral.INSTANCE)
-                    .build()
+                new MyXor(
+                    new MyXor(
+                        TrueLiteral.INSTANCE,
+                        TrueLiteral.INSTANCE
+                    ), FalseLiteral.INSTANCE
+                )
             )
         );
     }
 
     @ParameterizedTest
     @MethodSource("xors")
-    void xor(String cypher, Expression.BinaryExpression.Xor expected) throws ParseException {
+    void xor(String cypher, Xor expected) throws ParseException {
         var actual = ExpressionParser.parse(cypher, Map.of());
         assertThat(actual).isEqualTo(expected);
     }
@@ -224,29 +238,28 @@ class ExpressionParserTest {
         return Stream.of(
             Arguments.of(
                 "TRUE = FALSE",
-                ImmutableEqual.builder().lhs(ImmutableTrueLiteral.INSTANCE).rhs(ImmutableFalseLiteral.INSTANCE).build()
+                new MyEqual(TrueLiteral.INSTANCE, FalseLiteral.INSTANCE)
             ),
             Arguments.of(
                 "TRUE = TRUE",
-                ImmutableEqual.builder().lhs(ImmutableTrueLiteral.INSTANCE).rhs(ImmutableTrueLiteral.INSTANCE).build()
+                new MyEqual(TrueLiteral.INSTANCE, TrueLiteral.INSTANCE)
             ),
             Arguments.of(
                 "TRUE = (TRUE = FALSE)",
-                ImmutableEqual.builder()
-                    .lhs(ImmutableTrueLiteral.INSTANCE)
-                    .rhs(
-                        ImmutableEqual.builder()
-                            .lhs(ImmutableTrueLiteral.INSTANCE)
-                            .rhs(ImmutableFalseLiteral.INSTANCE)
-                            .build())
-                    .build()
+                new MyEqual(
+                    TrueLiteral.INSTANCE,
+                    new MyEqual(
+                        TrueLiteral.INSTANCE,
+                        FalseLiteral.INSTANCE
+                    )
+                )
             )
         );
     }
 
     @ParameterizedTest
     @MethodSource("equals")
-    void equal(String cypher, Expression.BinaryExpression.Equal expected) throws ParseException {
+    void equal(String cypher, Equal expected) throws ParseException {
         var actual = ExpressionParser.parse(cypher, Map.of());
         assertThat(actual).isEqualTo(expected);
     }
@@ -255,45 +268,41 @@ class ExpressionParserTest {
         return Stream.of(
             Arguments.of(
                 "TRUE <> FALSE",
-                ImmutableNotEqual
-                    .builder()
-                    .lhs(ImmutableTrueLiteral.INSTANCE)
-                    .rhs(ImmutableFalseLiteral.INSTANCE)
-                    .build()
+                new MyNotEqual(
+                    TrueLiteral.INSTANCE,
+                    FalseLiteral.INSTANCE
+                )
             ),
             Arguments.of(
                 "TRUE != FALSE",
-                ImmutableNotEqual
-                    .builder()
-                    .lhs(ImmutableTrueLiteral.INSTANCE)
-                    .rhs(ImmutableFalseLiteral.INSTANCE)
-                    .build()
+                new MyNotEqual(
+                    TrueLiteral.INSTANCE,
+                    FalseLiteral.INSTANCE
+                )
             ),
             Arguments.of(
                 "TRUE <> TRUE",
-                ImmutableNotEqual
-                    .builder()
-                    .lhs(ImmutableTrueLiteral.INSTANCE)
-                    .rhs(ImmutableTrueLiteral.INSTANCE)
-                    .build()
+                new MyNotEqual(
+                    TrueLiteral.INSTANCE,
+                    TrueLiteral.INSTANCE
+                )
             ),
             Arguments.of(
                 "TRUE <> (TRUE <> FALSE)",
-                ImmutableNotEqual.builder()
-                    .lhs(ImmutableTrueLiteral.INSTANCE)
-                    .rhs(ImmutableNotEqual.builder()
-                        .lhs(ImmutableTrueLiteral.INSTANCE)
-                        .rhs(ImmutableFalseLiteral.INSTANCE)
-                        .build()
-                    ).build()
-
+                new MyNotEqual(
+                    TrueLiteral.INSTANCE,
+                    new MyNotEqual(
+                        TrueLiteral.INSTANCE,
+                        FalseLiteral.INSTANCE
+                    )
+                )
             )
         );
     }
 
     @ParameterizedTest
     @MethodSource("notEquals")
-    void notEqual(String cypher, Expression.BinaryExpression.NotEqual expected) throws ParseException {
+    void notEqual(String cypher, NotEqual expected) throws ParseException {
         var actual = ExpressionParser.parse(cypher, Map.of());
         assertThat(actual).isEqualTo(expected);
     }
@@ -301,20 +310,18 @@ class ExpressionParserTest {
     @Test
     void greaterThan() throws ParseException {
         var actual = ExpressionParser.parse("1337 > 42", Map.of());
-        assertThat(actual).isEqualTo(ImmutableGreaterThan.builder()
-            .lhs(ImmutableLongLiteral.of(1337))
-            .rhs(ImmutableLongLiteral.of(42))
-            .build()
+        assertThat(actual).isEqualTo(new MyGreaterThan(
+            new MyLongLiteral(1337),
+            new MyLongLiteral(42))
         );
     }
 
     @Test
     void greaterThanEquals() throws ParseException {
         var actual = ExpressionParser.parse("1337 >= 42", Map.of());
-        assertThat(actual).isEqualTo(ImmutableGreaterThanOrEquals.builder()
-            .lhs(ImmutableLongLiteral.of(1337))
-            .rhs(ImmutableLongLiteral.of(42))
-            .build()
+        assertThat(actual).isEqualTo(new MyGreaterThanOrEquals(
+            new MyLongLiteral(1337),
+            new MyLongLiteral(42))
         );
     }
 
@@ -322,21 +329,19 @@ class ExpressionParserTest {
     void lessThan() throws ParseException {
         var actual = ExpressionParser.parse("1337 < 42", Map.of());
 
-        assertThat(actual).isEqualTo(ImmutableLessThan.builder()
-            .lhs(ImmutableLongLiteral.of(1337))
-            .rhs(ImmutableLongLiteral.of(42))
-            .build()
-        );
+        assertThat(actual).isEqualTo(new MyLessThan(
+            new MyLongLiteral(1337),
+            new MyLongLiteral(42)
+        ));
     }
 
     @Test
     void lessThanEquals() throws ParseException {
         var actual = ExpressionParser.parse("1337 <= 42", Map.of());
-        assertThat(actual).isEqualTo(ImmutableLessThanOrEquals.builder()
-            .lhs(ImmutableLongLiteral.of(1337))
-            .rhs(ImmutableLongLiteral.of(42))
-            .build()
-        );
+        assertThat(actual).isEqualTo(new MyLessThanOrEquals(
+            new MyLongLiteral(1337),
+            new MyLongLiteral(42)
+        ));
     }
 
     @ParameterizedTest
@@ -365,12 +370,11 @@ class ExpressionParserTest {
     void property(String exprString, Map<String, ValueType> properties, ValueType expectedValueType) throws ParseException {
         var expr = ExpressionParser.parse(exprString, properties);
 
-        assertThat(expr).isEqualTo(ImmutableProperty
-            .builder()
-            .in(ImmutableVariable.builder().name("n").build())
-            .propertyKey("foo")
-            .valueType(expectedValueType)
-            .build());
+        assertThat(expr).isEqualTo(new MyProperty(
+            new MyVariable("n"),
+            "foo",
+            expectedValueType
+        ));
     }
 
     static Stream<List<String>> types() {
@@ -386,9 +390,9 @@ class ExpressionParserTest {
     void degree(Collection<String> types) throws ParseException {
         var exprString = StringJoining.join(types.stream().map(type -> "'" + type + "'"), ", ", "degree(", ")");
         var expr = ExpressionParser.parse(exprString, Map.of());
-        assertThat(expr).isEqualTo(ImmutableDegree.builder()
-            .addAllTypeSelection(types.stream().map(RelationshipType::of).collect(Collectors.toSet()))
-            .build());
+        assertThat(expr).isEqualTo(new MyDegree(
+            types.stream().map(RelationshipType::of).collect(Collectors.toSet())
+        ));
     }
 
     @ParameterizedTest
@@ -396,7 +400,7 @@ class ExpressionParserTest {
     void degreeIsCaseInsensitive(String funcName) throws ParseException {
         var exprString = funcName + "()";
         var expr = ExpressionParser.parse(exprString, Map.of());
-        assertThat(expr).isEqualTo(ImmutableDegree.builder().build());
+        assertThat(expr).isEqualTo(new MyDegree(Set.of()));
     }
 
     @Test

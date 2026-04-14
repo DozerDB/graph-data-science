@@ -19,10 +19,8 @@
  */
 package org.neo4j.gds.beta.filter.expression;
 
-import org.immutables.value.Value;
 import org.neo4j.gds.NodeLabel;
 import org.neo4j.gds.RelationshipType;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.api.nodeproperties.ValueType;
 import org.neo4j.gds.utils.StringJoining;
 
@@ -35,33 +33,28 @@ import java.util.stream.Collectors;
 import static org.neo4j.gds.core.StringSimilarity.prettySuggestions;
 import static org.neo4j.gds.utils.StringFormatting.formatWithLocale;
 
-@SuppressWarnings("immutables:subtype")
 public interface Expression {
     double TRUE = 1.0D;
     double FALSE = 0.0D;
     double EPSILON = 1E-5;
     double VARIABLE = Double.NaN;
 
-    @Value.Derived
     double evaluate(EvaluationContext context);
 
     default String prettyString() {
         return toString();
     }
 
-    @Value.Derived
     default ValidationContext validate(ValidationContext context) {
         return context;
     }
 
-    @Value.Default
     default ValueType valueType() {
         return ValueType.DOUBLE;
     }
 
     interface LeafExpression extends Expression {
 
-        @ValueClass
         interface Variable extends LeafExpression {
 
             String name();
@@ -98,6 +91,37 @@ public interface Expression {
             }
         }
 
+        record MyVariable(String name) implements Variable {
+            @Override
+            public double evaluate(EvaluationContext context) {
+                return VARIABLE;
+            }
+            @Override
+            public ValidationContext validate(ValidationContext context) {
+                if (context.context() == ValidationContext.Context.NODE) {
+                    if (!name().equals("n")) {
+                        return context.withError(new SemanticErrors.SemanticError(formatWithLocale(
+                            "Invalid variable `%s`. Only `n` is allowed for nodes",
+                            name()
+                        )));
+                    }
+                } else if (context.context() == ValidationContext.Context.RELATIONSHIP) {
+                    if (!name().equals("r")) {
+                        return context.withError(new SemanticErrors.SemanticError(formatWithLocale(
+                            "Invalid variable `%s`. Only `r` is allowed for relationships",
+                            name()
+                        )));
+                    }
+                }
+
+                return context;
+            }
+            @Override
+            public String prettyString() {
+                return name;
+            }
+        }
+
     }
 
     interface UnaryExpression extends Expression {
@@ -109,12 +133,10 @@ public interface Expression {
             return in().validate(context);
         }
 
-        @ValueClass
         interface Property extends UnaryExpression {
 
             String propertyKey();
 
-            @Value.Derived
             @Override
             default double evaluate(EvaluationContext context) {
                 return context.getProperty(propertyKey(), valueType());
@@ -155,11 +177,46 @@ public interface Expression {
             }
         }
 
-        @ValueClass
+        record MyProperty(Expression in, String propertyKey, ValueType valueType) implements Property {
+            @Override
+            public double evaluate(EvaluationContext context) {
+                return context.getProperty(propertyKey, valueType);
+            }
+            @Override
+            public ValidationContext validate(ValidationContext context) {
+                context = in().validate(context);
+                Set<String> availablePropertyKeys = context.availableProperties().keySet();
+                if (!availablePropertyKeys.contains(propertyKey())) {
+                    return context.withError(new SemanticErrors.SemanticError(prettySuggestions(
+                        formatWithLocale(
+                            "Unknown property `%s`.",
+                            propertyKey()
+                        ),
+                        propertyKey(),
+                        availablePropertyKeys
+                    )));
+                }
+                var propertyType = context.availableProperties().get(propertyKey());
+                if (propertyType != ValueType.LONG && propertyType != ValueType.DOUBLE) {
+                    return context.withError(new SemanticErrors.SemanticError(
+                        formatWithLocale(
+                            "Unsupported property type `%s` for expression `%s`. Supported types %s",
+                            propertyType.name(),
+                            prettyString(),
+                            StringJoining.join(List.of(ValueType.LONG.name(), ValueType.DOUBLE.name()))
+                        )));
+                }
+                return context;
+            }
+            @Override
+            public String prettyString() {
+                return in().prettyString() + "." + propertyKey();
+            }
+        }
+
         interface HasNodeLabels extends UnaryExpression {
             List<NodeLabel> nodeLabels();
 
-            @Value.Derived
             @Override
             default double evaluate(EvaluationContext context) {
                 return context.hasNodeLabels(nodeLabels()) ? TRUE : FALSE;
@@ -184,11 +241,31 @@ public interface Expression {
             }
         }
 
-        @ValueClass
+        record MyHasNodeLabels(Expression in, List<NodeLabel> nodeLabels) implements HasNodeLabels {
+            @Override
+            public double evaluate(EvaluationContext context) {
+                return context.hasNodeLabels(nodeLabels) ? TRUE : FALSE;
+            }
+            @Override
+            public ValidationContext validate(ValidationContext context) {
+                context = in().validate(context);
+                var availableNodeLabels = context.availableNodeLabels();
+                for (var nodeLabel : nodeLabels()) {
+                    if (!availableNodeLabels.contains(nodeLabel)) {
+                        context = trackMissingLabelOrTypeError(
+                            context,
+                            nodeLabel.name,
+                            availableNodeLabels.stream().map(NodeLabel::name).collect(Collectors.toList())
+                        );
+                    }
+                }
+                return context;
+            }
+        }
+
         interface HasRelationshipTypes extends UnaryExpression {
             List<RelationshipType> relationshipTypes();
 
-            @Value.Derived
             @Override
             default double evaluate(EvaluationContext context) {
                 return context.hasRelationshipTypes(relationshipTypes()) ? TRUE : FALSE;
@@ -213,10 +290,30 @@ public interface Expression {
             }
         }
 
-        @ValueClass
+        record MyHasRelationshipTypes(Expression in, List<RelationshipType> relationshipTypes) implements HasRelationshipTypes {
+            @Override
+            public double evaluate(EvaluationContext context) {
+                return context.hasRelationshipTypes(relationshipTypes) ? TRUE : FALSE;
+            }
+            @Override
+            public ValidationContext validate(ValidationContext context) {
+                context = in().validate(context);
+                var availableRelationshipTypes = context.availableRelationshipTypes();
+                for (var relationshipType : relationshipTypes()) {
+                    if (!availableRelationshipTypes.contains(relationshipType)) {
+                        context = trackMissingLabelOrTypeError(
+                            context,
+                            relationshipType.name,
+                            availableRelationshipTypes.stream().map(RelationshipType::name).toList()
+                        );
+                    }
+                }
+                return context;
+            }
+        }
+
         interface Not extends UnaryExpression {
 
-            @Value.Derived
             @Override
             default double evaluate(EvaluationContext context) {
                 return in().evaluate(context) == TRUE ? FALSE : TRUE;
@@ -224,8 +321,13 @@ public interface Expression {
 
         }
 
-        @ValueClass
-        @SuppressWarnings("immutables:from")
+        record MyNot(Expression in) implements Not {
+            @Override
+            public double evaluate(EvaluationContext context) {
+                return in().evaluate(context) == FALSE ? TRUE : FALSE;
+            }
+        }
+
         interface NewParameter extends UnaryExpression {
 
             @Override
@@ -236,7 +338,6 @@ public interface Expression {
                 return ValueType.UNKNOWN;
             }
 
-            @Value.Derived
             @Override
             default double evaluate(EvaluationContext context) {
                 var resolvedParameter = context.resolveParameter(in().name());
@@ -248,6 +349,25 @@ public interface Expression {
 
             @Override
             default ValidationContext validate(ValidationContext context) {
+                return context;
+            }
+        }
+
+        record MyNewParameter(LeafExpression.Variable in) implements NewParameter {
+            @Override
+            public ValueType valueType() {
+                return ValueType.UNKNOWN;
+            }
+            @Override
+            public double evaluate(EvaluationContext context) {
+                var resolvedParameter = context.resolveParameter(in().name());
+                if (resolvedParameter instanceof Long) {
+                    return resolvedParameter.longValue();
+                }
+                return resolvedParameter.doubleValue();
+            }
+            @Override
+            public ValidationContext validate(ValidationContext context) {
                 return context;
             }
         }
@@ -265,42 +385,60 @@ public interface Expression {
             return rhs().validate(context);
         }
 
-        @ValueClass
         interface And extends BinaryExpression {
-            @Value.Derived
             @Override
             default double evaluate(EvaluationContext context) {
                 return lhs().evaluate(context) == TRUE && rhs().evaluate(context) == TRUE
                     ? TRUE
                     : FALSE;
             }
-
         }
 
-        @ValueClass
         interface Or extends BinaryExpression {
 
-            @Value.Derived
             @Override
             default double evaluate(EvaluationContext context) {
                 return lhs().evaluate(context) == TRUE || rhs().evaluate(context) == TRUE
                     ? TRUE
                     : FALSE;
             }
-
         }
 
-        @ValueClass
         interface Xor extends BinaryExpression {
 
-            @Value.Derived
             @Override
             default double evaluate(EvaluationContext context) {
                 return lhs().evaluate(context) == TRUE ^ rhs().evaluate(context) == TRUE
                     ? TRUE
                     : FALSE;
             }
+        }
 
+        record MyAnd(Expression lhs, Expression rhs) implements And {
+            @Override
+            public double evaluate(EvaluationContext context) {
+                return lhs.evaluate(context) == TRUE && rhs().evaluate(context) == TRUE
+                    ? TRUE
+                    : FALSE;
+            }
+        }
+
+        record MyOr(Expression lhs, Expression rhs) implements Or {
+            @Override
+            public double evaluate(EvaluationContext context) {
+                return lhs().evaluate(context) == TRUE || rhs().evaluate(context) == TRUE
+                    ? TRUE
+                    : FALSE;
+            }
+        }
+
+        record MyXor(Expression lhs, Expression rhs) implements Xor {
+            @Override
+            public double evaluate(EvaluationContext context) {
+                return lhs().evaluate(context) == TRUE ^ rhs().evaluate(context) == TRUE
+                    ? TRUE
+                    : FALSE;
+            }
         }
 
         interface BinaryArithmeticExpression extends BinaryExpression {
@@ -357,7 +495,6 @@ public interface Expression {
             }
         }
 
-        @ValueClass
         interface Equal extends BinaryArithmeticExpression {
 
             @Override
@@ -376,7 +513,6 @@ public interface Expression {
             }
         }
 
-        @ValueClass
         interface NotEqual extends BinaryArithmeticExpression {
 
             @Override
@@ -395,7 +531,6 @@ public interface Expression {
             }
         }
 
-        @ValueClass
         interface GreaterThan extends BinaryArithmeticExpression {
 
             @Override
@@ -414,7 +549,42 @@ public interface Expression {
             }
         }
 
-        @ValueClass
+        record MyEqual(Expression lhs, Expression rhs) implements BinaryExpression.Equal {
+            public double evaluateLong(long lhsValue, long rhsValue) {
+                return lhsValue == rhsValue ? TRUE : FALSE;
+            }
+            public double evaluateDouble(double lhsValue, double rhsValue) {
+                return Math.abs(lhsValue - rhsValue) < EPSILON ? TRUE : FALSE;
+            }
+            public String prettyString() {
+                return lhs.prettyString() + " = " + rhs.prettyString();
+            }
+        }
+
+        record MyNotEqual(Expression lhs, Expression rhs) implements BinaryExpression.NotEqual {
+            public double evaluateLong(long lhsValue, long rhsValue) {
+                return lhsValue != rhsValue ? TRUE : FALSE;
+            }
+            public double evaluateDouble(double lhsValue, double rhsValue) {
+                return Math.abs(lhsValue - rhsValue) > EPSILON ? TRUE : FALSE;
+            }
+            public String prettyString() {
+                return lhs.prettyString() + " <> " + rhs.prettyString();
+            }
+        }
+
+        record MyGreaterThan(Expression lhs, Expression rhs) implements BinaryExpression.GreaterThan {
+            public double evaluateLong(long lhsValue, long rhsValue) {
+                return lhsValue > rhsValue ? TRUE : FALSE;
+            }
+            public double evaluateDouble(double lhsValue, double rhsValue) {
+                return (lhsValue - rhsValue) > EPSILON ? TRUE : FALSE;
+            }
+            public String prettyString() {
+                return lhs.prettyString() + " > " + rhs.prettyString();
+            }
+        }
+
         interface GreaterThanOrEquals extends BinaryArithmeticExpression {
 
             @Override
@@ -433,16 +603,13 @@ public interface Expression {
             }
         }
 
-        @ValueClass
         interface LessThan extends BinaryArithmeticExpression {
 
-            @Value.Derived
             @Override
             default double evaluateLong(long lhsValue, long rhsValue) {
                 return lhsValue < rhsValue ? TRUE : FALSE;
             }
 
-            @Value.Derived
             @Override
             default double evaluateDouble(double lhsValue, double rhsValue) {
                 return (rhsValue - lhsValue) > EPSILON ? TRUE : FALSE;
@@ -454,7 +621,6 @@ public interface Expression {
             }
         }
 
-        @ValueClass
         interface LessThanOrEquals extends BinaryArithmeticExpression {
 
             @Override
@@ -472,10 +638,54 @@ public interface Expression {
                 return lhs().prettyString() + " <= " + rhs().prettyString();
             }
         }
+
+        record MyGreaterThanOrEquals(Expression lhs, Expression rhs) implements BinaryExpression.GreaterThanOrEquals {
+            @Override
+            public double evaluateLong(long lhsValue, long rhsValue) {
+                return lhsValue >= rhsValue ? TRUE : FALSE;
+            }
+            @Override
+            public double evaluateDouble(double lhsValue, double rhsValue) {
+                return lhsValue > rhsValue || Math.abs(lhsValue - rhsValue) < EPSILON ? TRUE : FALSE;
+            }
+            @Override
+            public String prettyString() {
+                return lhs().prettyString() + " >= " + rhs().prettyString();
+            }
+        }
+
+        record MyLessThan(Expression lhs, Expression rhs) implements BinaryExpression.LessThan {
+            @Override
+            public double evaluateLong(long lhsValue, long rhsValue) {
+                return lhsValue < rhsValue ? TRUE : FALSE;
+            }
+            @Override
+            public double evaluateDouble(double lhsValue, double rhsValue) {
+                return (rhsValue - lhsValue) > EPSILON ? TRUE : FALSE;
+            }
+            @Override
+            public String prettyString() {
+                return lhs.prettyString() + " < " + rhs.prettyString();
+            }
+        }
+
+        record MyLessThanOrEquals(Expression lhs, Expression rhs) implements BinaryExpression.LessThanOrEquals {
+            @Override
+            public double evaluateLong(long lhsValue, long rhsValue) {
+                return lhsValue <= rhsValue ? TRUE : FALSE;
+            }
+            @Override
+            public double evaluateDouble(double lhsValue, double rhsValue) {
+                return lhsValue < rhsValue || (rhsValue - lhsValue) > -EPSILON ? TRUE : FALSE;
+            }
+            @Override
+            public String prettyString() {
+                return lhs().prettyString() + " <= " + rhs().prettyString();
+            }
+        }
     }
 
     interface Literal extends Expression {
-        @ValueClass
         interface LongLiteral extends Literal {
             long value();
 
@@ -484,7 +694,6 @@ public interface Expression {
                 return ValueType.LONG;
             }
 
-            @Value.Derived
             @Override
             default double evaluate(EvaluationContext context) {
                 return Double.longBitsToDouble(value());
@@ -494,7 +703,21 @@ public interface Expression {
             default String prettyString() {return Long.toString(value());}
         }
 
-        @ValueClass
+        record MyLongLiteral(long value) implements LongLiteral {
+            @Override
+            public ValueType valueType() {
+                return ValueType.LONG;
+            }
+            @Override
+            public double evaluate(EvaluationContext context) {
+                return Double.longBitsToDouble(value);
+            }
+            @Override
+            public String prettyString() {
+                return Long.toString(value);
+            }
+        }
+
         interface DoubleLiteral extends Literal {
             double value();
 
@@ -503,7 +726,6 @@ public interface Expression {
                 return ValueType.DOUBLE;
             }
 
-            @Value.Derived
             @Override
             default double evaluate(EvaluationContext context) {
                 return value();
@@ -513,31 +735,55 @@ public interface Expression {
 
         }
 
-        @ValueClass
+        record MyDoubleLiteral(double value) implements DoubleLiteral {
+            @Override
+            public ValueType valueType() {
+                return ValueType.DOUBLE;
+            }
+            @Override
+            public double evaluate(EvaluationContext context) {
+                return value;
+            }
+            @Override
+            public String prettyString() {
+                return Double.toString(value);
+            }
+        }
+
         interface TrueLiteral extends Literal {
 
-            TrueLiteral INSTANCE = ImmutableTrueLiteral.builder().build();
+            TrueLiteral INSTANCE = new MyTrueLiteral();
 
-            @Value.Derived
             @Override
             default double evaluate(EvaluationContext context) {
                 return TRUE;
             }
         }
 
-        @ValueClass
+        record MyTrueLiteral() implements TrueLiteral {
+            @Override
+            public double evaluate(EvaluationContext context) {
+                return TRUE;
+            }
+        }
+
         interface FalseLiteral extends Literal {
 
-            FalseLiteral INSTANCE = ImmutableFalseLiteral.builder().build();
+            FalseLiteral INSTANCE = new MyFalseLiteral();
 
-            @Value.Derived
             @Override
             default double evaluate(EvaluationContext context) {
                 return FALSE;
             }
         }
 
-        @ValueClass
+        record MyFalseLiteral() implements FalseLiteral {
+            @Override
+            public double evaluate(EvaluationContext context) {
+                return FALSE;
+            }
+        }
+
         interface StringLiteral extends Literal {
             String value();
 
@@ -546,13 +792,27 @@ public interface Expression {
                 return ValueType.DOUBLE;
             }
 
-            @Value.Derived
             @Override
             default double evaluate(EvaluationContext context) {
                 return value().hashCode();
             }
 
             default String prettyString() {return value();}
+        }
+
+        record MyStringLiteral(String value) implements StringLiteral {
+            @Override
+            public ValueType valueType() {
+                return ValueType.DOUBLE;
+            }
+            @Override
+            public double evaluate(EvaluationContext context) {
+                return value().hashCode();
+            }
+            @Override
+            public String prettyString() {
+                return value;
+            }
         }
     }
 
@@ -602,12 +862,11 @@ public interface Expression {
 
     interface Function extends Expression {
 
-        @ValueClass
         interface Degree extends Function {
 
             String NAME = "degree";
 
-            List<RelationshipType> typeSelection();
+            Set<RelationshipType> typeSelection();
 
             @Override
             default ValueType valueType() {
@@ -617,6 +876,18 @@ public interface Expression {
             @Override
             default double evaluate(EvaluationContext context) {
                 long degree = context.degree(this.typeSelection());
+                return Double.longBitsToDouble(degree);
+            }
+        }
+
+        record MyDegree(Set<RelationshipType> typeSelection) implements Degree {
+            @Override
+            public ValueType valueType() {
+                return ValueType.LONG;
+            }
+            @Override
+            public double evaluate(EvaluationContext context) {
+                long degree = context.degree(this.typeSelection);
                 return Double.longBitsToDouble(degree);
             }
         }

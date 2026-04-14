@@ -26,6 +26,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.neo4j.gds.NodeLabel;
 import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.api.nodeproperties.ValueType;
+import org.neo4j.gds.beta.filter.expression.Expression.LeafExpression.MyVariable;
+import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.MyHasNodeLabels;
+import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.MyHasRelationshipTypes;
+import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.MyProperty;
 import org.neo4j.gds.utils.StringJoining;
 import org.opencypher.v9_0.parser.javacc.ParseException;
 
@@ -52,7 +56,7 @@ class ExpressionValidationTest {
         );
 
         assertThatExceptionOfType(SemanticErrors.class)
-            .isThrownBy(() -> ImmutableVariable.builder().name(variableName).build().validate(context).validate())
+            .isThrownBy(() -> new MyVariable(variableName).validate(context).validate())
             .withMessageContaining(formatWithLocale(
                 "Invalid variable `%s`. Only `n` is allowed for nodes",
                 variableName
@@ -71,7 +75,7 @@ class ExpressionValidationTest {
         );
 
         assertThatExceptionOfType(SemanticErrors.class)
-            .isThrownBy(() -> ImmutableVariable.builder().name(variableName).build().validate(context).validate())
+            .isThrownBy(() -> new MyVariable(variableName).validate(context).validate())
             .withMessageContaining(formatWithLocale(
                 "Invalid variable `%s`. Only `r` is allowed for relationships",
                 variableName
@@ -87,11 +91,11 @@ class ExpressionValidationTest {
             Map.of("bar", ValueType.DOUBLE),
             List.of()
         );
-        var expr = ImmutableProperty
-            .builder()
-            .in(ImmutableVariable.builder().name("n").build())
-            .propertyKey("baz")
-            .build();
+        var expr = new MyProperty(
+            new MyVariable("n"),
+            "baz",
+            ValueType.DOUBLE
+        );
 
         assertThatExceptionOfType(SemanticErrors.class)
             .isThrownBy(() -> expr.validate(context).validate())
@@ -108,11 +112,10 @@ class ExpressionValidationTest {
             List.of()
         );
 
-        var expr = ImmutableHasNodeLabels
-            .builder()
-            .in(ImmutableVariable.builder().name("n").build())
-            .addNodeLabels(NodeLabel.of("foo"), NodeLabel.of("baz"))
-            .build();
+        var expr = new MyHasNodeLabels(
+            new MyVariable("n"),
+            List.of(NodeLabel.of("foo"), NodeLabel.of("baz"))
+        );
 
         assertThatExceptionOfType(SemanticErrors.class)
             .isThrownBy(() -> expr.validate(context).validate())
@@ -129,11 +132,10 @@ class ExpressionValidationTest {
             List.of()
         );
 
-        var expr = ImmutableHasRelationshipTypes
-            .builder()
-            .in(ImmutableVariable.builder().name("n").build())
-            .addRelationshipTypes(RelationshipType.of("foo"), RelationshipType.of("baz"))
-            .build();
+        var expr = new MyHasRelationshipTypes(
+            new MyVariable("n"),
+            List.of(RelationshipType.of("foo"), RelationshipType.of("baz"))
+        );
 
         assertThatExceptionOfType(SemanticErrors.class)
             .isThrownBy(() -> expr.validate(context).validate())
