@@ -385,11 +385,11 @@ public interface CypherMapAccess {
         if (!missingAndCandidates.isEmpty()) {
             missingAndCandidates.addAll(missingWithoutCandidates);
             String message = String.join(". ", missingAndCandidates);
-            return ImmutableStringAndScore.of(message, score);
+            return new ConfigKeyValidation.StringAndScore(message, score);
         }
         if (hasAtLastOneKey && !missingWithoutCandidates.isEmpty()) {
             String message = String.join(". ", missingWithoutCandidates);
-            return ImmutableStringAndScore.of(message, score);
+            return new ConfigKeyValidation.StringAndScore(message, score);
         }
         // null here means, that there are no valid keys, but also no good error message
         // so it might be that this pair is not relevant for the error reporting

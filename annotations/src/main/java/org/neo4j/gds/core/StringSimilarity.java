@@ -72,7 +72,7 @@ public final class StringSimilarity {
         CharConverter converter
     ) {
         return candidates.stream()
-            .map(candidate -> ImmutableStringAndScore.of(candidate, jaroWinkler(value, candidate, converter)))
+            .map(candidate -> new ConfigKeyValidation.StringAndScore(candidate, jaroWinkler(value, candidate, converter)))
             .filter(candidate -> candidate.value() > REQUIRED_SIMILARITY)
             .sorted()
             .map(ConfigKeyValidation.StringAndScore::string)

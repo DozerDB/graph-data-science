@@ -19,7 +19,6 @@
  */
 package org.neo4j.gds.core;
 
-import org.immutables.value.Value;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -96,26 +95,14 @@ public final class ConfigKeyValidation {
         ));
     }
 
-    @Value.Style(
-        allParameters = true,
-        builderVisibility = Value.Style.BuilderVisibility.SAME,
-        jdkOnly = true,
-        overshadowImplementation = true,
-        typeAbstract = "*",
-        visibility = Value.Style.ImplementationVisibility.PUBLIC
-    )
-    @Value.Immutable(copy = false, builder = false)
-    interface StringAndScore extends Comparable<StringAndScore> {
-        String string();
+    record StringAndScore(String string, double value) implements Comparable<StringAndScore> {
 
-        double value();
-
-        default boolean isBetterThan(@Nullable StringAndScore other) {
+        boolean isBetterThan(@Nullable StringAndScore other) {
             return other == null || value() > other.value();
         }
 
         @Override
-        default int compareTo(StringAndScore other) {
+        public int compareTo(StringAndScore other) {
             // ORDER BY score DESC, string ASC
             int result = Double.compare(other.value(), this.value());
             return (result != 0) ? result : this.string().compareTo(other.string());
