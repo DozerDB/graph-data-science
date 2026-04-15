@@ -26,10 +26,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.neo4j.gds.NodeLabel;
 import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.api.nodeproperties.ValueType;
-import org.neo4j.gds.beta.filter.expression.Expression.LeafExpression.MyVariable;
-import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.MyHasNodeLabels;
-import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.MyHasRelationshipTypes;
-import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.MyProperty;
+import org.neo4j.gds.beta.filter.expression.Expression.LeafExpression.Variable;
+import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.HasNodeLabels;
+import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.HasRelationshipTypes;
+import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.Property;
 import org.neo4j.gds.utils.StringJoining;
 import org.opencypher.v9_0.parser.javacc.ParseException;
 
@@ -56,7 +56,7 @@ class ExpressionValidationTest {
         );
 
         assertThatExceptionOfType(SemanticErrors.class)
-            .isThrownBy(() -> new MyVariable(variableName).validate(context).validate())
+            .isThrownBy(() -> new Variable(variableName).validate(context).validate())
             .withMessageContaining(formatWithLocale(
                 "Invalid variable `%s`. Only `n` is allowed for nodes",
                 variableName
@@ -75,7 +75,7 @@ class ExpressionValidationTest {
         );
 
         assertThatExceptionOfType(SemanticErrors.class)
-            .isThrownBy(() -> new MyVariable(variableName).validate(context).validate())
+            .isThrownBy(() -> new Variable(variableName).validate(context).validate())
             .withMessageContaining(formatWithLocale(
                 "Invalid variable `%s`. Only `r` is allowed for relationships",
                 variableName
@@ -91,8 +91,8 @@ class ExpressionValidationTest {
             Map.of("bar", ValueType.DOUBLE),
             List.of()
         );
-        var expr = new MyProperty(
-            new MyVariable("n"),
+        var expr = new Property(
+            new Variable("n"),
             "baz",
             ValueType.DOUBLE
         );
@@ -112,8 +112,8 @@ class ExpressionValidationTest {
             List.of()
         );
 
-        var expr = new MyHasNodeLabels(
-            new MyVariable("n"),
+        var expr = new HasNodeLabels(
+            new Variable("n"),
             List.of(NodeLabel.of("foo"), NodeLabel.of("baz"))
         );
 
@@ -132,8 +132,8 @@ class ExpressionValidationTest {
             List.of()
         );
 
-        var expr = new MyHasRelationshipTypes(
-            new MyVariable("n"),
+        var expr = new HasRelationshipTypes(
+            new Variable("n"),
             List.of(RelationshipType.of("foo"), RelationshipType.of("baz"))
         );
 

@@ -22,32 +22,26 @@ package org.neo4j.gds.beta.filter.expression;
 import org.neo4j.gds.NodeLabel;
 import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.api.nodeproperties.ValueType;
-import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyAnd;
-import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyEqual;
-import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyGreaterThan;
-import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyGreaterThanOrEquals;
-import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyLessThan;
-import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyLessThanOrEquals;
-import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyNotEqual;
-import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyOr;
-import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyXor;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.And;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.Equal;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.GreaterThan;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.GreaterThanOrEquals;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.LessThan;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.LessThanOrEquals;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.NotEqual;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.Or;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.Xor;
 import org.neo4j.gds.beta.filter.expression.Expression.Function.Degree;
-import org.neo4j.gds.beta.filter.expression.Expression.Function.MyDegree;
-import org.neo4j.gds.beta.filter.expression.Expression.LeafExpression.MyVariable;
 import org.neo4j.gds.beta.filter.expression.Expression.LeafExpression.Variable;
 import org.neo4j.gds.beta.filter.expression.Expression.Literal.DoubleLiteral;
 import org.neo4j.gds.beta.filter.expression.Expression.Literal.FalseLiteral;
 import org.neo4j.gds.beta.filter.expression.Expression.Literal.LongLiteral;
-import org.neo4j.gds.beta.filter.expression.Expression.Literal.MyDoubleLiteral;
-import org.neo4j.gds.beta.filter.expression.Expression.Literal.MyLongLiteral;
-import org.neo4j.gds.beta.filter.expression.Expression.Literal.MyStringLiteral;
 import org.neo4j.gds.beta.filter.expression.Expression.Literal.StringLiteral;
 import org.neo4j.gds.beta.filter.expression.Expression.Literal.TrueLiteral;
-import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.MyHasNodeLabels;
-import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.MyHasRelationshipTypes;
-import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.MyNewParameter;
-import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.MyNot;
-import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.MyProperty;
+import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.HasNodeLabels;
+import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.HasRelationshipTypes;
+import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.NewParameter;
+import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.Not;
 import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.Property;
 import org.opencypher.v9_0.ast.factory.ASTFactory;
 
@@ -72,7 +66,7 @@ class GdsAstFactory extends AstFactoryAdapter {
 
     @Override
     public Variable newVariable(InputPosition p, String name) {
-        return new MyVariable(name);
+        return new Variable(name);
     }
 
 
@@ -80,22 +74,22 @@ class GdsAstFactory extends AstFactoryAdapter {
     public Expression newParameter(
         InputPosition p, Variable v
     ) {
-        return new MyNewParameter(v);
+        return new NewParameter(v);
     }
 
     @Override
     public DoubleLiteral newDouble(InputPosition p, String image) {
-        return new MyDoubleLiteral(Double.parseDouble(image));
+        return new DoubleLiteral(Double.parseDouble(image));
     }
 
     @Override
     public LongLiteral newDecimalInteger(InputPosition p, String image, boolean negated) {
         try {
             long value = Long.parseLong(image);
-            return new MyLongLiteral(negated ? -value : value);
+            return new LongLiteral(negated ? -value : value);
         } catch (NumberFormatException e) {
             if (negated && LONG_MIN_VALUE_DECIMAL_STRING.equals(image)) {
-                return new MyLongLiteral(Long.MIN_VALUE);
+                return new LongLiteral(Long.MIN_VALUE);
             } else {
                 throw e;
             }
@@ -114,23 +108,22 @@ class GdsAstFactory extends AstFactoryAdapter {
 
     @Override
     public Expression newString(InputPosition p, String image) {
-        return new MyStringLiteral(image);
+        return new StringLiteral(image);
     }
 
     @Override
     public Expression hasLabelsOrTypes(Expression subject, List<ASTFactory.StringPos<InputPosition>> labels) {
-        if (subject instanceof Variable) {
-            var variable = (Variable) subject;
+        if (subject instanceof Variable variable) {
             if (variable.name().equals("n")) {
                 var nodeLabels = labels.stream().map(l -> l.string).map(NodeLabel::of).toList();
-                return new MyHasNodeLabels(subject, nodeLabels);
+                return new HasNodeLabels(subject, nodeLabels);
             } else if (variable.name().equals("r")) {
                 var relationshipTypes = labels
                     .stream()
                     .map(l -> l.string)
                     .map(RelationshipType::of)
                     .toList();
-                return new MyHasRelationshipTypes(subject, relationshipTypes);
+                return new HasRelationshipTypes(subject, relationshipTypes);
             }
             throw new IllegalArgumentException(formatWithLocale(
                 "Invalid variable `%s`. Use `n` for nodes and `r` for relationships.",
@@ -146,7 +139,7 @@ class GdsAstFactory extends AstFactoryAdapter {
         var propertyKey = propertyKeyName.string;
         var propertyType = properties.getOrDefault(propertyKey, ValueType.UNKNOWN);
 
-        return new MyProperty(subject, propertyKey, propertyType);
+        return new Property(subject, propertyKey, propertyType);
     }
 
     @Override
@@ -176,7 +169,7 @@ class GdsAstFactory extends AstFactoryAdapter {
                 .map(RelationshipType::of)
                 .collect(Collectors.toSet());
 
-            return new MyDegree(relationshipTypes);
+            return new Degree(relationshipTypes);
         }
         throw new UnsupportedOperationException(
             prettySuggestions(
@@ -188,57 +181,57 @@ class GdsAstFactory extends AstFactoryAdapter {
 
     @Override
     public Expression or(InputPosition p, Expression lhs, Expression rhs) {
-        return new MyOr(lhs, rhs);
+        return new Or(lhs, rhs);
     }
 
     @Override
     public Expression xor(InputPosition p, Expression lhs, Expression rhs) {
-        return new MyXor(lhs, rhs);
+        return new Xor(lhs, rhs);
     }
 
     @Override
     public Expression and(InputPosition p, Expression lhs, Expression rhs) {
-        return new MyAnd(lhs, rhs);
+        return new And(lhs, rhs);
     }
 
     @Override
     public Expression not(Expression e) {
-        return new MyNot(e);
+        return new Not(e);
     }
 
     @Override
     public Expression eq(InputPosition p, Expression lhs, Expression rhs) {
-        return new MyEqual(lhs, rhs);
+        return new Equal(lhs, rhs);
     }
 
     @Override
     public Expression neq(InputPosition p, Expression lhs, Expression rhs) {
-        return new MyNotEqual(lhs, rhs);
+        return new NotEqual(lhs, rhs);
     }
 
     @Override
     public Expression neq2(InputPosition p, Expression lhs, Expression rhs) {
-        return new MyNotEqual(lhs, rhs);
+        return new NotEqual(lhs, rhs);
     }
 
     @Override
     public Expression lte(InputPosition p, Expression lhs, Expression rhs) {
-        return new MyLessThanOrEquals(lhs, rhs);
+        return new LessThanOrEquals(lhs, rhs);
     }
 
     @Override
     public Expression gte(InputPosition p, Expression lhs, Expression rhs) {
-        return new MyGreaterThanOrEquals(lhs, rhs);
+        return new GreaterThanOrEquals(lhs, rhs);
     }
 
     @Override
     public Expression lt(InputPosition p, Expression lhs, Expression rhs) {
-        return new MyLessThan(lhs, rhs);
+        return new LessThan(lhs, rhs);
     }
 
     @Override
     public Expression gt(InputPosition p, Expression lhs, Expression rhs) {
-        return new MyGreaterThan(lhs, rhs);
+        return new GreaterThan(lhs, rhs);
     }
 
     @Override

@@ -28,30 +28,22 @@ import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.api.nodeproperties.ValueType;
 import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.And;
 import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.Equal;
-import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyAnd;
-import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyEqual;
-import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyGreaterThan;
-import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyGreaterThanOrEquals;
-import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyLessThan;
-import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyLessThanOrEquals;
-import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyNotEqual;
-import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyOr;
-import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.MyXor;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.GreaterThan;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.GreaterThanOrEquals;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.LessThan;
+import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.LessThanOrEquals;
 import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.NotEqual;
 import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.Or;
 import org.neo4j.gds.beta.filter.expression.Expression.BinaryExpression.Xor;
-import org.neo4j.gds.beta.filter.expression.Expression.Function.MyDegree;
-import org.neo4j.gds.beta.filter.expression.Expression.LeafExpression.MyVariable;
+import org.neo4j.gds.beta.filter.expression.Expression.Function.Degree;
+import org.neo4j.gds.beta.filter.expression.Expression.LeafExpression.Variable;
 import org.neo4j.gds.beta.filter.expression.Expression.Literal.DoubleLiteral;
 import org.neo4j.gds.beta.filter.expression.Expression.Literal.FalseLiteral;
 import org.neo4j.gds.beta.filter.expression.Expression.Literal.LongLiteral;
-import org.neo4j.gds.beta.filter.expression.Expression.Literal.MyDoubleLiteral;
-import org.neo4j.gds.beta.filter.expression.Expression.Literal.MyLongLiteral;
-import org.neo4j.gds.beta.filter.expression.Expression.Literal.MyStringLiteral;
+import org.neo4j.gds.beta.filter.expression.Expression.Literal.StringLiteral;
 import org.neo4j.gds.beta.filter.expression.Expression.Literal.TrueLiteral;
-import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.MyNot;
-import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.MyProperty;
 import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.Not;
+import org.neo4j.gds.beta.filter.expression.Expression.UnaryExpression.Property;
 import org.neo4j.gds.utils.StringJoining;
 import org.opencypher.v9_0.parser.javacc.ParseException;
 
@@ -72,12 +64,12 @@ class ExpressionParserTest {
 
     static Stream<Arguments> nots() {
         return Stream.of(
-            Arguments.of("NOT TRUE", new MyNot(TrueLiteral.INSTANCE)),
-            Arguments.of("NOT FALSE", new MyNot(FalseLiteral.INSTANCE)),
+            Arguments.of("NOT TRUE", new Not(TrueLiteral.INSTANCE)),
+            Arguments.of("NOT FALSE", new Not(FalseLiteral.INSTANCE)),
             Arguments.of(
                 "NOT (TRUE OR FALSE)",
-                new MyNot(
-                    new MyOr(TrueLiteral.INSTANCE, FalseLiteral.INSTANCE)
+                new Not(
+                    new Or(TrueLiteral.INSTANCE, FalseLiteral.INSTANCE)
                 )
             )
         );
@@ -107,10 +99,10 @@ class ExpressionParserTest {
 
     static Stream<Arguments> longs() {
         return Stream.of(
-            Arguments.of("42", new MyLongLiteral(42)),
-            Arguments.of("-42", new MyLongLiteral(-42)),
-            Arguments.of("0", new MyLongLiteral(0)),
-            Arguments.of("1337", new MyLongLiteral(1337))
+            Arguments.of("42", new LongLiteral(42)),
+            Arguments.of("-42", new LongLiteral(-42)),
+            Arguments.of("0", new LongLiteral(0)),
+            Arguments.of("1337", new LongLiteral(1337))
         );
     }
 
@@ -123,11 +115,11 @@ class ExpressionParserTest {
 
     static Stream<Arguments> doubles() {
         return Stream.of(
-            Arguments.of("42.0", new MyDoubleLiteral(42.0)),
-            Arguments.of("-42.0", new MyDoubleLiteral(-42.0)),
-            Arguments.of("0.0", new MyDoubleLiteral(0.0)),
-            Arguments.of("13.37", new MyDoubleLiteral(13.37)),
-            Arguments.of("-13.37", new MyDoubleLiteral(-13.37))
+            Arguments.of("42.0", new DoubleLiteral(42.0)),
+            Arguments.of("-42.0", new DoubleLiteral(-42.0)),
+            Arguments.of("0.0", new DoubleLiteral(0.0)),
+            Arguments.of("13.37", new DoubleLiteral(13.37)),
+            Arguments.of("-13.37", new DoubleLiteral(-13.37))
         );
     }
 
@@ -142,7 +134,7 @@ class ExpressionParserTest {
     @ValueSource(strings = {"Foo", "bar", "BAZ", "42"})
     void stringLiteral(String string) throws ParseException {
         var actual = ExpressionParser.parse("'" + string + "'", Map.of());
-        assertThat(actual).isEqualTo(new MyStringLiteral(string));
+        assertThat(actual).isEqualTo(new StringLiteral(string));
     }
 
     // binary
@@ -151,16 +143,16 @@ class ExpressionParserTest {
         return Stream.of(
             Arguments.of(
                 "TRUE AND FALSE",
-                new MyAnd(TrueLiteral.INSTANCE, FalseLiteral.INSTANCE)
+                new And(TrueLiteral.INSTANCE, FalseLiteral.INSTANCE)
             ),
             Arguments.of(
                 "TRUE AND TRUE",
-                new MyAnd(TrueLiteral.INSTANCE, TrueLiteral.INSTANCE)
+                new And(TrueLiteral.INSTANCE, TrueLiteral.INSTANCE)
             ),
             Arguments.of(
                 "TRUE AND TRUE AND FALSE",
-                new MyAnd(
-                    new MyAnd(
+                new And(
+                    new And(
                         TrueLiteral.INSTANCE,
                         TrueLiteral.INSTANCE
                     ), FalseLiteral.INSTANCE
@@ -180,16 +172,16 @@ class ExpressionParserTest {
         return Stream.of(
             Arguments.of(
                 "TRUE OR FALSE",
-                new MyOr(TrueLiteral.INSTANCE, FalseLiteral.INSTANCE)
+                new Or(TrueLiteral.INSTANCE, FalseLiteral.INSTANCE)
             ),
             Arguments.of(
                 "TRUE OR TRUE",
-                new MyOr(TrueLiteral.INSTANCE, TrueLiteral.INSTANCE)
+                new Or(TrueLiteral.INSTANCE, TrueLiteral.INSTANCE)
             ),
             Arguments.of(
                 "TRUE OR TRUE OR FALSE",
-                new MyOr(
-                    new MyOr(
+                new Or(
+                    new Or(
                         TrueLiteral.INSTANCE,
                         TrueLiteral.INSTANCE
                     ), FalseLiteral.INSTANCE
@@ -209,16 +201,16 @@ class ExpressionParserTest {
         return Stream.of(
             Arguments.of(
                 "TRUE XOR FALSE",
-                new MyXor(TrueLiteral.INSTANCE, FalseLiteral.INSTANCE)
+                new Xor(TrueLiteral.INSTANCE, FalseLiteral.INSTANCE)
             ),
             Arguments.of(
                 "TRUE XOR TRUE",
-                new MyXor(TrueLiteral.INSTANCE, TrueLiteral.INSTANCE)
+                new Xor(TrueLiteral.INSTANCE, TrueLiteral.INSTANCE)
             ),
             Arguments.of(
                 "TRUE XOR TRUE XOR FALSE",
-                new MyXor(
-                    new MyXor(
+                new Xor(
+                    new Xor(
                         TrueLiteral.INSTANCE,
                         TrueLiteral.INSTANCE
                     ), FalseLiteral.INSTANCE
@@ -238,17 +230,17 @@ class ExpressionParserTest {
         return Stream.of(
             Arguments.of(
                 "TRUE = FALSE",
-                new MyEqual(TrueLiteral.INSTANCE, FalseLiteral.INSTANCE)
+                new Equal(TrueLiteral.INSTANCE, FalseLiteral.INSTANCE)
             ),
             Arguments.of(
                 "TRUE = TRUE",
-                new MyEqual(TrueLiteral.INSTANCE, TrueLiteral.INSTANCE)
+                new Equal(TrueLiteral.INSTANCE, TrueLiteral.INSTANCE)
             ),
             Arguments.of(
                 "TRUE = (TRUE = FALSE)",
-                new MyEqual(
+                new Equal(
                     TrueLiteral.INSTANCE,
-                    new MyEqual(
+                    new Equal(
                         TrueLiteral.INSTANCE,
                         FalseLiteral.INSTANCE
                     )
@@ -268,30 +260,30 @@ class ExpressionParserTest {
         return Stream.of(
             Arguments.of(
                 "TRUE <> FALSE",
-                new MyNotEqual(
+                new NotEqual(
                     TrueLiteral.INSTANCE,
                     FalseLiteral.INSTANCE
                 )
             ),
             Arguments.of(
                 "TRUE != FALSE",
-                new MyNotEqual(
+                new NotEqual(
                     TrueLiteral.INSTANCE,
                     FalseLiteral.INSTANCE
                 )
             ),
             Arguments.of(
                 "TRUE <> TRUE",
-                new MyNotEqual(
+                new NotEqual(
                     TrueLiteral.INSTANCE,
                     TrueLiteral.INSTANCE
                 )
             ),
             Arguments.of(
                 "TRUE <> (TRUE <> FALSE)",
-                new MyNotEqual(
+                new NotEqual(
                     TrueLiteral.INSTANCE,
-                    new MyNotEqual(
+                    new NotEqual(
                         TrueLiteral.INSTANCE,
                         FalseLiteral.INSTANCE
                     )
@@ -310,18 +302,18 @@ class ExpressionParserTest {
     @Test
     void greaterThan() throws ParseException {
         var actual = ExpressionParser.parse("1337 > 42", Map.of());
-        assertThat(actual).isEqualTo(new MyGreaterThan(
-            new MyLongLiteral(1337),
-            new MyLongLiteral(42))
+        assertThat(actual).isEqualTo(new GreaterThan(
+            new LongLiteral(1337),
+            new LongLiteral(42))
         );
     }
 
     @Test
     void greaterThanEquals() throws ParseException {
         var actual = ExpressionParser.parse("1337 >= 42", Map.of());
-        assertThat(actual).isEqualTo(new MyGreaterThanOrEquals(
-            new MyLongLiteral(1337),
-            new MyLongLiteral(42))
+        assertThat(actual).isEqualTo(new GreaterThanOrEquals(
+            new LongLiteral(1337),
+            new LongLiteral(42))
         );
     }
 
@@ -329,18 +321,18 @@ class ExpressionParserTest {
     void lessThan() throws ParseException {
         var actual = ExpressionParser.parse("1337 < 42", Map.of());
 
-        assertThat(actual).isEqualTo(new MyLessThan(
-            new MyLongLiteral(1337),
-            new MyLongLiteral(42)
+        assertThat(actual).isEqualTo(new LessThan(
+            new LongLiteral(1337),
+            new LongLiteral(42)
         ));
     }
 
     @Test
     void lessThanEquals() throws ParseException {
         var actual = ExpressionParser.parse("1337 <= 42", Map.of());
-        assertThat(actual).isEqualTo(new MyLessThanOrEquals(
-            new MyLongLiteral(1337),
-            new MyLongLiteral(42)
+        assertThat(actual).isEqualTo(new LessThanOrEquals(
+            new LongLiteral(1337),
+            new LongLiteral(42)
         ));
     }
 
@@ -370,8 +362,8 @@ class ExpressionParserTest {
     void property(String exprString, Map<String, ValueType> properties, ValueType expectedValueType) throws ParseException {
         var expr = ExpressionParser.parse(exprString, properties);
 
-        assertThat(expr).isEqualTo(new MyProperty(
-            new MyVariable("n"),
+        assertThat(expr).isEqualTo(new Property(
+            new Variable("n"),
             "foo",
             expectedValueType
         ));
@@ -390,7 +382,7 @@ class ExpressionParserTest {
     void degree(Collection<String> types) throws ParseException {
         var exprString = StringJoining.join(types.stream().map(type -> "'" + type + "'"), ", ", "degree(", ")");
         var expr = ExpressionParser.parse(exprString, Map.of());
-        assertThat(expr).isEqualTo(new MyDegree(
+        assertThat(expr).isEqualTo(new Degree(
             types.stream().map(RelationshipType::of).collect(Collectors.toSet())
         ));
     }
@@ -400,7 +392,7 @@ class ExpressionParserTest {
     void degreeIsCaseInsensitive(String funcName) throws ParseException {
         var exprString = funcName + "()";
         var expr = ExpressionParser.parse(exprString, Map.of());
-        assertThat(expr).isEqualTo(new MyDegree(Set.of()));
+        assertThat(expr).isEqualTo(new Degree(Set.of()));
     }
 
     @Test

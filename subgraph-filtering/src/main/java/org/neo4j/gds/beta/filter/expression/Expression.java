@@ -55,67 +55,32 @@ public interface Expression {
 
     interface LeafExpression extends Expression {
 
-        interface Variable extends LeafExpression {
-
-            String name();
-
-            @Override
-            default double evaluate(EvaluationContext context) {
-                return VARIABLE;
-            }
-
-            @Override
-            default ValidationContext validate(ValidationContext context) {
-                if (context.context() == ValidationContext.Context.NODE) {
-                    if (!name().equals("n")) {
-                        return context.withError(new SemanticErrors.SemanticError(formatWithLocale(
-                            "Invalid variable `%s`. Only `n` is allowed for nodes",
-                            name()
-                        )));
-                    }
-                } else if (context.context() == ValidationContext.Context.RELATIONSHIP) {
-                    if (!name().equals("r")) {
-                        return context.withError(new SemanticErrors.SemanticError(formatWithLocale(
-                            "Invalid variable `%s`. Only `r` is allowed for relationships",
-                            name()
-                        )));
-                    }
-                }
-
-                return context;
-            }
-
-            @Override
-            default String prettyString() {
-                return name();
-            }
-        }
-
-        record MyVariable(String name) implements Variable {
+        record Variable(String name) implements LeafExpression {
             @Override
             public double evaluate(EvaluationContext context) {
                 return VARIABLE;
             }
+
             @Override
             public ValidationContext validate(ValidationContext context) {
                 if (context.context() == ValidationContext.Context.NODE) {
-                    if (!name().equals("n")) {
+                    if (!name.equals("n")) {
                         return context.withError(new SemanticErrors.SemanticError(formatWithLocale(
                             "Invalid variable `%s`. Only `n` is allowed for nodes",
-                            name()
+                            name
                         )));
                     }
                 } else if (context.context() == ValidationContext.Context.RELATIONSHIP) {
-                    if (!name().equals("r")) {
+                    if (!name.equals("r")) {
                         return context.withError(new SemanticErrors.SemanticError(formatWithLocale(
                             "Invalid variable `%s`. Only `r` is allowed for relationships",
-                            name()
+                            name
                         )));
                     }
                 }
-
                 return context;
             }
+
             @Override
             public String prettyString() {
                 return name;
@@ -133,65 +98,19 @@ public interface Expression {
             return in().validate(context);
         }
 
-        interface Property extends UnaryExpression {
-
-            String propertyKey();
-
-            @Override
-            default double evaluate(EvaluationContext context) {
-                return context.getProperty(propertyKey(), valueType());
-            }
-
-            @Override
-            default ValidationContext validate(ValidationContext context) {
-                context = in().validate(context);
-
-                Set<String> availablePropertyKeys = context.availableProperties().keySet();
-
-                if (!availablePropertyKeys.contains(propertyKey())) {
-                    return context.withError(new SemanticErrors.SemanticError(prettySuggestions(
-                        formatWithLocale(
-                            "Unknown property `%s`.",
-                            propertyKey()
-                        ),
-                        propertyKey(),
-                        availablePropertyKeys
-                    )));
-                }
-                var propertyType = context.availableProperties().get(propertyKey());
-                if (propertyType != ValueType.LONG && propertyType != ValueType.DOUBLE) {
-                    return context.withError(new SemanticErrors.SemanticError(
-                        formatWithLocale(
-                            "Unsupported property type `%s` for expression `%s`. Supported types %s",
-                            propertyType.name(),
-                            prettyString(),
-                            StringJoining.join(List.of(ValueType.LONG.name(), ValueType.DOUBLE.name()))
-                        )));
-                }
-                return context;
-            }
-
-            @Override
-            default String prettyString() {
-                return in().prettyString() + "." + propertyKey();
-            }
-        }
-
-        record MyProperty(Expression in, String propertyKey, ValueType valueType) implements Property {
+        record Property(Expression in, String propertyKey, ValueType valueType) implements UnaryExpression {
             @Override
             public double evaluate(EvaluationContext context) {
                 return context.getProperty(propertyKey, valueType);
             }
+
             @Override
             public ValidationContext validate(ValidationContext context) {
-                context = in().validate(context);
+                context = in.validate(context);
                 Set<String> availablePropertyKeys = context.availableProperties().keySet();
                 if (!availablePropertyKeys.contains(propertyKey())) {
                     return context.withError(new SemanticErrors.SemanticError(prettySuggestions(
-                        formatWithLocale(
-                            "Unknown property `%s`.",
-                            propertyKey()
-                        ),
+                        formatWithLocale("Unknown property `%s`.", propertyKey()),
                         propertyKey(),
                         availablePropertyKeys
                     )));
@@ -210,45 +129,19 @@ public interface Expression {
             }
             @Override
             public String prettyString() {
-                return in().prettyString() + "." + propertyKey();
+                return in.prettyString() + "." + propertyKey();
             }
         }
 
-        interface HasNodeLabels extends UnaryExpression {
-            List<NodeLabel> nodeLabels();
-
-            @Override
-            default double evaluate(EvaluationContext context) {
-                return context.hasNodeLabels(nodeLabels()) ? TRUE : FALSE;
-            }
-
-            @Override
-            default ValidationContext validate(ValidationContext context) {
-                context = in().validate(context);
-
-                var availableNodeLabels = context.availableNodeLabels();
-
-                for (var nodeLabel : nodeLabels()) {
-                    if (!availableNodeLabels.contains(nodeLabel)) {
-                        context = trackMissingLabelOrTypeError(
-                            context,
-                            nodeLabel.name,
-                            availableNodeLabels.stream().map(NodeLabel::name).collect(Collectors.toList())
-                        );
-                    }
-                }
-                return context;
-            }
-        }
-
-        record MyHasNodeLabels(Expression in, List<NodeLabel> nodeLabels) implements HasNodeLabels {
+        record HasNodeLabels(Expression in, List<NodeLabel> nodeLabels) implements UnaryExpression {
             @Override
             public double evaluate(EvaluationContext context) {
                 return context.hasNodeLabels(nodeLabels) ? TRUE : FALSE;
             }
+
             @Override
             public ValidationContext validate(ValidationContext context) {
-                context = in().validate(context);
+                context = in.validate(context);
                 var availableNodeLabels = context.availableNodeLabels();
                 for (var nodeLabel : nodeLabels()) {
                     if (!availableNodeLabels.contains(nodeLabel)) {
@@ -263,41 +156,15 @@ public interface Expression {
             }
         }
 
-        interface HasRelationshipTypes extends UnaryExpression {
-            List<RelationshipType> relationshipTypes();
-
-            @Override
-            default double evaluate(EvaluationContext context) {
-                return context.hasRelationshipTypes(relationshipTypes()) ? TRUE : FALSE;
-            }
-
-            @Override
-            default ValidationContext validate(ValidationContext context) {
-                context = in().validate(context);
-
-                var availableRelationshipTypes = context.availableRelationshipTypes();
-
-                for (var relationshipType : relationshipTypes()) {
-                    if (!availableRelationshipTypes.contains(relationshipType)) {
-                        context = trackMissingLabelOrTypeError(
-                            context,
-                            relationshipType.name,
-                            availableRelationshipTypes.stream().map(RelationshipType::name).collect(Collectors.toList())
-                        );
-                    }
-                }
-                return context;
-            }
-        }
-
-        record MyHasRelationshipTypes(Expression in, List<RelationshipType> relationshipTypes) implements HasRelationshipTypes {
+        record HasRelationshipTypes(Expression in, List<RelationshipType> relationshipTypes) implements UnaryExpression {
             @Override
             public double evaluate(EvaluationContext context) {
                 return context.hasRelationshipTypes(relationshipTypes) ? TRUE : FALSE;
             }
+
             @Override
             public ValidationContext validate(ValidationContext context) {
-                context = in().validate(context);
+                context = in.validate(context);
                 var availableRelationshipTypes = context.availableRelationshipTypes();
                 for (var relationshipType : relationshipTypes()) {
                     if (!availableRelationshipTypes.contains(relationshipType)) {
@@ -312,60 +179,28 @@ public interface Expression {
             }
         }
 
-        interface Not extends UnaryExpression {
-
-            @Override
-            default double evaluate(EvaluationContext context) {
-                return in().evaluate(context) == TRUE ? FALSE : TRUE;
-            }
-
-        }
-
-        record MyNot(Expression in) implements Not {
+        record Not(Expression in) implements UnaryExpression {
             @Override
             public double evaluate(EvaluationContext context) {
-                return in().evaluate(context) == FALSE ? TRUE : FALSE;
+                return in.evaluate(context) == FALSE ? TRUE : FALSE;
             }
         }
 
-        interface NewParameter extends UnaryExpression {
-
-            @Override
-            LeafExpression.Variable in();
-
-            @Override
-            default ValueType valueType() {
-                return ValueType.UNKNOWN;
-            }
-
-            @Override
-            default double evaluate(EvaluationContext context) {
-                var resolvedParameter = context.resolveParameter(in().name());
-                if (resolvedParameter instanceof Long) {
-                    return resolvedParameter.longValue();
-                }
-                return resolvedParameter.doubleValue();
-            }
-
-            @Override
-            default ValidationContext validate(ValidationContext context) {
-                return context;
-            }
-        }
-
-        record MyNewParameter(LeafExpression.Variable in) implements NewParameter {
+        record NewParameter(LeafExpression.Variable in) implements UnaryExpression {
             @Override
             public ValueType valueType() {
                 return ValueType.UNKNOWN;
             }
+
             @Override
             public double evaluate(EvaluationContext context) {
-                var resolvedParameter = context.resolveParameter(in().name());
+                var resolvedParameter = context.resolveParameter(in.name());
                 if (resolvedParameter instanceof Long) {
                     return resolvedParameter.longValue();
                 }
                 return resolvedParameter.doubleValue();
             }
+
             @Override
             public ValidationContext validate(ValidationContext context) {
                 return context;
@@ -385,64 +220,34 @@ public interface Expression {
             return rhs().validate(context);
         }
 
-        interface And extends BinaryExpression {
-            @Override
-            default double evaluate(EvaluationContext context) {
-                return lhs().evaluate(context) == TRUE && rhs().evaluate(context) == TRUE
-                    ? TRUE
-                    : FALSE;
-            }
-        }
-
-        interface Or extends BinaryExpression {
-
-            @Override
-            default double evaluate(EvaluationContext context) {
-                return lhs().evaluate(context) == TRUE || rhs().evaluate(context) == TRUE
-                    ? TRUE
-                    : FALSE;
-            }
-        }
-
-        interface Xor extends BinaryExpression {
-
-            @Override
-            default double evaluate(EvaluationContext context) {
-                return lhs().evaluate(context) == TRUE ^ rhs().evaluate(context) == TRUE
-                    ? TRUE
-                    : FALSE;
-            }
-        }
-
-        record MyAnd(Expression lhs, Expression rhs) implements And {
+        record And(Expression lhs, Expression rhs) implements BinaryExpression {
             @Override
             public double evaluate(EvaluationContext context) {
-                return lhs.evaluate(context) == TRUE && rhs().evaluate(context) == TRUE
+                return lhs.evaluate(context) == TRUE && rhs.evaluate(context) == TRUE
                     ? TRUE
                     : FALSE;
             }
         }
 
-        record MyOr(Expression lhs, Expression rhs) implements Or {
+        record Or(Expression lhs, Expression rhs) implements BinaryExpression {
             @Override
             public double evaluate(EvaluationContext context) {
-                return lhs().evaluate(context) == TRUE || rhs().evaluate(context) == TRUE
+                return lhs.evaluate(context) == TRUE || rhs.evaluate(context) == TRUE
                     ? TRUE
                     : FALSE;
             }
         }
 
-        record MyXor(Expression lhs, Expression rhs) implements Xor {
+        record Xor(Expression lhs, Expression rhs) implements BinaryExpression {
             @Override
             public double evaluate(EvaluationContext context) {
-                return lhs().evaluate(context) == TRUE ^ rhs().evaluate(context) == TRUE
+                return lhs.evaluate(context) == TRUE ^ rhs.evaluate(context) == TRUE
                     ? TRUE
                     : FALSE;
             }
         }
 
         interface BinaryArithmeticExpression extends BinaryExpression {
-
             @Override
             default double evaluate(EvaluationContext context) {
                 var lhsValue = lhs().evaluate(context);
@@ -458,7 +263,6 @@ public interface Expression {
                 }
 
                 return evaluateDouble(lhsValue, rhsValue);
-
             }
 
             double evaluateLong(long lhsValue, long rhsValue);
@@ -495,189 +299,102 @@ public interface Expression {
             }
         }
 
-        interface Equal extends BinaryArithmeticExpression {
-
+        record Equal(Expression lhs, Expression rhs) implements BinaryArithmeticExpression {
             @Override
-            default double evaluateLong(long lhsValue, long rhsValue) {
-                return lhsValue == rhsValue ? TRUE : FALSE;
-            }
-
-            @Override
-            default double evaluateDouble(double lhsValue, double rhsValue) {
-                return Math.abs(lhsValue - rhsValue) < EPSILON ? TRUE : FALSE;
-            }
-
-            @Override
-            default String prettyString() {
-                return lhs().prettyString() + " = " + rhs().prettyString();
-            }
-        }
-
-        interface NotEqual extends BinaryArithmeticExpression {
-
-            @Override
-            default double evaluateLong(long lhsValue, long rhsValue) {
-                return lhsValue != rhsValue ? TRUE : FALSE;
-            }
-
-            @Override
-            default double evaluateDouble(double lhsValue, double rhsValue) {
-                return Math.abs(lhsValue - rhsValue) > EPSILON ? TRUE : FALSE;
-            }
-
-            @Override
-            default String prettyString() {
-                return lhs().prettyString() + " <> " + rhs().prettyString();
-            }
-        }
-
-        interface GreaterThan extends BinaryArithmeticExpression {
-
-            @Override
-            default double evaluateLong(long lhsValue, long rhsValue) {
-                return lhsValue > rhsValue ? TRUE : FALSE;
-            }
-
-            @Override
-            default double evaluateDouble(double lhsValue, double rhsValue) {
-                return (lhsValue - rhsValue) > EPSILON ? TRUE : FALSE;
-            }
-
-            @Override
-            default String prettyString() {
-                return lhs().prettyString() + " > " + rhs().prettyString();
-            }
-        }
-
-        record MyEqual(Expression lhs, Expression rhs) implements BinaryExpression.Equal {
             public double evaluateLong(long lhsValue, long rhsValue) {
                 return lhsValue == rhsValue ? TRUE : FALSE;
             }
+
+            @Override
             public double evaluateDouble(double lhsValue, double rhsValue) {
                 return Math.abs(lhsValue - rhsValue) < EPSILON ? TRUE : FALSE;
             }
+
+            @Override
             public String prettyString() {
                 return lhs.prettyString() + " = " + rhs.prettyString();
             }
         }
 
-        record MyNotEqual(Expression lhs, Expression rhs) implements BinaryExpression.NotEqual {
+        record NotEqual(Expression lhs, Expression rhs) implements BinaryArithmeticExpression {
+            @Override
             public double evaluateLong(long lhsValue, long rhsValue) {
                 return lhsValue != rhsValue ? TRUE : FALSE;
             }
+
+            @Override
             public double evaluateDouble(double lhsValue, double rhsValue) {
                 return Math.abs(lhsValue - rhsValue) > EPSILON ? TRUE : FALSE;
             }
+
+            @Override
             public String prettyString() {
                 return lhs.prettyString() + " <> " + rhs.prettyString();
             }
         }
 
-        record MyGreaterThan(Expression lhs, Expression rhs) implements BinaryExpression.GreaterThan {
+        record GreaterThan(Expression lhs, Expression rhs) implements BinaryArithmeticExpression {
+            @Override
             public double evaluateLong(long lhsValue, long rhsValue) {
                 return lhsValue > rhsValue ? TRUE : FALSE;
             }
+
+            @Override
             public double evaluateDouble(double lhsValue, double rhsValue) {
                 return (lhsValue - rhsValue) > EPSILON ? TRUE : FALSE;
             }
+
+            @Override
             public String prettyString() {
                 return lhs.prettyString() + " > " + rhs.prettyString();
             }
         }
 
-        interface GreaterThanOrEquals extends BinaryArithmeticExpression {
-
-            @Override
-            default double evaluateLong(long lhsValue, long rhsValue) {
-                return lhsValue >= rhsValue ? TRUE : FALSE;
-            }
-
-            @Override
-            default double evaluateDouble(double lhsValue, double rhsValue) {
-                return lhsValue > rhsValue || Math.abs(lhsValue - rhsValue) < EPSILON ? TRUE : FALSE;
-            }
-
-            @Override
-            default String prettyString() {
-                return lhs().prettyString() + " >= " + rhs().prettyString();
-            }
-        }
-
-        interface LessThan extends BinaryArithmeticExpression {
-
-            @Override
-            default double evaluateLong(long lhsValue, long rhsValue) {
-                return lhsValue < rhsValue ? TRUE : FALSE;
-            }
-
-            @Override
-            default double evaluateDouble(double lhsValue, double rhsValue) {
-                return (rhsValue - lhsValue) > EPSILON ? TRUE : FALSE;
-            }
-
-            @Override
-            default String prettyString() {
-                return lhs().prettyString() + " < " + rhs().prettyString();
-            }
-        }
-
-        interface LessThanOrEquals extends BinaryArithmeticExpression {
-
-            @Override
-            default double evaluateLong(long lhsValue, long rhsValue) {
-                return lhsValue <= rhsValue ? TRUE : FALSE;
-            }
-
-            @Override
-            default double evaluateDouble(double lhsValue, double rhsValue) {
-                return lhsValue < rhsValue || (rhsValue - lhsValue) > -EPSILON ? TRUE : FALSE;
-            }
-
-            @Override
-            default String prettyString() {
-                return lhs().prettyString() + " <= " + rhs().prettyString();
-            }
-        }
-
-        record MyGreaterThanOrEquals(Expression lhs, Expression rhs) implements BinaryExpression.GreaterThanOrEquals {
+        record GreaterThanOrEquals(Expression lhs, Expression rhs) implements BinaryArithmeticExpression {
             @Override
             public double evaluateLong(long lhsValue, long rhsValue) {
                 return lhsValue >= rhsValue ? TRUE : FALSE;
             }
+
             @Override
             public double evaluateDouble(double lhsValue, double rhsValue) {
                 return lhsValue > rhsValue || Math.abs(lhsValue - rhsValue) < EPSILON ? TRUE : FALSE;
             }
+
             @Override
             public String prettyString() {
                 return lhs().prettyString() + " >= " + rhs().prettyString();
             }
         }
 
-        record MyLessThan(Expression lhs, Expression rhs) implements BinaryExpression.LessThan {
+        record LessThan(Expression lhs, Expression rhs) implements BinaryArithmeticExpression {
             @Override
             public double evaluateLong(long lhsValue, long rhsValue) {
                 return lhsValue < rhsValue ? TRUE : FALSE;
             }
+
             @Override
             public double evaluateDouble(double lhsValue, double rhsValue) {
                 return (rhsValue - lhsValue) > EPSILON ? TRUE : FALSE;
             }
+
             @Override
             public String prettyString() {
                 return lhs.prettyString() + " < " + rhs.prettyString();
             }
         }
 
-        record MyLessThanOrEquals(Expression lhs, Expression rhs) implements BinaryExpression.LessThanOrEquals {
+        record LessThanOrEquals(Expression lhs, Expression rhs) implements BinaryArithmeticExpression {
             @Override
             public double evaluateLong(long lhsValue, long rhsValue) {
                 return lhsValue <= rhsValue ? TRUE : FALSE;
             }
+
             @Override
             public double evaluateDouble(double lhsValue, double rhsValue) {
                 return lhsValue < rhsValue || (rhsValue - lhsValue) > -EPSILON ? TRUE : FALSE;
             }
+
             @Override
             public String prettyString() {
                 return lhs().prettyString() + " <= " + rhs().prettyString();
@@ -686,129 +403,70 @@ public interface Expression {
     }
 
     interface Literal extends Expression {
-        interface LongLiteral extends Literal {
-            long value();
 
-            @Override
-            default ValueType valueType() {
-                return ValueType.LONG;
-            }
-
-            @Override
-            default double evaluate(EvaluationContext context) {
-                return Double.longBitsToDouble(value());
-            }
-
-            @Override
-            default String prettyString() {return Long.toString(value());}
-        }
-
-        record MyLongLiteral(long value) implements LongLiteral {
+        record LongLiteral(long value) implements Literal {
             @Override
             public ValueType valueType() {
                 return ValueType.LONG;
             }
+
             @Override
             public double evaluate(EvaluationContext context) {
                 return Double.longBitsToDouble(value);
             }
+
             @Override
             public String prettyString() {
                 return Long.toString(value);
             }
         }
 
-        interface DoubleLiteral extends Literal {
-            double value();
-
-            @Override
-            default ValueType valueType() {
-                return ValueType.DOUBLE;
-            }
-
-            @Override
-            default double evaluate(EvaluationContext context) {
-                return value();
-            }
-
-            default String prettyString() {return Double.toString(value());}
-
-        }
-
-        record MyDoubleLiteral(double value) implements DoubleLiteral {
+        record DoubleLiteral(double value) implements Literal {
             @Override
             public ValueType valueType() {
                 return ValueType.DOUBLE;
             }
+
             @Override
             public double evaluate(EvaluationContext context) {
                 return value;
             }
+
             @Override
             public String prettyString() {
                 return Double.toString(value);
             }
         }
 
-        interface TrueLiteral extends Literal {
+        record TrueLiteral() implements Literal {
+            public static final TrueLiteral INSTANCE = new TrueLiteral();
 
-            TrueLiteral INSTANCE = new MyTrueLiteral();
-
-            @Override
-            default double evaluate(EvaluationContext context) {
-                return TRUE;
-            }
-        }
-
-        record MyTrueLiteral() implements TrueLiteral {
             @Override
             public double evaluate(EvaluationContext context) {
                 return TRUE;
             }
         }
 
-        interface FalseLiteral extends Literal {
+        record FalseLiteral() implements Literal {
+            public static final FalseLiteral INSTANCE = new FalseLiteral();
 
-            FalseLiteral INSTANCE = new MyFalseLiteral();
-
-            @Override
-            default double evaluate(EvaluationContext context) {
-                return FALSE;
-            }
-        }
-
-        record MyFalseLiteral() implements FalseLiteral {
             @Override
             public double evaluate(EvaluationContext context) {
                 return FALSE;
             }
         }
 
-        interface StringLiteral extends Literal {
-            String value();
-
-            @Override
-            default ValueType valueType() {
-                return ValueType.DOUBLE;
-            }
-
-            @Override
-            default double evaluate(EvaluationContext context) {
-                return value().hashCode();
-            }
-
-            default String prettyString() {return value();}
-        }
-
-        record MyStringLiteral(String value) implements StringLiteral {
+        record StringLiteral(String value) implements Literal {
             @Override
             public ValueType valueType() {
                 return ValueType.DOUBLE;
             }
+
             @Override
             public double evaluate(EvaluationContext context) {
                 return value().hashCode();
             }
+
             @Override
             public String prettyString() {
                 return value;
@@ -862,29 +520,15 @@ public interface Expression {
 
     interface Function extends Expression {
 
-        interface Degree extends Function {
+        record Degree(Set<RelationshipType> typeSelection) implements Function {
 
-            String NAME = "degree";
+            public static final String NAME = "degree";
 
-            Set<RelationshipType> typeSelection();
-
-            @Override
-            default ValueType valueType() {
-                return ValueType.LONG;
-            }
-
-            @Override
-            default double evaluate(EvaluationContext context) {
-                long degree = context.degree(this.typeSelection());
-                return Double.longBitsToDouble(degree);
-            }
-        }
-
-        record MyDegree(Set<RelationshipType> typeSelection) implements Degree {
             @Override
             public ValueType valueType() {
                 return ValueType.LONG;
             }
+
             @Override
             public double evaluate(EvaluationContext context) {
                 long degree = context.degree(this.typeSelection);
