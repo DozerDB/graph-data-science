@@ -19,27 +19,21 @@
  */
 package org.neo4j.gds.procedures.pipelines;
 
-import org.immutables.value.Value;
 import org.neo4j.gds.NodeLabel;
 import org.neo4j.gds.RelationshipType;
-import org.neo4j.gds.annotation.ValueClass;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@ValueClass
-public interface LPGraphStoreFilter {
-    Collection<NodeLabel> sourceNodeLabels();
+public record LPGraphStoreFilter(
+    Collection<NodeLabel> sourceNodeLabels,
+    Collection<NodeLabel> targetNodeLabels,
+    Collection<RelationshipType> predictRelationshipTypes,
+    Collection<NodeLabel> nodePropertyStepsBaseLabels
+) {
 
-    Collection<NodeLabel> targetNodeLabels();
-
-    Collection<RelationshipType> predictRelationshipTypes();
-
-    Collection<NodeLabel> nodePropertyStepsBaseLabels();
-
-    @Value.Derived
-    default Collection<NodeLabel> predictNodeLabels() {
+    public Collection<NodeLabel> predictNodeLabels() {
         return Stream
             .of(sourceNodeLabels(), targetNodeLabels())
             .flatMap(Collection::stream)

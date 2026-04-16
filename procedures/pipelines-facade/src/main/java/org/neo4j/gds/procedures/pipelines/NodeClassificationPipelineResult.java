@@ -19,7 +19,6 @@
  */
 package org.neo4j.gds.procedures.pipelines;
 
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.collections.ha.HugeLongArray;
 import org.neo4j.gds.collections.ha.HugeObjectArray;
 import org.neo4j.gds.ml.core.subgraph.LocalIdMap;
@@ -27,13 +26,12 @@ import org.neo4j.gds.ml.nodeClassification.NodeClassificationPredict;
 
 import java.util.Optional;
 
-@ValueClass
-public interface NodeClassificationPipelineResult {
-    HugeLongArray predictedClasses();
+public record NodeClassificationPipelineResult(
+    HugeLongArray predictedClasses,
+    Optional<HugeObjectArray<double[]>> predictedProbabilities
+) {
 
-    Optional<HugeObjectArray<double[]>> predictedProbabilities();
-
-    static NodeClassificationPipelineResult of(
+    public static NodeClassificationPipelineResult of(
         NodeClassificationPredict.NodeClassificationResult nodeClassificationResult,
         LocalIdMap classIdMap
     ) {
@@ -42,7 +40,7 @@ public interface NodeClassificationPipelineResult {
         for (long i = 0; i < nodeClassificationResult.predictedClasses().size(); i++) {
             predictions.set(i, classIdMap.toOriginal(internalPredictions.get(i)));
         }
-        return ImmutableNodeClassificationPipelineResult.of(
+        return new NodeClassificationPipelineResult(
             predictions,
             nodeClassificationResult.predictedProbabilities()
         );

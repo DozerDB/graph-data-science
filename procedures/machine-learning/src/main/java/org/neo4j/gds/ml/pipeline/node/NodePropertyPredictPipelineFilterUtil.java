@@ -19,7 +19,6 @@
  */
 package org.neo4j.gds.ml.pipeline.node;
 
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.core.model.Model.CustomInfo;
 import org.neo4j.gds.core.model.ModelCatalog;
 import org.neo4j.gds.ml.models.BaseModelData;
@@ -52,17 +51,8 @@ public final class NodePropertyPredictPipelineFilterUtil {
         var combinedRelationshipTypes = basePredictConfig.relationshipTypes().isEmpty()
             ? trainedModel.trainConfig().relationshipTypes() :
             basePredictConfig.relationshipTypes();
-        return ImmutablePredictGraphFilter.builder()
-            .nodeLabels(combinedTargetNodeLabels)
-            .relationshipTypes(combinedRelationshipTypes)
-            .build();
+        return new PredictGraphFilter(combinedTargetNodeLabels, combinedRelationshipTypes);
     }
 
-    @ValueClass
-    public interface PredictGraphFilter {
-        List<String> nodeLabels();
-
-        List<String> relationshipTypes();
-    }
-
+    public record PredictGraphFilter(List<String> nodeLabels, List<String> relationshipTypes) {}
 }

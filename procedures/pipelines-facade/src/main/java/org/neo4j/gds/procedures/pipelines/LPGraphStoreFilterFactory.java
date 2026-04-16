@@ -39,7 +39,6 @@ import static org.neo4j.gds.utils.StringFormatting.formatWithLocale;
 
 public final class LPGraphStoreFilterFactory {
 
-
     private LPGraphStoreFilterFactory() {}
 
     public static LPGraphStoreFilter generate(
@@ -77,12 +76,12 @@ public final class LPGraphStoreFilterFactory {
             .flatMap(Collection::stream)
             .collect(Collectors.toSet());
 
-        LPGraphStoreFilter filter = ImmutableLPGraphStoreFilter.builder()
-            .sourceNodeLabels(sourceNodeLabels)
-            .targetNodeLabels(targetNodeLabels)
-            .nodePropertyStepsBaseLabels(nodePropertyStepsBaseLabels)
-            .predictRelationshipTypes(predictRelTypes)
-            .build();
+        LPGraphStoreFilter filter = new LPGraphStoreFilter(
+            sourceNodeLabels,
+            targetNodeLabels,
+            predictRelTypes,
+            nodePropertyStepsBaseLabels
+        );
 
         log.info(formatWithLocale("The graph filters used for filtering in prediction is %s", filter));
 
