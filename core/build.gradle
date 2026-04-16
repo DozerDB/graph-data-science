@@ -77,5 +77,6 @@ dependencies {
 
     integrationTestImplementation project(':native-projection')
     integrationTestImplementation project(':opengds-extension')
+    integrationTestImplementation project(':procedure-integration')
     integrationTestImplementation project(':projection')
 }
