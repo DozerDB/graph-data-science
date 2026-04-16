@@ -19,8 +19,6 @@
  */
 package org.neo4j.gds.ml.pipeline.nodePipeline.regression;
 
-import org.immutables.value.Value;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.config.ToMapConvertible;
 import org.neo4j.gds.core.model.Model;
 import org.neo4j.gds.ml.api.TrainingMethod;
@@ -31,19 +29,15 @@ import org.neo4j.gds.ml.pipeline.nodePipeline.NodePropertyPredictPipeline;
 import java.util.Map;
 import java.util.Optional;
 
-@ValueClass
-public interface NodeRegressionPipelineModelInfo extends ToMapConvertible, Model.CustomInfo {
-
-    Map<Metric, Double> testMetrics();
-    Map<Metric, Double> outerTrainMetrics();
-    ModelCandidateStats bestCandidate();
-
-    NodePropertyPredictPipeline pipeline();
+public record NodeRegressionPipelineModelInfo(
+    Map<Metric, Double> testMetrics,
+    Map<Metric, Double> outerTrainMetrics,
+    ModelCandidateStats bestCandidate,
+    NodePropertyPredictPipeline pipeline
+) implements ToMapConvertible, Model.CustomInfo {
 
     @Override
-    @Value.Auxiliary
-    @Value.Derived
-    default Map<String, Object> toMap() {
+    public Map<String, Object> toMap() {
         return Map.of(
             "bestParameters", bestCandidate().trainerConfig().toMapWithTrainerMethod(),
             "metrics", bestCandidate().renderMetrics(testMetrics(), outerTrainMetrics()),
@@ -53,19 +47,8 @@ public interface NodeRegressionPipelineModelInfo extends ToMapConvertible, Model
         );
     }
 
-    static ImmutableNodeRegressionPipelineModelInfo.Builder builder() {
-        return ImmutableNodeRegressionPipelineModelInfo.builder();
-    }
-
-    static NodeRegressionPipelineModelInfo of(
-        Map<Metric, Double> testMetrics,
-        Map<Metric, Double> outerTrainMetrics,
-        ModelCandidateStats bestCandidate,
-        NodePropertyPredictPipeline pipeline
-    ) {
-        return ImmutableNodeRegressionPipelineModelInfo.of(testMetrics, outerTrainMetrics, bestCandidate, pipeline);
-    }
-
     @Override
-    default Optional<TrainingMethod> optionalTrainerMethod() { return Optional.of(bestCandidate().trainerConfig().method()); }
+    public Optional<TrainingMethod> optionalTrainerMethod() {
+        return Optional.of(bestCandidate().trainerConfig().method());
+    }
 }

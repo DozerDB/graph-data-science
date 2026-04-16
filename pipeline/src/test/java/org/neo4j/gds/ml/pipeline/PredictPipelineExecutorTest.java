@@ -222,7 +222,7 @@ class PredictPipelineExecutorTest {
 
         @Override
         protected PipelineGraphFilter nodePropertyStepFilter() {
-            return ImmutablePipelineGraphFilter.builder().nodeLabels(List.of(NODE_LABEL_N)).build();
+            return new PipelineGraphFilter(List.of(NODE_LABEL_N), List.of());
         }
     }
 

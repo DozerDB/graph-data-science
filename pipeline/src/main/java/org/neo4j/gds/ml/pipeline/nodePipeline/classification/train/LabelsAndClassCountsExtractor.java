@@ -19,7 +19,6 @@
  */
 package org.neo4j.gds.ml.pipeline.nodePipeline.classification.train;
 
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.api.properties.nodes.NodePropertyValues;
 import org.neo4j.gds.collections.LongMultiSet;
 import org.neo4j.gds.collections.ha.HugeIntArray;
@@ -40,7 +39,7 @@ public final class LabelsAndClassCountsExtractor {
         for (long nodeId = 0; nodeId < nodeCount; nodeId++) {
             labels.set(nodeId, localIdMap.toMapped(targetNodeProperty.longValue(nodeId)));
         }
-        return ImmutableLabelsAndClassCounts.of(labels, classCounts);
+        return new LabelsAndClassCounts(labels, classCounts);
     }
 
     static LongMultiSet extractClassCounts(
@@ -54,10 +53,5 @@ public final class LabelsAndClassCountsExtractor {
         return classCounts;
     }
 
-    @ValueClass
-    interface LabelsAndClassCounts {
-        HugeIntArray labels();
-
-        LongMultiSet classCounts();
-    }
+    record LabelsAndClassCounts(HugeIntArray labels, LongMultiSet classCounts) {}
 }

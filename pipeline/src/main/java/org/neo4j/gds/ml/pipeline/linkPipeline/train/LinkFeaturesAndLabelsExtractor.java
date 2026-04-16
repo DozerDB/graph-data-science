@@ -90,7 +90,7 @@ final class LinkFeaturesAndLabelsExtractor {
 
         var labels = extractLabels(graph, features.size(), concurrency, progressTracker, terminationFlag);
 
-        return ImmutableFeaturesAndLabels.of(features, labels);
+        return new FeaturesAndLabels(features, labels);
     }
 
     private static HugeIntArray extractLabels(

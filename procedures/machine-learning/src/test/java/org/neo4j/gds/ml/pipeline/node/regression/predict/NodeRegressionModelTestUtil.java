@@ -44,7 +44,6 @@ final class NodeRegressionModelTestUtil {
 
     private NodeRegressionModelTestUtil() {}
 
-
     static Model<Regressor.RegressorData, NodeRegressionPipelineTrainConfig, NodeRegressionPipelineModelInfo> createModel(
         String username,
         String modelName,
@@ -63,17 +62,18 @@ final class NodeRegressionModelTestUtil {
                .targetProperty("target")
                .metrics(List.of("MEAN_SQUARED_ERROR"))
                .build(),
-            NodeRegressionPipelineModelInfo.builder()
-               .pipeline(NodePropertyPredictPipeline.from(
-                   Stream.of(),
-                   featureProperties.map(NodeFeatureStep::new))
-               )
-               .bestCandidate(new ModelCandidateStats(
-                   LinearRegressionTrainConfig.DEFAULT,
-                   Map.of(),
-                   Map.of()
-               ))
-               .build()
+            new NodeRegressionPipelineModelInfo(
+                Map.of(),
+                Map.of(),
+                new ModelCandidateStats(
+                    LinearRegressionTrainConfig.DEFAULT,
+                    Map.of(),
+                    Map.of()
+                ), NodePropertyPredictPipeline.from(
+                    Stream.of(),
+                    featureProperties.map(NodeFeatureStep::new)
+                )
+            )
         );
     }
 

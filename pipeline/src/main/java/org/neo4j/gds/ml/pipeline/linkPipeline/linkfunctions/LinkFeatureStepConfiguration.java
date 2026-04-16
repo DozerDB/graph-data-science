@@ -19,7 +19,6 @@
  */
 package org.neo4j.gds.ml.pipeline.linkPipeline.linkfunctions;
 
-import org.immutables.value.Value;
 import org.neo4j.gds.annotation.Configuration;
 import org.neo4j.gds.utils.StringJoining;
 
@@ -67,9 +66,6 @@ public interface LinkFeatureStepConfiguration {
     }
 
     @Configuration.CollectKeys
-    @Value.Auxiliary
-    @Value.Default
-    @Value.Parameter(false)
     default Collection<String> configKeys() {
         return Collections.emptyList();
     }

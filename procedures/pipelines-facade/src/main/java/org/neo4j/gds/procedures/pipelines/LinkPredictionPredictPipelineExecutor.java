@@ -34,7 +34,6 @@ import org.neo4j.gds.ml.api.TrainingMethod;
 import org.neo4j.gds.ml.linkmodels.LinkPredictionResult;
 import org.neo4j.gds.ml.models.Classifier;
 import org.neo4j.gds.ml.models.ClassifierFactory;
-import org.neo4j.gds.ml.pipeline.ImmutablePipelineGraphFilter;
 import org.neo4j.gds.ml.pipeline.NodePropertyStepExecutor;
 import org.neo4j.gds.ml.pipeline.PipelineGraphFilter;
 import org.neo4j.gds.ml.pipeline.PredictPipelineExecutor;
@@ -92,10 +91,7 @@ public class LinkPredictionPredictPipelineExecutor extends PredictPipelineExecut
 
     @Override
     protected PipelineGraphFilter nodePropertyStepFilter() {
-        return ImmutablePipelineGraphFilter.builder()
-            .nodeLabels(graphStoreFilter.nodePropertyStepsBaseLabels())
-            .relationshipTypes(graphStoreFilter.predictRelationshipTypes())
-            .build();
+        return new PipelineGraphFilter(graphStoreFilter.nodePropertyStepsBaseLabels(), graphStoreFilter.predictRelationshipTypes());
     }
 
     public static Task progressTask(

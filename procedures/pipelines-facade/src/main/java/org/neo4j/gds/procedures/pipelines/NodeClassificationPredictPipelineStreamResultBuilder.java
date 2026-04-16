@@ -24,7 +24,7 @@ import org.neo4j.gds.api.GraphStore;
 import org.neo4j.gds.api.IdMap;
 import org.neo4j.gds.applications.algorithms.machinery.StreamResultBuilder;
 import org.neo4j.gds.collections.ha.HugeObjectArray;
-import org.neo4j.gds.ml.pipeline.ImmutablePipelineGraphFilter;
+import org.neo4j.gds.ml.pipeline.PipelineGraphFilter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -46,10 +46,7 @@ class NodeClassificationPredictPipelineStreamResultBuilder implements StreamResu
     ) {
         if (result.isEmpty()) return Stream.empty();
 
-        var pipelineGraphFilter = ImmutablePipelineGraphFilter.builder()
-            .nodeLabels(configuration.nodeLabelIdentifiers(graphStore))
-            .relationshipTypes(configuration.internalRelationshipTypes(graphStore))
-            .build();
+        var pipelineGraphFilter = new PipelineGraphFilter(configuration.nodeLabelIdentifiers(graphStore), configuration.internalRelationshipTypes(graphStore));
 
         var graph = graphStore.getGraph(pipelineGraphFilter.nodeLabels());
 

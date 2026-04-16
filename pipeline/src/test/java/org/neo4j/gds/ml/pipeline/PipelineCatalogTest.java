@@ -21,6 +21,7 @@ package org.neo4j.gds.ml.pipeline;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.neo4j.gds.ml.pipeline.PipelineCatalog.PipelineCatalogEntry;
 import org.neo4j.gds.ml.pipeline.linkPipeline.LinkPredictionTrainingPipeline;
 import org.neo4j.gds.ml.pipeline.nodePipeline.classification.NodeClassificationTrainingPipeline;
 
@@ -42,7 +43,7 @@ class PipelineCatalogTest {
         PipelineCatalog.set(ALICE, "myPipe", alicesPipeline);
 
         assertThat(PipelineCatalog.getAllPipelines(ALICE))
-            .containsExactly(ImmutablePipelineCatalogEntry.of("myPipe", alicesPipeline));
+            .containsExactly(new PipelineCatalogEntry("myPipe", alicesPipeline));
 
 
         assertThat(PipelineCatalog.getAllPipelines("bob")).isEmpty();
@@ -51,11 +52,11 @@ class PipelineCatalogTest {
         PipelineCatalog.set("bob", "myPipe", bobsPipeline);
 
         assertThat(PipelineCatalog.getAllPipelines(ALICE)).containsExactly(
-            ImmutablePipelineCatalogEntry.of("myPipe", alicesPipeline)
+            new PipelineCatalogEntry("myPipe", alicesPipeline)
         );
 
         assertThat(PipelineCatalog.getAllPipelines("bob")).containsExactly(
-            ImmutablePipelineCatalogEntry.of("myPipe", bobsPipeline)
+            new PipelineCatalogEntry("myPipe", bobsPipeline)
         );
     }
 

@@ -19,14 +19,12 @@
  */
 package org.neo4j.gds.ml.pipeline.nodePipeline.classification.train;
 
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.core.model.CatalogModelContainer;
+import org.neo4j.gds.core.model.Model;
 import org.neo4j.gds.ml.models.Classifier;
 import org.neo4j.gds.ml.training.TrainingStatistics;
 
-@ValueClass
-@SuppressWarnings({"immutables:subtype", "immutables:from"})
-public
-interface NodeClassificationModelResult extends CatalogModelContainer<Classifier.ClassifierData, NodeClassificationPipelineTrainConfig, NodeClassificationPipelineModelInfo> {
-    TrainingStatistics trainingStatistics();
-}
+public record NodeClassificationModelResult(
+    Model<Classifier.ClassifierData, NodeClassificationPipelineTrainConfig, NodeClassificationPipelineModelInfo> model,
+    TrainingStatistics trainingStatistics
+) implements CatalogModelContainer<Classifier.ClassifierData, NodeClassificationPipelineTrainConfig, NodeClassificationPipelineModelInfo> {}

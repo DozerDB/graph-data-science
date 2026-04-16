@@ -19,17 +19,15 @@
  */
 package org.neo4j.gds.ml.pipeline.linkPipeline.train;
 
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.collections.ha.HugeIntArray;
 import org.neo4j.gds.ml.models.Features;
 
-@ValueClass
-interface FeaturesAndLabels {
-    Features features();
+record FeaturesAndLabels(
+    Features features,
+    HugeIntArray labels
+) {
 
-    HugeIntArray labels();
-
-    default long size() {
-        return features().size();
+    public long size() {
+        return features.size();
     }
 }

@@ -19,7 +19,7 @@
  */
 package org.neo4j.gds.ml.pipeline.linkPipeline;
 
-import org.neo4j.gds.annotation.ValueClass;
+import org.neo4j.gds.annotation.GenerateBuilder;
 import org.neo4j.gds.config.ToMapConvertible;
 import org.neo4j.gds.core.model.Model.CustomInfo;
 import org.neo4j.gds.ml.api.TrainingMethod;
@@ -27,19 +27,20 @@ import org.neo4j.gds.ml.metrics.Metric;
 import org.neo4j.gds.ml.metrics.ModelCandidateStats;
 import org.neo4j.gds.ml.models.TrainerConfig;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@ValueClass
-public interface LinkPredictionModelInfo extends CustomInfo {
+@GenerateBuilder
+public record LinkPredictionModelInfo(
+    TrainerConfig bestParameters,
+    Map<String, Object> metrics,
+    LinkPredictionPredictPipeline pipeline
+) implements CustomInfo {
 
-    TrainerConfig bestParameters();
-    Map<String, Object> metrics();
-
-    LinkPredictionPredictPipeline pipeline();
 
     @Override
-    default Map<String, Object> toMap() {
+    public Map<String, Object> toMap() {
         return Map.of(
             "bestParameters", bestParameters().toMapWithTrainerMethod(),
             "metrics", metrics(),
@@ -50,16 +51,20 @@ public interface LinkPredictionModelInfo extends CustomInfo {
         );
     }
 
-    static LinkPredictionModelInfo of(
+    public static LinkPredictionModelInfo of(
         Map<Metric, Double> testMetrics,
         Map<Metric, Double> outerTrainMetrics,
         ModelCandidateStats bestCandidate,
         LinkPredictionPredictPipeline pipeline
     ) {
-        var metrics = bestCandidate.renderMetrics(testMetrics, outerTrainMetrics);
-        return ImmutableLinkPredictionModelInfo.of(bestCandidate.trainerConfig(), metrics, pipeline);
+        Map<String, Object> metrics = new HashMap<>(bestCandidate.renderMetrics(testMetrics, outerTrainMetrics));
+        return new LinkPredictionModelInfo(bestCandidate.trainerConfig(), metrics, pipeline);
     }
 
     @Override
-    default Optional<TrainingMethod> optionalTrainerMethod() { return Optional.of(bestParameters().method()); }
+    public Optional<TrainingMethod> optionalTrainerMethod() { return Optional.of(bestParameters().method()); }
+
+    public static LinkPredictionModelInfoBuilder builder() {
+        return LinkPredictionModelInfoBuilder.builder();
+    }
 }

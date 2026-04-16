@@ -168,7 +168,7 @@ public final class LinkPredictionTrain {
         var testMetrics = trainingStatistics.winningModelTestMetrics();
         progressTracker.logInfo(formatWithLocale("Final model metrics on test set: %s", testMetrics));
 
-        return ImmutableLinkPredictionTrainResult.of(classifier, trainingStatistics);
+        return new LinkPredictionTrainResult(classifier, trainingStatistics);
     }
 
     private void findBestModelCandidate(

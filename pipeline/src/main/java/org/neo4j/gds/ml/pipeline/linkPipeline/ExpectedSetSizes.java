@@ -19,18 +19,10 @@
  */
 package org.neo4j.gds.ml.pipeline.linkPipeline;
 
-import org.neo4j.gds.annotation.ValueClass;
-
-@ValueClass
-public interface ExpectedSetSizes {
-
-    long testSize();
-
-    long featureInputSize();
-
-    long trainSize();
-
-    long testComplementSize();
-
-    long validationFoldSize();
-}
+public record ExpectedSetSizes(
+    long testSize,
+    long featureInputSize,
+    long trainSize,
+    long testComplementSize,
+    long validationFoldSize
+) {}

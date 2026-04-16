@@ -19,13 +19,7 @@
  */
 package org.neo4j.gds.ml.pipeline.linkPipeline.train;
 
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.ml.models.Classifier;
 import org.neo4j.gds.ml.training.TrainingStatistics;
 
-@ValueClass
-public interface LinkPredictionTrainResult {
-    Classifier classifier();
-
-    TrainingStatistics trainingStatistics();
-}
+public record LinkPredictionTrainResult(Classifier classifier, TrainingStatistics trainingStatistics) {}

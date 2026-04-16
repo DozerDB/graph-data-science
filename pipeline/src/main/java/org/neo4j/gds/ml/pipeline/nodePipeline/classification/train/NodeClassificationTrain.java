@@ -199,7 +199,7 @@ public final class NodeClassificationTrain implements PipelineTrainer<NodeClassi
         Classifier retrainedModelData = retrainBestModel(nodeSplits.allTrainingExamples(), features, trainingStatistics.bestParameters());
         progressTracker.endSubTask();
 
-        return ImmutableNodeClassificationTrainResult.of(
+        return new NodeClassificationTrainResult(
             retrainedModelData,
             trainingStatistics,
             classIdMap,

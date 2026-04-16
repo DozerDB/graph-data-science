@@ -19,8 +19,7 @@
  */
 package org.neo4j.gds.ml.pipeline.nodePipeline.classification.train;
 
-import org.immutables.value.Value;
-import org.neo4j.gds.annotation.ValueClass;
+import org.neo4j.gds.annotation.GenerateBuilder;
 import org.neo4j.gds.config.ToMapConvertible;
 import org.neo4j.gds.core.model.Model;
 import org.neo4j.gds.ml.api.TrainingMethod;
@@ -29,29 +28,28 @@ import org.neo4j.gds.ml.metrics.ModelCandidateStats;
 import org.neo4j.gds.ml.models.TrainerConfig;
 import org.neo4j.gds.ml.pipeline.nodePipeline.NodePropertyPredictPipeline;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@ValueClass
-public interface NodeClassificationPipelineModelInfo extends ToMapConvertible, Model.CustomInfo {
-
-    TrainerConfig bestParameters();
-    Map<String, Object> metrics();
-
-    NodePropertyPredictPipeline pipeline();
+@GenerateBuilder
+public record NodeClassificationPipelineModelInfo(
+    TrainerConfig bestParameters,
+    Map<String, Object> metrics,
+    NodePropertyPredictPipeline pipeline,
+    List<Long> classes
+) implements ToMapConvertible, Model.CustomInfo {
 
     /**
      * The distinct values of the target property which represent the
      * allowed classes that the model can predict.
      * @return
      */
-    List<Long> classes();
+//    List<Long> classes();
 
     @Override
-    @Value.Auxiliary
-    @Value.Derived
-    default Map<String, Object> toMap() {
+    public Map<String, Object> toMap() {
         return Map.of(
             "bestParameters", bestParameters().toMapWithTrainerMethod(),
             "classes", classes(),
@@ -62,17 +60,21 @@ public interface NodeClassificationPipelineModelInfo extends ToMapConvertible, M
         );
     }
 
-    static NodeClassificationPipelineModelInfo of(
+    public static NodeClassificationPipelineModelInfo of(
         Map<Metric, Double> testMetrics,
         Map<Metric, Double> outerTrainMetrics,
         ModelCandidateStats bestCandidate,
         NodePropertyPredictPipeline pipeline,
         List<Long> classes
     ) {
-        var metrics = bestCandidate.renderMetrics(testMetrics, outerTrainMetrics);
-        return ImmutableNodeClassificationPipelineModelInfo.of(bestCandidate.trainerConfig(), metrics, pipeline, classes);
+        Map<String, Object> metrics = new HashMap<>(bestCandidate.renderMetrics(testMetrics, outerTrainMetrics));
+        return new NodeClassificationPipelineModelInfo(bestCandidate.trainerConfig(), metrics, pipeline, classes);
+    }
+
+    public static NodeClassificationPipelineModelInfoBuilder builder() {
+        return NodeClassificationPipelineModelInfoBuilder.builder();
     }
 
     @Override
-    default Optional<TrainingMethod> optionalTrainerMethod() { return Optional.of(bestParameters().method()); }
+    public Optional<TrainingMethod> optionalTrainerMethod() { return Optional.of(bestParameters().method()); }
 }

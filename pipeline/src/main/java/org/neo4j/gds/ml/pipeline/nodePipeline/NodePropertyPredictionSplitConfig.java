@@ -19,7 +19,6 @@
  */
 package org.neo4j.gds.ml.pipeline.nodePipeline;
 
-import org.immutables.value.Value;
 import org.neo4j.gds.annotation.Configuration;
 import org.neo4j.gds.api.Graph;
 import org.neo4j.gds.config.ToMapConvertible;
@@ -37,13 +36,11 @@ import static org.neo4j.gds.ml.pipeline.NonEmptySetValidation.validateNodeSetSiz
 public interface NodePropertyPredictionSplitConfig extends ToMapConvertible {
     NodePropertyPredictionSplitConfig DEFAULT_CONFIG = NodePropertyPredictionSplitConfig.of(CypherMapWrapper.empty());
 
-    @Value.Default
     @Configuration.DoubleRange(min = 0, max = 1)
     default double testFraction() {
         return 0.3;
     }
 
-    @Value.Default
     @Configuration.IntegerRange(min = 2)
     default int validationFolds() {
         return 3;
@@ -62,7 +59,6 @@ public interface NodePropertyPredictionSplitConfig extends ToMapConvertible {
         return Collections.emptyList();
     }
 
-    @Value.Derived
     @Configuration.Ignore
     default void validateMinNumNodesInSplitSets(Graph graph) {
         long numberNodesInTestSet = (long) (graph.nodeCount() * testFraction());
@@ -74,29 +70,21 @@ public interface NodePropertyPredictionSplitConfig extends ToMapConvertible {
         validateNodeSetSize(numberNodesInValidationSet, MIN_SET_SIZE, "validation", "`validationFolds` or `testFraction` is too high");
     }
 
-    @Value.Auxiliary
-    @Value.Derived
     @Configuration.Ignore
     default long testSetSize(long nodeCount) {
         return (long) (testFraction() * nodeCount);
     }
 
-    @Value.Auxiliary
-    @Value.Derived
     @Configuration.Ignore
     default long trainSetSize(long nodeCount) {
         return (long) (nodeCount * (1 - testFraction()));
     }
 
-    @Value.Auxiliary
-    @Value.Derived
     @Configuration.Ignore
     default long foldTrainSetSize(long nodeCount) {
         return trainSetSize(nodeCount) * (validationFolds() - 1) / validationFolds();
     }
 
-    @Value.Auxiliary
-    @Value.Derived
     @Configuration.Ignore
     default long foldTestSetSize(long nodeCount) {
         return trainSetSize(nodeCount) * (1 / validationFolds());

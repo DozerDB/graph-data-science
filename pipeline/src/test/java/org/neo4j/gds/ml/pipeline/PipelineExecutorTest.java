@@ -220,7 +220,7 @@ class PipelineExecutorTest {
 
         @Override
         public Map<DatasetSplits, PipelineGraphFilter> generateDatasetSplitGraphFilters() {
-            return Map.of(DatasetSplits.FEATURE_INPUT, ImmutablePipelineGraphFilter.builder().nodeLabels(List.of(NODE_LABEL_N)).build());
+            return Map.of(DatasetSplits.FEATURE_INPUT, new PipelineGraphFilter(List.of(NODE_LABEL_N), List.of()));
         }
 
         @Override

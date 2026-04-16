@@ -20,7 +20,6 @@
 package org.neo4j.gds.ml.pipeline.linkPipeline;
 
 
-import org.immutables.value.Value;
 import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.annotation.Configuration;
 import org.neo4j.gds.api.GraphStore;
@@ -48,27 +47,23 @@ public interface LinkPredictionSplitConfig extends ToMapConvertible {
     String TRAIN_FRACTION_KEY = "trainFraction";
     LinkPredictionSplitConfig DEFAULT_CONFIG = LinkPredictionSplitConfig.of(CypherMapWrapper.empty());
 
-    @Value.Default
     @Configuration.IntegerRange(min = 2)
     default int validationFolds() {
         return 3;
     }
 
-    @Value.Default
     @Configuration.Key(TEST_FRACTION_KEY)
     @Configuration.DoubleRange(min = 0.0, minInclusive = false)
     default double testFraction() {
         return 0.1;
     }
 
-    @Value.Default
     @Configuration.Key(TRAIN_FRACTION_KEY)
     @Configuration.DoubleRange(min = 0.0, minInclusive = false)
     default double trainFraction() {
         return 0.1;
     }
 
-    @Value.Default
     @Configuration.DoubleRange(min = 0.0, minInclusive = false)
     default double negativeSamplingRatio() {
         return 1.0;
@@ -76,25 +71,21 @@ public interface LinkPredictionSplitConfig extends ToMapConvertible {
 
     Optional<String> negativeRelationshipType();
 
-    @Value.Default
     @Configuration.Ignore
     default RelationshipType testRelationshipType() {
         return RelationshipType.of("_TEST_");
     }
 
-    @Value.Default
     @Configuration.Ignore
     default RelationshipType testComplementRelationshipType() {
         return RelationshipType.of("_TEST_COMPLEMENT_");
     }
 
-    @Value.Default
     @Configuration.Ignore
     default RelationshipType trainRelationshipType() {
         return RelationshipType.of("_TRAIN_");
     }
 
-    @Value.Default
     @Configuration.Ignore
     default RelationshipType featureInputRelationshipType() {
         return RelationshipType.of("_FEATURE_INPUT_");
@@ -160,7 +151,6 @@ public interface LinkPredictionSplitConfig extends ToMapConvertible {
         );
     }
 
-    @Value.Derived
     @Configuration.Ignore
     default ExpectedSetSizes expectedSetSizes(long relationshipCount) {
         // division by 2 as the input is undirected but the selected relationships are directed
@@ -174,16 +164,15 @@ public interface LinkPredictionSplitConfig extends ToMapConvertible {
         long featureInputSize = (long) (testComplementSize * (1 - trainFraction()));
         long foldSize = trainSetSize / validationFolds();
 
-        return ImmutableExpectedSetSizes.builder()
-            .testSize(testSetSize)
-            .trainSize(trainSetSize)
-            .featureInputSize(featureInputSize)
-            .testComplementSize(testComplementSize)
-            .validationFoldSize(foldSize)
-            .build();
+        return new ExpectedSetSizes(
+            testSetSize,
+            featureInputSize,
+            trainSetSize,
+            testComplementSize,
+            foldSize
+        );
     }
 
-    @Value.Derived
     @Configuration.Ignore
     default GraphDimensions expectedGraphDimensions(GraphDimensions baseDim, String targetRelType) {
         var expectedSetSizes = expectedSetSizes(baseDim

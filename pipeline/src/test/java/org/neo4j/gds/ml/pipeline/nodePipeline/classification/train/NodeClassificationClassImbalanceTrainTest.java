@@ -20,7 +20,6 @@
 package org.neo4j.gds.ml.pipeline.nodePipeline.classification.train;
 
 import org.junit.jupiter.api.Test;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.api.GraphStore;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.executor.ExecutionContext;
@@ -180,22 +179,17 @@ class NodeClassificationClassImbalanceTrainTest {
             TerminationFlag.RUNNING_TRUE
         ).run();
 
-        return ImmutableClassifierAndTestMetric
-            .builder()
-            .classifier(result.classifier())
-            .zeroClassPrecision(result
+        return new ClassifierAndTestMetric(
+            result.classifier(),
+            result
                 .trainingStatistics()
                 .winningModelTestMetrics()
                 .values()
                 .stream()
                 .findFirst()
-                .orElseThrow())
-            .build();
+                .orElseThrow()
+        );
     }
 
-    @ValueClass
-    interface ClassifierAndTestMetric {
-        Classifier classifier();
-        double zeroClassPrecision();
-    }
+    private record ClassifierAndTestMetric(Classifier classifier, double zeroClassPrecision) {}
 }

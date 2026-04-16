@@ -20,20 +20,18 @@
 package org.neo4j.gds.ml.pipeline.linkPipeline.train;
 
 import org.neo4j.gds.RelationshipType;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.api.GraphStore;
 import org.neo4j.gds.compat.GdsVersionInfoProvider;
 import org.neo4j.gds.core.model.CatalogModelContainer;
 import org.neo4j.gds.core.model.Model;
 import org.neo4j.gds.core.model.ModelCatalog;
-import org.neo4j.gds.mem.MemoryEstimation;
-import org.neo4j.gds.mem.MemoryEstimations;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.core.utils.progress.tasks.Task;
 import org.neo4j.gds.core.utils.progress.tasks.Tasks;
 import org.neo4j.gds.executor.ExecutionContext;
+import org.neo4j.gds.mem.MemoryEstimation;
+import org.neo4j.gds.mem.MemoryEstimations;
 import org.neo4j.gds.ml.models.Classifier;
-import org.neo4j.gds.ml.pipeline.ImmutablePipelineGraphFilter;
 import org.neo4j.gds.ml.pipeline.NodePropertyStepExecutor;
 import org.neo4j.gds.ml.pipeline.PipelineExecutor;
 import org.neo4j.gds.ml.pipeline.PipelineGraphFilter;
@@ -144,18 +142,9 @@ public class LinkPredictionTrainPipelineExecutor extends PipelineExecutor
         var splitConfig = pipeline.splitConfig();
 
         return Map.of(
-            DatasetSplits.TRAIN, ImmutablePipelineGraphFilter.builder()
-                .nodeLabels(config.nodeLabelIdentifiers(graphStore))
-                .relationshipTypes(List.of(splitConfig.trainRelationshipType()))
-                .build(),
-            DatasetSplits.TEST, ImmutablePipelineGraphFilter.builder()
-                .nodeLabels(config.nodeLabelIdentifiers(graphStore))
-                .relationshipTypes(List.of(splitConfig.testRelationshipType()))
-                .build(),
-            DatasetSplits.FEATURE_INPUT, ImmutablePipelineGraphFilter.builder()
-                .nodeLabels(config.nodeLabelIdentifiers(graphStore))
-                .relationshipTypes(List.of(splitConfig.featureInputRelationshipType()))
-                .build()
+            DatasetSplits.TRAIN, new PipelineGraphFilter(config.nodeLabelIdentifiers(graphStore), List.of(splitConfig.trainRelationshipType())),
+            DatasetSplits.TEST, new PipelineGraphFilter(config.nodeLabelIdentifiers(graphStore), List.of(splitConfig.testRelationshipType())),
+            DatasetSplits.FEATURE_INPUT, new PipelineGraphFilter(config.nodeLabelIdentifiers(graphStore), List.of(splitConfig.featureInputRelationshipType()))
         );
     }
 
@@ -213,7 +202,7 @@ public class LinkPredictionTrainPipelineExecutor extends PipelineExecutor
         );
 
 
-        return ImmutableLinkPredictionTrainPipelineResult.of(model, trainResult.trainingStatistics());
+        return new LinkPredictionTrainPipelineResult(model, trainResult.trainingStatistics());
     }
 
     @Override
@@ -236,9 +225,8 @@ public class LinkPredictionTrainPipelineExecutor extends PipelineExecutor
         super.additionalGraphStoreCleanup(datasets);
     }
 
-    @ValueClass
-    @SuppressWarnings({"immutables:subtype", "immutables:from"})
-    public interface LinkPredictionTrainPipelineResult extends CatalogModelContainer<Classifier.ClassifierData, LinkPredictionTrainConfig, LinkPredictionModelInfo> {
-        TrainingStatistics trainingStatistics();
-    }
+    public record LinkPredictionTrainPipelineResult(
+        Model<Classifier.ClassifierData, LinkPredictionTrainConfig, LinkPredictionModelInfo> model,
+        TrainingStatistics trainingStatistics
+    ) implements CatalogModelContainer<Classifier.ClassifierData, LinkPredictionTrainConfig, LinkPredictionModelInfo> {}
 }

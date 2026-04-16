@@ -19,20 +19,9 @@
  */
 package org.neo4j.gds.ml.pipeline;
 
-import org.immutables.value.Value;
 import org.neo4j.gds.NodeLabel;
 import org.neo4j.gds.RelationshipType;
-import org.neo4j.gds.annotation.ValueClass;
 
 import java.util.Collection;
-import java.util.List;
 
-@ValueClass
-public interface PipelineGraphFilter {
-    Collection<NodeLabel> nodeLabels();
-
-    @Value.Default
-    default Collection<RelationshipType> relationshipTypes() {
-        return List.of();
-    }
-}
+public record PipelineGraphFilter(Collection<NodeLabel> nodeLabels, Collection<RelationshipType> relationshipTypes) {}

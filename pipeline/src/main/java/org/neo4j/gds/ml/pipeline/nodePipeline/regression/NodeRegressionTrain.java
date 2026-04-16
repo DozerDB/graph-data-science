@@ -196,7 +196,7 @@ public final class NodeRegressionTrain implements PipelineTrainer<NodeRegression
         );
 
         progressTracker.endSubTask();
-        return ImmutableNodeRegressionTrainResult.of(retrainedModel, trainingStatistics);
+        return new NodeRegressionTrainResult(retrainedModel, trainingStatistics);
     }
 
     private void findBestModelCandidate(

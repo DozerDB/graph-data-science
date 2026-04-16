@@ -49,7 +49,7 @@ public class NodeRegressionToModelConverter implements ResultToModelConverter<No
             originalSchema,
             trainResult.regressor().data(),
             config,
-            NodeRegressionPipelineModelInfo.of(
+            new NodeRegressionPipelineModelInfo(
                 trainResult.trainingStatistics().winningModelTestMetrics(),
                 trainResult.trainingStatistics().winningModelOuterTrainMetrics(),
                 trainResult.trainingStatistics().bestCandidate(),
@@ -57,6 +57,6 @@ public class NodeRegressionToModelConverter implements ResultToModelConverter<No
             )
         );
 
-        return ImmutableNodeRegressionTrainPipelineResult.of(catalogModel, trainResult.trainingStatistics());
+        return new NodeRegressionTrainPipelineResult(catalogModel, trainResult.trainingStatistics());
     }
 }

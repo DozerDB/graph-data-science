@@ -20,7 +20,6 @@
 package org.neo4j.gds.ml.pipeline;
 
 import org.jetbrains.annotations.NotNull;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.ml.pipeline.linkPipeline.LinkPredictionTrainingPipeline;
 import org.neo4j.gds.ml.pipeline.nodePipeline.classification.NodeClassificationTrainingPipeline;
 
@@ -95,12 +94,7 @@ public final class PipelineCatalog {
         ));
     }
 
-    @ValueClass
-    public interface PipelineCatalogEntry {
-        String pipelineName();
-
-        TrainingPipeline<?> pipeline();
-    }
+    public record PipelineCatalogEntry(String pipelineName, TrainingPipeline<?> pipeline) {}
 
     static class PipelineUserCatalog {
 
@@ -136,7 +130,7 @@ public final class PipelineCatalog {
         }
 
         Stream<PipelineCatalogEntry> stream() {
-            return pipelineByName.entrySet().stream().map(mapEntry -> ImmutablePipelineCatalogEntry.of(mapEntry.getKey(), mapEntry.getValue()));
+            return pipelineByName.entrySet().stream().map(mapEntry -> new PipelineCatalogEntry(mapEntry.getKey(), mapEntry.getValue()));
         }
     }
 }

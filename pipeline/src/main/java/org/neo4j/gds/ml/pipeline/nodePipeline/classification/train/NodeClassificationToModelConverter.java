@@ -58,6 +58,6 @@ public class NodeClassificationToModelConverter implements ResultToModelConverte
             )
         );
 
-        return ImmutableNodeClassificationModelResult.of(catalogModel, result.trainingStatistics());
+        return new NodeClassificationModelResult(catalogModel, result.trainingStatistics());
     }
 }

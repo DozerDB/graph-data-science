@@ -19,19 +19,15 @@
  */
 package org.neo4j.gds.ml.pipeline.nodePipeline.regression;
 
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.core.model.CatalogModelContainer;
+import org.neo4j.gds.core.model.Model;
 import org.neo4j.gds.ml.models.Regressor;
 import org.neo4j.gds.ml.training.TrainingStatistics;
 
-@ValueClass
-public interface NodeRegressionTrainResult {
-    Regressor regressor();
-    TrainingStatistics trainingStatistics();
+public record NodeRegressionTrainResult(Regressor regressor, TrainingStatistics trainingStatistics) {
 
-    @ValueClass
-    @SuppressWarnings({"immutables:subtype", "immutables:from"})
-    interface NodeRegressionTrainPipelineResult extends CatalogModelContainer<Regressor.RegressorData, NodeRegressionPipelineTrainConfig, NodeRegressionPipelineModelInfo> {
-        TrainingStatistics trainingStatistics();
-    }
+    public record NodeRegressionTrainPipelineResult(
+        Model<Regressor.RegressorData, NodeRegressionPipelineTrainConfig, NodeRegressionPipelineModelInfo> model,
+        TrainingStatistics trainingStatistics
+    ) implements CatalogModelContainer<Regressor.RegressorData, NodeRegressionPipelineTrainConfig, NodeRegressionPipelineModelInfo> {}
 }

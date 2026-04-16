@@ -30,7 +30,6 @@ import org.neo4j.gds.ml.models.Features;
 import org.neo4j.gds.ml.models.FeaturesFactory;
 import org.neo4j.gds.ml.models.Regressor;
 import org.neo4j.gds.ml.nodePropertyPrediction.regression.NodeRegressionPredict;
-import org.neo4j.gds.ml.pipeline.ImmutablePipelineGraphFilter;
 import org.neo4j.gds.ml.pipeline.NodePropertyStepExecutor;
 import org.neo4j.gds.ml.pipeline.PipelineGraphFilter;
 import org.neo4j.gds.ml.pipeline.PredictPipelineExecutor;
@@ -57,10 +56,7 @@ public class NodeRegressionPredictPipelineExecutor extends PredictPipelineExecut
     ) {
         super(pipeline, config, executionContext, graphStore, progressTracker);
         this.regressor = regressor;
-        this.predictGraphFilter = ImmutablePipelineGraphFilter.builder()
-            .nodeLabels(config.nodeLabelIdentifiers(graphStore))
-            .relationshipTypes(config.internalRelationshipTypes(graphStore))
-            .build();
+        this.predictGraphFilter = new PipelineGraphFilter(config.nodeLabelIdentifiers(graphStore), config.internalRelationshipTypes(graphStore));
     }
 
     public static Task progressTask(String taskName, NodePropertyPredictPipeline pipeline, GraphStore graphStore) {

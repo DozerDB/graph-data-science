@@ -108,7 +108,7 @@ class NodeRegressionToModelConverterTest {
             Map.of(metric, new EvaluationScores(0.649999, 0.499999, 0.7999999))
         ));
 
-        var trainResult = ImmutableNodeRegressionTrainResult.of(regressor, trainStats);
+        var trainResult = new NodeRegressionTrainResult(regressor, trainStats);
 
         var converter = new NodeRegressionToModelConverter(pipeline, config);
 

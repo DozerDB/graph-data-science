@@ -62,7 +62,6 @@ import org.neo4j.gds.ml.models.logisticregression.LogisticRegressionTrainConfig;
 import org.neo4j.gds.ml.models.randomforest.RandomForestClassifierTrainerConfig;
 import org.neo4j.gds.ml.pipeline.ExecutableNodePropertyStep;
 import org.neo4j.gds.ml.pipeline.ExecutableNodePropertyStepTestUtil.NodeIdPropertyStep;
-import org.neo4j.gds.ml.pipeline.ImmutablePipelineGraphFilter;
 import org.neo4j.gds.ml.pipeline.NodePropertyStepContextConfig;
 import org.neo4j.gds.ml.pipeline.NodePropertyStepContextConfigImpl;
 import org.neo4j.gds.ml.pipeline.PipelineGraphFilter;
@@ -547,10 +546,7 @@ final class LinkPredictionTrainPipelineExecutorTest {
 
         @Test
         void shouldValidNodePropertyStepsContextConfigs() {
-            var nodePropertyStepGrapFilter = ImmutablePipelineGraphFilter.builder()
-                .nodeLabels(List.of(NodeLabel.of("N")))
-                .relationshipTypes(List.of(RelationshipType.of("REL")))
-                .build();
+            var nodePropertyStepGrapFilter = new PipelineGraphFilter(List.of(NodeLabel.of("N")), List.of(RelationshipType.of("REL")));
             var nodePropertyStepInvalidContextNodeLabel = NodePropertyStepContextConfigImpl.builder()
                 .contextNodeLabels(List.of("INVALID"))
                 .build();
@@ -681,10 +677,10 @@ final class LinkPredictionTrainPipelineExecutorTest {
                 .build());
 
             pipeline.addNodePropertyStep(new TestFilteredNodePropertyStep(
-                ImmutablePipelineGraphFilter.builder()
-                    .nodeLabels(List.of(NodeLabel.of("P"), NodeLabel.of("Q"), NodeLabel.of("X")))
-                    .relationshipTypes(List.of(RelationshipType.of("_FEATURE_INPUT_")))
-                    .build(),
+                new PipelineGraphFilter(
+                    List.of(NodeLabel.of("P"), NodeLabel.of("Q"), NodeLabel.of("X")),
+                    List.of(RelationshipType.of("_FEATURE_INPUT_"))
+                ),
                 NodePropertyStepContextConfigImpl.builder()
                     .contextNodeLabels(List.of("X"))
                     .contextRelationshipTypes(List.of("CONTEXT")).build()));
@@ -789,10 +785,7 @@ final class LinkPredictionTrainPipelineExecutorTest {
                 .build();
 
             pipeline.addNodePropertyStep(new TestFilteredNodePropertyStep(
-                ImmutablePipelineGraphFilter.builder()
-                    .nodeLabels(trainConfig.nodeLabelIdentifiers(graphStore))
-                    .relationshipTypes(List.of(RelationshipType.of("_FEATURE_INPUT_")))
-                    .build(),
+                new PipelineGraphFilter(trainConfig.nodeLabelIdentifiers(graphStore), List.of(RelationshipType.of("_FEATURE_INPUT_"))),
                 NodePropertyStepContextConfigImpl.builder()
                     .contextNodeLabels(List.of("X"))
                     .contextRelationshipTypes(List.of("CONTEXT"))
