@@ -176,10 +176,9 @@ public final class RandomGraphGenerator {
             .orientation(direction.toOrientation())
             .adjacencyCompressorFactory(Optional.ofNullable(this.adjacencyCompressorFactory))
             .addAllPropertyConfigs(
-                relationshipPropertyProducers.stream().map(propertyProducer -> GraphFactory.PropertyConfig.of(
+                relationshipPropertyProducers.stream().map(propertyProducer -> new GraphFactory.PropertyConfig(
                     propertyProducer.getPropertyName(),
-                    aggregation,
-                    DefaultValue.forDouble()
+                    aggregation
                 )).toList()
             ).indexInverse(inverseIndex)
             .aggregation(aggregation)

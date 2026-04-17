@@ -49,7 +49,6 @@ import org.neo4j.gds.core.loading.GraphStoreBuilder;
 import org.neo4j.gds.core.loading.Nodes;
 import org.neo4j.gds.core.loading.RelationshipImportResult;
 import org.neo4j.gds.core.loading.construction.GraphFactory;
-import org.neo4j.gds.core.loading.construction.ImmutablePropertyConfig;
 import org.neo4j.gds.core.loading.construction.NodeLabelTokens;
 import org.neo4j.gds.core.loading.construction.PropertyValues;
 import org.neo4j.gds.core.loading.construction.RelationshipsBuilder;
@@ -366,15 +365,13 @@ public final class GdlFactory extends CSRGraphStoreFactory<GraphProjectFromGdlCo
                         var propertyKeys = relTypeAndProperty.getValue();
                         var propertyConfigs = propertyKeys
                             .stream()
-                            .map(
-                                propertyKey -> ImmutablePropertyConfig.builder()
-                                    .propertyKey(propertyKey)
-                                    .aggregation(graphProjectConfig.aggregation())
-                                    .propertyState(graphProjectConfig.propertyState())
-                                    .defaultValue(DefaultValue.forDouble())
-                                    .build()
-                            )
-                            .collect(Collectors.toList());
+                            .map(propertyKey -> new GraphFactory.PropertyConfig(
+                                propertyKey,
+                                graphProjectConfig.aggregation(),
+                                DefaultValue.forDouble(),
+                                graphProjectConfig.propertyState()
+                            ))
+                            .toList();
 
                         return GraphFactory.initRelationshipsBuilder()
                             .nodes(idMap)

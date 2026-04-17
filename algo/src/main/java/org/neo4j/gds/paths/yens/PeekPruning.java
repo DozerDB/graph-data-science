@@ -216,9 +216,7 @@ public final class PeekPruning {
         RelationshipsBuilder relationshipsBuilder = GraphFactory.initRelationshipsBuilder()
             .nodes(idMap)
             .relationshipType(RelationshipType.of("_IGNORED_"))
-            .addPropertyConfig(GraphFactory.PropertyConfig.builder()
-                .propertyKey("property")
-                .build())
+            .addPropertyConfig(new GraphFactory.PropertyConfig("property"))
             .executorService(DefaultPool.INSTANCE)
             .build();
 

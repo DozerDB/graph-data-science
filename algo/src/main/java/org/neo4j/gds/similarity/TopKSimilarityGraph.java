@@ -53,7 +53,7 @@ public class TopKSimilarityGraph extends SimilarityGraph{
             .nodes(topKGraph)
             .relationshipType(RelationshipType.of(relationshipType))
             .orientation(Orientation.NATURAL)
-            .addPropertyConfig(GraphFactory.PropertyConfig.of(similarityPropertyName))
+            .addPropertyConfig(new GraphFactory.PropertyConfig(similarityPropertyName))
             .concurrency(new Concurrency(1))
             .executorService(DefaultPool.INSTANCE)
             .build();

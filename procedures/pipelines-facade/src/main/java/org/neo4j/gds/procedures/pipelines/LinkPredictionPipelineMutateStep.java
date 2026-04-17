@@ -80,7 +80,7 @@ class LinkPredictionPipelineMutateStep implements MutateStep<LinkPredictionResul
             .nodes(filteredGraph)
             .relationshipType(mutateRelationshipType)
             .orientation(Orientation.UNDIRECTED)
-            .addPropertyConfig(GraphFactory.PropertyConfig.of(configuration.mutateProperty()))
+            .addPropertyConfig(new GraphFactory.PropertyConfig(configuration.mutateProperty()))
             .concurrency(configuration.concurrency())
             .executorService(DefaultPool.INSTANCE)
             .build();

@@ -127,12 +127,12 @@ public class InverseRelationships extends Algorithm<Map<RelationshipType, Single
             .indexInverse(false);
 
         propertySchemas.forEach(propertySchema ->
-            relationshipsBuilderBuilder.addPropertyConfig(
+            relationshipsBuilderBuilder.addPropertyConfig(new GraphFactory.PropertyConfig(
                 propertySchema.key(),
                 propertySchema.aggregation(),
                 propertySchema.defaultValue(),
                 propertySchema.state()
-            )
+            ))
         );
 
         return relationshipsBuilderBuilder.build();

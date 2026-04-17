@@ -110,7 +110,7 @@ public final class RelationshipsFilter {
         var propertyConfigs = propertyKeys
             .stream()
             .map(
-                propertyKey -> GraphFactory.PropertyConfig.of(
+                propertyKey -> new GraphFactory.PropertyConfig(
                     propertyKey,
                     Aggregation.NONE,
                     graphStore.relationshipPropertyValues(relType, propertyKey).defaultValue()

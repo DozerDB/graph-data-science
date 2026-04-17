@@ -106,7 +106,7 @@ public class SimilarityGraphBuilder {
                 .nodes(graph.rootIdMap())
                 .relationshipType(RelationshipType.of("REL"))
                 .orientation(Orientation.NATURAL)
-                .addPropertyConfig(GraphFactory.PropertyConfig.of("property"))
+                .addPropertyConfig(new GraphFactory.PropertyConfig("property"))
                 .concurrency(concurrency)
                 .executorService(executorService)
                 .build();

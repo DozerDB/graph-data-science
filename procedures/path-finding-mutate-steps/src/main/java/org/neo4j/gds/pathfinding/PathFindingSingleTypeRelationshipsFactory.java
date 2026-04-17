@@ -39,7 +39,7 @@ import org.neo4j.gds.paths.dijkstra.PathFindingResult;
                 .initRelationshipsBuilder()
                 .relationshipType(RelationshipType.of(mutateRelationshipType))
                 .nodes(graph)
-                .addPropertyConfig(GraphFactory.PropertyConfig.of(TOTAL_COST_KEY))
+                .addPropertyConfig(new GraphFactory.PropertyConfig(TOTAL_COST_KEY))
                 .orientation(Orientation.NATURAL)
                 .build();
 

@@ -55,9 +55,7 @@ public class SpanningTreeMutateStep implements MutateStep<SpanningTree, Relation
             .initRelationshipsBuilder()
             .relationshipType(RelationshipType.of(mutateRelationshipType))
             .nodes(graph)
-            .addPropertyConfig(GraphFactory.PropertyConfig.builder()
-                .propertyKey(mutateProperty)
-                .build())
+            .addPropertyConfig(new GraphFactory.PropertyConfig(mutateProperty))
             .orientation(Orientation.NATURAL)
             .build();
 

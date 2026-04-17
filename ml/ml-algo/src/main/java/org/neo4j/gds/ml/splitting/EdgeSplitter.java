@@ -23,7 +23,6 @@ import com.carrotsearch.hppc.predicates.LongLongPredicate;
 import com.carrotsearch.hppc.predicates.LongPredicate;
 import org.apache.commons.lang3.mutable.MutableLong;
 import org.neo4j.gds.RelationshipType;
-import org.neo4j.gds.api.DefaultValue;
 import org.neo4j.gds.api.Graph;
 import org.neo4j.gds.api.IdMap;
 import org.neo4j.gds.api.properties.relationships.RelationshipWithPropertyConsumer;
@@ -167,7 +166,7 @@ public abstract class EdgeSplitter {
             .nodes(rootNodes)
             .orientation(direction.toOrientation())
             .addAllPropertyConfigs(propertyKey
-                .map(key -> List.of(GraphFactory.PropertyConfig.of(key, Aggregation.SINGLE, DefaultValue.forDouble())))
+                .map(key -> List.of(new GraphFactory.PropertyConfig(key, Aggregation.SINGLE)))
                 .orElse(List.of()))
             .concurrency(new Concurrency(1))
             .executorService(DefaultPool.INSTANCE)

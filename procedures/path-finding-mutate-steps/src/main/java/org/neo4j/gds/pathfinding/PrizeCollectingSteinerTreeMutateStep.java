@@ -56,7 +56,7 @@ public class PrizeCollectingSteinerTreeMutateStep implements MutateStep<PrizeSte
         var relationshipsBuilder = GraphFactory.initRelationshipsBuilder()
             .nodes(graph)
             .relationshipType(RelationshipType.of(mutateRelationshipType))
-            .addPropertyConfig(GraphFactory.PropertyConfig.of(mutateProperty))
+            .addPropertyConfig(new GraphFactory.PropertyConfig(mutateProperty))
             .orientation(Orientation.NATURAL)
             .build();
 

@@ -79,7 +79,7 @@ class LinkPredictionPipelineWriteToResultStoreStep implements WriteStep<LinkPred
             .nodes(filteredGraph)
             .relationshipType(RelationshipType.of(configuration.writeRelationshipType()))
             .orientation(Orientation.NATURAL)
-            .addPropertyConfig(GraphFactory.PropertyConfig.of(configuration.writeProperty()))
+            .addPropertyConfig(new GraphFactory.PropertyConfig(configuration.writeProperty()))
             .concurrency(configuration.concurrency())
             .executorService(DefaultPool.INSTANCE)
             .build();

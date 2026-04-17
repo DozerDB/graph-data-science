@@ -135,11 +135,12 @@ public class ToUndirected extends Algorithm<SingleTypeRelationships> {
                     .map(aggregations -> aggregations.localAggregation(propertySchema.key()))
                     .orElse(propertySchema.aggregation());
 
-                relationshipsBuilderBuilder.addPropertyConfig(
-                    propertySchema.key(),
-                    aggregation,
-                    propertySchema.defaultValue(),
-                    propertySchema.state()
+                relationshipsBuilderBuilder.addPropertyConfig(new GraphFactory.PropertyConfig(
+                        propertySchema.key(),
+                        aggregation,
+                        propertySchema.defaultValue(),
+                        propertySchema.state()
+                    )
                 );
             }
         );

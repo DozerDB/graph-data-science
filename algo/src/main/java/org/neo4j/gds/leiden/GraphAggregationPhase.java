@@ -19,6 +19,7 @@
  */
 package org.neo4j.gds.leiden;
 
+import org.neo4j.gds.Aggregation;
 import org.neo4j.gds.ImmutableRelationshipProjections;
 import org.neo4j.gds.NodeProjections;
 import org.neo4j.gds.Orientation;
@@ -36,13 +37,12 @@ import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.ParallelUtil;
 import org.neo4j.gds.core.loading.construction.GraphFactory;
 import org.neo4j.gds.core.loading.construction.RelationshipsBuilder;
-import org.neo4j.gds.mem.MemoryEstimation;
-import org.neo4j.gds.mem.MemoryEstimations;
-import org.neo4j.gds.mem.MemoryRange;
 import org.neo4j.gds.core.utils.paged.ParalleLongPageCreator;
 import org.neo4j.gds.core.utils.partition.PartitionUtils;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
-import org.neo4j.gds.Aggregation;
+import org.neo4j.gds.mem.MemoryEstimation;
+import org.neo4j.gds.mem.MemoryEstimations;
+import org.neo4j.gds.mem.MemoryRange;
 import org.neo4j.gds.termination.TerminationFlag;
 
 import java.util.Map;
@@ -151,10 +151,7 @@ class GraphAggregationPhase {
             .nodes(idMap)
             .relationshipType(RelationshipType.of("_IGNORED_"))
             .orientation(direction.toOrientation())
-            .addPropertyConfig(GraphFactory.PropertyConfig.builder()
-                .propertyKey("property")
-                .aggregation(Aggregation.SUM)
-                .build())
+            .addPropertyConfig(new GraphFactory.PropertyConfig("property", Aggregation.SUM))
             .executorService(executorService)
             .build();
 

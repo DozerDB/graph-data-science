@@ -77,7 +77,7 @@ class CypherRelationshipLoader extends CypherRecordLoader<RelationshipImportResu
 
         propertyConfigs = propertyMappings
             .stream()
-            .map(mapping -> GraphFactory.PropertyConfig.of(
+            .map(mapping -> new GraphFactory.PropertyConfig(
                 mapping.propertyKey(),
                 mapping.aggregation(),
                 mapping.defaultValue()

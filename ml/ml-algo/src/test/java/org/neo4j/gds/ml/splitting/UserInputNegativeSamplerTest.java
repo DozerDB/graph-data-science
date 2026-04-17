@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import org.neo4j.gds.NodeLabel;
 import org.neo4j.gds.Orientation;
 import org.neo4j.gds.RelationshipType;
-import org.neo4j.gds.api.DefaultValue;
 import org.neo4j.gds.api.Graph;
 import org.neo4j.gds.core.loading.construction.GraphFactory;
 import org.neo4j.gds.core.loading.construction.RelationshipsBuilder;
@@ -78,10 +77,10 @@ class UserInputNegativeSamplerTest {
         );
 
         RelationshipsBuilder testBuilder = new RelationshipsBuilderBuilder().nodes(graph).addPropertyConfig(
-            GraphFactory.PropertyConfig.of("property", Aggregation.SINGLE, DefaultValue.forDouble())
+            new GraphFactory.PropertyConfig("property", Aggregation.SINGLE)
         ).relationshipType(RelationshipType.of("TEST")).build();
         RelationshipsBuilder trainBuilder = new RelationshipsBuilderBuilder().nodes(graph).addPropertyConfig(
-            GraphFactory.PropertyConfig.of("property", Aggregation.SINGLE, DefaultValue.forDouble())
+            new GraphFactory.PropertyConfig("property", Aggregation.SINGLE)
         ).relationshipType(RelationshipType.of("TRAIN")).build();
 
         sampler.produceNegativeSamples(testBuilder, trainBuilder);

@@ -20,6 +20,7 @@
 package org.neo4j.gds.louvain;
 
 import org.jetbrains.annotations.Nullable;
+import org.neo4j.gds.Aggregation;
 import org.neo4j.gds.Algorithm;
 import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.algorithms.community.CommunityCompanion;
@@ -38,7 +39,6 @@ import org.neo4j.gds.core.utils.partition.PartitionUtils;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.modularityoptimization.ModularityOptimization;
 import org.neo4j.gds.modularityoptimization.ModularityOptimizationResult;
-import org.neo4j.gds.Aggregation;
 import org.neo4j.gds.termination.TerminationFlag;
 
 import java.util.Optional;
@@ -257,10 +257,7 @@ public final class Louvain extends Algorithm<LouvainResult> {
             .nodes(idMap)
             .relationshipType(RelationshipType.of("IGNORED"))
             .orientation(rootGraph.schema().direction().toOrientation())
-            .addPropertyConfig(GraphFactory.PropertyConfig.builder()
-                .propertyKey("property")
-                .aggregation(Aggregation.SUM)
-                .build())
+            .addPropertyConfig(new GraphFactory.PropertyConfig("property", Aggregation.SUM))
             .executorService(executorService)
             .build();
 

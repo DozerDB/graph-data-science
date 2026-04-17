@@ -60,7 +60,7 @@ public class SteinerTreeMutateStep implements MutateStep<SteinerTreeResult, Rela
         var relationshipsBuilder = GraphFactory.initRelationshipsBuilder()
             .nodes(graph)
             .relationshipType(RelationshipType.of(mutateRelationshipType))
-            .addPropertyConfig(GraphFactory.PropertyConfig.of(mutateProperty))
+            .addPropertyConfig(new GraphFactory.PropertyConfig(mutateProperty))
             .orientation(Orientation.NATURAL)
             .build();
 

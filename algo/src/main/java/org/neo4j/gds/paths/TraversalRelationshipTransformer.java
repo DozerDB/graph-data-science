@@ -53,7 +53,7 @@ public final class TraversalRelationshipTransformer {
             .initRelationshipsBuilder()
             .nodes(graph)
             .relationshipType(RelationshipType.of(relType))
-            .addPropertyConfig(GraphFactory.PropertyConfig.of(indexProperty))
+            .addPropertyConfig(new GraphFactory.PropertyConfig(indexProperty))
             .orientation(Orientation.NATURAL)
             .build();
 

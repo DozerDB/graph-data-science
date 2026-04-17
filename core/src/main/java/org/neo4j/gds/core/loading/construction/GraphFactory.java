@@ -26,7 +26,6 @@ import org.neo4j.gds.ImmutableRelationshipProjection;
 import org.neo4j.gds.Orientation;
 import org.neo4j.gds.RelationshipProjection;
 import org.neo4j.gds.RelationshipType;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.api.DefaultValue;
 import org.neo4j.gds.api.GraphCharacteristics;
 import org.neo4j.gds.api.IdMap;
@@ -180,40 +179,20 @@ public final class GraphFactory {
         );
     }
 
-    @ValueClass
-    public interface PropertyConfig {
-
-        String propertyKey();
-
-        @Value.Default
-        default Aggregation aggregation() {
-            return Aggregation.NONE;
+    public record PropertyConfig(
+        String propertyKey,
+        Aggregation aggregation, // default NONE
+        DefaultValue defaultValue, // default DefaultValue.forDouble
+        PropertyState propertyState
+    ) {
+        public PropertyConfig(String propertyKey, Aggregation aggregation, DefaultValue defaultValue) {
+            this(propertyKey, aggregation, DefaultValue.forDouble(), PropertyState.TRANSIENT);
         }
-
-        @Value.Default
-        default DefaultValue defaultValue() {
-            return DefaultValue.forDouble();
+        public PropertyConfig(String propertyKey, Aggregation aggregation) {
+            this(propertyKey, aggregation, DefaultValue.forDouble(), PropertyState.TRANSIENT);
         }
-
-        static PropertyConfig of(String propertyKey) {
-            return ImmutablePropertyConfig.builder().propertyKey(propertyKey).build();
-        }
-
-        static ImmutablePropertyConfig.Builder builder() {
-            return ImmutablePropertyConfig.builder();
-        }
-
-        static PropertyConfig of(String propertyKey, Aggregation aggregation, DefaultValue defaultValue) {
-            return ImmutablePropertyConfig.builder()
-                .propertyKey(propertyKey)
-                .aggregation(aggregation)
-                .defaultValue(defaultValue)
-                .build();
-        }
-
-        @Value.Default
-        default PropertyState propertyState() {
-            return PropertyState.TRANSIENT;
+        public PropertyConfig(String propertyKey) {
+            this(propertyKey, Aggregation.NONE);
         }
     }
 

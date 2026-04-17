@@ -49,9 +49,7 @@ public final class TreeProducer {
             .nodes(idMap)
             .relationshipType(RelationshipType.of("TREE"))
             .orientation(Orientation.UNDIRECTED)
-            .addPropertyConfig(GraphFactory.PropertyConfig.builder()
-                .propertyKey("weight")
-                .build())
+            .addPropertyConfig(new GraphFactory.PropertyConfig("weight"))
             .build();
 
         for (long i =0; i<numberOfTreeEdges;++i){
@@ -74,4 +72,3 @@ public final class TreeProducer {
     }
 
 }
-

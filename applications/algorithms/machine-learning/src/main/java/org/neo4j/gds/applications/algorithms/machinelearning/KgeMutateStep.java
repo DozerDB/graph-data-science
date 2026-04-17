@@ -19,6 +19,7 @@
  */
 package org.neo4j.gds.applications.algorithms.machinelearning;
 
+import org.neo4j.gds.Aggregation;
 import org.neo4j.gds.Orientation;
 import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.algorithms.machinelearning.KGEPredictMutateConfig;
@@ -31,7 +32,6 @@ import org.neo4j.gds.applications.algorithms.metadata.RelationshipsWritten;
 import org.neo4j.gds.core.concurrency.DefaultPool;
 import org.neo4j.gds.core.concurrency.ParallelUtil;
 import org.neo4j.gds.core.loading.construction.GraphFactory;
-import org.neo4j.gds.Aggregation;
 import org.neo4j.gds.termination.TerminationFlag;
 
 class KgeMutateStep implements MutateStep<KGEPredictResult, RelationshipsWritten> {
@@ -63,9 +63,7 @@ class KgeMutateStep implements MutateStep<KGEPredictResult, RelationshipsWritten
             .nodes(graph)
             .relationshipType(mutateRelationshipType)
             .orientation(Orientation.NATURAL)
-            .addPropertyConfig(GraphFactory.PropertyConfig.builder()
-                .propertyKey(configuration.mutateProperty())
-                .build())
+            .addPropertyConfig(new GraphFactory.PropertyConfig(configuration.mutateProperty()))
             .concurrency(concurrency)
             .executorService(DefaultPool.INSTANCE)
             .build();
