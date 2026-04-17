@@ -25,7 +25,7 @@ import org.neo4j.gds.api.IdMap;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.scaling.Center;
 import org.neo4j.gds.scaling.LogScaler;
-import org.neo4j.gds.scaling.ScalerFactory;
+import org.neo4j.gds.scaling.ScalerParser;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.DOUBLE;
@@ -41,7 +41,7 @@ class RankDistributionHelpersTest {
 
         var distribution = RankDistributionHelpers.compute(
             idMap,
-            ScalerFactory.parse(Center.TYPE),
+            ScalerParser.parse(Center.TYPE),
             (i) -> i+1,
             new Concurrency(1),
             true
@@ -59,7 +59,7 @@ class RankDistributionHelpersTest {
 
         var distribution = RankDistributionHelpers.compute(
             idMap,
-            ScalerFactory.parse(LogScaler.TYPE),
+            ScalerParser.parse(LogScaler.TYPE),
             (i) -> i+1,
             new Concurrency(1),
             true

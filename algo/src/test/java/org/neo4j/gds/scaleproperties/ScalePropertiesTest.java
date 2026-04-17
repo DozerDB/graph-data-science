@@ -39,7 +39,7 @@ import org.neo4j.gds.extension.GdlExtension;
 import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
 import org.neo4j.gds.scaling.MinMax;
-import org.neo4j.gds.scaling.ScalerFactory;
+import org.neo4j.gds.scaling.ScalerParser;
 import org.neo4j.gds.termination.TerminationFlag;
 
 import java.util.List;
@@ -215,7 +215,7 @@ class ScalePropertiesTest {
         Function<List<String>, ScalePropertiesParameters> paramBuilder = (nodeProps) -> new ScalePropertiesParameters(
             new Concurrency(4),
             nodeProps,
-            ScalerFactory.SUPPORTED_SCALERS.get(scaler).apply(CypherMapWrapper.empty())
+            ScalerParser.SUPPORTED_SCALERS.get(scaler).apply(CypherMapWrapper.empty())
         );
 
         var bParams = paramBuilder.apply(List.of("b"));
@@ -400,7 +400,7 @@ class ScalePropertiesTest {
     }
 
     public static Stream<Arguments> scalers() {
-        return ScalerFactory.SUPPORTED_SCALERS.keySet()
+        return ScalerParser.SUPPORTED_SCALERS.keySet()
             .stream()
             .map(Arguments::of);
     }

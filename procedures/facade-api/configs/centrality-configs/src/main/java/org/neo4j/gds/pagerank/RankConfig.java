@@ -53,7 +53,7 @@ public interface RankConfig extends
         return 20;
     }
 
-    @Configuration.ConvertWith(method = "org.neo4j.gds.scaling.ScalerFactory#parse")
+    @Configuration.ConvertWith(method = "org.neo4j.gds.scaling.ScalerParser#parse")
     @Configuration.ToMapValue("org.neo4j.gds.scaling.ScalerFactory#toString")
     default ScalerFactory scaler() {
         return NoneScaler.buildFrom(CypherMapWrapper.empty());

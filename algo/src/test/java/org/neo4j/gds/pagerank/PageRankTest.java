@@ -48,7 +48,7 @@ import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.IdFunction;
 import org.neo4j.gds.extension.Inject;
 import org.neo4j.gds.logging.GdsTestLog;
-import org.neo4j.gds.scaling.ScalerFactory;
+import org.neo4j.gds.scaling.ScalerParser;
 import org.neo4j.gds.termination.TerminationFlag;
 
 import java.util.Arrays;
@@ -733,7 +733,7 @@ class PageRankTest {
                 .maxIterations(40)
                 .tolerance(0)
                 .concurrency(1)
-                .scaler(ScalerFactory.parse(scalerName))
+                .scaler(ScalerParser.parse(scalerName))
                 .build();
 
             var result = pageRank(graph, config, ProgressTracker.NULL_TRACKER, TerminationFlag.RUNNING_TRUE).compute();

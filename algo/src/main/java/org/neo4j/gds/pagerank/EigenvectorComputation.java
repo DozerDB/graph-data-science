@@ -35,7 +35,7 @@ import org.neo4j.gds.core.concurrency.RunWithConcurrency;
 import org.neo4j.gds.core.utils.partition.PartitionUtils;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.scaling.L2Norm;
-import org.neo4j.gds.scaling.ScalerFactory;
+import org.neo4j.gds.scaling.ScalerParser;
 
 import java.util.Optional;
 import java.util.function.LongToDoubleFunction;
@@ -129,7 +129,7 @@ public final class EigenvectorComputation<C extends EigenvectorConfig> implement
         };
 
         // Normalize using L2-Norm (Power iteration)
-        var scaler = ScalerFactory.parse(L2Norm.TYPE).create(
+        var scaler = ScalerParser.parse(L2Norm.TYPE).create(
             properties,
             context.nodeCount(),
             concurrency,

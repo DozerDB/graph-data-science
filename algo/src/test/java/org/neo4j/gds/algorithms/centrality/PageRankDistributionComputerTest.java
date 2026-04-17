@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.pagerank.PageRankConfig;
 import org.neo4j.gds.pagerank.PageRankResult;
-import org.neo4j.gds.scaling.ScalerFactory;
+import org.neo4j.gds.scaling.ScalerParser;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -34,7 +34,7 @@ class PageRankDistributionComputerTest {
     @Test
     void shouldReturnDistributionWithErrorHint() {
         var pageRankConfigMock = mock(PageRankConfig.class);
-        when(pageRankConfigMock.scaler()).thenReturn(ScalerFactory.parse("log"));
+        when(pageRankConfigMock.scaler()).thenReturn(ScalerParser.parse("log"));
         var pageRankDistribution = PageRankDistributionComputer.computeDistribution(
             null,
             pageRankConfigMock,
@@ -51,7 +51,7 @@ class PageRankDistributionComputerTest {
     @Test
     void shouldReturnComputedDistribution() {
         var pageRankConfigMock = mock(PageRankConfig.class);
-        when(pageRankConfigMock.scaler()).thenReturn(ScalerFactory.parse("none"));
+        when(pageRankConfigMock.scaler()).thenReturn(ScalerParser.parse("none"));
         when(pageRankConfigMock.concurrency()).thenReturn(new Concurrency(4));
 
         var pageRankResultMock = mock(PageRankResult.class);

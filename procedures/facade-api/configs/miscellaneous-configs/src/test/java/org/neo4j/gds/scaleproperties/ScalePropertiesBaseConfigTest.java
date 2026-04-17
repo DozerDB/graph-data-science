@@ -25,7 +25,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.neo4j.gds.core.CypherMapWrapper;
 import org.neo4j.gds.gdl.GdlFactory;
-import org.neo4j.gds.scaling.ScalerFactory;
+import org.neo4j.gds.scaling.ScalerParser;
 
 import java.util.List;
 import java.util.Map;
@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class ScalePropertiesBaseConfigTest {
 
     public static Stream<Arguments> scalers() {
-        return ScalerFactory.SUPPORTED_SCALERS.keySet()
+        return ScalerParser.SUPPORTED_SCALERS.keySet()
             .stream()
             .map(Arguments::of);
     }

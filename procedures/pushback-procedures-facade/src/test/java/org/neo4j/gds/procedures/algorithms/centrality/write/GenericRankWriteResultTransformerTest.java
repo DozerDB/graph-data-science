@@ -32,7 +32,7 @@ import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.pagerank.PageRankResult;
 import org.neo4j.gds.result.TimedAlgorithmResult;
 import org.neo4j.gds.scaling.Center;
-import org.neo4j.gds.scaling.ScalerFactory;
+import org.neo4j.gds.scaling.ScalerParser;
 
 import java.util.Map;
 
@@ -64,7 +64,7 @@ class GenericRankWriteResultTransformerTest {
             mock(Graph.class),
             mock(GraphStore.class),
             config,
-            ScalerFactory.parse(Center.TYPE),
+            ScalerParser.parse(Center.TYPE),
             true,
             new Concurrency(1),
             writeStep,
@@ -108,7 +108,7 @@ class GenericRankWriteResultTransformerTest {
             mock(Graph.class),
             mock(GraphStore.class),
             config,
-            ScalerFactory.parse(Center.TYPE),
+            ScalerParser.parse(Center.TYPE),
             false,
             new Concurrency(1),
             writeStep,

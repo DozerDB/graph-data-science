@@ -40,7 +40,7 @@ public interface ScalePropertiesBaseConfig extends AlgoBaseConfig {
     @Configuration.ConvertWith(method = "parsePropertyNames")
     List<String> nodeProperties();
 
-    @Configuration.ConvertWith(method = "org.neo4j.gds.scaling.ScalerFactory#parse")
+    @Configuration.ConvertWith(method = "org.neo4j.gds.scaling.ScalerParser#parse")
     @Configuration.ToMapValue("org.neo4j.gds.scaling.ScalerFactory#toString")
     ScalerFactory scaler();
 
