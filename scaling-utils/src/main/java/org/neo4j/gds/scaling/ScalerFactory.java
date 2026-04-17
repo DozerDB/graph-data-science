@@ -96,7 +96,5 @@ public interface ScalerFactory {
         ExecutorService executor
     );
 
-    default boolean workingScaler(){
-        return !type().equals(NoneScaler.TYPE);
-    }
+    default boolean workingScaler() { return true; }
 }

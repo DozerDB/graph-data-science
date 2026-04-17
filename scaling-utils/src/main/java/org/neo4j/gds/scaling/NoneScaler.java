@@ -41,6 +41,9 @@ public class NoneScaler extends ScalarScaler {
             }
 
             @Override
+            public boolean workingScaler() { return false; }
+
+            @Override
             public ScalarScaler create(
                 NodePropertyValues properties,
                 long nodeCount,
