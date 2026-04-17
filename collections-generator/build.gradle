@@ -9,14 +9,11 @@ group = 'org.neo4j.gds'
 dependencies {
     annotationProcessor project(':annotations')
     annotationProcessor openGds.google.auto.service
-    annotationProcessor openGds.immutables.builder
-    annotationProcessor openGds.immutables.value
 
     compileOnly openGds.google.auto.service
 
     implementation project(':annotations')
     implementation project(':memory-usage')
-    implementation openGds.immutables.value.annotations
     implementation openGds.google.auto.common
     implementation openGds.javapoet
     implementation openGds.commons.lang3

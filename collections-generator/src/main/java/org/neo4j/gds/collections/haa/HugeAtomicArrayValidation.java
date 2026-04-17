@@ -22,7 +22,6 @@ package org.neo4j.gds.collections.haa;
 import com.google.auto.common.MoreElements;
 import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.TypeName;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.collections.CollectionStep;
 import org.neo4j.gds.collections.HugeAtomicArray;
 
@@ -76,14 +75,14 @@ final class HugeAtomicArrayValidation implements CollectionStep.Validation<HugeA
 
         var rootPackage = rootPackage(element);
 
-        var spec = ImmutableSpec.builder()
-            .element(element)
-            .valueType(valueType)
-            .valueOperatorInterface(valueOperatorInterface)
-            .pageCreatorInterface(pageCreatorInterface)
-            .rootPackage(rootPackage)
-            .pageShift(pageShift)
-            .build();
+        var spec = new Spec(
+            element,
+            valueType,
+            valueOperatorInterface,
+            pageCreatorInterface,
+            pageShift,
+            rootPackage
+        );
 
         return Optional.of(spec);
     }
@@ -123,22 +122,16 @@ final class HugeAtomicArrayValidation implements CollectionStep.Validation<HugeA
         return true;
     }
 
-    @ValueClass
-    public interface Spec extends CollectionStep.Spec {
-        Element element();
+    public record Spec(
+        Element element,
+        TypeMirror valueType,
+        TypeMirror valueOperatorInterface,
+        TypeMirror pageCreatorInterface,
+        int pageShift,
+        @Override Name rootPackage
+    ) implements CollectionStep.Spec {
 
-        TypeMirror valueType();
-
-        TypeMirror valueOperatorInterface();
-
-        TypeMirror pageCreatorInterface();
-
-        int pageShift();
-
-        @Override
-        Name rootPackage();
-
-        default String className() {
+        String className() {
             return element().getSimpleName() + "Factory";
         }
     }

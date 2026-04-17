@@ -21,7 +21,6 @@ package org.neo4j.gds.collections.hsl;
 
 import com.google.auto.common.MoreElements;
 import com.google.auto.common.MoreTypes;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.collections.CollectionStep;
 import org.neo4j.gds.collections.HugeSparseList;
 
@@ -77,13 +76,7 @@ final class HugeSparseListValidation implements CollectionStep.Validation<HugeSp
 
         var rootPackage = rootPackage(element);
 
-        var spec = ImmutableSpec.builder()
-            .element(element)
-            .valueType(valueType)
-            .forAllConsumerType(forAllConsumerType)
-            .rootPackage(rootPackage)
-            .pageShift(pageShift)
-            .build();
+        var spec = new Spec(element, valueType, forAllConsumerType, pageShift, rootPackage);
 
         return Optional.of(spec);
     }
@@ -120,20 +113,15 @@ final class HugeSparseListValidation implements CollectionStep.Validation<HugeSp
         return true;
     }
 
-    @ValueClass
-    public interface Spec extends CollectionStep.Spec {
-        Element element();
+    public record Spec(
+        Element element,
+        TypeMirror valueType,
+        TypeMirror forAllConsumerType,
+        int pageShift,
+        @Override Name rootPackage
+    ) implements CollectionStep.Spec {
 
-        TypeMirror valueType();
-
-        TypeMirror forAllConsumerType();
-
-        int pageShift();
-
-        @Override
-        Name rootPackage();
-
-        default String className() {
+        String className() {
             return element().getSimpleName() + "Son";
         }
     }

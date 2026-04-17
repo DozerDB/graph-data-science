@@ -22,7 +22,6 @@ package org.neo4j.gds.collections.hsa;
 import com.google.auto.common.MoreElements;
 import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.TypeName;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.collections.CollectionStep;
 import org.neo4j.gds.collections.HugeSparseArray;
 
@@ -78,13 +77,13 @@ final class HugeSparseArrayValidation implements CollectionStep.Validation<HugeS
         var builderType = elementValidator.builderType().asType();
         var rootPackage = rootPackage(element);
 
-        var spec = ImmutableSpec.builder()
-            .element(element)
-            .valueType(valueType)
-            .builderType(builderType)
-            .rootPackage(rootPackage)
-            .pageShift(pageShift)
-            .build();
+        var spec = new Spec(
+            element,
+            valueType,
+            builderType,
+            pageShift,
+            rootPackage
+        );
 
         return Optional.of(spec);
     }
@@ -124,20 +123,15 @@ final class HugeSparseArrayValidation implements CollectionStep.Validation<HugeS
         return true;
     }
 
-    @ValueClass
-    public interface Spec extends CollectionStep.Spec {
-        Element element();
+    public record Spec(
+        Element element,
+        TypeMirror valueType,
+        TypeMirror builderType,
+        int pageShift,
+        @Override Name rootPackage
+    ) implements CollectionStep.Spec {
 
-        TypeMirror valueType();
-
-        TypeMirror builderType();
-
-        int pageShift();
-
-        @Override
-        Name rootPackage();
-
-        default String className() {
+        String className() {
             return element().getSimpleName() + "Son";
         }
     }
