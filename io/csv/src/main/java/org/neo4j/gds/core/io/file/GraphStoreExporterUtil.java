@@ -20,7 +20,6 @@
 package org.neo4j.gds.core.io.file;
 
 import org.jetbrains.annotations.Nullable;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.api.GraphStore;
 import org.neo4j.gds.core.RequestCorrelationId;
 import org.neo4j.gds.core.io.GraphStoreExporter;
@@ -72,10 +71,7 @@ public final class GraphStoreExporterUtil {
 
             var tookMillis = TimeUnit.NANOSECONDS.toMillis(end - start);
             loggers.log().info("[gds] Export completed for '%s' in %s ms", parameters.exportName(), tookMillis);
-            return ImmutableExportToCsvResult.of(
-                exportedProperties,
-                tookMillis
-            );
+            return new ExportToCsvResult(exportedProperties, tookMillis);
         } catch (RuntimeException e) {
             loggers.log().warn("CSV export failed", e);
             throw e;
@@ -115,12 +111,7 @@ public final class GraphStoreExporterUtil {
         return resolvedExportPath;
     }
 
-    @ValueClass
-    public interface ExportToCsvResult {
-        GraphStoreExporter.ExportedProperties importedProperties();
-
-        long tookMillis();
-    }
+    public record ExportToCsvResult(GraphStoreExporter.ExportedProperties importedProperties, long tookMillis) {}
 
     private GraphStoreExporterUtil() {}
 }

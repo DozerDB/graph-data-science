@@ -20,37 +20,33 @@
 package org.neo4j.gds.core.io.file;
 
 import org.neo4j.gds.RelationshipType;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.api.schema.MutableRelationshipSchema;
 import org.neo4j.gds.api.schema.RelationshipPropertySchema;
 import org.neo4j.gds.core.io.file.csv.CsvRelationshipVisitor;
 import org.neo4j.gds.utils.StringFormatting;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-@ValueClass
-@SuppressWarnings("immutables:subtype")
-public interface RelationshipFileHeader extends FileHeader<MutableRelationshipSchema, RelationshipPropertySchema> {
-    String relationshipType();
+public record RelationshipFileHeader(String relationshipType, Set<HeaderProperty> propertyMappings) implements FileHeader<MutableRelationshipSchema, RelationshipPropertySchema> {
 
     @Override
-    default Map<String, RelationshipPropertySchema> schemaForIdentifier(MutableRelationshipSchema schema) {
+    public Map<String, RelationshipPropertySchema> schemaForIdentifier(MutableRelationshipSchema schema) {
         return schema.filter(Set.of(RelationshipType.of(relationshipType()))).unionProperties();
     }
 
-    static RelationshipFileHeader of(String[] csvColumns, String relationshipType) {
-        var builder = ImmutableRelationshipFileHeader.builder();
+    public static RelationshipFileHeader of(String[] csvColumns, String relationshipType) {
         if (csvColumns.length == 0 || !csvColumns[0].equals(CsvRelationshipVisitor.START_ID_COLUMN_NAME)) {
             throw new IllegalArgumentException(StringFormatting.formatWithLocale("First column of header must be %s.", CsvRelationshipVisitor.START_ID_COLUMN_NAME));
         }
         if (csvColumns.length == 1 || !csvColumns[1].equals(CsvRelationshipVisitor.END_ID_COLUMN_NAME)) {
             throw new IllegalArgumentException(StringFormatting.formatWithLocale("Second column of header must be %s.", CsvRelationshipVisitor.END_ID_COLUMN_NAME));
         }
+        var propertyMappings = new HashSet<HeaderProperty>();
         for (int i = 2; i < csvColumns.length; i++) {
-            builder.addPropertyMapping(HeaderProperty.parse(i, csvColumns[i]));
+            propertyMappings.add(HeaderProperty.parse(i, csvColumns[i]));
         }
-        builder.relationshipType(relationshipType);
-        return builder.build();
+        return new RelationshipFileHeader(relationshipType, propertyMappings);
     }
 }

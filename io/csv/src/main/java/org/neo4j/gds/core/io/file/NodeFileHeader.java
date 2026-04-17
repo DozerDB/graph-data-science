@@ -20,25 +20,22 @@
 package org.neo4j.gds.core.io.file;
 
 import org.neo4j.gds.NodeLabel;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.api.schema.MutableNodeSchema;
 import org.neo4j.gds.api.schema.PropertySchema;
 import org.neo4j.gds.core.io.file.csv.CsvNodeVisitor;
 import org.neo4j.gds.utils.StringFormatting;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@ValueClass
-@SuppressWarnings("immutables:subtype")
-public interface NodeFileHeader extends FileHeader<MutableNodeSchema, PropertySchema> {
-    String[] nodeLabels();
+public record NodeFileHeader(String[] nodeLabels, Set<HeaderProperty> propertyMappings) implements FileHeader<MutableNodeSchema, PropertySchema> {
 
     @Override
-    default Map<String, PropertySchema> schemaForIdentifier(MutableNodeSchema schema) {
+    public Map<String, PropertySchema> schemaForIdentifier(MutableNodeSchema schema) {
         var labelStream = Arrays.stream(nodeLabels()).map(NodeLabel::of);
         if (nodeLabels().length == 0) {
             labelStream = Stream.of(NodeLabel.ALL_NODES);
@@ -47,15 +44,14 @@ public interface NodeFileHeader extends FileHeader<MutableNodeSchema, PropertySc
         return schema.filter(nodeLabels).unionProperties();
     }
 
-    static NodeFileHeader of(String[] csvColumns, String[] nodeLabels) {
-        var builder = ImmutableNodeFileHeader.builder();
+    public static NodeFileHeader of(String[] csvColumns, String[] nodeLabels) {
         if (csvColumns.length == 0 || !csvColumns[0].equals(CsvNodeVisitor.ID_COLUMN_NAME)) {
             throw new IllegalArgumentException(StringFormatting.formatWithLocale("First column of header must be %s.", CsvNodeVisitor.ID_COLUMN_NAME));
         }
+        var propertyMappings = new HashSet<HeaderProperty>();
         for (int i = 1; i < csvColumns.length; i++) {
-            builder.addPropertyMapping(HeaderProperty.parse(i, csvColumns[i]));
+            propertyMappings.add(HeaderProperty.parse(i, csvColumns[i]));
         }
-        builder.nodeLabels(nodeLabels);
-        return builder.build();
+        return new NodeFileHeader(nodeLabels, propertyMappings);
     }
 }
