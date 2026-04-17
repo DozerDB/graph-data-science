@@ -24,12 +24,12 @@ import org.neo4j.gds.api.AdjacencyList;
 import org.neo4j.gds.api.AdjacencyProperties;
 import org.neo4j.gds.api.compress.AdjacencyCompressorFactory;
 import org.neo4j.gds.api.compress.AdjacencyListsWithProperties;
-import org.neo4j.gds.api.compress.ImmutableAdjacencyListsWithProperties;
 import org.neo4j.gds.collections.ha.HugeIntArray;
 import org.neo4j.gds.collections.ha.HugeLongArray;
 import org.neo4j.gds.compression.api.AdjacencyCompressor;
 import org.neo4j.gds.compression.api.AdjacencyListBuilder;
 
+import java.util.ArrayList;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.LongSupplier;
 
@@ -95,18 +95,18 @@ public abstract class AbstractAdjacencyCompressorFactory<TARGET_PAGE, PROPERTY_P
 
     @Override
     public AdjacencyListsWithProperties build(boolean allowReordering) {
-        var builder = ImmutableAdjacencyListsWithProperties
-            .builder()
-            .adjacency(adjacencyBuilder.build(this.adjacencyDegrees, this.adjacencyOffsets, allowReordering));
-
+        var properties = new ArrayList<AdjacencyProperties>();
         var propertyBuilders = this.propertyBuilders;
         var propertyOffsets = this.propertyOffsets;
         for (var propertyBuilder : propertyBuilders) {
-            var properties = propertyBuilder.build(this.adjacencyDegrees, propertyOffsets, allowReordering);
-            builder.addProperty(properties);
+            properties.add(propertyBuilder.build(this.adjacencyDegrees, propertyOffsets, allowReordering));
         }
 
-        return builder.relationshipCount(relationshipCounter.longValue()).build();
+        return new AdjacencyListsWithProperties(
+            adjacencyBuilder.build(this.adjacencyDegrees, this.adjacencyOffsets, allowReordering),
+            relationshipCounter.longValue(),
+            properties
+        );
     }
 
     protected abstract AdjacencyCompressor createCompressorFromInternalState(

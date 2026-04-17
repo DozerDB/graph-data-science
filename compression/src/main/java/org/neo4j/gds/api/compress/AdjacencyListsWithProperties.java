@@ -19,18 +19,9 @@
  */
 package org.neo4j.gds.api.compress;
 
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.api.AdjacencyList;
 import org.neo4j.gds.api.AdjacencyProperties;
 
 import java.util.List;
 
-@ValueClass
-public interface AdjacencyListsWithProperties {
-
-    AdjacencyList adjacency();
-
-    long relationshipCount();
-
-    List<AdjacencyProperties> properties();
-}
+public record AdjacencyListsWithProperties(AdjacencyList adjacency, long relationshipCount, List<AdjacencyProperties> properties) {}

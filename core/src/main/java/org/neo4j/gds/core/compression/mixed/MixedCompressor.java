@@ -26,7 +26,6 @@ import org.neo4j.gds.compression.api.AdjacencyCompressor;
 import org.neo4j.gds.api.compress.AdjacencyCompressorFactory;
 import org.neo4j.gds.api.compress.AdjacencyListBuilderFactory;
 import org.neo4j.gds.api.compress.AdjacencyListsWithProperties;
-import org.neo4j.gds.api.compress.ImmutableAdjacencyListsWithProperties;
 import org.neo4j.gds.collections.ha.HugeIntArray;
 import org.neo4j.gds.collections.ha.HugeLongArray;
 import org.neo4j.gds.compression.common.MemoryTracker;
@@ -185,12 +184,11 @@ public final class MixedCompressor implements AdjacencyCompressor {
                 mixedAdjacencyProperties.add(mixedProperties);
             }
 
-            return ImmutableAdjacencyListsWithProperties
-                .builder()
-                .adjacency(mixedAdjacencyList)
-                .addAllProperties(mixedAdjacencyProperties)
-                .relationshipCount(relationshipCounter.longValue())
-                .build();
+            return new AdjacencyListsWithProperties(
+                mixedAdjacencyList,
+                relationshipCounter.longValue(),
+                mixedAdjacencyProperties
+            );
         }
 
         @Override

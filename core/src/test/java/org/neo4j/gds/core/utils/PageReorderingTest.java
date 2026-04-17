@@ -24,7 +24,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.neo4j.gds.collections.ha.HugeLongArray;
-import org.neo4j.gds.compression.utilities.ImmutablePageOrdering;
 import org.neo4j.gds.compression.utilities.PageReordering;
 
 import java.util.function.LongPredicate;
@@ -155,13 +154,12 @@ class PageReorderingTest {
 
         PageReordering.rewriteOffsets(
             hugeOffsets,
-            ImmutablePageOrdering
-                .builder()
-                .distinctOrdering(expectedOrdering)
-                .reverseOrdering(0, 1, 2, 3)
-                .length(expectedOrdering.length)
-                .pageOffsets(0, 3, 6, 9, 12)
-                .build(),
+            new PageReordering.PageOrdering(
+                expectedOrdering,
+                new int[]{0, 1, 2, 3},
+                new long[]{0, 3, 6, 9, 12},
+                expectedOrdering.length
+            ),
             node -> true,
             pageShift
         );

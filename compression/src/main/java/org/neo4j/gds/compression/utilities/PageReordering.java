@@ -22,7 +22,6 @@ package org.neo4j.gds.compression.utilities;
 import com.carrotsearch.hppc.BitSet;
 import com.carrotsearch.hppc.IntArrayList;
 import com.carrotsearch.hppc.LongArrayList;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.collections.ha.HugeIntArray;
 import org.neo4j.gds.collections.ha.HugeLongArray;
 import org.neo4j.gds.compression.common.BumpAllocator;
@@ -34,45 +33,25 @@ public final class PageReordering {
 
     private static final long ZERO_DEGREE_OFFSET = 0;
 
-    @ValueClass
-    public interface PageOrdering {
-        /**
-         * Represents the order in which pages
-         * occur according to the offsets. Only
-         * the first occurrence of a page is being
-         * recorded.
-         */
-        int[] distinctOrdering();
-
-        /**
-         * Represents the order of the indexes at which
-         * pages occur according to the offsets.
-         * Since a page can occur multiple times within
-         * a consecutive range of offsets, the index of
-         * it's first occurrence can be added multiple times.
-         * The size of this array can be larger than the
-         * total number of pages.
-         */
-        int[] reverseOrdering();
-
-        /**
-         * Represents the start and end indexes within
-         * the offsets where a page starts or ends. The
-         * length of this array is determined by the length
-         * of {@link PageOrdering#reverseOrdering}.
-         */
-        long[] pageOffsets();
-
-        /**
-         * The actual array length of {@link PageOrdering#reverseOrdering}.
-         */
-        int length();
-
-        default int[] shrinkToFitReverseOrdering() {
+    /**
+     * @param distinctOrdering Represents the order in which pages occur according to the offsets.
+     *                         Only the first occurrence of a page is being recorded.
+     * @param reverseOrdering Represents the order of the indexes at which pages occur according
+     *                        to the offsets. Since a page can occur multiple times within a
+     *                        consecutive range of offsets, the index of it's first occurrence can
+     *                        be added multiple times. The size of this array can be larger than
+     *                        the total number of pages.
+     * @param pageOffsets Represents the start and end indexes within the offsets where a page
+     *                    starts or ends. The length of this array is determined by the length
+     *                    of {@link PageOrdering#reverseOrdering}.
+     * @param length The actual array length of {@link PageOrdering#reverseOrdering}.
+     */
+    public record PageOrdering(int[] distinctOrdering, int[] reverseOrdering, long[] pageOffsets, int length) {
+        public int[] shrinkToFitReverseOrdering() {
             return Arrays.copyOf(reverseOrdering(), length());
         }
 
-        default long[] shrinkToFitPageOffsets() {
+        public long[] shrinkToFitPageOffsets() {
             return Arrays.copyOf(pageOffsets(), length() + 1);
         }
     }
@@ -179,13 +158,12 @@ public final class PageReordering {
         }
         pageOffsets.add(offsets.size());
 
-        return ImmutablePageOrdering
-            .builder()
-            .distinctOrdering(distinctOrdering)
-            .reverseOrdering(ordering.buffer)
-            .length(ordering.elementsCount)
-            .pageOffsets(pageOffsets.buffer)
-            .build();
+        return new PageOrdering(
+            distinctOrdering,
+            ordering.buffer,
+            pageOffsets.buffer,
+            ordering.elementsCount
+        );
     }
 
     public static <PAGE> int[] reorder(PAGE[] pages, int[] ordering) {
