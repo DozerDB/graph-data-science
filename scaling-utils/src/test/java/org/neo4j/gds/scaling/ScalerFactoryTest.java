@@ -20,6 +20,7 @@
 package org.neo4j.gds.scaling;
 
 import org.junit.jupiter.api.Test;
+import org.neo4j.gds.scaling.scale.ScalerType;
 
 import java.util.List;
 import java.util.Map;
@@ -31,26 +32,26 @@ class ScalerFactoryTest {
 
     @Test
     void parse() {
-        assertThat(ScalerParser.parse("log").type()).isEqualTo(LogScaler.TYPE);
-        assertThat(ScalerParser.parse("minmax").type()).isEqualTo(MinMax.TYPE);
-        assertThat(ScalerParser.parse("max").type()).isEqualTo(Max.TYPE);
-        assertThat(ScalerParser.parse("center").type()).isEqualTo(Center.TYPE);
-        assertThat(ScalerParser.parse("l1norm").type()).isEqualTo(L1Norm.TYPE);
-        assertThat(ScalerParser.parse("l2norm").type()).isEqualTo(L2Norm.TYPE);
-        assertThat(ScalerParser.parse("mean").type()).isEqualTo(Mean.TYPE);
-        assertThat(ScalerParser.parse("stdscore").type()).isEqualTo(StdScore.TYPE);
-        assertThat(ScalerParser.parse("none").type()).isEqualTo(NoneScaler.TYPE);
+        assertThat(ScalerParser.parse("log").type() == ScalerType.Log);
+        assertThat(ScalerParser.parse("minmax").type() == ScalerType.MinMax);
+        assertThat(ScalerParser.parse("max").type() == ScalerType.Max);
+        assertThat(ScalerParser.parse("center").type() == ScalerType.Center);
+        assertThat(ScalerParser.parse("l1norm").type() == ScalerType.L1Norm);
+        assertThat(ScalerParser.parse("l2norm").type() == ScalerType.L2Norm);
+        assertThat(ScalerParser.parse("mean").type() == ScalerType.Mean);
+        assertThat(ScalerParser.parse("stdscore").type() == ScalerType.Std);
+        assertThat(ScalerParser.parse("none").type() == ScalerType.None);
 
         // case insensitive
-        assertThat(ScalerParser.parse("L1NORM").type()).isEqualTo(L1Norm.TYPE);
-        assertThat(ScalerParser.parse("StdScore").type()).isEqualTo(StdScore.TYPE);
+        assertThat(ScalerParser.parse("L1NORM").type() == ScalerType.L1Norm);
+        assertThat(ScalerParser.parse("StdScore").type() == ScalerType.Std);
 
         // nested syntax
-        assertThat(ScalerParser.parse(Map.of("type", "log")).type()).isEqualTo(LogScaler.TYPE);
-        assertThat(ScalerParser.parse(Map.of("type", "log", "offset", 10)).type()).isEqualTo(LogScaler.TYPE);
-        assertThat(ScalerParser.parse(Map.of("type", "minmax")).type()).isEqualTo(MinMax.TYPE);
-        assertThat(ScalerParser.parse(Map.of("type", "STDSCORE")).type()).isEqualTo(StdScore.TYPE);
-        assertThat(ScalerParser.parse(Map.of("type", "CEntEr")).type()).isEqualTo(Center.TYPE);
+        assertThat(ScalerParser.parse(Map.of("type", "log")).type() == ScalerType.Log);
+        assertThat(ScalerParser.parse(Map.of("type", "log", "offset", 10)).type() == ScalerType.Log);
+        assertThat(ScalerParser.parse(Map.of("type", "minmax")).type() == ScalerType.MinMax);
+        assertThat(ScalerParser.parse(Map.of("type", "STDSCORE")).type() == ScalerType.Std);
+        assertThat(ScalerParser.parse(Map.of("type", "CEntEr")).type() == ScalerType.Center);
     }
 
     @Test
@@ -69,7 +70,7 @@ class ScalerFactoryTest {
         // bad nested syntax
         assertThatThrownBy(() -> ScalerParser.parse(Map.of("type", "lag"))).hasMessageContaining("Unrecognised scaler type specified: `lag`.");
         assertThatThrownBy(() -> ScalerParser.parse(Map.of("type", "log", "offset", false))).hasMessageContaining("The value of `offset` must be of type `Number` but was `Boolean`.");
-        assertThatThrownBy(() -> ScalerParser.parse(Map.of("type", "log", "offsat", 0))).hasMessageContaining("Unexpected configuration key: offsat");
+        assertThatThrownBy(() -> ScalerParser.parse(Map.of("type", "log", "offsat", 0.0))).hasMessageContaining("Unexpected configuration key: offsat");
     }
 
     @Test

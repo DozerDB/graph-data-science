@@ -20,7 +20,8 @@
 package org.neo4j.gds.pagerank;
 
 import org.junit.jupiter.api.Test;
-import org.neo4j.gds.scaling.ScalerParser;
+import org.neo4j.gds.scaling.ScalerFactory;
+import org.neo4j.gds.scaling.scale.ScalerType;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
@@ -28,15 +29,15 @@ class PageRankVariantTest {
 
     @Test
     void shouldNotIgnoreScaling(){
-        assertThat(PageRankVariant.PAGE_RANK.ignoreScaling(ScalerParser.parse("max"))).isFalse();
-        assertThat(PageRankVariant.PAGE_RANK.ignoreScaling(ScalerParser.parse("l2norm"))).isFalse();
-        assertThat(PageRankVariant.ARTICLE_RANK.ignoreScaling(ScalerParser.parse("max"))).isFalse();
-        assertThat(PageRankVariant.ARTICLE_RANK.ignoreScaling(ScalerParser.parse("l2norm"))).isFalse();
-        assertThat(PageRankVariant.EIGENVECTOR.ignoreScaling(ScalerParser.parse("max"))).isFalse();
+        assertThat(PageRankVariant.PAGE_RANK.ignoreScaling(ScalerFactory.of(ScalerType.Max))).isFalse();
+        assertThat(PageRankVariant.PAGE_RANK.ignoreScaling(ScalerFactory.of(ScalerType.L2Norm))).isFalse();
+        assertThat(PageRankVariant.ARTICLE_RANK.ignoreScaling(ScalerFactory.of(ScalerType.Max))).isFalse();
+        assertThat(PageRankVariant.ARTICLE_RANK.ignoreScaling(ScalerFactory.of(ScalerType.L2Norm))).isFalse();
+        assertThat(PageRankVariant.EIGENVECTOR.ignoreScaling(ScalerFactory.of(ScalerType.Max))).isFalse();
     }
     @Test
     void shouldIgnoreScaling(){
-        assertThat(PageRankVariant.EIGENVECTOR.ignoreScaling(ScalerParser.parse("l2norm"))).isTrue();
+        assertThat(PageRankVariant.EIGENVECTOR.ignoreScaling(ScalerFactory.of(ScalerType.L2Norm))).isTrue();
     }
 
 }

@@ -17,28 +17,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.neo4j.gds.scaling;
+package org.neo4j.gds.scaling.scale;
 
 import org.neo4j.gds.api.properties.nodes.NodePropertyValues;
 
 import java.util.List;
 import java.util.Map;
 
-final class Zero extends ScalarScaler {
-    private Zero(NodePropertyValues properties, Map<String, List<Double>> statistics) {
+public final class Mean extends ScalarScaler {
+
+    public final double avg;
+    public final double maxMinDiff;
+
+    public Mean(NodePropertyValues properties, Map<String, List<Double>> statistics, double avg, double minMaxDiff) {
         super(properties, statistics);
-    }
-
-    static Zero of(Map<String, List<Double>> stats) {
-        return new Zero(null, stats);
-    }
-
-    static Zero of() {
-        return new Zero(null, Map.of());
+        this.avg = avg;
+        this.maxMinDiff = minMaxDiff;
     }
 
     @Override
     public double scaleProperty(long nodeId) {
-        return 0;
+        return (properties.doubleValue(nodeId) - avg) / maxMinDiff;
     }
+
 }

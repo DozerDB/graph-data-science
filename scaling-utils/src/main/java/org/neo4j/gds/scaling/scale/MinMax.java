@@ -17,18 +17,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.neo4j.gds.scaling;
+package org.neo4j.gds.scaling.scale;
+
+import org.neo4j.gds.api.properties.nodes.NodePropertyValues;
 
 import java.util.List;
 import java.util.Map;
 
-public interface Scaler {
+public final class MinMax extends ScalarScaler {
 
-    double CLOSE_TO_ZERO = 1e-15;
+    public final double min;
+    public final double maxMinDiff;
 
-    double scaleProperty(long nodeId);
+    public MinMax(NodePropertyValues properties, Map<String, List<Double>> statistics, double min, double maxMinDiff) {
+        super(properties, statistics);
+        this.min = min;
+        this.maxMinDiff = maxMinDiff;
+    }
 
-    int dimension();
+    @Override
+    public double scaleProperty(long nodeId) {
+        return (properties.doubleValue(nodeId) - min) / maxMinDiff;
+    }
 
-    Map<String, List<Double>> statistics();
 }

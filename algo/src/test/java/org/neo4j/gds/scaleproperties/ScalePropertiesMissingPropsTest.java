@@ -21,15 +21,14 @@ package org.neo4j.gds.scaleproperties;
 
 import org.junit.jupiter.api.Test;
 import org.neo4j.gds.TestGraph;
-import org.neo4j.gds.core.CypherMapWrapper;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.DefaultPool;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.extension.GdlExtension;
 import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
-import org.neo4j.gds.scaling.Max;
-import org.neo4j.gds.scaling.StdScore;
+import org.neo4j.gds.scaling.ScalerFactory;
+import org.neo4j.gds.scaling.scale.ScalerType;
 import org.neo4j.gds.termination.TerminationFlag;
 
 import java.util.List;
@@ -57,7 +56,7 @@ class ScalePropertiesMissingPropsTest {
         var params = new ScalePropertiesParameters(
           new Concurrency(4),
             List.of("arrayOn4", "arrayOn1"),
-            Max.buildFrom(CypherMapWrapper.empty())
+            ScalerFactory.of(ScalerType.Max)
         );
 
         var algo = new ScaleProperties(
@@ -84,7 +83,7 @@ class ScalePropertiesMissingPropsTest {
         var params = new ScalePropertiesParameters(
             new Concurrency(4),
             List.of("a","b","c"),
-            StdScore.buildFrom(CypherMapWrapper.empty())
+            ScalerFactory.of(ScalerType.Std)
         );
         var algo = new ScaleProperties(
             graph,

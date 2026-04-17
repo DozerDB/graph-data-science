@@ -24,7 +24,7 @@ import org.neo4j.gds.pagerank.PageRankResult;
 import org.neo4j.gds.pagerank.RankConfig;
 import org.neo4j.gds.result.CentralityDistribution;
 import org.neo4j.gds.result.CentralityStatistics;
-import org.neo4j.gds.scaling.LogScaler;
+import org.neo4j.gds.scaling.scale.ScalerType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,11 +44,12 @@ public final class PageRankDistributionComputer {
         Map<String, Object> centralitySummary = new HashMap<>();
         long postProcessingMillis = 0;
         if (shouldComputeCentralityDistribution) {
-            var usingLogScaler = configuration.scaler().type().equals(LogScaler.TYPE);
+            final var logScalerType = ScalerType.Log;
+            var usingLogScaler = configuration.scaler().type() == logScalerType;
             if (usingLogScaler) {
                 centralitySummary.put(
                     HISTOGRAM_ERROR_KEY,
-                    "Unable to create histogram when using scaler of type " + toUpperCaseWithLocale(LogScaler.TYPE)
+                    "Unable to create histogram when using scaler of type " + toUpperCaseWithLocale(logScalerType.scalerName())
                 );
             } else {
                 // Compute result statistics

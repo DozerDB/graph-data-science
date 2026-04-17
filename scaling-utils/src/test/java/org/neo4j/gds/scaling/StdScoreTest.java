@@ -25,11 +25,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.neo4j.gds.api.properties.nodes.NodePropertyValues;
-import org.neo4j.gds.core.CypherMapWrapper;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.DefaultPool;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.nodeproperties.DoubleTestPropertyValues;
+import org.neo4j.gds.scaling.build.StdBuilder;
+import org.neo4j.gds.scaling.scale.StdScore;
 
 import java.util.List;
 import java.util.Map;
@@ -52,7 +53,7 @@ class StdScoreTest {
     @ParameterizedTest
     @MethodSource("properties")
     void normalizes(NodePropertyValues properties, double avg, double std, double[] expected) {
-        var scaler = (StdScore) StdScore.buildFrom(CypherMapWrapper.empty()).create(
+        var scaler = (StdScore) StdBuilder.create(
             properties,
             10,
             new Concurrency(1),
@@ -74,7 +75,7 @@ class StdScoreTest {
     @Test
     void handlesMissingValue() {
         var properties = new DoubleTestPropertyValues(value -> value == 5 ? Double.NaN : value);
-        var scaler = StdScore.buildFrom(CypherMapWrapper.empty()).create(
+        var scaler = StdBuilder.create(
             properties,
             10,
             new Concurrency(1),
@@ -96,7 +97,7 @@ class StdScoreTest {
     @Test
     void avoidsDivByZero() {
         var properties = new DoubleTestPropertyValues(nodeId -> 4D);
-        var scaler = StdScore.buildFrom(CypherMapWrapper.empty()).create(
+        var scaler = StdBuilder.create(
             properties,
             10,
             new Concurrency(1),

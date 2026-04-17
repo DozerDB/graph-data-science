@@ -21,7 +21,6 @@ package org.neo4j.gds.pagerank;
 
 import com.carrotsearch.hppc.LongSet;
 import org.apache.commons.lang3.mutable.MutableBoolean;
-import org.neo4j.gds.mem.MemoryEstimateDefinition;
 import org.neo4j.gds.api.nodeproperties.ValueType;
 import org.neo4j.gds.api.properties.nodes.DoubleNodePropertyValues;
 import org.neo4j.gds.beta.pregel.Messages;
@@ -34,8 +33,8 @@ import org.neo4j.gds.beta.pregel.context.MasterComputeContext;
 import org.neo4j.gds.core.concurrency.RunWithConcurrency;
 import org.neo4j.gds.core.utils.partition.PartitionUtils;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
-import org.neo4j.gds.scaling.L2Norm;
-import org.neo4j.gds.scaling.ScalerParser;
+import org.neo4j.gds.mem.MemoryEstimateDefinition;
+import org.neo4j.gds.scaling.build.L2NormBuilder;
 
 import java.util.Optional;
 import java.util.function.LongToDoubleFunction;
@@ -129,7 +128,7 @@ public final class EigenvectorComputation<C extends EigenvectorConfig> implement
         };
 
         // Normalize using L2-Norm (Power iteration)
-        var scaler = ScalerParser.parse(L2Norm.TYPE).create(
+        var scaler = L2NormBuilder.create(
             properties,
             context.nodeCount(),
             concurrency,

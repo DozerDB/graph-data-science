@@ -25,12 +25,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.neo4j.gds.api.properties.nodes.NodePropertyValues;
-import org.neo4j.gds.core.CypherMapWrapper;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.DefaultPool;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.nodeproperties.DoubleTestPropertyValues;
 import org.neo4j.gds.nodeproperties.LongTestPropertyValues;
+import org.neo4j.gds.scaling.scale.LogScaler;
+import org.neo4j.gds.scaling.scale.ScalerType;
 
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -50,7 +51,7 @@ class LogScalerTest {
     @ParameterizedTest
     @MethodSource("properties")
     void normalizes(NodePropertyValues properties, double[] expected) {
-        var scaler = new LogScaler(properties, 0);
+        var scaler = LogScaler.of(properties, 0);
 
         double[] actual = IntStream.range(1, 5).mapToDouble(scaler::scaleProperty).toArray();
         assertThat(actual).containsSequence(expected);
@@ -59,7 +60,7 @@ class LogScalerTest {
     @Test
     void normalizesWithOffset() {
         var properties = new LongTestPropertyValues(nodeId -> nodeId - 7);
-        var scaler = new LogScaler(properties, 7);
+        var scaler = LogScaler.of(properties, 7);
 
         double[] actual = IntStream.range(1, 5).mapToDouble(scaler::scaleProperty).toArray();
         assertThat(actual).containsSequence(new double[]{0.0, 0.69, 1.09, 1.38}, Offset.offset(1e-2));
@@ -68,7 +69,7 @@ class LogScalerTest {
     @Test
     void handlesMissingValue() {
         var properties = new DoubleTestPropertyValues(value -> value == 5 ? Double.NaN : value);
-        var scaler = LogScaler.buildFrom(CypherMapWrapper.create(Map.of("offset", 1))).create(
+        var scaler = ScalerParser.parse(Map.of("type", ScalerType.Log.scalerName(), "offset", 1.0)).create(
             properties,
             10,
             new Concurrency(1),

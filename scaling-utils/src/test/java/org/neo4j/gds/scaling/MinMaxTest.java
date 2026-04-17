@@ -25,11 +25,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.neo4j.gds.api.properties.nodes.NodePropertyValues;
-import org.neo4j.gds.core.CypherMapWrapper;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.DefaultPool;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.nodeproperties.DoubleTestPropertyValues;
+import org.neo4j.gds.scaling.build.MinMaxBuilder;
+import org.neo4j.gds.scaling.scale.MinMax;
 
 import java.util.List;
 import java.util.Map;
@@ -49,7 +50,7 @@ class MinMaxTest {
     @ParameterizedTest
     @MethodSource("properties")
     void normalizes(NodePropertyValues properties, double min, double max) {
-        var scaler = (MinMax) MinMax.buildFrom(CypherMapWrapper.empty()).create(
+        var scaler = (MinMax) MinMaxBuilder.create(
             properties,
             10,
             new Concurrency(1),
@@ -73,7 +74,7 @@ class MinMaxTest {
     void avoidsDivByZero() {
         double propValue = 4D;
         var properties = new DoubleTestPropertyValues(nodeId -> propValue);
-        var scaler = MinMax.buildFrom(CypherMapWrapper.empty()).create(
+        var scaler = MinMaxBuilder.create(
             properties,
             10,
             new Concurrency(1),
@@ -94,7 +95,7 @@ class MinMaxTest {
     @Test
     void handlesMissingValue() {
         var properties = new DoubleTestPropertyValues(value -> value == 5 ? Double.NaN : value);
-        var scaler = MinMax.buildFrom(CypherMapWrapper.empty()).create(
+        var scaler = MinMaxBuilder.create(
             properties,
             10,
             new Concurrency(1),

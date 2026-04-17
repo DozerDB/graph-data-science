@@ -20,10 +20,11 @@
 package org.neo4j.gds.scaling;
 
 import org.neo4j.gds.core.CypherMapWrapper;
+import org.neo4j.gds.scaling.scale.ScalerType;
 import org.neo4j.gds.utils.StringJoining;
 
+import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 import static org.neo4j.gds.utils.StringFormatting.formatWithLocale;
 import static org.neo4j.gds.utils.StringFormatting.toLowerCaseWithLocale;
@@ -33,39 +34,54 @@ public final class ScalerParser {
     private ScalerParser() {}
 
     private static final String SCALER_KEY = "type";
-    public static final Map<String, Function<CypherMapWrapper, ScalerFactory>> SUPPORTED_SCALERS = Map.of(
-        NoneScaler.TYPE, NoneScaler::buildFrom,
-        Mean.TYPE, Mean::buildFrom,
-        Max.TYPE, Max::buildFrom,
-        LogScaler.TYPE, LogScaler::buildFrom,
-        Center.TYPE, Center::buildFrom,
-        StdScore.TYPE, StdScore::buildFrom,
-        L1Norm.TYPE, L1Norm::buildFrom,
-        L2Norm.TYPE, L2Norm::buildFrom,
-        MinMax.TYPE, MinMax::buildFrom
+    public static final List<ScalerType> SUPPORTED_SCALERS = List.of(
+        ScalerType.None,
+        ScalerType.Mean,
+        ScalerType.Max,
+        ScalerType.Log,
+        ScalerType.Center,
+        ScalerType.Std,
+        ScalerType.L1Norm,
+        ScalerType.L2Norm,
+        ScalerType.MinMax
     );
+
+    private static final String OFFSET_KEY = "offset";
+    private static final Map<ScalerType, List<String>> REQUIRED_SCALER_KEYS = Map.of(
+        ScalerType.Log, List.of(OFFSET_KEY)
+    );
+
+    public static ScalerType parseName(String spec) {
+        var name = toLowerCaseWithLocale(spec);
+        var opt = SUPPORTED_SCALERS.stream()
+            .filter(a -> a.scalerName().equals(name))
+            .findFirst();
+        if (opt.isEmpty()) {
+            throw new IllegalArgumentException(formatWithLocale(
+                "Unrecognised scaler type specified: `%s`. Expected one of: %s.",
+                spec,
+                StringJoining.join(SUPPORTED_SCALERS.stream().map(ScalerType::name))
+            ));
+        }
+        return opt.get();
+    }
 
     public static ScalerFactory parse(Object userInput) {
         if (userInput instanceof ScalerFactory) {
             return (ScalerFactory) userInput;
         }
-        if (userInput instanceof String) {
-            return parse(Map.of(SCALER_KEY, ((String) userInput)));
+        if (userInput instanceof String specName) {
+            return parse(Map.of(SCALER_KEY, specName));
         }
         if (userInput instanceof Map) {
             var inputMap = (Map<String, Object>) userInput;
             var scalerSpec = inputMap.get(SCALER_KEY);
-            if (scalerSpec instanceof String) {
-                var scalerType = toLowerCaseWithLocale((String) scalerSpec);
-                var selectedScaler = SUPPORTED_SCALERS.get(scalerType);
-                if (selectedScaler == null) {
-                    throw new IllegalArgumentException(formatWithLocale(
-                        "Unrecognised scaler type specified: `%s`. Expected one of: %s.",
-                        scalerSpec,
-                        StringJoining.join(SUPPORTED_SCALERS.keySet())
-                    ));
-                }
-                return selectedScaler.apply(CypherMapWrapper.create(inputMap).withoutEntry(SCALER_KEY));
+            if (scalerSpec instanceof String specName) {
+                var scalerType = parseName(specName);
+                var mapWrapper = CypherMapWrapper.create(inputMap).withoutEntry(SCALER_KEY);
+                mapWrapper.requireOnlyKeysFrom(REQUIRED_SCALER_KEYS.getOrDefault(scalerType, List.of()));
+                double offset = mapWrapper.getNumber(OFFSET_KEY, 0.0).doubleValue();
+                return ScalerFactory.of(scalerType, specName, offset);
             }
         }
         return throwForInvalidScaler(userInput);
@@ -75,7 +91,7 @@ public final class ScalerParser {
         throw new IllegalArgumentException(formatWithLocale(
             "Unrecognised scaler type specified: `%s`. Expected one of: %s.",
             inputScaler,
-            StringJoining.join(SUPPORTED_SCALERS.keySet())
+            StringJoining.join(SUPPORTED_SCALERS.stream().map(ScalerType::name))
         ));
     }
 }

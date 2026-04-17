@@ -22,8 +22,8 @@ package org.neo4j.gds.procedures.algorithms.centrality;
 import org.neo4j.gds.api.IdMap;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.result.CentralityDistribution;
-import org.neo4j.gds.scaling.LogScaler;
 import org.neo4j.gds.scaling.ScalerFactory;
+import org.neo4j.gds.scaling.scale.ScalerType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,13 +44,14 @@ public class RankDistributionHelpers {
         Concurrency concurrency,
         boolean shouldComputeCentralityDistribution
     ) {
-        var usingLogScaler = scalerFactory.type().equals(LogScaler.TYPE);
+        final var logScalerType = ScalerType.Log;
+        var usingLogScaler = scalerFactory.type().equals(logScalerType);
 
         if (shouldComputeCentralityDistribution && usingLogScaler){
                 Map<String, Object> centralitySummary = new HashMap<>();
                 centralitySummary.put(
                     HISTOGRAM_ERROR_KEY,
-                    "Unable to create histogram when using scaler of type " + toUpperCaseWithLocale(LogScaler.TYPE)
+                    "Unable to create histogram when using scaler of type " + toUpperCaseWithLocale(logScalerType.scalerName())
                 );
                 return  new CentralityDistribution(
                     centralitySummary,

@@ -25,9 +25,8 @@ import org.neo4j.gds.beta.pregel.Partitioning;
 import org.neo4j.gds.beta.pregel.PregelConfig;
 import org.neo4j.gds.config.SourceNodesWithPropertiesConfig;
 import org.neo4j.gds.config.ToleranceConfig;
-import org.neo4j.gds.core.CypherMapWrapper;
-import org.neo4j.gds.scaling.NoneScaler;
 import org.neo4j.gds.scaling.ScalerFactory;
+import org.neo4j.gds.scaling.scale.ScalerType;
 
 @Configuration("RankConfigImpl")
 public interface RankConfig extends
@@ -56,7 +55,7 @@ public interface RankConfig extends
     @Configuration.ConvertWith(method = "org.neo4j.gds.scaling.ScalerParser#parse")
     @Configuration.ToMapValue("org.neo4j.gds.scaling.ScalerFactory#toString")
     default ScalerFactory scaler() {
-        return NoneScaler.buildFrom(CypherMapWrapper.empty());
+        return ScalerFactory.of(ScalerType.None);
     }
 
     @Override

@@ -25,11 +25,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.neo4j.gds.api.properties.nodes.NodePropertyValues;
-import org.neo4j.gds.core.CypherMapWrapper;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.DefaultPool;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.nodeproperties.DoubleTestPropertyValues;
+import org.neo4j.gds.scaling.build.L1NormBuilder;
+import org.neo4j.gds.scaling.scale.L1Norm;
 
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -58,7 +59,7 @@ class L1NormTest {
     @ParameterizedTest
     @MethodSource("properties")
     void scale(int nodeCount, NodePropertyValues properties, double l1norm, double[] expected) {
-        var scaler = (L1Norm) L1Norm.buildFrom(CypherMapWrapper.empty()).create(
+        var scaler = (L1Norm) L1NormBuilder.create(
             properties,
             nodeCount,
             new Concurrency(1),
@@ -75,7 +76,7 @@ class L1NormTest {
     @Test
     void avoidsDivByZero() {
         var properties = new DoubleTestPropertyValues(nodeId -> 0D);
-        var scaler = L1Norm.buildFrom(CypherMapWrapper.empty()).create(
+        var scaler = L1NormBuilder.create(
             properties,
             10,
             new Concurrency(1),
@@ -91,7 +92,7 @@ class L1NormTest {
     @Test
     void handlesMissingValue() {
         var properties = new DoubleTestPropertyValues(value -> value == 5 ? Double.NaN : value);
-        var scaler = L1Norm.buildFrom(CypherMapWrapper.empty()).create(
+        var scaler = L1NormBuilder.create(
             properties,
             10,
             new Concurrency(1),

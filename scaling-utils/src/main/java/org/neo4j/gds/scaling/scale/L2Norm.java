@@ -17,18 +17,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.neo4j.gds.pagerank;
+package org.neo4j.gds.scaling.scale;
 
-import org.neo4j.gds.scaling.ScalerFactory;
-import org.neo4j.gds.scaling.scale.ScalerType;
+import org.neo4j.gds.api.properties.nodes.NodePropertyValues;
 
-public enum PageRankVariant {
-    PAGE_RANK,
-    ARTICLE_RANK,
-    EIGENVECTOR;
+import java.util.Map;
 
-    boolean ignoreScaling(ScalerFactory scalerFactory){
-        // Eigenvector produces L2NORM-scaled results by default.
-        return this == EIGENVECTOR && scalerFactory.type() == ScalerType.L2Norm;
+public final class L2Norm extends ScalarScaler {
+
+    public final double euclideanLength;
+
+    public L2Norm(NodePropertyValues properties, double euclideanLength) {
+        super(properties, Map.of());
+        this.euclideanLength = euclideanLength;
     }
+
+    @Override
+    public double scaleProperty(long nodeId) {
+        return properties.doubleValue(nodeId) / euclideanLength;
+    }
+
 }

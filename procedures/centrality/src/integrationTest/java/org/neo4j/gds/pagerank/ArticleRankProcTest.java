@@ -30,13 +30,7 @@ import org.neo4j.gds.catalog.GraphProjectProc;
 import org.neo4j.gds.extension.IdFunction;
 import org.neo4j.gds.extension.Inject;
 import org.neo4j.gds.extension.Neo4jGraph;
-import org.neo4j.gds.scaling.Center;
-import org.neo4j.gds.scaling.L1Norm;
-import org.neo4j.gds.scaling.L2Norm;
-import org.neo4j.gds.scaling.Max;
-import org.neo4j.gds.scaling.Mean;
-import org.neo4j.gds.scaling.MinMax;
-import org.neo4j.gds.scaling.NoneScaler;
+import org.neo4j.gds.scaling.scale.ScalerType;
 
 import java.util.List;
 import java.util.Map;
@@ -85,13 +79,13 @@ class ArticleRankProcTest extends BaseProcTest {
 
     static Stream<Arguments> scalers() {
         return Stream.of(
-            Arguments.of(NoneScaler.TYPE, 0.15, 0.2350),
-            Arguments.of(Center.TYPE,    -0.0425, 0.0425),
-            Arguments.of(L1Norm.TYPE,     0.38961, 0.61038),
-            Arguments.of(L2Norm.TYPE,     0.53803, 0.84292),
-            Arguments.of(Mean.TYPE,      -0.5, 0.5),
-            Arguments.of(MinMax.TYPE,     0.0, 1.0),
-            Arguments.of(Max.TYPE,        0.63829, 1.0)
+            Arguments.of(ScalerType.None.scalerName(),       0.15, 0.2350),
+            Arguments.of(ScalerType.Center.scalerName(),    -0.0425, 0.0425),
+            Arguments.of(ScalerType.L1Norm.scalerName(),     0.38961, 0.61038),
+            Arguments.of(ScalerType.L2Norm.scalerName(),     0.53803, 0.84292),
+            Arguments.of(ScalerType.Mean.scalerName(),      -0.5, 0.5),
+            Arguments.of(ScalerType.MinMax.scalerName(),     0.0, 1.0),
+            Arguments.of(ScalerType.Max.scalerName(),        0.63829, 1.0)
         );
     }
 

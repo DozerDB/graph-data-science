@@ -29,8 +29,8 @@ import org.neo4j.gds.collections.ha.HugeDoubleArray;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.pagerank.PageRankResult;
 import org.neo4j.gds.result.TimedAlgorithmResult;
-import org.neo4j.gds.scaling.Center;
-import org.neo4j.gds.scaling.ScalerParser;
+import org.neo4j.gds.scaling.ScalerFactory;
+import org.neo4j.gds.scaling.scale.ScalerType;
 
 import java.util.Map;
 import java.util.Set;
@@ -69,7 +69,7 @@ class GenericRankMutateResultTransformerTest {
             mock(Graph.class),
             mock(GraphStore.class),
             config,
-            ScalerParser.parse(Center.TYPE),
+            ScalerFactory.of(ScalerType.Center),
             true,
             new Concurrency(1),
             mutateService,
@@ -118,7 +118,7 @@ class GenericRankMutateResultTransformerTest {
             mock(Graph.class),
             mock(GraphStore.class),
             config,
-            ScalerParser.parse(Center.TYPE),
+            ScalerFactory.of(ScalerType.Center),
             false,
             new Concurrency(1),
             mutateService,

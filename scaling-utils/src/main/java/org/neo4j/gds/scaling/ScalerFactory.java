@@ -22,25 +22,108 @@ package org.neo4j.gds.scaling;
 import org.neo4j.gds.api.properties.nodes.NodePropertyValues;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
+import org.neo4j.gds.scaling.build.CenterBuilder;
+import org.neo4j.gds.scaling.build.L1NormBuilder;
+import org.neo4j.gds.scaling.build.L2NormBuilder;
+import org.neo4j.gds.scaling.build.MaxBuilder;
+import org.neo4j.gds.scaling.build.MeanBuilder;
+import org.neo4j.gds.scaling.build.MinMaxBuilder;
+import org.neo4j.gds.scaling.build.StdBuilder;
+import org.neo4j.gds.scaling.scale.LogScaler;
+import org.neo4j.gds.scaling.scale.NoneScaler;
+import org.neo4j.gds.scaling.scale.ScalarScaler;
+import org.neo4j.gds.scaling.scale.ScalerType;
+import org.neo4j.gds.scaling.scale.Zero;
 
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 
-public interface ScalerFactory {
+public final class ScalerFactory {
+    private final ScalerType type;
+    private final String name;
+    private final double offset;
 
-    static String toString(ScalerFactory factory) {
-        return factory.type().toUpperCase(Locale.ENGLISH);
+    private ScalerFactory(ScalerType type, String name, double offset) {
+        this.type = type;
+        this.name = name;
+        this.offset = offset;
     }
 
-    String type();
+    public static ScalerFactory of(ScalerType type, String name, double offset) {
+        return new ScalerFactory(type, name, offset);
+    }
 
-    ScalarScaler create(
+    public static ScalerFactory of(ScalerType type, double offset) {
+        return new ScalerFactory(type, type.scalerName(), offset);
+    }
+
+    public static ScalerFactory of(ScalerType type) {
+        return of(type, 0.0);
+    }
+
+    public String name() { return name; }
+
+    public ScalerType type() { return type; }
+
+    public ScalarScaler create(
         NodePropertyValues properties,
         long nodeCount,
         Concurrency concurrency,
         ProgressTracker progressTracker,
         ExecutorService executor
-    );
+    ) {
+        return switch (type) {
+            case None -> NoneScaler.of(properties);
+            case Zero -> Zero.of();
+            case Log -> LogScaler.of(properties, offset);
+            case Center -> CenterBuilder.create(
+                properties,
+                nodeCount,
+                concurrency,
+                progressTracker,
+                executor);
+            case Mean -> MeanBuilder.create(
+                properties,
+                nodeCount,
+                concurrency,
+                progressTracker,
+                executor);
+            case Max -> MaxBuilder.create(
+                properties,
+                nodeCount,
+                concurrency,
+                progressTracker,
+                executor);
+            case MinMax -> MinMaxBuilder.create(
+                properties,
+                nodeCount,
+                concurrency,
+                progressTracker,
+                executor);
+            case L1Norm -> L1NormBuilder.create(
+                properties,
+                nodeCount,
+                concurrency,
+                progressTracker,
+                executor);
+            case L2Norm -> L2NormBuilder.create(
+                properties,
+                nodeCount,
+                concurrency,
+                progressTracker,
+                executor);
+            case Std -> StdBuilder.create(
+                properties,
+                nodeCount,
+                concurrency,
+                progressTracker,
+                executor);
+        };
+    }
 
-    default boolean workingScaler() { return true; }
+    public boolean workingScaler() { return type != ScalerType.None; }
+
+    public static String toString(ScalerFactory factory) {
+        return factory.name().toUpperCase(Locale.ENGLISH);
+    }
 }

@@ -23,9 +23,8 @@ import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.Test;
 import org.neo4j.gds.api.IdMap;
 import org.neo4j.gds.core.concurrency.Concurrency;
-import org.neo4j.gds.scaling.Center;
-import org.neo4j.gds.scaling.LogScaler;
-import org.neo4j.gds.scaling.ScalerParser;
+import org.neo4j.gds.scaling.ScalerFactory;
+import org.neo4j.gds.scaling.scale.ScalerType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.DOUBLE;
@@ -41,7 +40,7 @@ class RankDistributionHelpersTest {
 
         var distribution = RankDistributionHelpers.compute(
             idMap,
-            ScalerParser.parse(Center.TYPE),
+            ScalerFactory.of(ScalerType.Center),
             (i) -> i+1,
             new Concurrency(1),
             true
@@ -59,7 +58,7 @@ class RankDistributionHelpersTest {
 
         var distribution = RankDistributionHelpers.compute(
             idMap,
-            ScalerParser.parse(LogScaler.TYPE),
+            ScalerFactory.of(ScalerType.Log),
             (i) -> i+1,
             new Concurrency(1),
             true

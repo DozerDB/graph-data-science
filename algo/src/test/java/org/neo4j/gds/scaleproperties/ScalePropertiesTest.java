@@ -30,7 +30,6 @@ import org.neo4j.gds.TestProgressTrackerHelper;
 import org.neo4j.gds.beta.generator.PropertyProducer;
 import org.neo4j.gds.beta.generator.RandomGraphGenerator;
 import org.neo4j.gds.beta.generator.RelationshipDistribution;
-import org.neo4j.gds.core.CypherMapWrapper;
 import org.neo4j.gds.core.GraphDimensions;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.DefaultPool;
@@ -38,8 +37,9 @@ import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.extension.GdlExtension;
 import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
-import org.neo4j.gds.scaling.MinMax;
+import org.neo4j.gds.scaling.ScalerFactory;
 import org.neo4j.gds.scaling.ScalerParser;
+import org.neo4j.gds.scaling.scale.ScalerType;
 import org.neo4j.gds.termination.TerminationFlag;
 
 import java.util.List;
@@ -79,7 +79,7 @@ class ScalePropertiesTest {
         var params = new ScalePropertiesParameters(
             new Concurrency(1),
             List.of("a"),
-            MinMax.buildFrom(CypherMapWrapper.empty())
+            ScalerFactory.of(ScalerType.MinMax)
         );
 
         var algo = new ScaleProperties(
@@ -106,7 +106,7 @@ class ScalePropertiesTest {
         var params = new ScalePropertiesParameters(
             new Concurrency(1),
             List.of("a", "b", "c"),
-            MinMax.buildFrom(CypherMapWrapper.empty())
+            ScalerFactory.of(ScalerType.MinMax)
         );
 
         var algo = new ScaleProperties(
@@ -143,13 +143,13 @@ class ScalePropertiesTest {
         var paramsSingle = new ScalePropertiesParameters(
             new Concurrency(1),
             List.of("a"),
-            MinMax.buildFrom(CypherMapWrapper.empty())
+            ScalerFactory.of(ScalerType.MinMax)
         );
 
         var paramsParallel = new ScalePropertiesParameters(
             new Concurrency(4),
             List.of("a"),
-            MinMax.buildFrom(CypherMapWrapper.empty())
+            ScalerFactory.of(ScalerType.MinMax)
         );
 
         var parallelResult = new ScaleProperties(
@@ -177,7 +177,7 @@ class ScalePropertiesTest {
         var params = new ScalePropertiesParameters(
             new Concurrency(4),
             List.of("a", "bAndC", "longArrayB"),
-            MinMax.buildFrom(CypherMapWrapper.empty())
+            ScalerFactory.of(ScalerType.MinMax)
         );
 
         var actual = new ScaleProperties(
@@ -193,7 +193,7 @@ class ScalePropertiesTest {
         var paramsSingleProp = new ScalePropertiesParameters(
             new Concurrency(4),
             List.of("a", "b", "c", "longArrayB"),
-            MinMax.buildFrom(CypherMapWrapper.empty())
+            ScalerFactory.of(ScalerType.MinMax)
         );
         var expected = new ScaleProperties(
             graph,
@@ -215,7 +215,7 @@ class ScalePropertiesTest {
         Function<List<String>, ScalePropertiesParameters> paramBuilder = (nodeProps) -> new ScalePropertiesParameters(
             new Concurrency(4),
             nodeProps,
-            ScalerParser.SUPPORTED_SCALERS.get(scaler).apply(CypherMapWrapper.empty())
+            ScalerFactory.of(ScalerParser.parseName(scaler))
         );
 
         var bParams = paramBuilder.apply(List.of("b"));
@@ -262,7 +262,7 @@ class ScalePropertiesTest {
         var params = new ScalePropertiesParameters(
             new Concurrency(4),
             List.of("doubleArray"),
-            MinMax.buildFrom(CypherMapWrapper.empty())
+            ScalerFactory.of(ScalerType.MinMax)
         );
 
         var expected = new double[][]{
@@ -291,7 +291,7 @@ class ScalePropertiesTest {
         var params = new ScalePropertiesParameters(
             new Concurrency(4),
             List.of("mixedSizeArray"),
-            MinMax.buildFrom(CypherMapWrapper.empty())
+            ScalerFactory.of(ScalerType.MinMax)
         );
 
         var algo = new ScaleProperties(
@@ -316,7 +316,7 @@ class ScalePropertiesTest {
         var params = new ScalePropertiesParameters(
             new Concurrency(4),
             List.of("IMAGINARY_PROP"),
-            MinMax.buildFrom(CypherMapWrapper.empty())
+            ScalerFactory.of(ScalerType.MinMax)
         );
 
         var algo = new ScaleProperties(
@@ -348,7 +348,7 @@ class ScalePropertiesTest {
         var params = new ScalePropertiesParameters(
             new Concurrency(4),
             List.of("data1", "data2", "data3"),
-            MinMax.buildFrom(CypherMapWrapper.empty())
+            ScalerFactory.of(ScalerType.MinMax)
         );
 
 
@@ -400,8 +400,9 @@ class ScalePropertiesTest {
     }
 
     public static Stream<Arguments> scalers() {
-        return ScalerParser.SUPPORTED_SCALERS.keySet()
+        return ScalerParser.SUPPORTED_SCALERS
             .stream()
+            .map(ScalerType::name)
             .map(Arguments::of);
     }
 }
