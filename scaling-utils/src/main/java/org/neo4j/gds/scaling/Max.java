@@ -80,7 +80,7 @@ public final class Max extends ScalarScaler {
                 var statistics = Map.of("absMax", List.of(absMax));
 
                 if (absMax < CLOSE_TO_ZERO) {
-                    return new StatsOnly(statistics);
+                    return Zero.of(statistics);
                 } else {
                     return new Max(properties, statistics, absMax);
                 }

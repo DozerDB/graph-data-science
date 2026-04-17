@@ -46,26 +46,6 @@ public abstract class ScalarScaler implements Scaler {
         return statistics;
     }
 
-    static class StatsOnly extends ScalarScaler {
-
-        StatsOnly(Map<String, List<Double>> stats) {
-            super(null, stats);
-        }
-
-        @Override
-        public double scaleProperty(long nodeId) {
-            return 0;
-        }
-
-    }
-
-    static final ScalarScaler ZERO = new ScalarScaler(null, Map.of()) {
-        @Override
-        public double scaleProperty(long nodeId) {
-            return 0;
-        }
-    };
-
     abstract static class AggregatesComputer implements Runnable {
 
         private final Partition partition;

@@ -91,7 +91,7 @@ public final class Mean extends ScalarScaler {
                 );
 
                 if (Math.abs(maxMinDiff) < CLOSE_TO_ZERO) {
-                    return new StatsOnly(statistics);
+                    return Zero.of(statistics);
                 } else {
                     return new Mean(properties, statistics, avg, maxMinDiff);
                 }

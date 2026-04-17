@@ -79,7 +79,7 @@ public final class L2Norm extends ScalarScaler {
                 var euclideanLength = Math.sqrt(squaredSum);
 
                 if (euclideanLength < CLOSE_TO_ZERO) {
-                    return ZERO;
+                    return Zero.of();
                 } else {
                     return new L2Norm(properties, euclideanLength);
                 }

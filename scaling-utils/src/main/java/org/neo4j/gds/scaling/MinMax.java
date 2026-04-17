@@ -84,7 +84,7 @@ public final class MinMax extends ScalarScaler {
                 var maxMinDiff = max - min;
 
                 if (Math.abs(maxMinDiff) < CLOSE_TO_ZERO) {
-                    return new StatsOnly(statistics);
+                    return Zero.of(statistics);
                 } else {
                     return new MinMax(properties, statistics, min, maxMinDiff);
                 }

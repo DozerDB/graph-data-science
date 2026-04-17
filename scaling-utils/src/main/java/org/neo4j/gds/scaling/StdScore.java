@@ -96,7 +96,7 @@ public final class StdScore extends ScalarScaler {
                 );
 
                 if (std < CLOSE_TO_ZERO) {
-                    return new StatsOnly(statistics);
+                    return Zero.of(statistics);
                 } else {
                     return new StdScore(properties, statistics, avg, std);
                 }

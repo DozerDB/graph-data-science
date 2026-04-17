@@ -73,7 +73,7 @@ public final class L1Norm extends ScalarScaler {
                 var absoluteSum = tasks.stream().mapToDouble(ComputeAbsoluteSum::sum).sum();
 
                 if (absoluteSum < CLOSE_TO_ZERO) {
-                    return ZERO;
+                    return Zero.of();
                 } else {
                     return new L1Norm(properties, absoluteSum);
                 }
