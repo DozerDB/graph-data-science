@@ -33,7 +33,7 @@ import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.DefaultPool;
 import org.neo4j.gds.core.concurrency.RunWithConcurrency;
 import org.neo4j.gds.core.loading.GraphStoreBuilder;
-import org.neo4j.gds.core.loading.ImmutableNodes;
+import org.neo4j.gds.core.loading.Nodes;
 import org.neo4j.gds.core.loading.RelationshipImportResult;
 import org.neo4j.gds.core.loading.construction.GraphFactory;
 import org.neo4j.gds.core.loading.construction.NodeLabelTokens;
@@ -133,7 +133,7 @@ public class GraphSampleConstructor {
             .databaseInfo(inputGraphStore.databaseInfo())
             .capabilities(inputGraphStore.capabilities())
             .schema(filteredSchema)
-            .nodes(ImmutableNodes.of(filteredSchema.nodeSchema(), idMap, nodePropertyStore))
+            .nodes(new Nodes(filteredSchema.nodeSchema(), idMap, nodePropertyStore))
             .relationshipImportResult(relationshipImportResult)
             .concurrency(concurrency)
             .build();

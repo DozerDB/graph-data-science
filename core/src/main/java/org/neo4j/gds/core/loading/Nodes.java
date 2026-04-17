@@ -19,11 +19,9 @@
  */
 package org.neo4j.gds.core.loading;
 
-import org.immutables.value.Value;
 import org.neo4j.gds.NodeLabel;
 import org.neo4j.gds.PropertyMapping;
 import org.neo4j.gds.PropertyMappings;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.api.IdMap;
 import org.neo4j.gds.api.PropertyState;
 import org.neo4j.gds.api.properties.nodes.ImmutableNodeProperty;
@@ -34,19 +32,9 @@ import org.neo4j.gds.api.schema.MutableNodeSchema;
 
 import java.util.Map;
 
-@ValueClass
-public interface Nodes {
+public record Nodes(MutableNodeSchema schema, IdMap idMap, NodePropertyStore properties) {
 
-    MutableNodeSchema schema();
-
-    IdMap idMap();
-
-    @Value.Default
-    default NodePropertyStore properties() {
-        return NodePropertyStore.empty();
-    }
-
-    static Nodes of(
+    public static Nodes of(
         IdMap idMap,
         Map<NodeLabel, PropertyMappings> propertyMappings,
         Map<PropertyMapping, NodePropertyValues> propertyValues,
@@ -82,6 +70,6 @@ public interface Nodes {
             }
         }));
 
-        return ImmutableNodes.of(nodeSchema, idMap, nodePropertyStoreBuilder.build());
+        return new Nodes(nodeSchema, idMap, nodePropertyStoreBuilder.build());
     }
 }

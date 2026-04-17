@@ -27,6 +27,7 @@ import org.neo4j.gds.annotation.Configuration;
 import org.neo4j.gds.api.DatabaseId;
 import org.neo4j.gds.api.DatabaseInfo;
 import org.neo4j.gds.api.DatabaseInfo.DatabaseLocation;
+import org.neo4j.gds.api.properties.nodes.NodePropertyStore;
 import org.neo4j.gds.api.schema.GraphSchema;
 import org.neo4j.gds.api.schema.MutableNodeSchema;
 import org.neo4j.gds.core.CypherMapWrapper;
@@ -34,8 +35,8 @@ import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.huge.DirectIdMap;
 import org.neo4j.gds.core.loading.Capabilities.WriteMode;
 import org.neo4j.gds.core.loading.GraphStoreBuilder;
-import org.neo4j.gds.core.loading.ImmutableNodes;
 import org.neo4j.gds.core.loading.ImmutableStaticCapabilities;
+import org.neo4j.gds.core.loading.Nodes;
 import org.neo4j.gds.core.loading.RelationshipImportResult;
 
 import java.util.List;
@@ -69,10 +70,7 @@ class WriteConfigTest {
         var config = CypherMapWrapper.empty();
         var testConfig = new TestWriteConfigImpl(config);
 
-        var nodes = ImmutableNodes.builder()
-            .idMap(new DirectIdMap(0))
-            .schema(MutableNodeSchema.empty())
-            .build();
+        var nodes = new Nodes(MutableNodeSchema.empty(), new DirectIdMap(0), NodePropertyStore.empty());
 
         var testGraphStore = new GraphStoreBuilder()
             .databaseInfo(DatabaseInfo.of(DatabaseId.of("neo4j"), DatabaseLocation.LOCAL))
@@ -104,16 +102,12 @@ class WriteConfigTest {
     @ParameterizedTest
     @EnumSource(WriteMode.class)
     void doNotBlockWritesWhenWritingToResultStore(WriteMode writeMode) {
-        var config = CypherMapWrapper.empty();
         var testConfig = new TestWriteConfigImpl
             .Builder()
             .writeToResultStore(true)
             .build();
 
-        var nodes = ImmutableNodes.builder()
-            .idMap(new DirectIdMap(0))
-            .schema(MutableNodeSchema.empty())
-            .build();
+        var nodes = new Nodes(MutableNodeSchema.empty(), new DirectIdMap(0), NodePropertyStore.empty());
 
         var testGraphStore = new GraphStoreBuilder()
             .databaseInfo(DatabaseInfo.of(DatabaseId.of("neo4j"), DatabaseLocation.LOCAL))

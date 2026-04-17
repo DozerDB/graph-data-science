@@ -34,7 +34,7 @@ import org.neo4j.gds.beta.filter.expression.SemanticErrors;
 import org.neo4j.gds.beta.filter.expression.ValidationContext;
 import org.neo4j.gds.config.GraphProjectFromGraphConfig;
 import org.neo4j.gds.core.loading.GraphStoreBuilder;
-import org.neo4j.gds.core.loading.ImmutableNodes;
+import org.neo4j.gds.core.loading.Nodes;
 import org.neo4j.gds.core.loading.RelationshipImportResult;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.core.utils.progress.tasks.Task;
@@ -166,10 +166,7 @@ public final class GraphStoreFilter {
                 .databaseInfo(graphStore.databaseInfo())
                 .capabilities(graphStore.capabilities())
                 .schema(filteredSchema)
-                .nodes(
-                    ImmutableNodes
-                        .of(filteredSchema.nodeSchema(), filteredNodes.idMap(), filteredNodes.propertyStores())
-                )
+                .nodes(new Nodes(filteredSchema.nodeSchema(), filteredNodes.idMap(), filteredNodes.propertyStores()))
                 .relationshipImportResult(RelationshipImportResult.of(filteredRelationships))
                 .concurrency(config.readConcurrency())
                 .build();

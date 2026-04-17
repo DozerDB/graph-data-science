@@ -128,7 +128,7 @@ public final class CSRGraphStoreUtil {
                 // TODO: is it correct that we only use this for generated graphs?
                 .capabilities(ImmutableStaticCapabilities.of(Capabilities.WriteMode.NONE))
                 .schema(mutableGraphSchema)
-                .nodes(ImmutableNodes.of(mutableGraphSchema.nodeSchema(), idMap, nodeProperties))
+                .nodes(new Nodes(mutableGraphSchema.nodeSchema(), idMap, nodeProperties))
                 .relationshipImportResult(relationshipImportResult)
                 .concurrency(concurrency)
                 .build();

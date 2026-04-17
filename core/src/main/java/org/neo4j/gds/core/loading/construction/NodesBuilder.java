@@ -29,7 +29,6 @@ import org.neo4j.gds.api.schema.MutableNodeSchema;
 import org.neo4j.gds.api.schema.PropertySchema;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.loading.IdMapBuilder;
-import org.neo4j.gds.core.loading.ImmutableNodes;
 import org.neo4j.gds.core.loading.LabelInformation;
 import org.neo4j.gds.core.loading.LabelInformationBuilders;
 import org.neo4j.gds.core.loading.NodeImporterBuilder;
@@ -188,11 +187,7 @@ public final class NodesBuilder {
         var nodeSchema = buildNodeSchema(idMap, nodeProperties);
         var nodePropertyStore = NodePropertyStore.builder().properties(nodeProperties).build();
 
-        return ImmutableNodes.builder()
-            .schema(nodeSchema)
-            .idMap(idMap)
-            .properties(nodePropertyStore)
-            .build();
+        return new Nodes(nodeSchema, idMap, nodePropertyStore);
     }
 
     private MutableNodeSchema buildNodeSchema(

@@ -33,9 +33,9 @@ import org.neo4j.gds.config.GraphProjectConfig;
 import org.neo4j.gds.core.loading.Capabilities.WriteMode;
 import org.neo4j.gds.core.loading.GraphStoreBuilder;
 import org.neo4j.gds.core.loading.GraphStoreCatalog;
-import org.neo4j.gds.core.loading.ImmutableNodes;
 import org.neo4j.gds.core.loading.ImmutableStaticCapabilities;
 import org.neo4j.gds.core.loading.LazyIdMapBuilder;
+import org.neo4j.gds.core.loading.Nodes;
 import org.neo4j.gds.core.loading.RelationshipImportResult;
 import org.neo4j.gds.core.loading.construction.GraphFactory;
 import org.neo4j.gds.core.loading.construction.ImmutablePropertyConfig;
@@ -322,12 +322,7 @@ private AdjacencyCompressor.ValueMapper buildNodesWithProperties(GraphStoreBuild
 
     this.graphSchemaBuilder.nodeSchema(nodeSchema);
 
-    var nodes = ImmutableNodes
-        .builder()
-        .idMap(idMap)
-        .schema(nodeSchema)
-        .properties(idMapAndProperties.propertyStore())
-        .build();
+    var nodes = new Nodes(nodeSchema, idMap, idMapAndProperties.propertyStore());
 
     graphStoreBuilder.nodes(nodes);
 
