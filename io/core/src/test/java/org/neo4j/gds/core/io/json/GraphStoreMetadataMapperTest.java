@@ -28,7 +28,6 @@ import org.neo4j.gds.api.GraphStore;
 import org.neo4j.gds.core.io.file.GraphInfo;
 import org.neo4j.gds.core.io.file.GraphInfoBuilder;
 import org.neo4j.gds.core.loading.Capabilities;
-import org.neo4j.gds.core.loading.ImmutableStaticCapabilities;
 import org.neo4j.gds.extension.GdlExtension;
 import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
@@ -75,7 +74,7 @@ class GraphStoreMetadataMapperTest {
             .databaseId(DatabaseId.of("another_custom_name"))
             .databaseLocation(org.neo4j.gds.api.DatabaseInfo.DatabaseLocation.REMOTE)
             .remoteDatabaseId(DatabaseId.of("my_remote_db"))
-            .graphCapabilities(ImmutableStaticCapabilities.of(Capabilities.WriteMode.REMOTE))
+            .graphCapabilities(new Capabilities(Capabilities.WriteMode.REMOTE))
             .gdlGraph("()-->()")
             .build()
             .build();
@@ -93,7 +92,7 @@ class GraphStoreMetadataMapperTest {
 
         var result = GraphStoreMetadataMapper.toCapabilities(graphStoreMetadata);
 
-        var expected = getCapabilities(graphStore);
+        var expected = graphStore.capabilities();
         assertThat(result).isEqualTo(expected);
     }
 
@@ -104,7 +103,7 @@ class GraphStoreMetadataMapperTest {
             .databaseId(DatabaseId.of("another_custom_name"))
             .databaseLocation(org.neo4j.gds.api.DatabaseInfo.DatabaseLocation.REMOTE)
             .remoteDatabaseId(DatabaseId.of("my_remote_db"))
-            .graphCapabilities(ImmutableStaticCapabilities.of(Capabilities.WriteMode.REMOTE))
+            .graphCapabilities(new Capabilities(Capabilities.WriteMode.REMOTE))
             .gdlGraph("()-->()")
             .build()
             .build();
@@ -112,7 +111,7 @@ class GraphStoreMetadataMapperTest {
 
         var result = GraphStoreMetadataMapper.toCapabilities(graphStoreMetadata);
 
-        var expected = getCapabilities(graphStore);
+        var expected = graphStore.capabilities();
         assertThat(result).isEqualTo(expected);
     }
 
@@ -133,7 +132,7 @@ class GraphStoreMetadataMapperTest {
             .databaseId(DatabaseId.of("another_custom_name"))
             .databaseLocation(org.neo4j.gds.api.DatabaseInfo.DatabaseLocation.REMOTE)
             .remoteDatabaseId(DatabaseId.of("my_remote_db"))
-            .graphCapabilities(ImmutableStaticCapabilities.of(Capabilities.WriteMode.REMOTE))
+            .graphCapabilities(new Capabilities(Capabilities.WriteMode.REMOTE))
             .gdlGraph("(a:A {propertyA: 42L})-[]->(b:B {propertyB: 0.1337}), (c:C {propertyC: [1.0]})-[]->(d:D {propertyD: [42L]})")
             .build()
             .build();
@@ -192,13 +191,6 @@ class GraphStoreMetadataMapperTest {
                     ))
                 )
             .inverseIndexedRelationshipTypes(graphStore.inverseIndexedRelationshipTypes())
-            .build();
-    }
-
-    private static Capabilities getCapabilities(GraphStore graphStore) {
-        return ImmutableStaticCapabilities
-            .builder()
-            .writeMode(graphStore.capabilities().writeMode())
             .build();
     }
 }

@@ -31,9 +31,8 @@ import org.neo4j.gds.api.schema.MutableGraphSchema;
 import org.neo4j.gds.api.schema.MutableNodeSchema;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.io.GraphStoreRelationshipVisitor;
-import org.neo4j.gds.core.loading.Capabilities.WriteMode;
+import org.neo4j.gds.core.loading.Capabilities;
 import org.neo4j.gds.core.loading.GraphStoreBuilder;
-import org.neo4j.gds.core.loading.ImmutableStaticCapabilities;
 import org.neo4j.gds.core.loading.Nodes;
 import org.neo4j.gds.core.loading.construction.GraphFactory;
 import org.neo4j.gds.core.loading.construction.RelationshipsBuilder;
@@ -172,7 +171,7 @@ class GraphStoreRelationshipVisitorTest {
 
         return new GraphStoreBuilder()
             .schema(MutableGraphSchema.from(expectedGraph.schema()))
-            .capabilities(ImmutableStaticCapabilities.of(WriteMode.LOCAL))
+            .capabilities(new Capabilities(Capabilities.WriteMode.LOCAL))
             .nodes(nodes)
             .relationshipImportResult(actualRelationships)
             .databaseInfo(DatabaseInfo.of(DatabaseId.random(), DatabaseLocation.LOCAL))

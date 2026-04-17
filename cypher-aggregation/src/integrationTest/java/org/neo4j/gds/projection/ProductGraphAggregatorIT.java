@@ -26,7 +26,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.neo4j.gds.TestTaskStore;
 import org.neo4j.gds.api.DatabaseId;
 import org.neo4j.gds.core.PlainSimpleRequestCorrelationId;
-import org.neo4j.gds.core.loading.Capabilities.WriteMode;
+import org.neo4j.gds.core.loading.Capabilities;
 import org.neo4j.gds.core.loading.GraphStoreCatalog;
 import org.neo4j.gds.core.utils.progress.EmptyTaskStore;
 import org.neo4j.gds.core.utils.progress.tasks.Status;
@@ -54,7 +54,7 @@ class ProductGraphAggregatorIT {
         var aggregator = new ProductGraphAggregator(
             databaseId,
             userName,
-            WriteMode.LOCAL,
+            Capabilities.WriteMode.LOCAL,
             QueryEstimator.empty(),
             ExecutingQueryProvider.empty(),
             ProjectionMetricsService.DISABLED,
@@ -95,7 +95,7 @@ class ProductGraphAggregatorIT {
         var aggregator = new ProductGraphAggregator(
             DatabaseId.random(),
             "neo4j",
-            WriteMode.LOCAL,
+            Capabilities.WriteMode.LOCAL,
             QueryEstimator.empty(),
             ExecutingQueryProvider.empty(),
             ProjectionMetricsService.DISABLED,
@@ -132,7 +132,7 @@ class ProductGraphAggregatorIT {
         var aggregator = new ProductGraphAggregator(
             DatabaseId.random(),
             "neo4j",
-            WriteMode.LOCAL,
+            Capabilities.WriteMode.LOCAL,
             QueryEstimator.empty(),
             ExecutingQueryProvider.empty(),
             ProjectionMetricsService.DISABLED,

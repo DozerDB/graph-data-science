@@ -25,7 +25,6 @@ import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvParser;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import org.neo4j.gds.core.loading.Capabilities;
-import org.neo4j.gds.core.loading.ImmutableStaticCapabilities;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -43,15 +42,15 @@ public class GraphCapabilitiesLoader {
         csvMapper.enable(CsvParser.Feature.TRIM_SPACES);
         csvMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         var schema = CsvSchema.emptySchema().withHeader().withStrictHeaders(false);
-        this.objectReader = csvMapper.readerFor(CapabilitiesDTO.class).with(schema);
+        this.objectReader = csvMapper.readerFor(Capabilities.class).with(schema);
     }
 
     public Capabilities load() {
         try {
             if (!Files.exists(capabilitiesPath)) {
-                return ImmutableStaticCapabilities.builder().build();
+                return new Capabilities();
             }
-            return objectReader.readValue(capabilitiesPath.toFile());
+            return objectReader.<Capabilities>readValue(capabilitiesPath.toFile());
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

@@ -30,9 +30,8 @@ import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.DefaultPool;
 import org.neo4j.gds.core.concurrency.ParallelUtil;
 import org.neo4j.gds.core.io.GraphStoreRelationshipVisitor;
-import org.neo4j.gds.core.loading.Capabilities.WriteMode;
+import org.neo4j.gds.core.loading.Capabilities;
 import org.neo4j.gds.core.loading.GraphStoreBuilder;
-import org.neo4j.gds.core.loading.ImmutableStaticCapabilities;
 import org.neo4j.gds.core.loading.Nodes;
 import org.neo4j.gds.core.loading.RelationshipImportResult;
 import org.neo4j.gds.core.loading.construction.GraphFactory;
@@ -84,7 +83,7 @@ public abstract class FileToGraphStoreImporter {
         this.graphSchemaBuilder = ImmutableMutableGraphSchema.builder();
         this.graphStoreBuilder = new GraphStoreBuilder()
             .concurrency(concurrency)
-            .capabilities(ImmutableStaticCapabilities.of(WriteMode.LOCAL));
+            .capabilities(new Capabilities(Capabilities.WriteMode.LOCAL));
         this.log = log;
         this.taskRegistryFactory = taskRegistryFactory;
     }

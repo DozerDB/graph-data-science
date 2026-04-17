@@ -30,8 +30,7 @@ import org.neo4j.gds.core.PlainSimpleRequestCorrelationId;
 import org.neo4j.gds.core.RequestCorrelationId;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.loading.CSRGraphStore;
-import org.neo4j.gds.core.loading.Capabilities.WriteMode;
-import org.neo4j.gds.core.loading.ImmutableStaticCapabilities;
+import org.neo4j.gds.core.loading.Capabilities;
 import org.neo4j.gds.core.loading.Nodes;
 import org.neo4j.gds.core.loading.RelationshipImportResult;
 import org.neo4j.gds.core.utils.logging.LoggerForProgressTrackingAdapter;
@@ -83,7 +82,7 @@ public final class NativeFactory extends CSRGraphStoreFactory<GraphProjectFromSt
     ) {
         super(
             graphProjectConfig,
-            ImmutableStaticCapabilities.of(WriteMode.LOCAL),
+            new Capabilities(Capabilities.WriteMode.LOCAL),
             loadingContext,
             graphDimensions,
             loadingContext.log(),

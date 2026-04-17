@@ -23,7 +23,7 @@ import org.neo4j.gds.annotation.CustomProcedure;
 import org.neo4j.gds.compat.DatabaseIdSupplier;
 import org.neo4j.gds.compat.GraphDatabaseApiProxy;
 import org.neo4j.gds.compat.UserFunctionSignatureBuilder;
-import org.neo4j.gds.core.loading.Capabilities.WriteMode;
+import org.neo4j.gds.core.loading.Capabilities;
 import org.neo4j.gds.integration.Neo4jPoweredRequestCorrelationId;
 import org.neo4j.gds.metrics.Metrics;
 import org.neo4j.internal.kernel.api.exceptions.ProcedureException;
@@ -101,8 +101,8 @@ public class AlphaCypherAggregation implements CallableUserAggregationFunction {
             .anyMatch(databaseId::equals);
 
         var writeMode = runsOnCompositeDatabase
-            ? WriteMode.NONE
-            : WriteMode.LOCAL;
+            ? Capabilities.WriteMode.NONE
+            : Capabilities.WriteMode.LOCAL;
 
         var transactionSequenceNumber = ctx.kernelTransaction().getTransactionSequenceNumber();
         var requestCorrelationId = Neo4jPoweredRequestCorrelationId.create(transactionSequenceNumber);

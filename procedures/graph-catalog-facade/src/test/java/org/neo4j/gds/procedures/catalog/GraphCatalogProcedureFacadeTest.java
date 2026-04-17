@@ -46,10 +46,10 @@ import org.neo4j.gds.applications.algorithms.machinery.RequestScopedDependencies
 import org.neo4j.gds.applications.algorithms.machinery.WriteContext;
 import org.neo4j.gds.applications.graphstorecatalog.GraphCatalogApplications;
 import org.neo4j.gds.config.GraphProjectConfig;
-import org.neo4j.gds.core.loading.Capabilities;
 import org.neo4j.gds.core.loading.DeletionResult;
 import org.neo4j.gds.core.loading.GraphStoreCatalogEntry;
 import org.neo4j.gds.core.loading.SingleTypeRelationships;
+import org.neo4j.gds.core.loading.Capabilities;
 
 import java.time.ZonedDateTime;
 import java.util.Collection;

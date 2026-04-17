@@ -36,9 +36,9 @@ import org.neo4j.gds.api.properties.nodes.NodePropertyValues;
 import org.neo4j.gds.api.properties.relationships.RelationshipProperty;
 import org.neo4j.gds.api.properties.relationships.RelationshipPropertyStore;
 import org.neo4j.gds.api.schema.GraphSchema;
-import org.neo4j.gds.core.loading.Capabilities;
 import org.neo4j.gds.core.loading.DeletionResult;
 import org.neo4j.gds.core.loading.SingleTypeRelationships;
+import org.neo4j.gds.core.loading.Capabilities;
 
 import java.time.ZonedDateTime;
 import java.util.Collection;

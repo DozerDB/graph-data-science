@@ -31,7 +31,6 @@ import org.neo4j.gds.api.schema.MutableNodeSchema;
 import org.neo4j.gds.api.schema.PropertySchema;
 import org.neo4j.gds.core.loading.ArrayIdMapBuilder;
 import org.neo4j.gds.core.loading.Capabilities;
-import org.neo4j.gds.core.loading.ImmutableStaticCapabilities;
 import org.neo4j.gds.extension.GdlExtension;
 import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
@@ -93,7 +92,7 @@ class GraphStoreMetadataFactoryTest {
                     .graphName("my_graph")
                     .databaseId(DatabaseId.of("custom_db_id"))
                     .databaseLocation(org.neo4j.gds.api.DatabaseInfo.DatabaseLocation.LOCAL)
-                    .graphCapabilities(ImmutableStaticCapabilities.of(Capabilities.WriteMode.LOCAL))
+                    .graphCapabilities(new Capabilities(Capabilities.WriteMode.LOCAL))
                     .idMapBuilderType(ArrayIdMapBuilder.ID)
                     .gdlGraph("()-->()")
                     .build()
@@ -122,7 +121,7 @@ class GraphStoreMetadataFactoryTest {
                     .databaseId(DatabaseId.of("another_custom_name"))
                     .databaseLocation(org.neo4j.gds.api.DatabaseInfo.DatabaseLocation.REMOTE)
                     .remoteDatabaseId(DatabaseId.of("my_remote_db"))
-                    .graphCapabilities(ImmutableStaticCapabilities.of(Capabilities.WriteMode.REMOTE))
+                    .graphCapabilities(new Capabilities(Capabilities.WriteMode.REMOTE))
                     .gdlGraph("()-->()")
                     .build()
                     .build(),

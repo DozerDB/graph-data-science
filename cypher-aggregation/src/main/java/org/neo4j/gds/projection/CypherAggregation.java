@@ -23,7 +23,7 @@ import org.neo4j.gds.annotation.CustomProcedure;
 import org.neo4j.gds.compat.DatabaseIdSupplier;
 import org.neo4j.gds.compat.GraphDatabaseApiProxy;
 import org.neo4j.gds.compat.UserFunctionSignatureBuilder;
-import org.neo4j.gds.core.loading.Capabilities.WriteMode;
+import org.neo4j.gds.core.loading.Capabilities;
 import org.neo4j.gds.core.utils.progress.TaskStore;
 import org.neo4j.gds.integration.Neo4jPoweredRequestCorrelationId;
 import org.neo4j.gds.logging.LogAdapter;
@@ -95,8 +95,8 @@ public class CypherAggregation implements CallableUserAggregationFunction {
             var queryProvider = AggregationInitializationHelper.getQueryProvider(ctx, runsOnCompositeDatabase);
 
             var writeMode = runsOnCompositeDatabase //anything here?
-                ? WriteMode.NONE
-                : WriteMode.LOCAL;
+                ? Capabilities.WriteMode.NONE
+                : Capabilities.WriteMode.LOCAL;
 
             var queryEstimator = QueryEstimator.fromTransaction(DatabaseTransactionContext.of(
                 databaseService, //anything here?

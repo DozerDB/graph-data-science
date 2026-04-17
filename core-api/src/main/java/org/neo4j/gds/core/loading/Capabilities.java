@@ -19,19 +19,46 @@
  */
 package org.neo4j.gds.core.loading;
 
-public interface Capabilities {
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    WriteMode writeMode();
+import java.util.Objects;
 
-    default boolean canWriteToLocalDatabase() {
+public class Capabilities {
+    private final WriteMode writeMode;
+
+    public Capabilities(WriteMode writeMode) {
+        this.writeMode = writeMode;
+    }
+    public Capabilities() {
+        this(WriteMode.LOCAL);
+    }
+
+    @JsonProperty
+    public WriteMode writeMode() {
+        return writeMode;
+    }
+
+    public boolean canWriteToLocalDatabase() {
         return writeMode() == WriteMode.LOCAL;
     }
 
-    default boolean canWriteToRemoteDatabase() {
+    public boolean canWriteToRemoteDatabase() {
         return writeMode() == WriteMode.REMOTE;
     }
 
-    enum WriteMode {
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Capabilities that = (Capabilities) o;
+        return writeMode == that.writeMode;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(writeMode);
+    }
+
+    public enum WriteMode {
         LOCAL, REMOTE, NONE
     }
 }

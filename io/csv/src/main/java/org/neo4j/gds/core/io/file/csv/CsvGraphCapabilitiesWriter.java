@@ -36,17 +36,14 @@ public class CsvGraphCapabilitiesWriter implements SimpleWriter<Capabilities> {
 
     public CsvGraphCapabilitiesWriter(Path fileLocation) {
         var csvMapper = new CsvMapper();
-        var csvSchema = csvMapper.schemaFor(ImmutableCapabilitiesDTO.class).withHeader();
-        this.objectWriter = csvMapper
-            .writerFor(ImmutableCapabilitiesDTO.class)
-            .with(csvSchema);
+        var csvSchema = csvMapper.schemaFor(Capabilities.class).withHeader();
+        this.objectWriter = csvMapper.writerFor(Capabilities.class).with(csvSchema);
         this.fileLocation = fileLocation.resolve(GRAPH_CAPABILITIES_FILE_NAME);
     }
 
     @Override
     public void write(Capabilities capabilities) throws IOException {
-        var capabilitiesDTO = CapabilitiesDTO.from(capabilities);
         var resultFile = fileLocation.toFile();
-        this.objectWriter.writeValue(resultFile, capabilitiesDTO);
+        this.objectWriter.writeValue(resultFile, capabilities);
     }
 }

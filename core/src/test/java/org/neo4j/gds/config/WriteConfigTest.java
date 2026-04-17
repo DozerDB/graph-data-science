@@ -33,9 +33,8 @@ import org.neo4j.gds.api.schema.MutableNodeSchema;
 import org.neo4j.gds.core.CypherMapWrapper;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.huge.DirectIdMap;
-import org.neo4j.gds.core.loading.Capabilities.WriteMode;
+import org.neo4j.gds.core.loading.Capabilities;
 import org.neo4j.gds.core.loading.GraphStoreBuilder;
-import org.neo4j.gds.core.loading.ImmutableStaticCapabilities;
 import org.neo4j.gds.core.loading.Nodes;
 import org.neo4j.gds.core.loading.RelationshipImportResult;
 
@@ -65,8 +64,8 @@ class WriteConfigTest {
     }
 
     @ParameterizedTest
-    @EnumSource(WriteMode.class)
-    void validateGraphStoreCapabilities(WriteMode writeMode) {
+    @EnumSource(Capabilities.WriteMode.class)
+    void validateGraphStoreCapabilities(Capabilities.WriteMode writeMode) {
         var config = CypherMapWrapper.empty();
         var testConfig = new TestWriteConfigImpl(config);
 
@@ -74,7 +73,7 @@ class WriteConfigTest {
 
         var testGraphStore = new GraphStoreBuilder()
             .databaseInfo(DatabaseInfo.of(DatabaseId.of("neo4j"), DatabaseLocation.LOCAL))
-            .capabilities(ImmutableStaticCapabilities.of(writeMode))
+            .capabilities(new Capabilities(writeMode))
             .schema(GraphSchema.mutable())
             .nodes(nodes)
             .relationshipImportResult(RelationshipImportResult.of(Map.of()))
@@ -100,8 +99,8 @@ class WriteConfigTest {
     }
 
     @ParameterizedTest
-    @EnumSource(WriteMode.class)
-    void doNotBlockWritesWhenWritingToResultStore(WriteMode writeMode) {
+    @EnumSource(Capabilities.WriteMode.class)
+    void doNotBlockWritesWhenWritingToResultStore(Capabilities.WriteMode writeMode) {
         var testConfig = new TestWriteConfigImpl
             .Builder()
             .writeToResultStore(true)
@@ -111,7 +110,7 @@ class WriteConfigTest {
 
         var testGraphStore = new GraphStoreBuilder()
             .databaseInfo(DatabaseInfo.of(DatabaseId.of("neo4j"), DatabaseLocation.LOCAL))
-            .capabilities(ImmutableStaticCapabilities.of(writeMode))
+            .capabilities(new Capabilities(writeMode))
             .schema(GraphSchema.mutable())
             .nodes(nodes)
             .relationshipImportResult(RelationshipImportResult.of(Map.of()))

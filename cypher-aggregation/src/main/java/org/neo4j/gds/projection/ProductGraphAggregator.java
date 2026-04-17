@@ -21,7 +21,7 @@ package org.neo4j.gds.projection;
 
 import org.neo4j.gds.api.DatabaseId;
 import org.neo4j.gds.core.RequestCorrelationId;
-import org.neo4j.gds.core.loading.Capabilities.WriteMode;
+import org.neo4j.gds.core.loading.Capabilities;
 import org.neo4j.gds.core.utils.progress.TaskStore;
 import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.metrics.projections.ProjectionMetricsService;
@@ -38,7 +38,7 @@ public class ProductGraphAggregator extends GraphAggregator {
     ProductGraphAggregator(
         DatabaseId databaseId,
         String username,
-        WriteMode writeMode,
+        Capabilities.WriteMode writeMode,
         QueryEstimator queryEstimator,
         ExecutingQueryProvider queryProvider,
         ProjectionMetricsService projectionMetricsService,

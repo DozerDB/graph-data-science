@@ -31,7 +31,7 @@ import org.neo4j.gds.core.ConfigKeyValidation;
 import org.neo4j.gds.core.CypherMapAccess;
 import org.neo4j.gds.core.RequestCorrelationId;
 import org.neo4j.gds.core.concurrency.Concurrency;
-import org.neo4j.gds.core.loading.Capabilities.WriteMode;
+import org.neo4j.gds.core.loading.Capabilities;
 import org.neo4j.gds.core.loading.GraphStoreCatalog;
 import org.neo4j.gds.core.loading.LazyIdMapBuilder;
 import org.neo4j.gds.core.loading.LazyIdMapBuilderBuilder;
@@ -83,7 +83,7 @@ abstract class GraphAggregator implements UserAggregationReducer, UserAggregatio
 
     private final DatabaseId databaseId;
     private final String username;
-    private final WriteMode writeMode;
+    private final Capabilities.WriteMode writeMode;
     private final QueryEstimator queryEstimator;
     private final ExecutingQueryProvider queryProvider;
     private final ProjectionMetricsService projectionMetricsService;
@@ -108,7 +108,7 @@ abstract class GraphAggregator implements UserAggregationReducer, UserAggregatio
     GraphAggregator(
         DatabaseId databaseId,
         String username,
-        WriteMode writeMode,
+        Capabilities.WriteMode writeMode,
         QueryEstimator queryEstimator,
         ExecutingQueryProvider queryProvider,
         ProjectionMetricsService projectionMetricsService,

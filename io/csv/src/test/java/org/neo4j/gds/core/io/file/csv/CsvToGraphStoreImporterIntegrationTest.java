@@ -35,9 +35,8 @@ import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.DefaultPool;
 import org.neo4j.gds.core.io.file.GraphStoreToFileExporterParameters;
 import org.neo4j.gds.core.loading.ArrayIdMapBuilder;
-import org.neo4j.gds.core.loading.Capabilities.WriteMode;
 import org.neo4j.gds.core.loading.HighLimitIdMapBuilder;
-import org.neo4j.gds.core.loading.ImmutableStaticCapabilities;
+import org.neo4j.gds.core.loading.Capabilities;
 import org.neo4j.gds.core.utils.progress.EmptyTaskRegistryFactory;
 import org.neo4j.gds.core.utils.progress.TaskRegistryFactory;
 import org.neo4j.gds.core.utils.progress.tasks.LoggerForProgressTracking;
@@ -180,11 +179,11 @@ class CsvToGraphStoreImporterIntegrationTest {
     }
 
     @ParameterizedTest
-    @EnumSource(WriteMode.class)
-    void shouldImportCapabilities(WriteMode writeMode) {
+    @EnumSource(Capabilities.WriteMode.class)
+    void shouldImportCapabilities(Capabilities.WriteMode writeMode) {
         var graphStoreWithCapabilities = GdlFactory.builder()
             .gdlGraph("()-[]->()")
-            .graphCapabilities(ImmutableStaticCapabilities.of(writeMode))
+            .graphCapabilities(new Capabilities(writeMode))
             .build()
             .build();
 
@@ -214,7 +213,7 @@ class CsvToGraphStoreImporterIntegrationTest {
 
         assertThat(importedGraphStore.capabilities())
             .usingRecursiveComparison()
-            .isEqualTo(ImmutableStaticCapabilities.of(writeMode));
+            .isEqualTo(new Capabilities(writeMode));
     }
 
     @ParameterizedTest

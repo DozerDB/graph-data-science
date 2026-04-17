@@ -32,7 +32,7 @@ import org.neo4j.gds.core.PlainSimpleRequestCorrelationId;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.DefaultPool;
 import org.neo4j.gds.core.io.file.GraphStoreToFileExporterParameters;
-import org.neo4j.gds.core.loading.Capabilities.WriteMode;
+import org.neo4j.gds.core.loading.Capabilities;
 import org.neo4j.gds.core.utils.progress.TaskRegistryFactory;
 import org.neo4j.gds.core.utils.progress.tasks.LoggerForProgressTracking;
 import org.neo4j.gds.extension.GdlExtension;
@@ -648,7 +648,7 @@ class GraphStoreToCsvExporterTest extends CsvTest {
             GRAPH_CAPABILITIES_FILE_NAME,
             List.of(
                 List.of("writeMode"),
-                List.of(WriteMode.LOCAL.name())
+                List.of(Capabilities.WriteMode.LOCAL.name())
             )
         );
     }

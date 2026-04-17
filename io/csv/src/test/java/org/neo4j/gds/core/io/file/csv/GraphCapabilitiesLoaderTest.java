@@ -25,8 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.neo4j.gds.core.loading.Capabilities.WriteMode;
-import org.neo4j.gds.core.loading.ImmutableStaticCapabilities;
+import org.neo4j.gds.core.loading.Capabilities;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -43,8 +42,8 @@ public class GraphCapabilitiesLoaderTest {
     Path exportDir;
 
     @ParameterizedTest
-    @EnumSource(WriteMode.class)
-    void shouldLoadGraphCapabilities(WriteMode writeMode) throws IOException {
+    @EnumSource(Capabilities.WriteMode.class)
+    void shouldLoadGraphCapabilities(Capabilities.WriteMode writeMode) throws IOException {
         var graphCapabilitiesFile = exportDir.resolve(GRAPH_CAPABILITIES_FILE_NAME).toFile();
 
         var lines = List.of(
@@ -56,8 +55,8 @@ public class GraphCapabilitiesLoaderTest {
         var capabilitiesLoader = new GraphCapabilitiesLoader(exportDir, CSV_MAPPER);
         var capabilities = capabilitiesLoader.load();
 
-        assertThat(capabilities.canWriteToLocalDatabase()).isEqualTo(writeMode == WriteMode.LOCAL);
-        assertThat(capabilities.canWriteToRemoteDatabase()).isEqualTo(writeMode == WriteMode.REMOTE);
+        assertThat(capabilities.canWriteToLocalDatabase()).isEqualTo(writeMode == Capabilities.WriteMode.LOCAL);
+        assertThat(capabilities.canWriteToRemoteDatabase()).isEqualTo(writeMode == Capabilities.WriteMode.REMOTE);
     }
 
     @Test
@@ -65,7 +64,7 @@ public class GraphCapabilitiesLoaderTest {
         var capabilitiesLoader = new GraphCapabilitiesLoader(exportDir, CSV_MAPPER);
         var capabilities = capabilitiesLoader.load();
 
-        assertThat(capabilities).isEqualTo(ImmutableStaticCapabilities.builder().build());
+        assertThat(capabilities).isEqualTo(new Capabilities());
     }
 
     @Test
@@ -78,6 +77,6 @@ public class GraphCapabilitiesLoaderTest {
 
         assertThat(capabilities)
             .usingRecursiveComparison()
-            .isEqualTo(ImmutableStaticCapabilities.builder().build());
+            .isEqualTo(new Capabilities());
     }
 }

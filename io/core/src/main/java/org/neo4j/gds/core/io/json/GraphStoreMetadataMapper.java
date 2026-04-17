@@ -32,7 +32,6 @@ import org.neo4j.gds.api.schema.RelationshipSchema;
 import org.neo4j.gds.core.io.file.GraphInfo;
 import org.neo4j.gds.core.io.file.GraphInfoBuilder;
 import org.neo4j.gds.core.loading.Capabilities;
-import org.neo4j.gds.core.loading.ImmutableStaticCapabilities;
 
 import java.util.Collection;
 import java.util.Map;
@@ -54,10 +53,7 @@ public final class GraphStoreMetadataMapper {
     }
 
     public static Capabilities toCapabilities(GraphStoreMetadata graphStoreMetadata) {
-        return ImmutableStaticCapabilities
-            .builder()
-            .writeMode(toWriteMode(graphStoreMetadata))
-            .build();
+        return new Capabilities(toWriteMode(graphStoreMetadata));
     }
 
     public static org.neo4j.gds.api.schema.NodeSchema toNodeSchema(GraphStoreMetadata graphStoreMetadata) {

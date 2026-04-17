@@ -20,6 +20,7 @@
 package org.neo4j.gds.projection;
 
 import org.jetbrains.annotations.Nullable;
+import org.neo4j.gds.Aggregation;
 import org.neo4j.gds.ElementProjection;
 import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.api.DatabaseInfo;
@@ -30,10 +31,9 @@ import org.neo4j.gds.api.schema.MutableRelationshipSchema;
 import org.neo4j.gds.api.schema.RelationshipSchema;
 import org.neo4j.gds.compression.api.AdjacencyCompressor;
 import org.neo4j.gds.config.GraphProjectConfig;
-import org.neo4j.gds.core.loading.Capabilities.WriteMode;
+import org.neo4j.gds.core.loading.Capabilities;
 import org.neo4j.gds.core.loading.GraphStoreBuilder;
 import org.neo4j.gds.core.loading.GraphStoreCatalog;
-import org.neo4j.gds.core.loading.ImmutableStaticCapabilities;
 import org.neo4j.gds.core.loading.LazyIdMapBuilder;
 import org.neo4j.gds.core.loading.Nodes;
 import org.neo4j.gds.core.loading.RelationshipImportResult;
@@ -46,7 +46,6 @@ import org.neo4j.gds.core.utils.ProgressTimer;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.core.utils.progress.tasks.Task;
 import org.neo4j.gds.core.utils.progress.tasks.Tasks;
-import org.neo4j.gds.Aggregation;
 import org.neo4j.gds.utils.StringFormatting;
 import org.neo4j.gds.utils.StringJoining;
 
@@ -71,7 +70,7 @@ public final class GraphImporter {
     private final List<String> inverseIndexedRelationshipTypes;
     private final LazyIdMapBuilder idMapBuilder;
 
-    private final WriteMode writeMode;
+    private final Capabilities.WriteMode writeMode;
     private final String query;
 
     private final ProgressTracker progressTracker;
@@ -92,7 +91,7 @@ public final class GraphImporter {
         List<String> undirectedRelationshipTypes,
         List<String> inverseIndexedRelationshipTypes,
         LazyIdMapBuilder idMapBuilder,
-        WriteMode writeMode,
+        Capabilities.WriteMode writeMode,
         String query,
         ProgressTracker progressTracker
     ) {
@@ -178,12 +177,12 @@ public final class GraphImporter {
         this.idMapBuilder.prepareForFlush();
 
         var writeMode = hasSeenArbitraryId
-            ? WriteMode.NONE
+            ? Capabilities.WriteMode.NONE
             : this.writeMode;
 
         var graphStoreBuilder = new GraphStoreBuilder()
             .concurrency(this.config.readConcurrency())
-            .capabilities(ImmutableStaticCapabilities.of(writeMode))
+            .capabilities(new Capabilities(writeMode))
             .databaseInfo(databaseInfo);
 
         var valueMapper = buildNodesWithProperties(graphStoreBuilder);

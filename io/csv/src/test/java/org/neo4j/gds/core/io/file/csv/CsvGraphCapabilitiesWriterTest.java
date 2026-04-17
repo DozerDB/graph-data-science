@@ -20,8 +20,7 @@
 package org.neo4j.gds.core.io.file.csv;
 
 import org.junit.jupiter.api.Test;
-import org.neo4j.gds.core.loading.Capabilities.WriteMode;
-import org.neo4j.gds.core.loading.ImmutableStaticCapabilities;
+import org.neo4j.gds.core.loading.Capabilities;
 
 import java.io.IOException;
 import java.util.List;
@@ -32,9 +31,7 @@ class CsvGraphCapabilitiesWriterTest extends CsvVisitorTest {
 
     @Test
     void shouldExportGraphCapabilities() throws IOException {
-        var capabilities = ImmutableStaticCapabilities.builder()
-            .writeMode(WriteMode.LOCAL)
-            .build();
+        var capabilities = new Capabilities(Capabilities.WriteMode.LOCAL);
 
         var graphCapabilitiesWriter = new CsvGraphCapabilitiesWriter(tempDir);
         graphCapabilitiesWriter.write(capabilities);
@@ -44,7 +41,7 @@ class CsvGraphCapabilitiesWriterTest extends CsvVisitorTest {
             GRAPH_CAPABILITIES_FILE_NAME,
             List.of(
                 defaultHeaderColumns(),
-                List.of(WriteMode.LOCAL.name())
+                List.of(Capabilities.WriteMode.LOCAL.name())
             )
         );
     }
