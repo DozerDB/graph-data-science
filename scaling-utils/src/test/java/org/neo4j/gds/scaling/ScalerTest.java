@@ -53,7 +53,7 @@ class ScalerTest {
         var meanScaler1Stats = meanScaler1.statistics();
         var meanScaler2Stats = meanScaler2.statistics();
 
-        var arrayScalerStats = new Scaler.ArrayScaler(List.of(meanScaler1, meanScaler2), ProgressTracker.NULL_TRACKER).statistics();
+        var arrayScalerStats = new ArrayScaler(List.of(meanScaler1, meanScaler2), ProgressTracker.NULL_TRACKER).statistics();
         assertThat(arrayScalerStats).containsExactlyInAnyOrderEntriesOf(
             Map.of(
                 "min", List.of(meanScaler1Stats.get("min").get(0), meanScaler2Stats.get("min").get(0)),
