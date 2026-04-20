@@ -21,7 +21,6 @@ package org.neo4j.gds.core.loading;
 
 import org.apache.commons.lang3.mutable.MutableDouble;
 import org.jetbrains.annotations.TestOnly;
-import org.neo4j.gds.annotation.ValueClass;
 
 import java.util.Arrays;
 
@@ -347,19 +346,13 @@ public abstract class DoubleCodec {
         return SIGNIFICAND_WIDTH;
     }
 
-    @ValueClass
     @TestOnly
-    public interface CompressionInfo {
-        double input();
-
-        byte[] compressed();
-
-        double decompressed();
-
-        int compressedSize();
-
-        int compressedType();
-
-        String compressionDescription();
-    }
+    public record CompressionInfo(
+        double input,
+        byte[] compressed,
+        double decompressed,
+        int compressedSize,
+        int compressedType,
+        String compressionDescription
+    ) {}
 }

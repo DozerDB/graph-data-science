@@ -71,14 +71,14 @@ public final class NoopDoubleCodec extends DoubleCodec {
 
     @Override
     public CompressionInfo describeCompressedValue(byte[] data, int pos, double originalInput) {
-        return ImmutableCompressionInfo.builder()
-            .input(originalInput)
-            .compressed(Arrays.copyOfRange(data, pos, 8 + pos))
-            .decompressed(decompressDouble(data, pos))
-            .compressedSize(8)
-            .compressedType(0)
-            .compressionDescription("NOOP")
-            .build();
+        return new CompressionInfo(
+            originalInput,
+            Arrays.copyOfRange(data, pos, 8 + pos),
+            decompressDouble(data, pos),
+            8,
+            0,
+            "NOOP"
+        );
     }
 
     private NoopDoubleCodec() {
