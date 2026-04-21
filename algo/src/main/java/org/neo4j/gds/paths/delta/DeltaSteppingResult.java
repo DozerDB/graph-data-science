@@ -129,7 +129,7 @@ public record DeltaSteppingResult(DistanceAndPredecessors tentativeDistances, Pa
         var costsArray = costs.toArray();
         ArrayUtils.reverse(costsArray);
         costs.elementsCount = 0;
-        return new DeltaSteppingPathResult(pathIndex, sourceNode, targetNode, pathNodeIdsArray, costsArray);
+        return new PathResult(pathIndex, sourceNode, targetNode, pathNodeIdsArray, new long[0], costsArray);
     }
 
 }

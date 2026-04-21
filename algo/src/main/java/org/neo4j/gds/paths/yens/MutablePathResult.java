@@ -19,7 +19,6 @@
  */
 package org.neo4j.gds.paths.yens;
 
-import org.neo4j.gds.paths.ImmutablePathResult;
 import org.neo4j.gds.paths.PathResult;
 
 import java.util.Arrays;
@@ -71,7 +70,7 @@ final class MutablePathResult {
     }
 
     PathResult toPathResult() {
-        return ImmutablePathResult.of(index, sourceNode, targetNode, nodeIds, relationshipIds, costs);
+        return new PathResult(index, sourceNode, targetNode, nodeIds, relationshipIds, costs);
     }
 
     /**
@@ -156,7 +155,7 @@ final class MutablePathResult {
      * The cost value associated with the last value in this path, is added to
      * the costs for each node in the second path.
      */
-    
+
     private void append(MutablePathResult path, long[] relationships) {
         // spur node is end of first and beginning of second path
         assert nodeIds[nodeIds.length - 1] == path.nodeIds[0];
@@ -198,7 +197,7 @@ final class MutablePathResult {
             oldRelationshipIdsLength,
             path.relationshipIds.length
         );
-        
+
         append(path, newRelationshipIds);
     }
 

@@ -35,8 +35,8 @@ import org.neo4j.gds.mem.Estimate;
 import org.neo4j.gds.mem.MemoryEstimation;
 import org.neo4j.gds.mem.MemoryEstimations;
 import org.neo4j.gds.mem.MemoryRange;
-import org.neo4j.gds.paths.ImmutablePathResult;
 import org.neo4j.gds.paths.PathResult;
+import org.neo4j.gds.paths.PathResultBuilder;
 import org.neo4j.gds.paths.delta.DistanceAndPredecessors;
 import org.neo4j.gds.paths.dijkstra.PathFindingResult;
 
@@ -182,7 +182,7 @@ public final class SteinerBasedDeltaStepping extends Algorithm<PathFindingResult
         long terminalId,
         AtomicLong frontierIndex,
         List<PathResult> paths,
-        ImmutablePathResult.Builder pathResultBuilder
+        PathResultBuilder pathResultBuilder
     ) {
         //add the new path to the solution
 
@@ -292,7 +292,7 @@ public final class SteinerBasedDeltaStepping extends Algorithm<PathFindingResult
     public PathFindingResult compute() {
         int currentBin = 0;
 
-        var pathResultBuilder = ImmutablePathResult.builder()
+        var pathResultBuilder = PathResultBuilder.builder()
             .sourceNode(startNode);
 
         var frontierIndex = new AtomicLong(0);
@@ -366,7 +366,7 @@ public final class SteinerBasedDeltaStepping extends Algorithm<PathFindingResult
     private static final long[] EMPTY_ARRAY = new long[0];
 
     private static PathResult pathResult(
-        ImmutablePathResult.Builder pathResultBuilder,
+        PathResultBuilder pathResultBuilder,
         long pathIndex,
         long targetNode,
         HugeAtomicDoubleArray distances,

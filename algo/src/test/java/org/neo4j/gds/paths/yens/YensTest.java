@@ -39,7 +39,6 @@ import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.IdFunction;
 import org.neo4j.gds.extension.Inject;
 import org.neo4j.gds.logging.GdsTestLog;
-import org.neo4j.gds.paths.ImmutablePathResult;
 import org.neo4j.gds.paths.PathResult;
 import org.neo4j.gds.termination.TerminationFlag;
 import org.s1ck.gdl.GDLHandler;
@@ -294,14 +293,14 @@ class YensTest {
                 nodeIds[j] = nextNode.getId();
                 costs[j] = (float) nextNode.getProperties().get("cost");
 
-                return ImmutablePathResult.builder()
-                    .index(index.getAndIncrement())
-                    .sourceNode(sourceNode.getId())
-                    .targetNode(targetNode.getId())
-                    .nodeIds(nodeIds)
-                    .relationshipIds(trackRelationships ? relationshipIds : new long[0])
-                    .costs(costs)
-                    .build();
+                return new PathResult(
+                    index.getAndIncrement(),
+                    sourceNode.getId(),
+                    targetNode.getId(),
+                    nodeIds,
+                    trackRelationships ? relationshipIds : new long[0],
+                    costs
+                );
             })
             .collect(Collectors.toSet());
     }

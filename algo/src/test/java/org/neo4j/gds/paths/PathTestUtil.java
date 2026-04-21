@@ -39,22 +39,18 @@ public final class PathTestUtil {
         double[] costs,
         String... nodes
     ) {
-        var builder = ImmutablePathResult.builder()
-            .index(index)
-            .sourceNode(idFunction.of(nodes[0]))
-            .targetNode(idFunction.of(nodes[nodes.length - 1]));
-
         var nodeIds = new long[nodes.length];
-
         for (int i = 0; i < nodes.length; i++) {
             nodeIds[i] = idFunction.of(nodes[i]);
         }
-
-        return builder
-            .costs(costs)
-            .nodeIds(nodeIds)
-            .relationshipIds(relationshipIds)
-            .build();
+        return new PathResult(
+            index,
+            idFunction.of(nodes[0]),
+            idFunction.of(nodes[nodes.length - 1]),
+            nodeIds,
+            relationshipIds,
+            costs
+        );
     }
 
     private PathTestUtil() {}

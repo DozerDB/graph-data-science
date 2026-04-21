@@ -19,36 +19,55 @@
  */
 package org.neo4j.gds.paths;
 
-import org.immutables.value.Value;
-import org.neo4j.gds.annotation.ValueClass;
+import org.neo4j.gds.annotation.GenerateBuilder;
 
-@ValueClass
-public interface PathResult {
+import java.util.Arrays;
+import java.util.Objects;
 
-    PathResult EMPTY = ImmutablePathResult.builder()
-        .index(-1)
-        .sourceNode(-1)
-        .targetNode(-1)
-        .nodeIds(-1)
-        .relationshipIds(-1)
-        .costs(0)
-        .build();
-
-    @Value.Auxiliary
-    long index();
-
-    long sourceNode();
-
-    long targetNode();
-
-    @Value.Derived
-    default double totalCost() {
-        return costs()[costs().length - 1];
+@GenerateBuilder
+public record PathResult(
+    long index,
+    long sourceNode,
+    long targetNode,
+    long[] nodeIds,
+    long[] relationshipIds,
+    double[] costs
+) {
+    public static final PathResult EMPTY = new PathResult(-1L, -1L, -1L, new long[]{-1}, new long[]{-1}, new double[]{0});
+    public static PathResult withRelationshipsIds(PathResult pathResult, long[] relationshipIds) {
+        return new PathResult(
+            pathResult.index(),
+            pathResult.sourceNode(),
+            pathResult.targetNode(),
+            pathResult.nodeIds(),
+            relationshipIds,
+            pathResult.costs()
+        );
     }
 
-    long[] nodeIds();
+    public double totalCost() {
+        return costs[costs.length - 1];
+    }
 
-    long[] relationshipIds();
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        PathResult that = (PathResult) o;
+        return sourceNode == that.sourceNode
+            && targetNode == that.targetNode
+            && Objects.deepEquals(nodeIds, that.nodeIds)
+            && Objects.deepEquals(relationshipIds, that.relationshipIds)
+            && Objects.deepEquals(costs, that.costs);
+    }
 
-    double[] costs();
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+            sourceNode,
+            targetNode,
+            Arrays.hashCode(nodeIds),
+            Arrays.hashCode(relationshipIds),
+            Arrays.hashCode(costs)
+        );
+    }
 }

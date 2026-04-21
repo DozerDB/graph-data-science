@@ -34,7 +34,7 @@ import org.neo4j.gds.core.loading.construction.RelationshipsBuilder;
 import org.neo4j.gds.core.utils.paged.HugeSerialObjectMergeSort;
 import org.neo4j.gds.core.utils.partition.PartitionUtils;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
-import org.neo4j.gds.paths.ImmutablePathResult;
+import org.neo4j.gds.paths.PathResult;
 import org.neo4j.gds.paths.delta.DeltaStepping;
 import org.neo4j.gds.paths.delta.DistanceAndPredecessors;
 import org.neo4j.gds.paths.dijkstra.PathFindingResult;
@@ -245,7 +245,7 @@ public final class PeekPruning {
 
     public static PathFindingResult mapToOriginalGraph(Graph pruned, PathFindingResult paths) {
         return new PathFindingResult(paths.mapPaths(path ->
-            ImmutablePathResult.of(
+            new PathResult(
                 path.index(),
                 pruned.toOriginalNodeId(path.sourceNode()),
                 pruned.toOriginalNodeId(path.targetNode()),

@@ -22,7 +22,7 @@ package org.neo4j.gds.paths.dijkstra;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.neo4j.gds.paths.ImmutablePathResult;
+import org.neo4j.gds.paths.PathResult;
 
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -36,14 +36,14 @@ class PathFindingResultTest {
 
     @BeforeEach
     void setup() {
-        var pathResult = ImmutablePathResult.builder()
-            .index(0)
-            .sourceNode(0)
-            .targetNode(1)
-            .nodeIds(0, 1)
-            .relationshipIds(0)
-            .costs(1.0D)
-            .build();
+        var pathResult = new PathResult(
+            0,
+            0,
+            1,
+            new long[]{0, 1},
+            new long[]{0},
+            new double[]{1.0D}
+        );
         actionCalled = new MutableBoolean(false);
         pathFindingResultSupplier = () -> new PathFindingResult(Stream.of(pathResult), actionCalled::setTrue);
     }

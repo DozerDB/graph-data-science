@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.neo4j.gds.paths.ImmutablePathResult;
+import org.neo4j.gds.paths.PathResult;
 
 import java.util.Arrays;
 import java.util.stream.IntStream;
@@ -35,28 +35,19 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class MutablePathResultTest {
 
-    private static final MutablePathResult TEST_PATH = MutablePathResult.of(ImmutablePathResult
-        .builder()
-        .nodeIds(0, 4, 2, 3)
-        .relationshipIds(0, 1, 2)
-        .costs(1, 3, 4, 7)
-        .sourceNode(0)
-        .targetNode(3)
-        .index(0)
-        .build()
+    private static final MutablePathResult TEST_PATH = MutablePathResult.of(
+        new PathResult(0, 0, 3, new long[]{0, 4, 2, 3}, new long[]{0, 1, 2}, new double[]{1, 3, 4, 7})
     );
 
     static MutablePathResult testPath(long... nodeIds) {
-        return MutablePathResult.of(ImmutablePathResult
-            .builder()
-            .nodeIds(nodeIds)
-            .costs(IntStream.range(0, nodeIds.length).asDoubleStream().toArray())
-            .sourceNode(nodeIds[0])
-            .targetNode(nodeIds[nodeIds.length - 1])
-            .relationshipIds(Arrays.copyOf(nodeIds, nodeIds.length - 1))
-            .index(0)
-            .build()
-        );
+        return MutablePathResult.of(new PathResult(
+            0,
+            nodeIds[0],
+            nodeIds[nodeIds.length - 1],
+            nodeIds,
+            Arrays.copyOf(nodeIds, nodeIds.length - 1),
+            IntStream.range(0, nodeIds.length).asDoubleStream().toArray()
+        ));
     }
 
     @Test
@@ -133,16 +124,14 @@ class MutablePathResultTest {
 
     @Test
     void withIndex() {
-        var testPath = MutablePathResult.of(ImmutablePathResult
-            .builder()
-            .nodeIds(0, 1, 2, 3)
-            .relationshipIds(0, 1, 2)
-            .costs(1, 3, 4, 7)
-            .sourceNode(0)
-            .targetNode(3)
-            .index(0)
-            .build()
-        );
+        var testPath = MutablePathResult.of(new PathResult(
+            0,
+            0,
+            3,
+            new long[]{0, 1, 2, 3},
+            new long[]{0, 1, 2},
+            new double[]{1, 3, 4, 7}
+        ));
         assertEquals(0, testPath.index());
         testPath.withIndex(42);
         assertEquals(42, testPath.index());
@@ -179,9 +168,9 @@ class MutablePathResultTest {
     @Test
     void appendWithOffset() {
         //@formatter:off
-        var p1 = MutablePathResult.of(ImmutablePathResult.builder().nodeIds(0, 1, 2).relationshipIds(0, 1).costs(0, 1, 42).sourceNode(0).targetNode(2).index(0).build());
-        var p2 = MutablePathResult.of(ImmutablePathResult.builder().nodeIds(2, 3, 4).relationshipIds(2, 3).costs(0, 13, 37).sourceNode(0).targetNode(2).index(1).build());
-        var expected = MutablePathResult.of(ImmutablePathResult.builder().nodeIds(0, 1, 2, 3, 4).relationshipIds(0, 1, 2, 3).costs(0, 1, 42, 55, 79).sourceNode(0).targetNode(2).index(2).build());
+        var p1 = MutablePathResult.of(new PathResult(0, 0, 2, new long[]{0, 1, 2}, new long[]{0, 1}, new double[]{0, 1, 42}));
+        var p2 = MutablePathResult.of(new PathResult(1, 0, 2, new long[]{2, 3, 4}, new long[]{2, 3}, new double[]{0, 13, 37}));
+        var expected = MutablePathResult.of(new PathResult(2, 0, 2, new long[]{0, 1, 2, 3, 4}, new long[]{0, 1, 2, 3}, new double[]{0, 1, 42, 55, 79}));
         //@formatter:on
 
         p1.append(p2);

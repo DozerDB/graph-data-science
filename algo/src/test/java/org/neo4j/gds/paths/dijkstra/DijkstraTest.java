@@ -31,7 +31,6 @@ import org.neo4j.gds.extension.GdlExtension;
 import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.IdFunction;
 import org.neo4j.gds.extension.Inject;
-import org.neo4j.gds.paths.ImmutablePathResult;
 import org.neo4j.gds.paths.PathResult;
 import org.neo4j.gds.termination.TerminationFlag;
 
@@ -140,11 +139,10 @@ final class DijkstraTest {
 
         @Test
         void sourceTargetWithRelationshipIds() {
-            var expected = ImmutablePathResult
-                .builder()
-                .from(expected(graph::toMappedNodeId, 0, new double[]{0.0, 2.0, 5.0, 9.0, 20.0}, "a", "c", "e", "d", "f"))
-                .relationshipIds(1, 0, 0, 0)
-                .build();
+            var expected = PathResult.withRelationshipsIds(
+                expected(graph::toMappedNodeId, 0, new double[]{0.0, 2.0, 5.0, 9.0, 20.0}, "a", "c", "e", "d", "f"),
+                new long[]{1, 0, 0, 0}
+            );
 
             var path = new Dijkstra(
                     graph,

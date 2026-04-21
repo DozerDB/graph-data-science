@@ -28,8 +28,8 @@ import org.neo4j.gds.api.Graph;
 import org.neo4j.gds.core.utils.paged.HugeLongLongMap;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.core.utils.queue.HugeLongPriorityQueue;
-import org.neo4j.gds.paths.ImmutablePathResult;
 import org.neo4j.gds.paths.PathResult;
+import org.neo4j.gds.paths.PathResultBuilder;
 import org.neo4j.gds.termination.TerminationFlag;
 
 import java.util.Optional;
@@ -126,7 +126,7 @@ public final class Dijkstra extends Algorithm<PathFindingResult> {
 
         queue.add(sourceNode, 0.0);
 
-        var pathResultBuilder = ImmutablePathResult.builder()
+        var pathResultBuilder = PathResultBuilder.builder()
             .sourceNode(sourceNode);
 
         var paths = Stream
@@ -136,7 +136,7 @@ public final class Dijkstra extends Algorithm<PathFindingResult> {
         return new PathFindingResult(paths, progressTracker::endSubTask);
     }
 
-    private PathResult next(Targets targets, ImmutablePathResult.Builder pathResultBuilder) {
+    private PathResult next(Targets targets, PathResultBuilder pathResultBuilder) {
         var relationshipId = new MutableInt();
 
         while (!queue.isEmpty() && terminationFlag.running() && traversalState != EMIT_AND_STOP) {
@@ -196,7 +196,7 @@ public final class Dijkstra extends Algorithm<PathFindingResult> {
 
     private static final long[] EMPTY_ARRAY = new long[0];
 
-    private PathResult pathResult(long target, ImmutablePathResult.Builder pathResultBuilder) {
+    private PathResult pathResult(long target, PathResultBuilder pathResultBuilder) {
         // TODO: use LongArrayList and then ArrayUtils.reverse
         var pathNodeIds = new LongArrayDeque();
         var relationshipIds = trackRelationships ? new LongArrayDeque() : null;

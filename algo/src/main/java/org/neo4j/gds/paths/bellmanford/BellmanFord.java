@@ -33,8 +33,8 @@ import org.neo4j.gds.core.concurrency.RunWithConcurrency;
 import org.neo4j.gds.core.utils.paged.HugeAtomicBitSet;
 import org.neo4j.gds.core.utils.partition.PartitionUtils;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
-import org.neo4j.gds.paths.ImmutablePathResult;
 import org.neo4j.gds.paths.PathResult;
+import org.neo4j.gds.paths.PathResultBuilder;
 import org.neo4j.gds.paths.dijkstra.PathFindingResult;
 import org.neo4j.gds.termination.TerminationFlag;
 
@@ -208,13 +208,11 @@ public class BellmanFord extends Algorithm<BellmanFordResult> {
             partitions.stream(),
             concurrency,
             parallelStream -> parallelStream.flatMap(partition -> {
-                var pathResultBuilder = ImmutablePathResult.builder();
 
                 var localGraph = graph.concurrentCopy();
                 return LongStream
                     .range(partition.startNode(), partition.startNode() + partition.nodeCount())
                     .mapToObj(indexId -> negativeCycleResult(
-                        pathResultBuilder,
                         cycleIndex,
                         negativeCycleVertices.get(indexId),
                         tentativeDistances,
@@ -246,7 +244,8 @@ public class BellmanFord extends Algorithm<BellmanFordResult> {
             concurrency,
             parallelStream -> parallelStream.flatMap(partition -> {
                 var localPathIndex = new MutableLong(pathIndex.getAndAdd(partition.nodeCount()));
-                var pathResultBuilder = ImmutablePathResult.builder().sourceNode(sourceNode);
+                var pathResultBuilder = PathResultBuilder.builder();
+                pathResultBuilder.sourceNode(sourceNode);
 
                 return LongStream
                     .range(partition.startNode(), partition.startNode() + partition.nodeCount())
@@ -265,7 +264,7 @@ public class BellmanFord extends Algorithm<BellmanFordResult> {
     private static final long[] EMPTY_ARRAY = new long[0];
 
     private static PathResult pathResult(
-        ImmutablePathResult.Builder pathResultBuilder,
+        PathResultBuilder pathResultBuilder,
         long pathIndex,
         long sourceNode,
         long targetNode,
@@ -300,7 +299,6 @@ public class BellmanFord extends Algorithm<BellmanFordResult> {
     }
 
     private static PathResult negativeCycleResult(
-        ImmutablePathResult.Builder pathResultBuilder,
         AtomicLong cycleIndex,
         long startNode,
         DistanceTracker tentativeDistances,
@@ -336,7 +334,6 @@ public class BellmanFord extends Algorithm<BellmanFordResult> {
         return createNegativeCycleResult(
             localGraph,
             startNode,
-            pathResultBuilder,
             pathNodeIds,
             tentativeDistances,
             cycleIndex,
@@ -347,7 +344,6 @@ public class BellmanFord extends Algorithm<BellmanFordResult> {
     private static PathResult createNegativeCycleResult(
         RelationshipIterator localGraph,
         long startNodeId,
-        ImmutablePathResult.Builder pathResultBuilder,
         LongArrayDeque pathNodeIds,
         DistanceTracker tentativeDistances,
         AtomicLong cycleIndex,
@@ -385,14 +381,14 @@ public class BellmanFord extends Algorithm<BellmanFordResult> {
             costs[j] = costs[j - 1] + currentDist;
         }
 
-        return pathResultBuilder.
-            index(cycleIndex.getAndIncrement())
-            .sourceNode(startNodeId)
-            .targetNode(startNodeId)
-            .nodeIds(pathArray)
-            .relationshipIds(EMPTY_ARRAY)
-            .costs(costs)
-            .build();
+        return new PathResult(
+            cycleIndex.getAndIncrement(),
+            startNodeId,
+            startNodeId,
+            pathArray,
+            EMPTY_ARRAY,
+            costs
+        );
     }
 
     private static double findMinimumCostBetweenNodes(
