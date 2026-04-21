@@ -19,8 +19,6 @@
  */
 package org.neo4j.gds.embeddings.graphsage;
 
-import org.immutables.value.Value;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.api.Graph;
 import org.neo4j.gds.collections.ha.HugeObjectArray;
 import org.neo4j.gds.core.concurrency.RunWithConcurrency;
@@ -334,39 +332,32 @@ public class GraphSageModelTrainer {
         }
     }
 
-    @ValueClass
-    public interface GraphSageTrainMetrics extends CustomInfo {
-        static GraphSageTrainMetrics empty() {
-            return ImmutableGraphSageTrainMetrics.of(List.of(), false);
+    public record GraphSageTrainMetrics(
+        List<List<Double>> iterationLossPerEpoch,
+        boolean didConverge
+    ) implements CustomInfo {
+        public static GraphSageTrainMetrics empty() {
+            return new GraphSageTrainMetrics(List.of(), false);
         }
 
-        @Value.Derived
-        default List<Double> epochLosses() {
+        public List<Double> epochLosses() {
             return iterationLossPerEpoch().stream()
                 .map(iterationLosses -> iterationLosses.get(iterationLosses.size() - 1))
                 .collect(Collectors.toList());
         }
 
-        List<List<Double>> iterationLossPerEpoch();
-
-        boolean didConverge();
-
-        @Value.Derived
-        default int ranEpochs() {
+        public int ranEpochs() {
             return iterationLossPerEpoch().isEmpty()
                 ? 0
                 : iterationLossPerEpoch().size();
         }
 
-        @Value.Derived
-        default List<Integer> ranIterationsPerEpoch() {
+        public List<Integer> ranIterationsPerEpoch() {
             return iterationLossPerEpoch().stream().map(List::size).collect(Collectors.toList());
         }
 
         @Override
-        @Value.Auxiliary
-        @Value.Derived
-        default Map<String, Object> toMap() {
+        public Map<String, Object> toMap() {
             return Map.of(
                 "metrics", Map.of(
                     "epochLosses", epochLosses(),
@@ -384,7 +375,7 @@ public class GraphSageModelTrainer {
             boolean converged,
             Layer[] layers
         ) {
-            return new ModelTrainResult(ImmutableGraphSageTrainMetrics.of(iterationLossesPerEpoch, converged), layers);
+            return new ModelTrainResult(new GraphSageTrainMetrics(iterationLossesPerEpoch, converged), layers);
         }
     }
 }
