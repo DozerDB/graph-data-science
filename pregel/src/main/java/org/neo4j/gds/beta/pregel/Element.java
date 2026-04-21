@@ -19,24 +19,27 @@
  */
 package org.neo4j.gds.beta.pregel;
 
-import org.immutables.value.Value;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.api.nodeproperties.ValueType;
 import org.neo4j.gds.values.GdsValue;
 
+import java.util.Objects;
 import java.util.Optional;
 
-@ValueClass
-public interface Element {
+public record Element(
+    String propertyKey,
+    Optional<GdsValue> defaultValue,
+    ValueType propertyType,
+    PregelSchema.Visibility visibility
+) {
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Element element = (Element) o;
+        return Objects.equals(propertyKey, element.propertyKey);
+    }
 
-    String propertyKey();
-
-    @Value.Auxiliary
-    Optional<GdsValue> defaultValue();
-
-    @Value.Auxiliary
-    ValueType propertyType();
-
-    @Value.Auxiliary
-    PregelSchema.Visibility visibility();
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(propertyKey);
+    }
 }

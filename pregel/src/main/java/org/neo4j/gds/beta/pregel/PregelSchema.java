@@ -26,6 +26,7 @@ import org.neo4j.gds.values.GdsValue;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -52,21 +53,12 @@ public interface PregelSchema {
         }
 
         public PregelSchema.Builder add(String propertyKey, ValueType propertyType, Visibility visibility) {
-            this.elements.add(ImmutableElement.builder()
-                .propertyKey(propertyKey)
-                .propertyType(propertyType)
-                .visibility(visibility)
-                .build());
+            this.elements.add(new Element(propertyKey, Optional.empty(), propertyType, visibility));
             return this;
         }
 
         public PregelSchema.Builder add(String propertyKey, GdsValue defaultValue, Visibility visibility) {
-            this.elements.add(ImmutableElement.builder()
-                .propertyKey(propertyKey)
-                .propertyType(defaultValue.type())
-                .defaultValue(defaultValue)
-                .visibility(visibility)
-                .build());
+            this.elements.add(new Element(propertyKey, Optional.of(defaultValue), defaultValue.type(), visibility));
             return this;
         }
 
