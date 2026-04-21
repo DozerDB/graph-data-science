@@ -399,10 +399,10 @@ class ScalePropertiesTest {
             );
     }
 
-    public static Stream<Arguments> scalers() {
+    static Stream<Arguments> scalers() {
         return ScalerParser.SUPPORTED_SCALERS
+            .keySet()
             .stream()
-            .map(ScalerType::name)
             .map(Arguments::of);
     }
 }

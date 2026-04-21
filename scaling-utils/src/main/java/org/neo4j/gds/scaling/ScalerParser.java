@@ -19,12 +19,17 @@
  */
 package org.neo4j.gds.scaling;
 
+import org.jetbrains.annotations.NotNull;
 import org.neo4j.gds.core.CypherMapWrapper;
 import org.neo4j.gds.scaling.scale.ScalerType;
 import org.neo4j.gds.utils.StringJoining;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.neo4j.gds.utils.StringFormatting.formatWithLocale;
 import static org.neo4j.gds.utils.StringFormatting.toLowerCaseWithLocale;
@@ -34,7 +39,7 @@ public final class ScalerParser {
     private ScalerParser() {}
 
     private static final String SCALER_KEY = "type";
-    public static final List<ScalerType> SUPPORTED_SCALERS = List.of(
+    public static final Map<String, ScalerType> SUPPORTED_SCALERS = Stream.of(
         ScalerType.None,
         ScalerType.Mean,
         ScalerType.Max,
@@ -44,7 +49,7 @@ public final class ScalerParser {
         ScalerType.L1Norm,
         ScalerType.L2Norm,
         ScalerType.MinMax
-    );
+    ).collect(Collectors.toMap(ScalerType::scalerName, scalerType -> scalerType));
 
     private static final String OFFSET_KEY = "offset";
     private static final Map<ScalerType, List<String>> REQUIRED_SCALER_KEYS = Map.of(
@@ -52,18 +57,8 @@ public final class ScalerParser {
     );
 
     public static ScalerType parseName(String spec) {
-        var name = toLowerCaseWithLocale(spec);
-        var opt = SUPPORTED_SCALERS.stream()
-            .filter(a -> a.scalerName().equals(name))
-            .findFirst();
-        if (opt.isEmpty()) {
-            throw new IllegalArgumentException(formatWithLocale(
-                "Unrecognised scaler type specified: `%s`. Expected one of: %s.",
-                spec,
-                StringJoining.join(SUPPORTED_SCALERS.stream().map(ScalerType::name))
-            ));
-        }
-        return opt.get();
+        return Optional.ofNullable(SUPPORTED_SCALERS.get(toLowerCaseWithLocale(spec)))
+            .orElseThrow(invalidScalerExceptionSupplier(spec));
     }
 
     public static ScalerFactory parse(Object userInput) {
@@ -87,11 +82,15 @@ public final class ScalerParser {
         return throwForInvalidScaler(userInput);
     }
 
-    private static ScalerFactory throwForInvalidScaler(Object inputScaler) {
-        throw new IllegalArgumentException(formatWithLocale(
+    private static @NotNull Supplier<IllegalArgumentException> invalidScalerExceptionSupplier(Object inputScaler) {
+        return () -> new IllegalArgumentException(formatWithLocale(
             "Unrecognised scaler type specified: `%s`. Expected one of: %s.",
             inputScaler,
-            StringJoining.join(SUPPORTED_SCALERS.stream().map(ScalerType::name))
+            StringJoining.join(SUPPORTED_SCALERS.keySet())
         ));
+    }
+
+    private static ScalerFactory throwForInvalidScaler(Object inputScaler) {
+        throw invalidScalerExceptionSupplier(inputScaler).get();
     }
 }
