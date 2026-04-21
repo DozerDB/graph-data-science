@@ -21,7 +21,6 @@ package org.neo4j.gds.wcc;
 
 import com.carrotsearch.hppc.LongIntHashMap;
 import com.carrotsearch.hppc.cursors.LongIntCursor;
-import org.immutables.builder.Builder;
 import org.neo4j.gds.api.Graph;
 import org.neo4j.gds.api.properties.relationships.RelationshipConsumer;
 import org.neo4j.gds.api.properties.relationships.RelationshipWithPropertyConsumer;
@@ -64,7 +63,6 @@ final class SampledStrategy {
     private final ProgressTracker progressTracker;
     private final ExecutorService executorService;
 
-    @Builder.Constructor
     SampledStrategy(
         Graph graph,
         DisjointSetStruct disjointSetStruct,

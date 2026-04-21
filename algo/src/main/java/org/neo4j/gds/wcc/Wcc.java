@@ -106,27 +106,25 @@ public class Wcc extends Algorithm<DisjointSetStruct> {
             .orElseGet(() -> new HugeAtomicDisjointSetStruct(nodeCount, parameters.concurrency()));
 
         if (graph.characteristics().isUndirected() || graph.characteristics().isInverseIndexed()) {
-            new SampledStrategyBuilder()
-                .graph(graph)
-                .disjointSetStruct(disjointSetStruct)
-                .threshold(threshold())
-                .concurrency(parameters.concurrency())
-                .terminationFlag(terminationFlag)
-                .progressTracker(progressTracker)
-                .executorService(executorService)
-                .build()
-                .compute();
+            new SampledStrategy(
+                graph,
+                disjointSetStruct,
+                parameters.concurrency(),
+                threshold(),
+                terminationFlag,
+                progressTracker,
+                executorService
+            ).compute();
         } else {
-            new UnsampledStrategyBuilder()
-                .graph(graph)
-                .disjointSetStruct(disjointSetStruct)
-                .threshold(threshold())
-                .batchSize(batchSize)
-                .terminationFlag(terminationFlag)
-                .progressTracker(progressTracker)
-                .executorService(executorService)
-                .build()
-                .compute();
+            new UnsampledStrategy(
+                graph,
+                disjointSetStruct,
+                batchSize,
+                threshold(),
+                terminationFlag,
+                progressTracker,
+                executorService
+            ).compute();
         }
 
         progressTracker.endSubTask();

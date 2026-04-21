@@ -19,7 +19,6 @@
  */
 package org.neo4j.gds.wcc;
 
-import org.immutables.builder.Builder;
 import org.neo4j.gds.api.Graph;
 import org.neo4j.gds.api.properties.relationships.RelationshipConsumer;
 import org.neo4j.gds.api.properties.relationships.RelationshipWithPropertyConsumer;
@@ -47,7 +46,6 @@ final class UnsampledStrategy {
     private final ProgressTracker progressTracker;
     private final ExecutorService executorService;
 
-    @Builder.Constructor
     UnsampledStrategy(
         Graph graph,
         DisjointSetStruct disjointSetStruct,
