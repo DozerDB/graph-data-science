@@ -28,7 +28,6 @@ import org.neo4j.gds.api.DatabaseInfo.DatabaseLocation;
 import org.neo4j.gds.api.Graph;
 import org.neo4j.gds.api.GraphStore;
 import org.neo4j.gds.api.IdMap;
-import org.neo4j.gds.api.ImmutableDatabaseInfo;
 import org.neo4j.gds.api.Topology;
 import org.neo4j.gds.api.nodeproperties.ValueType;
 import org.neo4j.gds.api.properties.nodes.NodeProperty;
@@ -66,8 +65,7 @@ class DummyGraphStore implements GraphStore {
 
     @Override
     public DatabaseInfo databaseInfo() {
-        return ImmutableDatabaseInfo.builder().databaseId(DatabaseId.of("some database")).databaseLocation(
-            DatabaseLocation.LOCAL).build();
+        return DatabaseInfo.create(DatabaseId.of("some database"), DatabaseLocation.LOCAL);
     }
 
     @Override

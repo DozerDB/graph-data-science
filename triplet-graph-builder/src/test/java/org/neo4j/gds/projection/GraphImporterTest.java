@@ -93,7 +93,7 @@ class GraphImporterTest {
         }
 
         var result = importer.result(
-            DatabaseInfo.of(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
+            DatabaseInfo.create(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
             ProgressTimer.start(),
             true
         );
@@ -138,7 +138,7 @@ class GraphImporterTest {
         }
 
         importer.result(
-            DatabaseInfo.of(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
+            DatabaseInfo.create(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
             ProgressTimer.start(),
             true
         );
@@ -181,7 +181,7 @@ class GraphImporterTest {
         }
 
         importer.result(
-            DatabaseInfo.of(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
+            DatabaseInfo.create(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
             ProgressTimer.start(),
             true
         );
@@ -227,7 +227,7 @@ class GraphImporterTest {
         }
 
         importer.result(
-            DatabaseInfo.of(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
+            DatabaseInfo.create(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
             ProgressTimer.start(),
             true
         );
@@ -270,7 +270,7 @@ class GraphImporterTest {
         }
 
         var result = importer.result(
-            DatabaseInfo.of(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
+            DatabaseInfo.create(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
             ProgressTimer.start(),
             true
         );
@@ -315,7 +315,7 @@ class GraphImporterTest {
         }
 
         var result = importer.result(
-            DatabaseInfo.of(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
+            DatabaseInfo.create(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
             ProgressTimer.start(),
             true
         );
@@ -354,7 +354,7 @@ class GraphImporterTest {
             null
         );
 
-        assertThatThrownBy(() -> importer.result(DatabaseInfo.of(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
+        assertThatThrownBy(() -> importer.result(DatabaseInfo.create(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
             ProgressTimer.start(),
             true
         )).hasMessage("Specified undirectedRelationshipTypes `[UNUSED_REL]` were not projected in the graph. Projected types are: `['REL']`.");
@@ -385,7 +385,7 @@ class GraphImporterTest {
             null
         );
 
-        assertThatThrownBy(() -> importer.result(DatabaseInfo.of(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
+        assertThatThrownBy(() -> importer.result(DatabaseInfo.create(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
             ProgressTimer.start(),
             true
         )).hasMessage("Specified inverseIndexedRelationshipTypes `[UNUSED_REL]` were not projected in the graph. Projected types are: `['REL']`.");
@@ -433,7 +433,7 @@ class GraphImporterTest {
         }
 
         importer.result(
-            DatabaseInfo.of(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
+            DatabaseInfo.create(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
             ProgressTimer.start(),
             true
         );

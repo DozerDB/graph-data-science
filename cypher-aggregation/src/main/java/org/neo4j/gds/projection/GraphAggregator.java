@@ -24,8 +24,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.api.DatabaseId;
+import org.neo4j.gds.api.DatabaseInfo;
 import org.neo4j.gds.api.DatabaseInfo.DatabaseLocation;
-import org.neo4j.gds.api.ImmutableDatabaseInfo;
 import org.neo4j.gds.api.PropertyState;
 import org.neo4j.gds.core.ConfigKeyValidation;
 import org.neo4j.gds.core.CypherMapAccess;
@@ -332,10 +332,10 @@ abstract class GraphAggregator implements UserAggregationReducer, UserAggregatio
             return this.result;
         }
 
-        var databaseInfo = ImmutableDatabaseInfo.builder()
-            .databaseId(this.databaseId)
-            .databaseLocation(DatabaseLocation.LOCAL)
-            .build();
+        var databaseInfo = DatabaseInfo.create(
+            this.databaseId,
+            DatabaseLocation.LOCAL
+        );
 
         this.result = importer.result(
             databaseInfo,

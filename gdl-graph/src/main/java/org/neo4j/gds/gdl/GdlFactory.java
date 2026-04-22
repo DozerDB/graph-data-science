@@ -30,7 +30,6 @@ import org.neo4j.gds.api.DatabaseInfo.DatabaseLocation;
 import org.neo4j.gds.api.DefaultValue;
 import org.neo4j.gds.api.GraphLoaderContext;
 import org.neo4j.gds.api.IdMap;
-import org.neo4j.gds.api.ImmutableDatabaseInfo;
 import org.neo4j.gds.api.PropertyState;
 import org.neo4j.gds.api.nodeproperties.ValueType;
 import org.neo4j.gds.api.schema.Direction;
@@ -128,11 +127,11 @@ public final class GdlFactory extends CSRGraphStoreFactory<GraphProjectFromGdlCo
         // NOTE: We don't really have a database, but GDL is for testing to work as if we had a database
         var capabilities = graphCapabilities.orElseGet(() -> new Capabilities(Capabilities.WriteMode.LOCAL));
 
-        var databaseInfo = ImmutableDatabaseInfo.builder()
-            .databaseId(databaseId.orElse(DatabaseId.of("GDL")))
-            .databaseLocation(databaseLocation.orElse(DatabaseLocation.LOCAL))
-            .remoteDatabaseId(remoteDatabaseId)
-            .build();
+        var databaseInfo = DatabaseInfo.create(
+            databaseId.orElse(DatabaseId.of("GDL")),
+            databaseLocation.orElse(DatabaseLocation.LOCAL),
+            remoteDatabaseId
+        );
 
         return new GdlFactory(
             log.orElse(Log.noOpLog()),

@@ -25,7 +25,6 @@ import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.api.DatabaseId;
 import org.neo4j.gds.api.DatabaseInfo;
 import org.neo4j.gds.api.DatabaseInfo.DatabaseLocation;
-import org.neo4j.gds.api.ImmutableDatabaseInfo;
 import org.neo4j.gds.core.io.file.GraphInfo;
 
 import java.util.List;
@@ -44,7 +43,7 @@ class CsvGraphInfoVisitorTest extends CsvVisitorTest {
         var relationshipTypeCounts = Map.of(RelationshipType.of("REL1"), 42L, RelationshipType.of("REL2"), 1337L);
         var inverseIndexedRelTypes = List.of(RelationshipType.of("REL1"), RelationshipType.of("REL2"));
         var graphInfo = GraphInfo.builder()
-            .databaseInfo(DatabaseInfo.of(databaseId, DatabaseLocation.LOCAL))
+            .databaseInfo(DatabaseInfo.create(databaseId, DatabaseLocation.LOCAL))
             .idMapBuilderType(idMapBuilderType)
             .nodeCount(1337L)
             .maxOriginalId(19L)
@@ -81,7 +80,7 @@ class CsvGraphInfoVisitorTest extends CsvVisitorTest {
         var relationshipTypeCounts = Map.of(RelationshipType.of("REL1"), 42L, RelationshipType.of("REL2"), 1337L);
         var inverseIndexedRelTypes = List.of(RelationshipType.of("REL1"), RelationshipType.of("REL2"));
         var graphInfo = GraphInfo.builder()
-            .databaseInfo(ImmutableDatabaseInfo.of(databaseId, DatabaseLocation.REMOTE, DatabaseId.of("remote-db")))
+            .databaseInfo(DatabaseInfo.create(databaseId, DatabaseLocation.REMOTE, DatabaseId.of("remote-db")))
             .idMapBuilderType(idMapBuilderType)
             .nodeCount(1337L)
             .maxOriginalId(19L)

@@ -23,7 +23,6 @@ import org.neo4j.gds.NodeLabel;
 import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.api.DatabaseId;
 import org.neo4j.gds.api.DatabaseInfo;
-import org.neo4j.gds.api.ImmutableDatabaseInfo;
 import org.neo4j.gds.api.schema.MutableNodeSchema;
 import org.neo4j.gds.api.schema.MutableNodeSchemaEntry;
 import org.neo4j.gds.api.schema.MutableRelationshipSchema;
@@ -198,12 +197,7 @@ public final class GraphStoreMetadataMapper {
             .remoteDatabaseId()
             .map(DatabaseId::of);
 
-        return ImmutableDatabaseInfo
-            .builder()
-            .databaseId(toDatabaseId(graphStoreMetadata))
-            .databaseLocation(toDatabaseLocation(graphStoreMetadata))
-            .remoteDatabaseId(remoteDatabaseId)
-            .build();
+        return DatabaseInfo.create(toDatabaseId(graphStoreMetadata), toDatabaseLocation(graphStoreMetadata), remoteDatabaseId);
     }
 
     private static DatabaseId toDatabaseId(GraphStoreMetadata graphStoreMetadata) {

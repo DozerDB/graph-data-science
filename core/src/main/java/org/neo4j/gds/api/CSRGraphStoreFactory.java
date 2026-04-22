@@ -76,10 +76,10 @@ public abstract class CSRGraphStoreFactory<CONFIG extends GraphProjectConfig> ex
             relationshipImportResult.relationshipSchema()
         );
 
-        var databaseInfo = ImmutableDatabaseInfo.builder()
-            .databaseId(loadingContext.databaseId())
-            .databaseLocation(DatabaseLocation.LOCAL)
-            .build();
+        var databaseInfo = DatabaseInfo.create(
+            loadingContext.databaseId(),
+            DatabaseLocation.LOCAL
+        );
 
         return new GraphStoreBuilder()
             .databaseInfo(databaseInfo)

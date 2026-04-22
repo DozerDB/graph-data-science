@@ -58,7 +58,7 @@ class StubGraphStore implements GraphStore {
 
     StubGraphStore() {
         this(
-            DatabaseInfo.of(
+            DatabaseInfo.create(
                 DatabaseId.of(UUID.randomUUID().toString()),
                 DatabaseInfo.DatabaseLocation.LOCAL
             )

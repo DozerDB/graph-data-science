@@ -75,13 +75,13 @@ class DegreeDistributionApplierTest {
         var config1 = new StubGraphProjectConfig("Alice", "g1");
         var config2 = new StubGraphProjectConfig("Bob", "g2");
         var graphStore1 = new StubGraphStore(
-            DatabaseInfo.of(
+            DatabaseInfo.create(
                 DatabaseId.of("db1"),
                 DatabaseInfo.DatabaseLocation.LOCAL
             )
         );
         var graphStore2 = new StubGraphStore(
-            DatabaseInfo.of(
+            DatabaseInfo.create(
                 DatabaseId.of("db2"),
                 DatabaseInfo.DatabaseLocation.LOCAL
             )
@@ -125,10 +125,10 @@ class DegreeDistributionApplierTest {
         var config1 = new StubGraphProjectConfig("Alice", "g1");
         var config2 = new StubGraphProjectConfig("Bob", "g2");
         var graphStore1 = new StubGraphStore(
-            DatabaseInfo.of(DatabaseId.of("db1"), DatabaseInfo.DatabaseLocation.LOCAL)
+            DatabaseInfo.create(DatabaseId.of("db1"), DatabaseInfo.DatabaseLocation.LOCAL)
         );
         var graphStore2 = new StubGraphStore(
-            DatabaseInfo.of(DatabaseId.of("db2"), DatabaseInfo.DatabaseLocation.LOCAL)
+            DatabaseInfo.create(DatabaseId.of("db2"), DatabaseInfo.DatabaseLocation.LOCAL)
         );
         when(
             graphStoreCatalogService.getDegreeDistribution(

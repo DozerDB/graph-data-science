@@ -72,7 +72,7 @@ class WriteConfigTest {
         var nodes = new Nodes(MutableNodeSchema.empty(), new DirectIdMap(0), NodePropertyStore.empty());
 
         var testGraphStore = new GraphStoreBuilder()
-            .databaseInfo(DatabaseInfo.of(DatabaseId.of("neo4j"), DatabaseLocation.LOCAL))
+            .databaseInfo(DatabaseInfo.create(DatabaseId.of("neo4j"), DatabaseLocation.LOCAL))
             .capabilities(new Capabilities(writeMode))
             .schema(GraphSchema.mutable())
             .nodes(nodes)
@@ -109,7 +109,7 @@ class WriteConfigTest {
         var nodes = new Nodes(MutableNodeSchema.empty(), new DirectIdMap(0), NodePropertyStore.empty());
 
         var testGraphStore = new GraphStoreBuilder()
-            .databaseInfo(DatabaseInfo.of(DatabaseId.of("neo4j"), DatabaseLocation.LOCAL))
+            .databaseInfo(DatabaseInfo.create(DatabaseId.of("neo4j"), DatabaseLocation.LOCAL))
             .capabilities(new Capabilities(writeMode))
             .schema(GraphSchema.mutable())
             .nodes(nodes)

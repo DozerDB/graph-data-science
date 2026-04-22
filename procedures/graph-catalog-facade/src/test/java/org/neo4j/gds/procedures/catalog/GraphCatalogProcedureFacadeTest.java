@@ -265,7 +265,7 @@ class GraphCatalogProcedureFacadeTest {
     private static class StubGraphStore implements GraphStore {
         @Override
         public DatabaseInfo databaseInfo() {
-            return DatabaseInfo.of(DatabaseId.of("foo"), DatabaseLocation.LOCAL);
+            return DatabaseInfo.create(DatabaseId.of("foo"), DatabaseLocation.LOCAL);
         }
 
         @Override

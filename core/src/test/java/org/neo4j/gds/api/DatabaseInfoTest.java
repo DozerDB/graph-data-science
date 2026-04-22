@@ -21,18 +21,15 @@ package org.neo4j.gds.api;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class DatabaseInfoTest {
 
     @Test
     void shouldThrowIfRemoteDatabaseDoesNotHaveRemoteDatabaseId() {
-        assertThatThrownBy(() -> ImmutableDatabaseInfo.of(
+        assertThatThrownBy(() -> DatabaseInfo.create(
             DatabaseId.of("test"),
-            DatabaseInfo.DatabaseLocation.REMOTE,
-            Optional.empty()
+            DatabaseInfo.DatabaseLocation.REMOTE
         ))
             .isInstanceOf(IllegalStateException.class)
             .hasMessageContaining("Remote database id must be set when database location is remote");
@@ -40,10 +37,10 @@ class DatabaseInfoTest {
 
     @Test
     void shouldThrowIfNonRemoteDatabaseDoesContainsRemoteDatabaseId() {
-        assertThatThrownBy(() -> ImmutableDatabaseInfo.of(
+        assertThatThrownBy(() -> DatabaseInfo.create(
             DatabaseId.of("test"),
             DatabaseInfo.DatabaseLocation.LOCAL,
-            Optional.of(DatabaseId.of("some-db"))
+            DatabaseId.of("some-db")
         ))
             .isInstanceOf(IllegalStateException.class)
             .hasMessageContaining("Remote database id must not be set when database location is not remote");

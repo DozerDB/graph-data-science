@@ -32,9 +32,9 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import org.apache.commons.lang3.StringUtils;
 import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.api.DatabaseId;
+import org.neo4j.gds.api.DatabaseInfo;
 import org.neo4j.gds.api.DatabaseInfo.DatabaseLocation;
 import org.neo4j.gds.api.IdMap;
-import org.neo4j.gds.api.ImmutableDatabaseInfo;
 import org.neo4j.gds.core.io.file.GraphInfo;
 
 import java.io.IOException;
@@ -70,11 +70,11 @@ public class GraphInfoLoader {
             var databaseId = DatabaseId.of(line.databaseName);
             var remoteDatabaseId = Optional.ofNullable(StringUtils.trimToNull(line.remoteDatabaseId)).map(DatabaseId::of);
 
-            var databaseInfo = ImmutableDatabaseInfo.builder()
-                .databaseId(databaseId)
-                .databaseLocation(line.databaseLocation)
-                .remoteDatabaseId(remoteDatabaseId)
-                .build();
+            var databaseInfo = DatabaseInfo.create(
+                databaseId,
+                line.databaseLocation,
+                remoteDatabaseId
+            );
             return GraphInfo.builder()
                 .databaseInfo(databaseInfo)
                 .idMapBuilderType(line.idMapBuilderType)

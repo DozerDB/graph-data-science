@@ -29,7 +29,6 @@ import org.neo4j.gds.api.DatabaseId;
 import org.neo4j.gds.api.DatabaseInfo;
 import org.neo4j.gds.api.GraphStore;
 import org.neo4j.gds.api.GraphStoreAdapter;
-import org.neo4j.gds.api.ImmutableDatabaseInfo;
 import org.neo4j.gds.core.PlainSimpleRequestCorrelationId;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.DefaultPool;
@@ -300,7 +299,7 @@ class CsvToGraphStoreImporterIntegrationTest {
 
         @Override
         public DatabaseInfo databaseInfo() {
-            return ImmutableDatabaseInfo.of(
+            return DatabaseInfo.create(
                 super.databaseInfo().databaseId(),
                 DatabaseInfo.DatabaseLocation.REMOTE,
                 DatabaseId.of("remote-db")

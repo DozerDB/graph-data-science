@@ -52,7 +52,7 @@ class GraphStoreCatalogServiceTest {
         // we _could_ write a stub for GraphStore; this is good enough for now tho
         var graphStore = mock(GraphStore.class);
         when(graphStore.databaseInfo()).thenReturn(
-            DatabaseInfo.of(
+            DatabaseInfo.create(
                 DatabaseId.of("some database"),
                 DatabaseLocation.LOCAL
             )

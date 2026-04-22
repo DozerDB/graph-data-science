@@ -25,7 +25,6 @@ import org.neo4j.gds.api.DatabaseId;
 import org.neo4j.gds.api.DatabaseInfo;
 import org.neo4j.gds.api.Graph;
 import org.neo4j.gds.api.IdMap;
-import org.neo4j.gds.api.ImmutableDatabaseInfo;
 import org.neo4j.gds.api.nodeproperties.ValueType;
 import org.neo4j.gds.api.properties.nodes.NodeProperty;
 import org.neo4j.gds.api.properties.nodes.NodePropertyStore;
@@ -119,10 +118,7 @@ public final class CSRGraphStoreUtil {
                 .build();
         }
 
-            var databaseInfo = ImmutableDatabaseInfo.builder()
-                .databaseId(databaseId)
-                .databaseLocation(DatabaseInfo.DatabaseLocation.LOCAL)
-                .build();
+            var databaseInfo = DatabaseInfo.create(databaseId, DatabaseInfo.DatabaseLocation.LOCAL);
             return new GraphStoreBuilder()
                 .databaseInfo(databaseInfo)
                 // TODO: is it correct that we only use this for generated graphs?
