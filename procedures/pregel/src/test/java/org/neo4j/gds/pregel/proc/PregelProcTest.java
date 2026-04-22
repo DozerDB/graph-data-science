@@ -32,6 +32,7 @@ import org.neo4j.gds.TestTaskStore;
 import org.neo4j.gds.api.Graph;
 import org.neo4j.gds.api.nodeproperties.ValueType;
 import org.neo4j.gds.assertj.ConditionFactory;
+import org.neo4j.gds.beta.pregel.Element;
 import org.neo4j.gds.beta.pregel.Messages;
 import org.neo4j.gds.beta.pregel.Partitioning;
 import org.neo4j.gds.beta.pregel.Pregel;
@@ -469,13 +470,13 @@ public class PregelProcTest extends BaseProcTest {
 
                 @Override
                 public PregelSchema schema(PregelProcedureConfig config) {
-                    return new PregelSchema.Builder()
-                        .add(LONG_KEY, ValueType.LONG)
-                        .add(DOUBLE_KEY, ValueType.DOUBLE)
-                        .add(LONG_ARRAY_KEY, ValueType.LONG_ARRAY)
-                        .add(DOUBLE_ARRAY_KEY, ValueType.DOUBLE_ARRAY)
-                        .add(PRIVATE_LONG_KEY, ValueType.LONG, PregelSchema.Visibility.PRIVATE)
-                        .build();
+                    return PregelSchema.from(
+                        new Element(LONG_KEY, ValueType.LONG),
+                        new Element(DOUBLE_KEY, ValueType.DOUBLE),
+                        new Element(LONG_ARRAY_KEY, ValueType.LONG_ARRAY),
+                        new Element(DOUBLE_ARRAY_KEY, ValueType.DOUBLE_ARRAY),
+                        new Element(PRIVATE_LONG_KEY, ValueType.LONG, Element.Visibility.PRIVATE)
+                    );
                 }
 
                 @Override

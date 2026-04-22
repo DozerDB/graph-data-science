@@ -41,9 +41,7 @@ class NodeValueTest {
     @Test
     void validSingleNodeValue() {
         var key1 = "KEY1";
-        var schema = new PregelSchema.Builder()
-            .add(key1, ValueType.DOUBLE)
-            .build();
+        var schema = PregelSchema.from(new Element(key1, ValueType.DOUBLE));
         var nodeValues = NodeValue.of(schema, 10, new Concurrency(4));
         assertThat(nodeValues).isInstanceOf(NodeValue.SingleNodeValue.class);
         assertEquals(nodeValues.doubleProperties(key1).size(), 10);
@@ -53,10 +51,7 @@ class NodeValueTest {
     void validCompositeNodeValue() {
         var key1 = "KEY1";
         var key2 = "KEY2";
-        var schema = new PregelSchema.Builder()
-            .add(key1, ValueType.DOUBLE)
-            .add(key2, ValueType.LONG)
-            .build();
+        var schema = PregelSchema.from(new Element(key1, ValueType.DOUBLE), new Element(key2, ValueType.LONG));
         var nodeValues = NodeValue.of(schema, 10, new Concurrency(4));
         assertThat(nodeValues).isInstanceOf(NodeValue.CompositeNodeValue.class);
         assertEquals(nodeValues.doubleProperties(key1).size(), 10);
@@ -66,7 +61,7 @@ class NodeValueTest {
     @ParameterizedTest
     @MethodSource("org.neo4j.gds.beta.pregel.NodeValueTest#validPropertyTypeAndGetters")
     void testThrowWhenAccessingUnknownProperty(ValueType valueType, BiConsumer<NodeValue, String> valueConsumer) {
-        var schema = new PregelSchema.Builder().add("KEY", valueType).build();
+        var schema = PregelSchema.from(new Element("KEY", valueType));
         var nodeValues = NodeValue.of(schema, 10, new Concurrency(4));
         assertThat(nodeValues).isInstanceOf(NodeValue.SingleNodeValue.class);
 
@@ -78,7 +73,7 @@ class NodeValueTest {
     @ParameterizedTest
     @MethodSource("org.neo4j.gds.beta.pregel.NodeValueTest#invalidPropertyTypeAndGetters")
     void testThrowWhenAccessingPropertyOfWrongType(ValueType valueType, BiConsumer<NodeValue, String> valueConsumer) {
-        var schema = new PregelSchema.Builder().add("KEY", valueType).build();
+        var schema = PregelSchema.from(new Element("KEY", valueType));
         var nodeValues = NodeValue.of(schema, 10, new Concurrency(4));
         assertThat(nodeValues).isInstanceOf(NodeValue.SingleNodeValue.class);
 
@@ -115,10 +110,10 @@ class NodeValueTest {
     @Test
     void defaultValuesForPrimitiveTypes() {
         var nodeCount = 10;
-        var schema = new PregelSchema.Builder()
-            .add("L", PrimitiveValues.longValue(42L), PregelSchema.Visibility.PUBLIC)
-            .add("D", PrimitiveValues.floatingPointValue(4.2), PregelSchema.Visibility.PUBLIC)
-            .build();
+        var schema = PregelSchema.from(
+            new Element("L", PrimitiveValues.longValue(42L), Element.Visibility.PUBLIC),
+            new Element("D", PrimitiveValues.floatingPointValue(4.2), Element.Visibility.PUBLIC)
+        );
 
         var nodeValue = NodeValue.of(schema, nodeCount, new Concurrency(4));
 
@@ -137,9 +132,7 @@ class NodeValueTest {
     @MethodSource("org.neo4j.gds.beta.pregel.NodeValueTest#defaultValuesForArrayTypes")
     void defaultValuesForArrayTypesThrows(GdsValue arrayValue) {
         assertThatThrownBy(() -> {
-            var schema = new PregelSchema.Builder()
-                .add("A", arrayValue, PregelSchema.Visibility.PUBLIC)
-                .build();
+            var schema = PregelSchema.from(new Element("A", arrayValue, Element.Visibility.PUBLIC));
             NodeValue.of(schema, 10, new Concurrency(4));
         }).isInstanceOf(IllegalArgumentException.class)
             .hasMessageContaining("Default value is not supported for")

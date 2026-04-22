@@ -137,9 +137,7 @@ class ReducingMessengerWithSenderTest {
 
         @Override
         public PregelSchema schema(TrackingConfig config) {
-            return new PregelSchema.Builder()
-                .add(SENDER, ValueType.LONG)
-                .build();
+            return PregelSchema.from(new Element(SENDER, ValueType.LONG));
         }
 
         @Override

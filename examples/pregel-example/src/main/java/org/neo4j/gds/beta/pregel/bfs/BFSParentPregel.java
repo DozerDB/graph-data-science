@@ -19,6 +19,7 @@
  */
 package org.neo4j.gds.beta.pregel.bfs;
 
+import org.neo4j.gds.beta.pregel.Element;
 import org.neo4j.gds.mem.MemoryEstimateDefinition;
 import org.neo4j.gds.api.nodeproperties.ValueType;
 import org.neo4j.gds.beta.pregel.Messages;
@@ -45,7 +46,7 @@ public class BFSParentPregel implements PregelComputation<BFSPregelConfig> {
 
     @Override
     public PregelSchema schema(BFSPregelConfig config) {
-        return new PregelSchema.Builder().add(PARENT, ValueType.LONG).build();
+        return PregelSchema.from(new Element(PARENT, ValueType.LONG));
     }
 
     @Override

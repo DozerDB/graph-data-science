@@ -19,6 +19,7 @@
  */
 package org.neo4j.gds.beta.pregel.sssp;
 
+import org.neo4j.gds.beta.pregel.Element;
 import org.neo4j.gds.mem.MemoryEstimateDefinition;
 import org.neo4j.gds.annotation.Configuration;
 import org.neo4j.gds.api.nodeproperties.ValueType;
@@ -47,7 +48,7 @@ public class SingleSourceShortestPathPregel implements PregelComputation<SingleS
 
     @Override
     public PregelSchema schema(SingleSourceShortestPathPregelConfig config) {
-        return new PregelSchema.Builder().add(DISTANCE, ValueType.LONG).build();
+        return PregelSchema.from(new Element(DISTANCE, ValueType.LONG));
     }
 
     @Override

@@ -23,6 +23,7 @@ import com.carrotsearch.hppc.LongArrayList;
 import com.carrotsearch.hppc.LongIntScatterMap;
 import com.carrotsearch.hppc.cursors.LongIntCursor;
 import org.neo4j.gds.api.nodeproperties.ValueType;
+import org.neo4j.gds.beta.pregel.Element;
 import org.neo4j.gds.beta.pregel.Messages;
 import org.neo4j.gds.beta.pregel.Pregel;
 import org.neo4j.gds.beta.pregel.PregelComputation;
@@ -75,9 +76,7 @@ class SpeakerListenerLPAComputation implements PregelComputation<SpeakerListener
 
     @Override
     public PregelSchema schema(SpeakerListenerLPAConfig config) {
-        return new PregelSchema.Builder()
-            .add(LABELS_PROPERTY, ValueType.LONG_ARRAY)
-            .build();
+        return PregelSchema.from(new Element(LABELS_PROPERTY, ValueType.LONG_ARRAY));
     }
 
     @Override

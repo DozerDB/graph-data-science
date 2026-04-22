@@ -19,6 +19,7 @@
  */
 package org.neo4j.gds.beta.pregel.cc;
 
+import org.neo4j.gds.beta.pregel.Element;
 import org.neo4j.gds.mem.MemoryEstimateDefinition;
 import org.neo4j.gds.api.nodeproperties.ValueType;
 import org.neo4j.gds.beta.pregel.Messages;
@@ -47,7 +48,7 @@ public class ConnectedComponentsPregel implements PregelComputation<ConnectedCom
 
     @Override
     public PregelSchema schema(ConnectedComponentsConfig config) {
-        return new PregelSchema.Builder().add(COMPONENT, ValueType.LONG).build();
+        return PregelSchema.from(new Element(COMPONENT, ValueType.LONG));
     }
 
     @Override

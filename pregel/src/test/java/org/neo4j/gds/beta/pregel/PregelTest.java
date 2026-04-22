@@ -401,41 +401,41 @@ class PregelTest {
     static Stream<Arguments> estimations() {
         return Stream.of(
             // queue based sync
-            Arguments.of(1, new PregelSchema.Builder().add("key", ValueType.LONG).build(),
+            Arguments.of(1, PregelSchema.from(new Element("key", ValueType.LONG)),
                 true,
                 false,
                 false,
                 7441752L
             ),
-            Arguments.of(1, new PregelSchema.Builder().add("key", ValueType.LONG).build(),
+            Arguments.of(1, PregelSchema.from(new Element("key", ValueType.LONG)),
                 true,
                 false,
                 true, // sender tracking must not make a difference
                 7441752L
             ),
-            Arguments.of(10, new PregelSchema.Builder().add("key", ValueType.LONG).build(),
+            Arguments.of(10, PregelSchema.from(new Element("key", ValueType.LONG)),
                 true,
                 false,
                 false,
                 7442256L
             ),
-            Arguments.of(1, new PregelSchema.Builder()
-                    .add("key1", ValueType.LONG)
-                    .add("key2", ValueType.DOUBLE)
-                    .add("key3", ValueType.LONG_ARRAY)
-                    .add("key4", ValueType.DOUBLE_ARRAY)
-                    .build(),
+            Arguments.of(1, PregelSchema.from(
+                    new Element("key1", ValueType.LONG),
+                    new Element("key2", ValueType.DOUBLE),
+                    new Element("key3", ValueType.LONG_ARRAY),
+                    new Element("key4", ValueType.DOUBLE_ARRAY)
+                ),
                 true,
                 false,
                 false,
                 9441824L
             ),
-            Arguments.of(10, new PregelSchema.Builder()
-                    .add("key1", ValueType.LONG)
-                    .add("key2", ValueType.DOUBLE)
-                    .add("key3", ValueType.LONG_ARRAY)
-                    .add("key4", ValueType.DOUBLE_ARRAY)
-                    .build(),
+            Arguments.of(10, PregelSchema.from(
+                    new Element("key1", ValueType.LONG),
+                    new Element("key2", ValueType.DOUBLE),
+                    new Element("key3", ValueType.LONG_ARRAY),
+                    new Element("key4", ValueType.DOUBLE_ARRAY)
+                ),
                 true,
                 false,
                 false,
@@ -443,35 +443,35 @@ class PregelTest {
             ),
 
             // queue based async
-            Arguments.of(1, new PregelSchema.Builder().add("key", ValueType.LONG).build(),
+            Arguments.of(1, PregelSchema.from(new Element("key", ValueType.LONG)),
                 true,
                 true,
                 false,
                 3841688L
             ),
-            Arguments.of(10, new PregelSchema.Builder().add("key", ValueType.LONG).build(),
+            Arguments.of(10, PregelSchema.from(new Element("key", ValueType.LONG)),
                 true,
                 true,
                 false,
                 3842192L
             ),
-            Arguments.of(1, new PregelSchema.Builder()
-                    .add("key1", ValueType.LONG)
-                    .add("key2", ValueType.DOUBLE)
-                    .add("key3", ValueType.LONG_ARRAY)
-                    .add("key4", ValueType.DOUBLE_ARRAY)
-                    .build(),
+            Arguments.of(1, PregelSchema.from(
+                    new Element("key1", ValueType.LONG),
+                    new Element("key2", ValueType.DOUBLE),
+                    new Element("key3", ValueType.LONG_ARRAY),
+                    new Element("key4", ValueType.DOUBLE_ARRAY)
+                    ),
                 true,
                 true,
                 false,
                 5841760L
             ),
-            Arguments.of(10, new PregelSchema.Builder()
-                    .add("key1", ValueType.LONG)
-                    .add("key2", ValueType.DOUBLE)
-                    .add("key3", ValueType.LONG_ARRAY)
-                    .add("key4", ValueType.DOUBLE_ARRAY)
-                    .build(),
+            Arguments.of(10, PregelSchema.from(
+                    new Element("key1", ValueType.LONG),
+                    new Element("key2", ValueType.DOUBLE),
+                    new Element("key3", ValueType.LONG_ARRAY),
+                    new Element("key4", ValueType.DOUBLE_ARRAY)
+                ),
                 true,
                 true,
                 false,
@@ -479,41 +479,41 @@ class PregelTest {
             ),
 
             // reducer (array) based
-            Arguments.of(1, new PregelSchema.Builder().add("key", ValueType.LONG).build(),
+            Arguments.of(1, PregelSchema.from(new Element("key", ValueType.LONG)),
                 false,
                 false,
                 false,
                 241584L
             ),
-            Arguments.of(1, new PregelSchema.Builder().add("key", ValueType.LONG).build(),
+            Arguments.of(1, PregelSchema.from(new Element("key", ValueType.LONG)),
                 false,
                 false,
                 true,
                 401664L
             ),
-            Arguments.of(10, new PregelSchema.Builder().add("key", ValueType.LONG).build(),
+            Arguments.of(10, PregelSchema.from(new Element("key", ValueType.LONG)),
                 false,
                 false,
                 false,
                 242088L
             ),
-            Arguments.of(1, new PregelSchema.Builder()
-                    .add("key1", ValueType.LONG)
-                    .add("key2", ValueType.DOUBLE)
-                    .add("key3", ValueType.LONG_ARRAY)
-                    .add("key4", ValueType.DOUBLE_ARRAY)
-                    .build(),
+            Arguments.of(1, PregelSchema.from(
+                    new Element("key1", ValueType.LONG),
+                    new Element("key2", ValueType.DOUBLE),
+                    new Element("key3", ValueType.LONG_ARRAY),
+                    new Element("key4", ValueType.DOUBLE_ARRAY)
+                ),
                 false,
                 false,
                 false,
                 2241656L
             ),
-            Arguments.of(10, new PregelSchema.Builder()
-                    .add("key1", ValueType.LONG)
-                    .add("key2", ValueType.DOUBLE)
-                    .add("key3", ValueType.LONG_ARRAY)
-                    .add("key4", ValueType.DOUBLE_ARRAY)
-                    .build(),
+            Arguments.of(10, PregelSchema.from(
+                    new Element("key1", ValueType.LONG),
+                    new Element("key2", ValueType.DOUBLE),
+                    new Element("key3", ValueType.LONG_ARRAY),
+                    new Element("key4", ValueType.DOUBLE_ARRAY)
+                ),
                 false,
                 false,
                 false,
@@ -544,7 +544,7 @@ class PregelTest {
 
                 @Override
                 public PregelSchema schema(PregelConfig config) {
-                    return new PregelSchema.Builder().add("foo", ValueType.LONG).build();
+                    return PregelSchema.from(new Element("foo", ValueType.LONG));
                 }
 
                 @Override
@@ -707,9 +707,7 @@ class PregelTest {
 
         @Override
         public PregelSchema schema(PregelConfig config) {
-            return new PregelSchema.Builder()
-                .add(KEY, ValueType.DOUBLE)
-                .build();
+            return PregelSchema.from(new Element(KEY, ValueType.DOUBLE));
         }
 
         @Override
@@ -755,7 +753,7 @@ class PregelTest {
 
         @Override
         public PregelSchema schema(PregelConfig config) {
-            return new PregelSchema.Builder().add(KEY, ValueType.DOUBLE).build();
+            return PregelSchema.from(new Element(KEY, ValueType.DOUBLE));
         }
 
         @Override
@@ -789,12 +787,12 @@ class PregelTest {
 
         @Override
         public PregelSchema schema(CompositeTestComputationConfig config) {
-            return new PregelSchema.Builder()
-                .add(LONG_KEY, ValueType.LONG)
-                .add(DOUBLE_KEY, ValueType.DOUBLE)
-                .add(LONG_ARRAY_KEY, ValueType.LONG_ARRAY)
-                .add(DOUBLE_ARRAY_KEY, ValueType.DOUBLE_ARRAY)
-                .build();
+            return PregelSchema.from(
+                new Element(LONG_KEY, ValueType.LONG),
+                new Element(DOUBLE_KEY, ValueType.DOUBLE),
+                new Element(LONG_ARRAY_KEY, ValueType.LONG_ARRAY),
+                new Element(DOUBLE_ARRAY_KEY, ValueType.DOUBLE_ARRAY)
+            );
         }
 
         @Override
@@ -847,7 +845,7 @@ class PregelTest {
 
         @Override
         public PregelSchema schema(PregelConfig config) {
-            return new PregelSchema.Builder().add(KEY, ValueType.LONG).build();
+            return PregelSchema.from(new Element(KEY, ValueType.LONG));
         }
 
         @Override
@@ -878,7 +876,7 @@ class PregelTest {
     static class TestEmptyMessageInInitialSuperstep implements PregelComputation<PregelConfig> {
         @Override
         public PregelSchema schema(PregelConfig config) {
-            return new PregelSchema.Builder().build();
+            return PregelSchema.empty();
         }
 
         @Override
@@ -923,7 +921,7 @@ class PregelTest {
     static class Bidirectional implements BidirectionalPregelComputation<PregelConfig> {
         @Override
         public PregelSchema schema(PregelConfig config) {
-            return new PregelSchema.Builder().build();
+            return PregelSchema.empty();
         }
 
         @Override

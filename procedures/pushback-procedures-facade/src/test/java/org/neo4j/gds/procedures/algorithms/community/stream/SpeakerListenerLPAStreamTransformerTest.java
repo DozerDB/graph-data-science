@@ -22,6 +22,7 @@ package org.neo4j.gds.procedures.algorithms.community.stream;
 import org.junit.jupiter.api.Test;
 import org.neo4j.gds.api.Graph;
 import org.neo4j.gds.api.nodeproperties.ValueType;
+import org.neo4j.gds.beta.pregel.Element;
 import org.neo4j.gds.beta.pregel.ImmutablePregelResult;
 import org.neo4j.gds.beta.pregel.NodeValue;
 import org.neo4j.gds.beta.pregel.PregelSchema;
@@ -44,7 +45,7 @@ class SpeakerListenerLPAStreamTransformerTest {
     @Test
     void shouldTransformResult(){
 
-        var schema= NodeValue.of(new PregelSchema.Builder().add("communityIds", ValueType.LONG_ARRAY).build(),2,new Concurrency(1));
+        var schema= NodeValue.of(PregelSchema.from(new Element("communityIds", ValueType.LONG_ARRAY)), 2, new Concurrency(1));
         long[] value1 = {1, 2};
         schema.set("communityIds",0, value1);
         long[] value2 = {2, 1};
@@ -78,7 +79,7 @@ class SpeakerListenerLPAStreamTransformerTest {
 
         var graphMock = mock(Graph.class);
         when(graphMock.toOriginalNodeId(anyLong())).thenAnswer(invocation -> invocation.getArgument(0));
-        var empty= NodeValue.of(new PregelSchema.Builder().build(),0,new Concurrency(1));
+        var empty= NodeValue.of(PregelSchema.empty(),0,new Concurrency(1));
         var emptyResult= ImmutablePregelResult.of(empty, 0, false);
 
         var transformer = new SpeakerListenerLPAStreamTransformer(graphMock);

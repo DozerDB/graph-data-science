@@ -29,8 +29,24 @@ public record Element(
     String propertyKey,
     Optional<GdsValue> defaultValue,
     ValueType propertyType,
-    PregelSchema.Visibility visibility
+    Visibility visibility
 ) {
+    public enum Visibility {
+        PUBLIC, PRIVATE
+    }
+
+    public Element(String propertyKey, ValueType propertyType) {
+        this(propertyKey, propertyType, Visibility.PUBLIC);
+    }
+
+    public Element(String propertyKey, ValueType propertyType, Visibility visibility) {
+        this(propertyKey, Optional.empty(), propertyType, visibility);
+    }
+
+    public Element(String propertyKey, GdsValue defaultValue, Visibility visibility) {
+        this(propertyKey, Optional.of(defaultValue), defaultValue.type(), visibility);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;

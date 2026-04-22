@@ -21,6 +21,7 @@ package org.neo4j.gds.hits;
 
 import org.neo4j.gds.api.nodeproperties.ValueType;
 import org.neo4j.gds.beta.pregel.BidirectionalPregelComputation;
+import org.neo4j.gds.beta.pregel.Element;
 import org.neo4j.gds.beta.pregel.Messages;
 import org.neo4j.gds.beta.pregel.Pregel;
 import org.neo4j.gds.beta.pregel.PregelSchema;
@@ -47,10 +48,10 @@ public class HitsComputation implements BidirectionalPregelComputation<HitsConfi
 
     @Override
     public PregelSchema schema(HitsConfig config) {
-        return new PregelSchema.Builder()
-            .add(config.authProperty(), ValueType.DOUBLE)
-            .add(config.hubProperty(), ValueType.DOUBLE)
-            .build();
+        return PregelSchema.from(
+            new Element(config.authProperty(), ValueType.DOUBLE),
+            new Element(config.hubProperty(), ValueType.DOUBLE)
+        );
     }
 
     @Override

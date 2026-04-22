@@ -21,6 +21,7 @@ package org.neo4j.gds.indirectExposure;
 
 import org.eclipse.collections.api.block.function.primitive.LongToBooleanFunction;
 import org.neo4j.gds.api.nodeproperties.ValueType;
+import org.neo4j.gds.beta.pregel.Element;
 import org.neo4j.gds.beta.pregel.Messages;
 import org.neo4j.gds.beta.pregel.Pregel;
 import org.neo4j.gds.beta.pregel.PregelComputation;
@@ -114,12 +115,12 @@ class IndirectExposureComputation implements PregelComputation<IndirectExposureC
 
     @Override
     public PregelSchema schema(IndirectExposureConfig config) {
-        return new PregelSchema.Builder()
-            .add(EXPOSURE, DEFAULT_EXPOSURE, PregelSchema.Visibility.PRIVATE)
-            .add(HOP, UNDEFINED, PregelSchema.Visibility.PRIVATE)
-            .add(PARENT, UNDEFINED, PregelSchema.Visibility.PRIVATE)
-            .add(ROOT, UNDEFINED, PregelSchema.Visibility.PRIVATE)
-            .build();
+        return PregelSchema.from(
+            new Element(EXPOSURE, DEFAULT_EXPOSURE, Element.Visibility.PRIVATE),
+            new Element(HOP, UNDEFINED, Element.Visibility.PRIVATE),
+            new Element(PARENT, UNDEFINED, Element.Visibility.PRIVATE),
+            new Element(ROOT, UNDEFINED, Element.Visibility.PRIVATE)
+        );
     }
 
     @Override

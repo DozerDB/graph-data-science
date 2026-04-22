@@ -23,6 +23,7 @@ import com.carrotsearch.hppc.LongSet;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.neo4j.gds.api.nodeproperties.ValueType;
 import org.neo4j.gds.api.properties.nodes.DoubleNodePropertyValues;
+import org.neo4j.gds.beta.pregel.Element;
 import org.neo4j.gds.beta.pregel.Messages;
 import org.neo4j.gds.beta.pregel.PregelComputation;
 import org.neo4j.gds.beta.pregel.PregelSchema;
@@ -73,10 +74,10 @@ public final class EigenvectorComputation<C extends EigenvectorConfig> implement
 
     @Override
     public PregelSchema schema(C config) {
-        return new PregelSchema.Builder()
-            .add(RANK, ValueType.DOUBLE)
-            .add(NEXT_RANK, ValueType.DOUBLE)
-            .build();
+        return PregelSchema.from(
+            new Element(RANK, ValueType.DOUBLE),
+            new Element(NEXT_RANK, ValueType.DOUBLE)
+        );
     }
 
     @Override

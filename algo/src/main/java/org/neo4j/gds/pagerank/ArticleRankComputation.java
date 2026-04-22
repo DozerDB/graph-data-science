@@ -19,6 +19,7 @@
  */
 package org.neo4j.gds.pagerank;
 
+import org.neo4j.gds.beta.pregel.Element;
 import org.neo4j.gds.mem.MemoryEstimateDefinition;
 import org.neo4j.gds.api.nodeproperties.ValueType;
 import org.neo4j.gds.beta.pregel.Messages;
@@ -57,7 +58,7 @@ public final class ArticleRankComputation<C extends ArticleRankConfig> implement
 
     @Override
     public PregelSchema schema(C config) {
-        return new PregelSchema.Builder().add(PAGE_RANK, ValueType.DOUBLE).build();
+        return PregelSchema.from(new Element(PAGE_RANK, ValueType.DOUBLE));
     }
 
     @Override

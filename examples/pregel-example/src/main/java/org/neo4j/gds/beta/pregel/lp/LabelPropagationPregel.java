@@ -19,6 +19,7 @@
  */
 package org.neo4j.gds.beta.pregel.lp;
 
+import org.neo4j.gds.beta.pregel.Element;
 import org.neo4j.gds.mem.MemoryEstimateDefinition;
 import org.neo4j.gds.annotation.Configuration;
 import org.neo4j.gds.api.nodeproperties.ValueType;
@@ -47,7 +48,7 @@ public class LabelPropagationPregel implements PregelComputation<LabelPropagatio
 
     @Override
     public PregelSchema schema(LabelPropagationPregel.LabelPropagationPregelConfig config) {
-        return new PregelSchema.Builder().add(LABEL_KEY, ValueType.LONG).build();
+        return PregelSchema.from(new Element(LABEL_KEY, ValueType.LONG));
     }
 
 

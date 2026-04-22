@@ -29,10 +29,10 @@ import org.neo4j.gds.api.properties.nodes.NodePropertyValuesAdapter;
 import org.neo4j.gds.applications.algorithms.machinery.ProgressTrackerCreator;
 import org.neo4j.gds.applications.algorithms.machinery.RequestScopedDependencies;
 import org.neo4j.gds.applications.algorithms.miscellaneous.MiscellaneousAlgorithms;
+import org.neo4j.gds.beta.pregel.Element;
 import org.neo4j.gds.beta.pregel.NodeValue;
 import org.neo4j.gds.beta.pregel.PregelConfig;
 import org.neo4j.gds.beta.pregel.PregelResult;
-import org.neo4j.gds.beta.pregel.PregelSchema;
 import org.neo4j.gds.core.PlainSimpleRequestCorrelationId;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.utils.logging.LoggerForProgressTrackingAdapter;
@@ -164,7 +164,7 @@ public final class PregelCompanion {
         return schema
             .elements()
             .stream()
-            .filter(element -> element.visibility() == PregelSchema.Visibility.PUBLIC)
+            .filter(element -> element.visibility() == Element.Visibility.PUBLIC)
             .map(element -> {
                 var propertyKey = element.propertyKey();
                 var nodePropertyValues  = adaptNodeProperty(

@@ -22,8 +22,8 @@ package org.neo4j.gds.beta.pregel.triangleCount;
 import com.carrotsearch.hppc.LongHashSet;
 import com.carrotsearch.hppc.procedures.LongProcedure;
 import org.apache.commons.lang3.mutable.MutableLong;
-import org.neo4j.gds.mem.MemoryEstimateDefinition;
 import org.neo4j.gds.api.nodeproperties.ValueType;
+import org.neo4j.gds.beta.pregel.Element;
 import org.neo4j.gds.beta.pregel.Messages;
 import org.neo4j.gds.beta.pregel.Pregel;
 import org.neo4j.gds.beta.pregel.PregelComputation;
@@ -32,6 +32,7 @@ import org.neo4j.gds.beta.pregel.Reducer;
 import org.neo4j.gds.beta.pregel.annotation.GDSMode;
 import org.neo4j.gds.beta.pregel.annotation.PregelProcedure;
 import org.neo4j.gds.beta.pregel.context.ComputeContext;
+import org.neo4j.gds.mem.MemoryEstimateDefinition;
 
 import java.util.Map;
 import java.util.Optional;
@@ -47,9 +48,7 @@ public class TriangleCountPregel implements PregelComputation<TriangleCountPrege
 
     @Override
     public PregelSchema schema(TriangleCountPregelConfig config) {
-        return new PregelSchema.Builder()
-            .add(TRIANGLE_COUNT, ValueType.LONG)
-            .build();
+        return PregelSchema.from(new Element(TRIANGLE_COUNT, ValueType.LONG));
     }
 
 

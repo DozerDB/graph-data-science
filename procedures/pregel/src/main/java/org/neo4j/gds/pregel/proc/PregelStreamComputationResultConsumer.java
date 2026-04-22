@@ -24,7 +24,6 @@ import org.neo4j.gds.api.IdMap;
 import org.neo4j.gds.beta.pregel.Element;
 import org.neo4j.gds.beta.pregel.PregelProcedureConfig;
 import org.neo4j.gds.beta.pregel.PregelResult;
-import org.neo4j.gds.beta.pregel.PregelSchema;
 import org.neo4j.gds.executor.ComputationResult;
 import org.neo4j.gds.executor.ComputationResultConsumer;
 import org.neo4j.gds.executor.ExecutionContext;
@@ -61,7 +60,7 @@ public class PregelStreamComputationResultConsumer<
                             Map<String, Object> values = nodeValues.schema().elements()
                                 .stream()
                                 // if its visible
-                                .filter(element -> element.visibility() == PregelSchema.Visibility.PUBLIC)
+                                .filter(element -> element.visibility() == Element.Visibility.PUBLIC)
                                 // collect a String->Object map
                                 .collect(Collectors.toMap(
                                     // of the element's property key

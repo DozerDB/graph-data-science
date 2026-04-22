@@ -19,6 +19,7 @@
  */
 package org.neo4j.gds.beta.pregel.pr;
 
+import org.neo4j.gds.beta.pregel.Element;
 import org.neo4j.gds.mem.MemoryEstimateDefinition;
 import org.neo4j.gds.annotation.Configuration;
 import org.neo4j.gds.api.nodeproperties.ValueType;
@@ -46,7 +47,7 @@ public class PageRankPregel implements PregelComputation<PageRankPregel.PageRank
 
     @Override
     public PregelSchema schema(PageRankPregelConfig config) {
-        return new PregelSchema.Builder().add(PAGE_RANK, ValueType.DOUBLE).build();
+        return PregelSchema.from(new Element(PAGE_RANK, ValueType.DOUBLE));
     }
 
     @Override

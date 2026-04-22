@@ -35,10 +35,10 @@ public interface BasePregelComputation<C extends PregelConfig> {
      * Example:
      * <pre>
      * public PregelSchema schema(PregelConfig config) {
-     *      return new PregelSchema.Builder()
-     *          .add("key", ValueType.LONG)
-     *          .add("privateKey", ValueType.LONG, Visibility.PRIVATE)
-     *          .build();
+     *      return PregelSchema.from(
+     *          new Element("key", ValueType.LONG),
+     *          new Element("privateKey", ValueType.LONG, Visibility.PRIVATE)
+     *      );
      * }
      * </pre>
      *
