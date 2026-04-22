@@ -19,7 +19,6 @@
  */
 package org.neo4j.gds.beta.pregel;
 
-import org.immutables.value.Value;
 import org.neo4j.gds.api.Graph;
 import org.neo4j.gds.api.nodeproperties.ValueType;
 import org.neo4j.gds.beta.pregel.context.MasterComputeContext;
@@ -38,7 +37,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
-@Value.Style(builderVisibility = Value.Style.BuilderVisibility.PUBLIC, depluralize = true, deepImmutablesDetection = true)
 public final class Pregel<CONFIG extends PregelConfig> {
 
     private final CONFIG config;
@@ -231,11 +229,7 @@ public final class Pregel<CONFIG extends PregelConfig> {
                 }
             }
             progressTracker.endSubTask();
-            return ImmutablePregelResult.builder()
-                .nodeValues(nodeValues)
-                .didConverge(didConverge)
-                .ranIterations(iteration)
-                .build();
+            return new PregelResult(nodeValues, iteration, didConverge);
         } catch (Exception e) {
             progressTracker.endSubTaskWithFailure();
             throw e;

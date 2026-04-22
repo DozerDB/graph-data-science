@@ -27,8 +27,8 @@ import org.neo4j.gds.api.properties.nodes.NodePropertyValues;
 import org.neo4j.gds.applications.algorithms.machinery.MutateNodePropertyService;
 import org.neo4j.gds.applications.algorithms.metadata.NodePropertiesWritten;
 import org.neo4j.gds.beta.pregel.Element;
-import org.neo4j.gds.beta.pregel.ImmutablePregelResult;
 import org.neo4j.gds.beta.pregel.NodeValue;
+import org.neo4j.gds.beta.pregel.PregelResult;
 import org.neo4j.gds.beta.pregel.PregelSchema;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.result.TimedAlgorithmResult;
@@ -56,7 +56,7 @@ class SpeakerListenerLPAMutateResultTransformerTest {
         long[] value2 = {2, 1};
         schema.set("communityIds",1, value2);
 
-        var result = ImmutablePregelResult.of(schema, 100, true);
+        var result = new PregelResult(schema, 100, true);
 
         var mutateService =  mock(MutateNodePropertyService.class);
 

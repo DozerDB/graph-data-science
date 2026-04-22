@@ -21,7 +21,6 @@ package org.neo4j.gds.sllpa;
 
 import org.neo4j.gds.Algorithm;
 import org.neo4j.gds.api.Graph;
-import org.neo4j.gds.beta.pregel.ImmutablePregelResult;
 import org.neo4j.gds.beta.pregel.Pregel;
 import org.neo4j.gds.beta.pregel.PregelResult;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
@@ -72,10 +71,10 @@ public class SpeakerListenerLPA extends Algorithm<PregelResult> {
 
         this.progressTracker.endSubTask();
 
-        return ImmutablePregelResult.builder()
-            .nodeValues(pregelResult.nodeValues())
-            .didConverge(pregelResult.didConverge())
-            .ranIterations(pregelResult.ranIterations())
-            .build();
+        return new PregelResult(
+            pregelResult.nodeValues(),
+            pregelResult.ranIterations(),
+            pregelResult.didConverge()
+        );
     }
 }

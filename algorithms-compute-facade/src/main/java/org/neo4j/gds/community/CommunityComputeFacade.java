@@ -27,7 +27,6 @@ import org.neo4j.gds.approxmaxkcut.ApproxMaxKCut;
 import org.neo4j.gds.approxmaxkcut.ApproxMaxKCutParameters;
 import org.neo4j.gds.approxmaxkcut.ApproxMaxKCutResult;
 import org.neo4j.gds.async.AsyncAlgorithmCaller;
-import org.neo4j.gds.beta.pregel.ImmutablePregelResult;
 import org.neo4j.gds.beta.pregel.NodeValue;
 import org.neo4j.gds.beta.pregel.PregelResult;
 import org.neo4j.gds.beta.pregel.PregelSchema;
@@ -576,7 +575,7 @@ public class CommunityComputeFacade {
 
         if (graph.isEmpty()) {
             var empty = NodeValue.of(PregelSchema.empty(),0,configuration.concurrency());
-            return CompletableFuture.completedFuture(TimedAlgorithmResult.empty(ImmutablePregelResult.of(empty, 0, false)));
+            return CompletableFuture.completedFuture(TimedAlgorithmResult.empty(new PregelResult(empty, 0, false)));
         }
 
         var progressTracker = progressTrackerFactory.create(

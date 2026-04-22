@@ -19,14 +19,4 @@
  */
 package org.neo4j.gds.beta.pregel;
 
-import org.neo4j.gds.annotation.ValueClass;
-
-@ValueClass
-public interface PregelResult {
-
-    NodeValue nodeValues();
-
-    int ranIterations();
-
-    boolean didConverge();
-}
+public record PregelResult(NodeValue nodeValues, int ranIterations, boolean didConverge) {}
