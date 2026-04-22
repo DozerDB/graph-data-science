@@ -26,7 +26,6 @@ import net.jqwik.api.Property;
 import net.jqwik.api.Provide;
 import org.junit.jupiter.api.Test;
 import org.neo4j.gds.NodeLabel;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.api.IdMap;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.DefaultPool;
@@ -291,12 +290,7 @@ public abstract class IdMapBuilderTest {
         return builder(highestOriginalId + 1, concurrency);
     }
 
-    @ValueClass
-    public interface IdMapAndHighestId {
-        IdMap idMap();
-
-        long highestOriginalId();
-    }
+    record IdMapAndHighestId(IdMap idMap, long highestOriginalId) {}
 
     private IdMap buildIdMapFrom(long[] originalIds, Concurrency concurrency) {
         return buildFrom(originalIds, concurrency).idMap();
@@ -338,10 +332,10 @@ public abstract class IdMapBuilderTest {
             return multiLabelBuilder;
         }).orElseGet(LabelInformationBuilders::allNodes);
 
-        return ImmutableIdMapAndHighestId.builder()
-            .idMap(builder.build(labelInformationBuilder, highestOriginalId, concurrency))
-            .highestOriginalId(highestOriginalId)
-            .build();
+        return new IdMapAndHighestId(
+            builder.build(labelInformationBuilder, highestOriginalId, concurrency),
+            highestOriginalId
+        );
     }
 
     private static long[] generateShuffledIds(int offset, int size, long seed) {
