@@ -1,5 +1,6 @@
 plugins {
     id 'buildlogic-gds-java'
+    id 'buildlogic-mockito'
 }
 
 description = 'Neo4j Graph Data Science :: Algorithms Machinery'
@@ -30,7 +31,7 @@ dependencies {
     implementation project(':termination')
 
     testImplementation platform(openGds.junit.bom)
-    testImplementation openGds.bundles.test.mocking
+    testImplementation openGds.bundles.test.basic
 
     testRuntimeOnly openGds.bundles.test.platforms
 }

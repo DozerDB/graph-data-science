@@ -128,12 +128,6 @@ test-basic = [
     "assertj-core",
     "junit-jupiter",
 ]
-test-mocking = [
-    "assertj-core",
-    "junit-jupiter",
-    "mockito-core",
-    "mockito-junit-jupiter",
-]
 test-platforms = [
     "jqwik",
     "junit-platform",
