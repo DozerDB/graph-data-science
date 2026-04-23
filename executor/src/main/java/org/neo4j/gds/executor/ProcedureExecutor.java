@@ -71,8 +71,6 @@ public class ProcedureExecutor<
         String graphName,
         Map<String, Object> configuration
     ) {
-        ImmutableComputationResult.Builder<ALGO, ALGO_RESULT, CONFIG> builder = ImmutableComputationResult.builder();
-
         // This is needed in the case of `pipelines` where they either pick stuff from the user input,
         // or if there is a `modelName` they read stuff from the model stored in the catalog.
         algoSpec.preProcessConfig(configuration, executionContext);
@@ -86,6 +84,8 @@ public class ProcedureExecutor<
         Graph graph;
         ResultStore resultStore;
 
+        ComputationResultBuilder<ALGO, ALGO_RESULT, CONFIG> builder = ComputationResult.builder();
+
         try (ProgressTimer timer = ProgressTimer.start(builder::preProcessingMillis)) {
             var graphProjectConfig = graphCreation.graphProjectConfig();
             var validator = executorSpec.validator(algoSpec.validationConfig(executionContext));
@@ -98,7 +98,6 @@ public class ProcedureExecutor<
 
         if (graph.isEmpty()) {
             var emptyComputationResult = builder
-                .isGraphEmpty(true)
                 .graph(graph)
                 .graphStore(graphStore)
                 .resultStore(resultStore)
@@ -130,7 +129,7 @@ public class ProcedureExecutor<
     }
 
     private ALGO_RESULT executeAlgorithm(
-        ImmutableComputationResult.Builder<ALGO, ALGO_RESULT, CONFIG> builder,
+        ComputationResultBuilder<ALGO, ALGO_RESULT, CONFIG> builder,
         ALGO algo,
         AlgorithmMetricsService algorithmMetricsService,
         GraphStore graphStore,

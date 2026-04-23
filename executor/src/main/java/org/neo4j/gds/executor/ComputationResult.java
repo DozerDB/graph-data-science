@@ -19,10 +19,9 @@
  */
 package org.neo4j.gds.executor;
 
-import org.immutables.value.Value;
 import org.jetbrains.annotations.Nullable;
 import org.neo4j.gds.Algorithm;
-import org.neo4j.gds.annotation.ValueClass;
+import org.neo4j.gds.annotation.GenerateBuilder;
 import org.neo4j.gds.api.Graph;
 import org.neo4j.gds.api.GraphStore;
 import org.neo4j.gds.api.ResultStore;
@@ -30,31 +29,24 @@ import org.neo4j.gds.config.AlgoBaseConfig;
 
 import java.util.Optional;
 
-@ValueClass
-public interface ComputationResult<A extends Algorithm<ALGO_RESULT>, ALGO_RESULT, CONFIG extends AlgoBaseConfig> {
-    long preProcessingMillis();
-
-    long computeMillis();
-
+@GenerateBuilder
+public record ComputationResult<A extends Algorithm<ALGO_RESULT>, ALGO_RESULT, CONFIG extends AlgoBaseConfig>(
+    long preProcessingMillis,
+    long computeMillis,
     @Nullable
-    A algorithm();
+    A algorithm,
+    // Result is empty if no computation happened, which basically means the graph was empty.
+    Optional<ALGO_RESULT> result,
+    Graph graph,
+    GraphStore graphStore,
+    ResultStore resultStore,
+    CONFIG config
+) {
+    public boolean isGraphEmpty() {
+        return graph.isEmpty();
+    }
 
-    /**
-     * Result is empty if no computation happened, which basically means the graph was empty.
-     * @return The result if computation happened.
-     */
-    Optional<ALGO_RESULT> result();
-
-    Graph graph();
-
-    GraphStore graphStore();
-
-    ResultStore resultStore();
-
-    CONFIG config();
-
-    @Value.Default
-    default boolean isGraphEmpty() {
-        return false;
+    public static <A extends Algorithm<ALGO_RESULT>, ALGO_RESULT, CONFIG extends AlgoBaseConfig> ComputationResultBuilder<A, ALGO_RESULT, CONFIG> builder() {
+        return ComputationResultBuilder.builder();
     }
 }

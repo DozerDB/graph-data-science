@@ -8,9 +8,11 @@ group = 'org.neo4j.gds'
 
 dependencies {
     annotationProcessor project(':annotations')
+    annotationProcessor openGds.recordBuilder
     annotationProcessor openGds.immutables.builder
     annotationProcessor openGds.immutables.value
 
+    compileOnly openGds.recordBuilder
     compileOnly openGds.immutables.value.annotations
     compileOnly openGds.jetbrains.annotations
 
