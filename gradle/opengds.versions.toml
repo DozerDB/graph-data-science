@@ -33,7 +33,7 @@ junit-pioneer = "2.3.0"
 junit5bom = "6.0.3"
 log4j = "2.25.4"
 memoryfilesystem = "2.8.2"
-mockito-junit-jupiter = "5.23.0"
+mockito = "5.23.0"
 opencypher-front-end = "9.0.20210312"
 picocli = "4.7.7"
 # @pin - should match the one defined by Neo4j core-db
@@ -96,7 +96,8 @@ junit-pioneer = { module = "org.junit-pioneer:junit-pioneer", version.ref = "jun
 junit-platform = { module = "org.junit.platform:junit-platform-launcher" }
 log4j-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
 memoryfilesystem = { module = "com.github.marschall:memoryfilesystem", version.ref = "memoryfilesystem" }
-mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito-junit-jupiter" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito" }
 neo4j-cypher-dsl = { module = "org.neo4j:neo4j-cypher-dsl", version.ref = "cypher-dsl" }
 opencypher-astfactory = { module = "org.opencypher:cypher-ast-factory-9.0", version.ref = "opencypher-front-end" }
 opencypher-ccparser = { module = "org.opencypher:cypher-javacc-parser-9.0", version.ref = "opencypher-front-end" }
@@ -130,6 +131,7 @@ test-basic = [
 test-mocking = [
     "assertj-core",
     "junit-jupiter",
+    "mockito-core",
     "mockito-junit-jupiter",
 ]
 test-platforms = [
