@@ -221,7 +221,7 @@ public final class CSRGraphStore implements GraphStoreWithTopology {
         String propertyKey,
         NodePropertyValues propertyValues
     ) {
-        updateGraphStore((graphStore) -> {
+        updateGraphStore(graphStore -> {
             if (graphStore.hasNodeProperty(propertyKey)) {
                 throw new UnsupportedOperationException(
                     formatWithLocale(
@@ -381,22 +381,23 @@ public final class CSRGraphStore implements GraphStoreWithTopology {
 
     @Override
     public DeletionResult deleteRelationships(RelationshipType relationshipType) {
-        return DeletionResult.of(builder -> updateGraphStore(graphStore -> {
-            Optional.ofNullable(graphStore.relationships.remove(relationshipType)).ifPresentOrElse(relationship -> {
-                builder.deletedRelationships(relationship.topology().elementCount());
-                relationship.properties().ifPresent(properties -> {
-                    properties
-                        .values()
-                        .forEach(
-                            property -> builder.putDeletedProperty(
-                                property.key(),
-                                property.values().elementCount()
-                            )
-                        );
-                });
+        var builder = DeletionResult.builder();
+        Consumer<CSRGraphStore> updateFunction = (graphStore) -> {
+            if (graphStore.relationships.containsKey(relationshipType)) {
+                var removed = graphStore.relationships.remove(relationshipType);
                 schema.relationshipSchema().remove(relationshipType);
-            }, () -> builder.deletedRelationships(0));
-        }));
+                var deletedRelationships = removed.topology().elementCount();
+                var deletedProperties = removed.properties().stream().map(RelationshipPropertyStore::relationshipProperties)
+                    .flatMap((m) -> m.values().stream())
+                    .collect(Collectors.toMap(RelationshipProperty::key, p -> p.values().elementCount()));
+                builder.deletedRelationships(deletedRelationships);
+                builder.deletedProperties(deletedProperties);
+            } else {
+                builder.deletedRelationships(0);
+            }
+        };
+        updateGraphStore(updateFunction);
+        return builder.build();
     }
 
     @Override

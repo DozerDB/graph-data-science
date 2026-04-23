@@ -19,21 +19,13 @@
  */
 package org.neo4j.gds.core.loading;
 
-
-import org.neo4j.gds.annotation.ValueClass;
+import org.neo4j.gds.annotation.GenerateBuilder;
 
 import java.util.Map;
-import java.util.function.Consumer;
 
-@ValueClass
-public interface DeletionResult {
-    long deletedRelationships();
-
-    Map<String, Long> deletedProperties();
-
-    static DeletionResult of(Consumer<ImmutableDeletionResult.Builder> consumer) {
-        ImmutableDeletionResult.Builder builder = ImmutableDeletionResult.builder();
-        consumer.accept(builder);
-        return builder.build();
+@GenerateBuilder
+public record DeletionResult(long deletedRelationships, Map<String, Long> deletedProperties) {
+    public static DeletionResultBuilder builder() {
+        return DeletionResultBuilder.builder();
     }
 }
