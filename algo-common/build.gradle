@@ -20,6 +20,7 @@ dependencies {
     implementation project(':logging')
     implementation project(':memory-usage')
     implementation project(':progress-tracking')
+    implementation project(':string-formatting')
     implementation project(':termination')
     implementation openGds.hdrhistogram
 
