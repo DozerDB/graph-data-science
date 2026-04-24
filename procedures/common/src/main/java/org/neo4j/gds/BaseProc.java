@@ -23,10 +23,10 @@ import org.neo4j.gds.api.DatabaseId;
 import org.neo4j.gds.compat.GraphDatabaseApiProxy;
 import org.neo4j.gds.core.PlainSimpleRequestCorrelationId;
 import org.neo4j.gds.core.Username;
+import org.neo4j.gds.core.model.ModelCatalog;
 import org.neo4j.gds.core.utils.progress.TaskRegistryFactory;
 import org.neo4j.gds.core.utils.warnings.UserLogRegistry;
 import org.neo4j.gds.executor.ExecutionContext;
-import org.neo4j.gds.executor.ImmutableExecutionContext;
 import org.neo4j.gds.executor.MemoryEstimationContext;
 import org.neo4j.gds.logging.LogAdapter;
 import org.neo4j.gds.metrics.Metrics;
@@ -87,25 +87,25 @@ public abstract class BaseProc {
 
         return databaseService == null
             ? ExecutionContext.EMPTY
-            : ImmutableExecutionContext
-                .builder()
-                .databaseId(databaseId())
-                .dependencyResolver(GraphDatabaseApiProxy.dependencyResolver(databaseService))
+            : new ExecutionContext(
+                new TransactionCloseableResourceRegistry(transaction),
+                databaseId(),
+                new LogAdapter(log),
                 //Base Proc is only used by pregel  generated codes which have have same min-max expectation so fine
-                .memoryEstimationContext(new MemoryEstimationContext(true))
-                .log(new LogAdapter(log))
-                .returnColumns(new ProcedureCallContextReturnColumns(callContext))
-                .userLogRegistry(userLogRegistry)
-                .taskRegistryFactory(taskRegistryFactory)
-                .username(username())
-                .terminationMonitor(new TransactionTerminationMonitor(transaction))
-                .closeableResourceRegistry(new TransactionCloseableResourceRegistry(transaction))
-                .nodeLookup(new TransactionNodeLookup(transaction))
-                .isGdsAdmin(transactionContext().isGdsAdmin())
-                .metrics(metrics)
-                .algorithmsProcedureFacade(graphDataScienceProcedures.algorithms())
-                .requestCorrelationId(PlainSimpleRequestCorrelationId.create())
-                .build();
+                new MemoryEstimationContext(true),
+                metrics,
+                new TransactionNodeLookup(transaction),
+                new ProcedureCallContextReturnColumns(callContext),
+                PlainSimpleRequestCorrelationId.create(),
+                taskRegistryFactory,
+                new TransactionTerminationMonitor(transaction),
+                userLogRegistry,
+                username(),
+                transactionContext().isGdsAdmin(),
+                graphDataScienceProcedures.algorithms(),
+                GraphDatabaseApiProxy.dependencyResolver(databaseService),
+                ModelCatalog.EMPTY
+            );
     }
 
     protected TransactionContext transactionContext() {

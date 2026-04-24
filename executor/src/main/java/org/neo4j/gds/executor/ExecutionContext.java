@@ -21,7 +21,6 @@ package org.neo4j.gds.executor;
 
 import org.jetbrains.annotations.Nullable;
 import org.neo4j.common.DependencyResolver;
-import org.neo4j.gds.annotation.ValueClass;
 import org.neo4j.gds.api.CloseableResourceRegistry;
 import org.neo4j.gds.api.DatabaseId;
 import org.neo4j.gds.api.NodeLookup;
@@ -45,67 +44,116 @@ import java.util.Optional;
  * A lovely mish-mash of long-lived services, request scoped services, and parameters. Embrace it.
  * And by that I mean, stop thinking and keep abusing this non-design.
  */
-@ValueClass
-public interface ExecutionContext {
+public record ExecutionContext(
+    CloseableResourceRegistry closeableResourceRegistry,
+    DatabaseId databaseId,
+    Log log,
+    MemoryEstimationContext memoryEstimationContext,
+    Metrics metrics,
+    NodeLookup nodeLookup,
+    ProcedureReturnColumns returnColumns,
+    RequestCorrelationId requestCorrelationId,
+    TaskRegistryFactory taskRegistryFactory,
+    TerminationMonitor terminationMonitor,
+    UserLogRegistry userLogRegistry,
+    String username,
+    boolean isGdsAdmin,
+    @Nullable AlgorithmsProcedureFacade algorithmsProcedureFacade,
+    @Nullable DependencyResolver dependencyResolver,
+    @Nullable ModelCatalog modelCatalog,
+    @Nullable NodePropertyExporterBuilder nodePropertyExporterBuilder,
+    @Nullable RelationshipExporterBuilder relationshipExporterBuilder
+) {
 
-    DatabaseId databaseId();
-
-    @Nullable
-    DependencyResolver dependencyResolver();
-
-    MemoryEstimationContext memoryEstimationContext();
-
-    @Nullable
-    ModelCatalog modelCatalog();
-
-    Log log();
-
-    TerminationMonitor terminationMonitor();
-
-    CloseableResourceRegistry closeableResourceRegistry();
-
-    NodeLookup nodeLookup();
-
-    ProcedureReturnColumns returnColumns();
-
-    TaskRegistryFactory taskRegistryFactory();
-
-    UserLogRegistry userLogRegistry();
-
-    String username();
-
-    boolean isGdsAdmin();
-
-    Metrics metrics();
-
-    RequestCorrelationId requestCorrelationId();
-
-    @Nullable
-    AlgorithmsProcedureFacade algorithmsProcedureFacade();
-
-    @Nullable
-    RelationshipExporterBuilder relationshipExporterBuilder();
-
-    @Nullable
-    NodePropertyExporterBuilder nodePropertyExporterBuilder();
-
-    default ExecutionContext withNodePropertyExporterBuilder(NodePropertyExporterBuilder nodePropertyExporterBuilder) {
-        return ImmutableExecutionContext
-            .builder()
-            .from(this)
-            .nodePropertyExporterBuilder(nodePropertyExporterBuilder)
-            .build();
+    public ExecutionContext(
+        CloseableResourceRegistry closeableResourceRegistry,
+        DatabaseId databaseId,
+        Log log,
+        MemoryEstimationContext memoryEstimationContext,
+        Metrics metrics,
+        NodeLookup nodeLookup,
+        ProcedureReturnColumns returnColumns,
+        RequestCorrelationId requestCorrelationId,
+        TaskRegistryFactory taskRegistryFactory,
+        TerminationMonitor terminationMonitor,
+        UserLogRegistry userLogRegistry,
+        String username,
+        boolean isGdsAdmin,
+        @Nullable AlgorithmsProcedureFacade algorithmsProcedureFacade,
+        @Nullable ModelCatalog modelCatalog,
+        @Nullable NodePropertyExporterBuilder nodePropertyExporterBuilder,
+        @Nullable RelationshipExporterBuilder relationshipExporterBuilder
+    ) {
+        this(closeableResourceRegistry, databaseId, log, memoryEstimationContext, metrics, nodeLookup, returnColumns, requestCorrelationId, taskRegistryFactory, terminationMonitor, userLogRegistry, username, isGdsAdmin, algorithmsProcedureFacade, EMPTY_DEPENDENCY_RESOLVER, modelCatalog, nodePropertyExporterBuilder, relationshipExporterBuilder);
     }
 
-    default ExecutionContext withModelCatalog(ModelCatalog modelCatalog) {
-        return ImmutableExecutionContext
-            .builder()
-            .from(this)
-            .modelCatalog(modelCatalog)
-            .build();
+    public ExecutionContext(
+        CloseableResourceRegistry closeableResourceRegistry,
+        DatabaseId databaseId,
+        Log log,
+        MemoryEstimationContext memoryEstimationContext,
+        Metrics metrics,
+        NodeLookup nodeLookup,
+        ProcedureReturnColumns returnColumns,
+        RequestCorrelationId requestCorrelationId,
+        TaskRegistryFactory taskRegistryFactory,
+        TerminationMonitor terminationMonitor,
+        UserLogRegistry userLogRegistry,
+        String username,
+        boolean isGdsAdmin,
+        @Nullable AlgorithmsProcedureFacade algorithmsProcedureFacade,
+        @Nullable DependencyResolver dependencyResolver,
+        @Nullable ModelCatalog modelCatalog
+    ) {
+        this(closeableResourceRegistry, databaseId, log, memoryEstimationContext, metrics, nodeLookup, returnColumns, requestCorrelationId, taskRegistryFactory, terminationMonitor, userLogRegistry, username, isGdsAdmin, algorithmsProcedureFacade, dependencyResolver, modelCatalog, null, null);
+    }
+    public ExecutionContext withNodePropertyExporterBuilder(NodePropertyExporterBuilder nodePropertyExporterBuilder) {
+        return new ExecutionContext(
+            closeableResourceRegistry,
+            databaseId,
+            log,
+            memoryEstimationContext,
+            metrics,
+            nodeLookup,
+            returnColumns,
+            requestCorrelationId,
+            taskRegistryFactory,
+            terminationMonitor,
+            userLogRegistry,
+            username,
+            isGdsAdmin,
+            algorithmsProcedureFacade,
+            dependencyResolver,
+            modelCatalog,
+            nodePropertyExporterBuilder,
+            relationshipExporterBuilder
+        );
     }
 
-    DependencyResolver EMPTY_DEPENDENCY_RESOLVER = new DependencyResolver() {
+    public ExecutionContext withModelCatalog(ModelCatalog modelCatalog) {
+        return new ExecutionContext(
+            closeableResourceRegistry,
+            databaseId,
+            log,
+            memoryEstimationContext,
+            metrics,
+            nodeLookup,
+            returnColumns,
+            requestCorrelationId,
+            taskRegistryFactory,
+            terminationMonitor,
+            userLogRegistry,
+            username,
+            isGdsAdmin,
+            algorithmsProcedureFacade,
+            dependencyResolver,
+            modelCatalog,
+            nodePropertyExporterBuilder,
+            relationshipExporterBuilder
+        );
+    }
+
+    public static final DependencyResolver EMPTY_DEPENDENCY_RESOLVER = new DependencyResolver() {
         @Override
         public <T> Optional<T> resolveOptionalDependency(Class<T> aClass) {
             return Optional.empty();
@@ -122,98 +170,26 @@ public interface ExecutionContext {
         }
     };
 
-    MemoryEstimationContext EMPTY_MEMORY_CONTEXT = new MemoryEstimationContext(false);
+    public static final MemoryEstimationContext EMPTY_MEMORY_CONTEXT = new MemoryEstimationContext(false);
 
-    ExecutionContext EMPTY = new ExecutionContext() {
-
-        @Override
-        public DatabaseId databaseId() {
-            return DatabaseId.EMPTY;
-        }
-
-        @Override
-        public DependencyResolver dependencyResolver() {
-            return EMPTY_DEPENDENCY_RESOLVER;
-        }
-
-        @Override
-        public MemoryEstimationContext memoryEstimationContext() {
-            return EMPTY_MEMORY_CONTEXT;
-        }
-
-        @Override
-        public ModelCatalog modelCatalog() {
-            return ModelCatalog.EMPTY;
-        }
-
-        @Override
-        public Log log() {
-            return Log.noOpLog();
-        }
-
-        @Override
-        public TerminationMonitor terminationMonitor() {
-            return TerminationMonitor.EMPTY;
-        }
-
-        @Override
-        public CloseableResourceRegistry closeableResourceRegistry() {
-            return CloseableResourceRegistry.EMPTY;
-        }
-
-        @Override
-        public NodeLookup nodeLookup() {
-            return NodeLookup.EMPTY;
-        }
-
-        @Override
-        public ProcedureReturnColumns returnColumns() {
-            return ProcedureReturnColumns.EMPTY;
-        }
-
-        @Override
-        public TaskRegistryFactory taskRegistryFactory() {
-            return EmptyTaskRegistryFactory.INSTANCE;
-        }
-
-        @Override
-        public UserLogRegistry userLogRegistry() {
-            return UserLogRegistry.EMPTY;
-        }
-
-        @Override
-        public boolean isGdsAdmin() {
-            return false;
-        }
-
-        @Override
-        public Metrics metrics() {
-            return Metrics.DISABLED;
-        }
-
-        @Override
-        public RequestCorrelationId requestCorrelationId() {
-            return PlainSimpleRequestCorrelationId.create();
-        }
-
-        @Override
-        public AlgorithmsProcedureFacade algorithmsProcedureFacade() {
-            return null;
-        }
-
-        @Override
-        public @Nullable RelationshipExporterBuilder relationshipExporterBuilder() {
-            return null;
-        }
-
-        @Override
-        public @Nullable NodePropertyExporterBuilder nodePropertyExporterBuilder() {
-            return null;
-        }
-
-        @Override
-        public String username() {
-            return "";
-        }
-    };
+    public static final ExecutionContext EMPTY = new ExecutionContext(
+        CloseableResourceRegistry.EMPTY,
+        DatabaseId.EMPTY,
+        Log.noOpLog(),
+        EMPTY_MEMORY_CONTEXT,
+        Metrics.DISABLED,
+        NodeLookup.EMPTY,
+        ProcedureReturnColumns.EMPTY,
+        PlainSimpleRequestCorrelationId.create(),
+        EmptyTaskRegistryFactory.INSTANCE,
+        TerminationMonitor.EMPTY,
+        UserLogRegistry.EMPTY,
+        "",
+        false,
+        null,
+        EMPTY_DEPENDENCY_RESOLVER,
+        ModelCatalog.EMPTY,
+        null,
+        null
+    );
 }

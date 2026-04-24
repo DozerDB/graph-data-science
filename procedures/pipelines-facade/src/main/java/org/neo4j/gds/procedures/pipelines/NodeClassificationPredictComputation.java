@@ -35,7 +35,7 @@ import org.neo4j.gds.core.utils.warnings.UserLogRegistry;
 import org.neo4j.gds.core.write.NodePropertyExporterBuilder;
 import org.neo4j.gds.core.write.RelationshipExporterBuilder;
 import org.neo4j.gds.domain.services.GloballyScopedDependencies;
-import org.neo4j.gds.executor.ImmutableExecutionContext;
+import org.neo4j.gds.executor.ExecutionContext;
 import org.neo4j.gds.executor.MemoryEstimationContext;
 import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.metrics.Metrics;
@@ -184,25 +184,25 @@ final class NodeClassificationPredictComputation implements Computation<NodeClas
 
         // this is the literal worst. packing up request things, with application deps,
         // and shipping it blindly.
-        var executionContext = ImmutableExecutionContext.builder()
-            .algorithmsProcedureFacade(algorithmsProcedureFacade)
-            .closeableResourceRegistry(closeableResourceRegistry)
-            .databaseId(databaseId)
-            .memoryEstimationContext(memoryEstimationContext)
-            .isGdsAdmin(user.isAdmin())
-            .log(log)
-            .metrics(metrics)
-            .modelCatalog(globallyScopedDependencies.modelCatalog())
-            .nodeLookup(nodeLookup)
-            .nodePropertyExporterBuilder(nodePropertyExporterBuilder)
-            .relationshipExporterBuilder(relationshipExporterBuilder)
-            .requestCorrelationId(requestCorrelationId)
-            .returnColumns(procedureReturnColumns)
-            .taskRegistryFactory(taskRegistryFactory)
-            .terminationMonitor(terminationMonitor)
-            .userLogRegistry(userLogRegistry)
-            .username(user.getUsername())
-            .build();
+        var executionContext = new ExecutionContext(
+            closeableResourceRegistry,
+            databaseId,
+            log,
+            memoryEstimationContext,
+            metrics,
+            nodeLookup,
+            procedureReturnColumns,
+            requestCorrelationId,
+            taskRegistryFactory,
+            terminationMonitor,
+            userLogRegistry,
+            user.getUsername(),
+            user.isAdmin(),
+            algorithmsProcedureFacade,
+            globallyScopedDependencies.modelCatalog(),
+            nodePropertyExporterBuilder,
+            relationshipExporterBuilder
+        );
 
         var pipelineExecutor = new NodeClassificationPredictPipelineExecutor(
             nodeClassificationPipeline,

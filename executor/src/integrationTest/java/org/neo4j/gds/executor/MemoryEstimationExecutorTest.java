@@ -71,24 +71,24 @@ class MemoryEstimationExecutorTest extends BaseTest {
 
         GraphDatabaseApiProxy.registerProcedures(db, GraphProjectProc.class);
 
-        var executionContext = ImmutableExecutionContext
-            .builder()
-            .databaseId(DatabaseId.of(db.databaseName()))
-            .dependencyResolver(GraphDatabaseApiProxy.dependencyResolver(db))
-            .memoryEstimationContext(new MemoryEstimationContext(true))
-            .returnColumns(ProcedureReturnColumns.EMPTY)
-            .log(Log.noOpLog())
-            .taskRegistryFactory(EmptyTaskRegistryFactory.INSTANCE)
-            .userLogRegistry(UserLogRegistry.EMPTY)
-            .username("")
-            .terminationMonitor(TerminationMonitor.EMPTY)
-            .closeableResourceRegistry(CloseableResourceRegistry.EMPTY)
-            .nodeLookup(NodeLookup.EMPTY)
-            .modelCatalog(ModelCatalog.EMPTY)
-            .isGdsAdmin(false)
-            .metrics(Metrics.DISABLED)
-            .requestCorrelationId(PlainSimpleRequestCorrelationId.create())
-            .build();
+        var executionContext = new ExecutionContext(
+            CloseableResourceRegistry.EMPTY,
+            DatabaseId.of(db.databaseName()),
+            Log.noOpLog(),
+            new MemoryEstimationContext(true),
+            Metrics.DISABLED,
+            NodeLookup.EMPTY,
+            ProcedureReturnColumns.EMPTY,
+            PlainSimpleRequestCorrelationId.create(),
+            EmptyTaskRegistryFactory.INSTANCE,
+            TerminationMonitor.EMPTY,
+            UserLogRegistry.EMPTY,
+            "",
+            false,
+            null,
+            GraphDatabaseApiProxy.dependencyResolver(db),
+            ModelCatalog.EMPTY
+        );
 
         memoryEstimationExecutor = new MemoryEstimationExecutor<>(
             new TestMutateSpec(),

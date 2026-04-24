@@ -129,8 +129,7 @@ public final class NodePropertyStep implements ExecutableNodePropertyStep {
 
         try {
             // FIXME: VN: HOW DO WE PASS THE ExecutionContext here?!
-            return algoSpec.algorithmFactory(ExecutionContext.EMPTY.withModelCatalog(modelCatalog)).memoryEstimation(
-                algoConfig);
+            return algoSpec.algorithmFactory(ExecutionContext.EMPTY.withModelCatalog(modelCatalog)).memoryEstimation(algoConfig);
         } catch (MemoryEstimationNotImplementedException exception) {
             // If a single node property step cannot be estimated, we ignore this step in the estimation
             return MemoryEstimations.of(callableDefinition.name(), MemoryRange.of(0));

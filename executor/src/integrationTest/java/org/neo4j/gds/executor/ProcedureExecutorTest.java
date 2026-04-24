@@ -30,6 +30,7 @@ import org.neo4j.gds.config.GraphProjectConfig;
 import org.neo4j.gds.core.PlainSimpleRequestCorrelationId;
 import org.neo4j.gds.core.loading.GraphStoreCatalog;
 import org.neo4j.gds.core.JobId;
+import org.neo4j.gds.core.model.ModelCatalog;
 import org.neo4j.gds.core.utils.progress.PerDatabaseTaskStore;
 import org.neo4j.gds.core.utils.progress.TaskRegistry;
 import org.neo4j.gds.core.utils.progress.TaskStore;
@@ -128,22 +129,24 @@ class ProcedureExecutorTest {
     }
 
     private ExecutionContext executionContext(TaskStore taskStore) {
-        return ImmutableExecutionContext
-            .builder()
-            .databaseId(graphStore.databaseInfo().databaseId())
-            .log(Log.noOpLog())
-            .returnColumns(ProcedureReturnColumns.EMPTY)
-            .taskRegistryFactory(jobId -> new TaskRegistry("", taskStore, jobId))
-            .username("")
-            .terminationMonitor(TerminationMonitor.EMPTY)
-            .isGdsAdmin(true)
-            .closeableResourceRegistry(CloseableResourceRegistry.EMPTY)
-            .nodeLookup(NodeLookup.EMPTY)
-            .userLogRegistry(UserLogRegistry.EMPTY)
-            .metrics(Metrics.DISABLED)
-            .memoryEstimationContext(new MemoryEstimationContext(true))
-            .requestCorrelationId(PlainSimpleRequestCorrelationId.create())
-            .build();
+        return new ExecutionContext(
+            CloseableResourceRegistry.EMPTY,
+            graphStore.databaseInfo().databaseId(),
+            Log.noOpLog(),
+            new MemoryEstimationContext(true),
+            Metrics.DISABLED,
+            NodeLookup.EMPTY,
+            ProcedureReturnColumns.EMPTY,
+            PlainSimpleRequestCorrelationId.create(),
+            jobId -> new TaskRegistry("", taskStore, jobId),
+            TerminationMonitor.EMPTY,
+            UserLogRegistry.EMPTY,
+            "",
+            true,
+            null,
+            null,
+            ModelCatalog.EMPTY
+        );
     }
 
     private static class TaskCreatedCounter implements TaskStoreListener {

@@ -46,7 +46,6 @@ import org.neo4j.gds.core.utils.logging.LoggerForProgressTrackingAdapter;
 import org.neo4j.gds.core.utils.progress.PerDatabaseTaskStore;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.executor.ExecutionContext;
-import org.neo4j.gds.executor.ImmutableExecutionContext;
 import org.neo4j.gds.extension.GdlExtension;
 import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
@@ -508,11 +507,11 @@ final class LinkPredictionTrainPipelineExecutorTest {
 
             var actualRange = LinkPredictionTrainPipelineExecutor
                 .estimate(
-                    ImmutableExecutionContext.EMPTY.modelCatalog(),
+                    ExecutionContext.EMPTY.modelCatalog(),
                     pipeline,
                     config,
-                    ImmutableExecutionContext.EMPTY.algorithmsProcedureFacade(),
-                    ImmutableExecutionContext.EMPTY.username()
+                    ExecutionContext.EMPTY.algorithmsProcedureFacade(),
+                    ExecutionContext.EMPTY.username()
                 )
                 .estimate(graphDimensions, config.concurrency())
                 .memoryUsage();

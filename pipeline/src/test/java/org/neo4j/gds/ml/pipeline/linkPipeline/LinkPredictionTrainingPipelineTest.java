@@ -39,7 +39,6 @@ import org.neo4j.gds.core.utils.progress.EmptyTaskRegistryFactory;
 import org.neo4j.gds.core.utils.warnings.UserLogRegistry;
 import org.neo4j.gds.executor.ExecutionContext;
 import org.neo4j.gds.executor.GdsCallableFinder;
-import org.neo4j.gds.executor.ImmutableExecutionContext;
 import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.mem.MemoryEstimation;
 import org.neo4j.gds.metrics.Metrics;
@@ -183,24 +182,24 @@ class LinkPredictionTrainingPipelineTest {
 
     @Test
     void deriveRelationshipWeightProperty() {
-        var executionContext = ImmutableExecutionContext.builder()
-            .databaseId(DatabaseId.of(""))
-            .dependencyResolver(ExecutionContext.EMPTY_DEPENDENCY_RESOLVER)
-            .memoryEstimationContext(ExecutionContext.EMPTY_MEMORY_CONTEXT)
-            .username("")
-            .terminationMonitor(TerminationMonitor.EMPTY)
-            .closeableResourceRegistry(CloseableResourceRegistry.EMPTY)
-            .nodeLookup(NodeLookup.EMPTY)
-            .returnColumns(ProcedureReturnColumns.EMPTY)
-            .modelCatalog(ModelCatalog.EMPTY)
-            .isGdsAdmin(false)
-            .log(Log.noOpLog())
-            .taskRegistryFactory(EmptyTaskRegistryFactory.INSTANCE)
-            .userLogRegistry(UserLogRegistry.EMPTY)
-            .isGdsAdmin(false)
-            .metrics(Metrics.DISABLED)
-            .requestCorrelationId(PlainSimpleRequestCorrelationId.create())
-            .build();
+        var executionContext = new ExecutionContext(
+            CloseableResourceRegistry.EMPTY,
+            DatabaseId.of(""),
+            Log.noOpLog(),
+            ExecutionContext.EMPTY_MEMORY_CONTEXT,
+            Metrics.DISABLED,
+            NodeLookup.EMPTY,
+            ProcedureReturnColumns.EMPTY,
+            PlainSimpleRequestCorrelationId.create(),
+            EmptyTaskRegistryFactory.INSTANCE,
+            TerminationMonitor.EMPTY,
+            UserLogRegistry.EMPTY,
+            "",
+            false,
+            null,
+            ExecutionContext.EMPTY_DEPENDENCY_RESOLVER,
+            ModelCatalog.EMPTY
+        );
 
         var pipeline = new LinkPredictionTrainingPipeline();
 
@@ -229,24 +228,24 @@ class LinkPredictionTrainingPipelineTest {
             new TestCustomInfo()
         ));
 
-        var executionContext = ImmutableExecutionContext.builder()
-            .databaseId(DatabaseId.of(""))
-            .dependencyResolver(ExecutionContext.EMPTY_DEPENDENCY_RESOLVER)
-            .memoryEstimationContext(ExecutionContext.EMPTY_MEMORY_CONTEXT)
-            .username("")
-            .modelCatalog(modelCatalog)
-            .terminationMonitor(TerminationMonitor.EMPTY)
-            .closeableResourceRegistry(CloseableResourceRegistry.EMPTY)
-            .nodeLookup(NodeLookup.EMPTY)
-            .returnColumns(ProcedureReturnColumns.EMPTY)
-            .isGdsAdmin(false)
-            .log(Log.noOpLog())
-            .taskRegistryFactory(EmptyTaskRegistryFactory.INSTANCE)
-            .userLogRegistry(UserLogRegistry.EMPTY)
-            .isGdsAdmin(false)
-            .metrics(Metrics.DISABLED)
-            .requestCorrelationId(PlainSimpleRequestCorrelationId.create())
-            .build();
+        var executionContext = new ExecutionContext(
+            CloseableResourceRegistry.EMPTY,
+            DatabaseId.of(""),
+            Log.noOpLog(),
+            ExecutionContext.EMPTY_MEMORY_CONTEXT,
+            Metrics.DISABLED,
+            NodeLookup.EMPTY,
+            ProcedureReturnColumns.EMPTY,
+            PlainSimpleRequestCorrelationId.create(),
+            EmptyTaskRegistryFactory.INSTANCE,
+            TerminationMonitor.EMPTY,
+            UserLogRegistry.EMPTY,
+            "",
+            false,
+            null,
+            ExecutionContext.EMPTY_DEPENDENCY_RESOLVER,
+            modelCatalog
+        );
 
         var pipeline = new LinkPredictionTrainingPipeline();
 
@@ -275,24 +274,24 @@ class LinkPredictionTrainingPipelineTest {
             new TestCustomInfo()
         ));
 
-        var executionContext = ImmutableExecutionContext.builder()
-            .databaseId(DatabaseId.of(""))
-            .dependencyResolver(ExecutionContext.EMPTY_DEPENDENCY_RESOLVER)
-            .memoryEstimationContext(ExecutionContext.EMPTY_MEMORY_CONTEXT)
-            .username("")
-            .modelCatalog(modelCatalog)
-            .terminationMonitor(TerminationMonitor.EMPTY)
-            .closeableResourceRegistry(CloseableResourceRegistry.EMPTY)
-            .nodeLookup(NodeLookup.EMPTY)
-            .returnColumns(ProcedureReturnColumns.EMPTY)
-            .isGdsAdmin(false)
-            .log(Log.noOpLog())
-            .taskRegistryFactory(EmptyTaskRegistryFactory.INSTANCE)
-            .userLogRegistry(UserLogRegistry.EMPTY)
-            .isGdsAdmin(false)
-            .metrics(Metrics.DISABLED)
-            .requestCorrelationId(PlainSimpleRequestCorrelationId.create())
-            .build();
+        var executionContext = new ExecutionContext(
+            CloseableResourceRegistry.EMPTY,
+            DatabaseId.of(""),
+            Log.noOpLog(),
+            ExecutionContext.EMPTY_MEMORY_CONTEXT,
+            Metrics.DISABLED,
+            NodeLookup.EMPTY,
+            ProcedureReturnColumns.EMPTY,
+            PlainSimpleRequestCorrelationId.create(),
+            EmptyTaskRegistryFactory.INSTANCE,
+            TerminationMonitor.EMPTY,
+            UserLogRegistry.EMPTY,
+            "",
+            false,
+            null,
+            ExecutionContext.EMPTY_DEPENDENCY_RESOLVER,
+            modelCatalog
+        );
 
         var pipeline = new LinkPredictionTrainingPipeline();
 
