@@ -28,6 +28,7 @@ import org.neo4j.gds.api.CloseableResourceRegistry;
 import org.neo4j.gds.api.DatabaseId;
 import org.neo4j.gds.api.NodeLookup;
 import org.neo4j.gds.api.ProcedureReturnColumns;
+import org.neo4j.gds.api.User;
 import org.neo4j.gds.api.schema.GraphSchema;
 import org.neo4j.gds.core.PlainSimpleRequestCorrelationId;
 import org.neo4j.gds.core.concurrency.Concurrency;
@@ -194,8 +195,7 @@ class LinkPredictionTrainingPipelineTest {
             EmptyTaskRegistryFactory.INSTANCE,
             TerminationMonitor.EMPTY,
             UserLogRegistry.EMPTY,
-            "",
-            false,
+            new User("", false),
             null,
             ExecutionContext.EMPTY_DEPENDENCY_RESOLVER,
             ModelCatalog.EMPTY
@@ -203,13 +203,13 @@ class LinkPredictionTrainingPipelineTest {
 
         var pipeline = new LinkPredictionTrainingPipeline();
 
-        assertThat(pipeline.relationshipWeightProperty(executionContext.modelCatalog(), executionContext.username())).isEmpty();
+        assertThat(pipeline.relationshipWeightProperty(executionContext.modelCatalog(), executionContext.user().getUsername())).isEmpty();
 
         var step = new TestNodePropertyStep(Map.of("relationshipWeightProperty", "myWeight"));
 
         pipeline.addNodePropertyStep(step);
 
-        assertThat(pipeline.relationshipWeightProperty(executionContext.modelCatalog(), executionContext.username())).isPresent().get().isEqualTo("myWeight");
+        assertThat(pipeline.relationshipWeightProperty(executionContext.modelCatalog(), executionContext.user().getUsername())).isPresent().get().isEqualTo("myWeight");
     }
 
     @Test
@@ -240,8 +240,7 @@ class LinkPredictionTrainingPipelineTest {
             EmptyTaskRegistryFactory.INSTANCE,
             TerminationMonitor.EMPTY,
             UserLogRegistry.EMPTY,
-            "",
-            false,
+            new User("", false),
             null,
             ExecutionContext.EMPTY_DEPENDENCY_RESOLVER,
             modelCatalog
@@ -249,13 +248,13 @@ class LinkPredictionTrainingPipelineTest {
 
         var pipeline = new LinkPredictionTrainingPipeline();
 
-        assertThat(pipeline.relationshipWeightProperty(executionContext.modelCatalog(), executionContext.username())).isEmpty();
+        assertThat(pipeline.relationshipWeightProperty(executionContext.modelCatalog(), executionContext.user().getUsername())).isEmpty();
 
         var step = new TestNodePropertyStep(Map.of("modelName", modelName));
 
         pipeline.addNodePropertyStep(step);
 
-        assertThat(pipeline.relationshipWeightProperty(executionContext.modelCatalog(), executionContext.username())).isPresent().get().isEqualTo("derivedWeight");
+        assertThat(pipeline.relationshipWeightProperty(executionContext.modelCatalog(), executionContext.user().getUsername())).isPresent().get().isEqualTo("derivedWeight");
     }
 
     @Test
@@ -286,8 +285,7 @@ class LinkPredictionTrainingPipelineTest {
             EmptyTaskRegistryFactory.INSTANCE,
             TerminationMonitor.EMPTY,
             UserLogRegistry.EMPTY,
-            "",
-            false,
+            new User("", false),
             null,
             ExecutionContext.EMPTY_DEPENDENCY_RESOLVER,
             modelCatalog
@@ -295,13 +293,13 @@ class LinkPredictionTrainingPipelineTest {
 
         var pipeline = new LinkPredictionTrainingPipeline();
 
-        assertThat(pipeline.relationshipWeightProperty(executionContext.modelCatalog(), executionContext.username())).isEmpty();
+        assertThat(pipeline.relationshipWeightProperty(executionContext.modelCatalog(), executionContext.user().getUsername())).isEmpty();
 
         var step = new TestNodePropertyStep(Map.of("modelName", modelName));
 
         pipeline.addNodePropertyStep(step);
 
-        assertThat(pipeline.relationshipWeightProperty(executionContext.modelCatalog(), executionContext.username())).isEmpty();
+        assertThat(pipeline.relationshipWeightProperty(executionContext.modelCatalog(), executionContext.user().getUsername())).isEmpty();
     }
 
     private static class TestNodePropertyStep implements ExecutableNodePropertyStep {

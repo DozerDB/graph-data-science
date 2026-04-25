@@ -30,6 +30,7 @@ import org.neo4j.gds.api.CloseableResourceRegistry;
 import org.neo4j.gds.api.DatabaseId;
 import org.neo4j.gds.api.NodeLookup;
 import org.neo4j.gds.api.ProcedureReturnColumns;
+import org.neo4j.gds.api.User;
 import org.neo4j.gds.catalog.GraphProjectProc;
 import org.neo4j.gds.compat.GraphDatabaseApiProxy;
 import org.neo4j.gds.config.GraphProjectConfig;
@@ -83,8 +84,7 @@ class MemoryEstimationExecutorTest extends BaseTest {
             EmptyTaskRegistryFactory.INSTANCE,
             TerminationMonitor.EMPTY,
             UserLogRegistry.EMPTY,
-            "",
-            false,
+            new User("", false),
             null,
             GraphDatabaseApiProxy.dependencyResolver(db),
             ModelCatalog.EMPTY

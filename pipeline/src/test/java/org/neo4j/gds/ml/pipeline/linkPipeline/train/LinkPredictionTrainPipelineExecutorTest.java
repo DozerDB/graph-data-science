@@ -511,7 +511,7 @@ final class LinkPredictionTrainPipelineExecutorTest {
                     pipeline,
                     config,
                     ExecutionContext.EMPTY.algorithmsProcedureFacade(),
-                    ExecutionContext.EMPTY.username()
+                    ExecutionContext.EMPTY.user().getUsername()
                 )
                 .estimate(graphDimensions, config.concurrency())
                 .memoryUsage();
@@ -538,7 +538,7 @@ final class LinkPredictionTrainPipelineExecutorTest {
                 pipeline,
                 config,
                 ExecutionContext.EMPTY.algorithmsProcedureFacade(),
-                ExecutionContext.EMPTY.username()
+                ExecutionContext.EMPTY.user().getUsername()
             ))
                 .hasMessage("Need at least one model candidate for training.");
         }

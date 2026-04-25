@@ -26,6 +26,7 @@ import org.neo4j.gds.api.CloseableResourceRegistry;
 import org.neo4j.gds.api.GraphStore;
 import org.neo4j.gds.api.NodeLookup;
 import org.neo4j.gds.api.ProcedureReturnColumns;
+import org.neo4j.gds.api.User;
 import org.neo4j.gds.config.GraphProjectConfig;
 import org.neo4j.gds.core.PlainSimpleRequestCorrelationId;
 import org.neo4j.gds.core.loading.GraphStoreCatalog;
@@ -141,8 +142,7 @@ class ProcedureExecutorTest {
             jobId -> new TaskRegistry("", taskStore, jobId),
             TerminationMonitor.EMPTY,
             UserLogRegistry.EMPTY,
-            "",
-            true,
+            new User("", false),
             null,
             null,
             ModelCatalog.EMPTY

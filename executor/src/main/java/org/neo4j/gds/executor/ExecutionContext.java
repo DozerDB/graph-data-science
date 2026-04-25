@@ -25,6 +25,7 @@ import org.neo4j.gds.api.CloseableResourceRegistry;
 import org.neo4j.gds.api.DatabaseId;
 import org.neo4j.gds.api.NodeLookup;
 import org.neo4j.gds.api.ProcedureReturnColumns;
+import org.neo4j.gds.api.User;
 import org.neo4j.gds.core.PlainSimpleRequestCorrelationId;
 import org.neo4j.gds.core.RequestCorrelationId;
 import org.neo4j.gds.core.model.ModelCatalog;
@@ -56,8 +57,7 @@ public record ExecutionContext(
     TaskRegistryFactory taskRegistryFactory,
     TerminationMonitor terminationMonitor,
     UserLogRegistry userLogRegistry,
-    String username,
-    boolean isGdsAdmin,
+    User user,
     @Nullable AlgorithmsProcedureFacade algorithmsProcedureFacade,
     @Nullable DependencyResolver dependencyResolver,
     @Nullable ModelCatalog modelCatalog,
@@ -77,14 +77,13 @@ public record ExecutionContext(
         TaskRegistryFactory taskRegistryFactory,
         TerminationMonitor terminationMonitor,
         UserLogRegistry userLogRegistry,
-        String username,
-        boolean isGdsAdmin,
+        User user,
         @Nullable AlgorithmsProcedureFacade algorithmsProcedureFacade,
         @Nullable ModelCatalog modelCatalog,
         @Nullable NodePropertyExporterBuilder nodePropertyExporterBuilder,
         @Nullable RelationshipExporterBuilder relationshipExporterBuilder
     ) {
-        this(closeableResourceRegistry, databaseId, log, memoryEstimationContext, metrics, nodeLookup, returnColumns, requestCorrelationId, taskRegistryFactory, terminationMonitor, userLogRegistry, username, isGdsAdmin, algorithmsProcedureFacade, EMPTY_DEPENDENCY_RESOLVER, modelCatalog, nodePropertyExporterBuilder, relationshipExporterBuilder);
+        this(closeableResourceRegistry, databaseId, log, memoryEstimationContext, metrics, nodeLookup, returnColumns, requestCorrelationId, taskRegistryFactory, terminationMonitor, userLogRegistry, user, algorithmsProcedureFacade, EMPTY_DEPENDENCY_RESOLVER, modelCatalog, nodePropertyExporterBuilder, relationshipExporterBuilder);
     }
 
     public ExecutionContext(
@@ -99,13 +98,12 @@ public record ExecutionContext(
         TaskRegistryFactory taskRegistryFactory,
         TerminationMonitor terminationMonitor,
         UserLogRegistry userLogRegistry,
-        String username,
-        boolean isGdsAdmin,
+        User user,
         @Nullable AlgorithmsProcedureFacade algorithmsProcedureFacade,
         @Nullable DependencyResolver dependencyResolver,
         @Nullable ModelCatalog modelCatalog
     ) {
-        this(closeableResourceRegistry, databaseId, log, memoryEstimationContext, metrics, nodeLookup, returnColumns, requestCorrelationId, taskRegistryFactory, terminationMonitor, userLogRegistry, username, isGdsAdmin, algorithmsProcedureFacade, dependencyResolver, modelCatalog, null, null);
+        this(closeableResourceRegistry, databaseId, log, memoryEstimationContext, metrics, nodeLookup, returnColumns, requestCorrelationId, taskRegistryFactory, terminationMonitor, userLogRegistry, user, algorithmsProcedureFacade, dependencyResolver, modelCatalog, null, null);
     }
     public ExecutionContext withNodePropertyExporterBuilder(NodePropertyExporterBuilder nodePropertyExporterBuilder) {
         return new ExecutionContext(
@@ -120,8 +118,7 @@ public record ExecutionContext(
             taskRegistryFactory,
             terminationMonitor,
             userLogRegistry,
-            username,
-            isGdsAdmin,
+            user,
             algorithmsProcedureFacade,
             dependencyResolver,
             modelCatalog,
@@ -143,8 +140,7 @@ public record ExecutionContext(
             taskRegistryFactory,
             terminationMonitor,
             userLogRegistry,
-            username,
-            isGdsAdmin,
+            user,
             algorithmsProcedureFacade,
             dependencyResolver,
             modelCatalog,
@@ -184,8 +180,7 @@ public record ExecutionContext(
         EmptyTaskRegistryFactory.INSTANCE,
         TerminationMonitor.EMPTY,
         UserLogRegistry.EMPTY,
-        "",
-        false,
+        new User("", false),
         null,
         EMPTY_DEPENDENCY_RESOLVER,
         ModelCatalog.EMPTY,

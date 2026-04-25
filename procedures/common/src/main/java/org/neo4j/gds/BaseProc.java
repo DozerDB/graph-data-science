@@ -20,6 +20,7 @@
 package org.neo4j.gds;
 
 import org.neo4j.gds.api.DatabaseId;
+import org.neo4j.gds.api.User;
 import org.neo4j.gds.compat.GraphDatabaseApiProxy;
 import org.neo4j.gds.core.PlainSimpleRequestCorrelationId;
 import org.neo4j.gds.core.Username;
@@ -100,8 +101,7 @@ public abstract class BaseProc {
                 taskRegistryFactory,
                 new TransactionTerminationMonitor(transaction),
                 userLogRegistry,
-                username(),
-                transactionContext().isGdsAdmin(),
+                new User(username(), transactionContext().isGdsAdmin()),
                 graphDataScienceProcedures.algorithms(),
                 GraphDatabaseApiProxy.dependencyResolver(databaseService),
                 ModelCatalog.EMPTY

@@ -20,7 +20,6 @@
 package org.neo4j.gds.executor;
 
 import org.neo4j.gds.Algorithm;
-import org.neo4j.gds.api.User;
 import org.neo4j.gds.applications.algorithms.machinery.RequestScopedDependencies;
 import org.neo4j.gds.applications.graphstorecatalog.GraphStoreFromCatalogLoader;
 import org.neo4j.gds.applications.graphstorecatalog.MemoryUsageValidator;
@@ -47,7 +46,7 @@ public class ProcedureExecutorSpec<
         var defaults = DefaultsConfiguration.Instance;
         var limits = LimitsConfiguration.Instance;
 
-        return new AlgoConfigParser<>(executionContext.username(), newConfigFunction, defaults, limits);
+        return new AlgoConfigParser<>(executionContext.user().getUsername(), newConfigFunction, defaults, limits);
     }
 
     @Override
@@ -63,12 +62,12 @@ public class ProcedureExecutorSpec<
             (config, graphName) -> new GraphStoreFromCatalogLoader(
                 RequestScopedDependencies.builder()
                     .databaseId(executionContext.databaseId())
-                    .user(new User(executionContext.username(), executionContext.isGdsAdmin()))
+                    .user(executionContext.user())
                     .build(),
                 graphName,
                 config
             ),
-            new MemoryUsageValidator(executionContext.username(), MemoryTracker.create(executionContext.log(), Long.MAX_VALUE), useMaxMemoryEstimation, executionContext.log())
+            new MemoryUsageValidator(executionContext.user().getUsername(), MemoryTracker.create(executionContext.log(), Long.MAX_VALUE), useMaxMemoryEstimation, executionContext.log())
         );
     }
 }
