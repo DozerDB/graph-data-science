@@ -24,7 +24,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.neo4j.gds.api.CloseableResourceRegistry;
 import org.neo4j.gds.api.GraphStore;
-import org.neo4j.gds.api.NodeLookup;
 import org.neo4j.gds.api.ProcedureReturnColumns;
 import org.neo4j.gds.api.User;
 import org.neo4j.gds.config.GraphProjectConfig;
@@ -136,7 +135,6 @@ class ProcedureExecutorTest {
             Log.noOpLog(),
             new MemoryEstimationContext(true),
             Metrics.DISABLED,
-            NodeLookup.EMPTY,
             ProcedureReturnColumns.EMPTY,
             PlainSimpleRequestCorrelationId.create(),
             jobId -> new TaskRegistry("", taskStore, jobId),

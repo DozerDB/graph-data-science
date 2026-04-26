@@ -66,7 +66,6 @@ import org.neo4j.gds.procedures.pipelines.PipelinesProcedureFacade;
 import org.neo4j.gds.projection.GraphStoreFactorySuppliers;
 import org.neo4j.gds.termination.TerminationMonitor;
 import org.neo4j.gds.transaction.TransactionCloseableResourceRegistry;
-import org.neo4j.gds.transaction.TransactionNodeLookup;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.kernel.api.KernelTransaction;
@@ -139,8 +138,6 @@ public class LocalGraphDataScienceProcedures implements GraphDataScienceProcedur
         MemoryTracker memoryTracker
     ) {
         var closeableResourceRegistry = new TransactionCloseableResourceRegistry(kernelTransaction);
-
-        var nodeLookup = new TransactionNodeLookup(kernelTransaction);
 
         var databaseGraphStoreEstimationService = new DatabaseGraphStoreEstimationService(
             requestScopedDependencies.graphLoaderContext(),
@@ -231,7 +228,6 @@ public class LocalGraphDataScienceProcedures implements GraphDataScienceProcedur
             closeableResourceRegistry,
             memoryEstimationContext,
             metrics,
-            nodeLookup,
             procedureReturnColumns,
             requestScopedDependencies,
             writeContext,

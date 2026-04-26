@@ -38,7 +38,6 @@ import org.neo4j.gds.transaction.DatabaseTransactionContext;
 import org.neo4j.gds.transaction.EmptyTransactionContext;
 import org.neo4j.gds.transaction.TransactionCloseableResourceRegistry;
 import org.neo4j.gds.transaction.TransactionContext;
-import org.neo4j.gds.transaction.TransactionNodeLookup;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.internal.kernel.api.procs.ProcedureCallContext;
@@ -95,7 +94,6 @@ public abstract class BaseProc {
                 //Base Proc is only used by pregel  generated codes which have have same min-max expectation so fine
                 new MemoryEstimationContext(true),
                 metrics,
-                new TransactionNodeLookup(transaction),
                 new ProcedureCallContextReturnColumns(callContext),
                 PlainSimpleRequestCorrelationId.create(),
                 taskRegistryFactory,

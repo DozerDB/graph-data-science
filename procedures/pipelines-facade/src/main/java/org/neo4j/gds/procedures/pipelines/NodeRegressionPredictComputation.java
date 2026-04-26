@@ -23,7 +23,6 @@ import org.neo4j.gds.api.CloseableResourceRegistry;
 import org.neo4j.gds.api.DatabaseId;
 import org.neo4j.gds.api.Graph;
 import org.neo4j.gds.api.GraphStore;
-import org.neo4j.gds.api.NodeLookup;
 import org.neo4j.gds.api.ProcedureReturnColumns;
 import org.neo4j.gds.api.User;
 import org.neo4j.gds.applications.algorithms.machinery.Computation;
@@ -56,7 +55,6 @@ final class NodeRegressionPredictComputation implements Computation<HugeDoubleAr
     private final DatabaseId databaseId;
     private final MemoryEstimationContext memoryEstimationContext;
     private final Metrics metrics;
-    private final NodeLookup nodeLookup;
     private final NodePropertyExporterBuilder nodePropertyExporterBuilder;
     private final ProcedureReturnColumns procedureReturnColumns;
     private final RelationshipExporterBuilder relationshipExporterBuilder;
@@ -81,7 +79,6 @@ final class NodeRegressionPredictComputation implements Computation<HugeDoubleAr
         DatabaseId databaseId,
         MemoryEstimationContext memoryEstimationContext,
         Metrics metrics,
-        NodeLookup nodeLookup,
         NodePropertyExporterBuilder nodePropertyExporterBuilder,
         ProcedureReturnColumns procedureReturnColumns,
         RelationshipExporterBuilder relationshipExporterBuilder,
@@ -102,7 +99,6 @@ final class NodeRegressionPredictComputation implements Computation<HugeDoubleAr
         this.databaseId = databaseId;
         this.memoryEstimationContext = memoryEstimationContext;
         this.metrics = metrics;
-        this.nodeLookup = nodeLookup;
         this.nodePropertyExporterBuilder = nodePropertyExporterBuilder;
         this.procedureReturnColumns = procedureReturnColumns;
         this.relationshipExporterBuilder = relationshipExporterBuilder;
@@ -125,7 +121,6 @@ final class NodeRegressionPredictComputation implements Computation<HugeDoubleAr
         DatabaseId databaseId,
         MemoryEstimationContext memoryEstimationContext,
         Metrics metrics,
-        NodeLookup nodeLookup,
         NodePropertyExporterBuilder nodePropertyExporterBuilder,
         ProcedureReturnColumns procedureReturnColumns,
         RelationshipExporterBuilder relationshipExporterBuilder,
@@ -148,7 +143,6 @@ final class NodeRegressionPredictComputation implements Computation<HugeDoubleAr
             databaseId,
             memoryEstimationContext,
             metrics,
-            nodeLookup,
             nodePropertyExporterBuilder,
             procedureReturnColumns,
             relationshipExporterBuilder,
@@ -192,7 +186,6 @@ final class NodeRegressionPredictComputation implements Computation<HugeDoubleAr
             log,
             memoryEstimationContext,
             metrics,
-            nodeLookup,
             procedureReturnColumns,
             requestCorrelationId,
             taskRegistryFactory,

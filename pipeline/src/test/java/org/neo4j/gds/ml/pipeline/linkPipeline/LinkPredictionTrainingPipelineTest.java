@@ -26,7 +26,6 @@ import org.neo4j.gds.NodeLabel;
 import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.api.CloseableResourceRegistry;
 import org.neo4j.gds.api.DatabaseId;
-import org.neo4j.gds.api.NodeLookup;
 import org.neo4j.gds.api.ProcedureReturnColumns;
 import org.neo4j.gds.api.User;
 import org.neo4j.gds.api.schema.GraphSchema;
@@ -189,7 +188,6 @@ class LinkPredictionTrainingPipelineTest {
             Log.noOpLog(),
             ExecutionContext.EMPTY_MEMORY_CONTEXT,
             Metrics.DISABLED,
-            NodeLookup.EMPTY,
             ProcedureReturnColumns.EMPTY,
             PlainSimpleRequestCorrelationId.create(),
             EmptyTaskRegistryFactory.INSTANCE,
@@ -234,7 +232,6 @@ class LinkPredictionTrainingPipelineTest {
             Log.noOpLog(),
             ExecutionContext.EMPTY_MEMORY_CONTEXT,
             Metrics.DISABLED,
-            NodeLookup.EMPTY,
             ProcedureReturnColumns.EMPTY,
             PlainSimpleRequestCorrelationId.create(),
             EmptyTaskRegistryFactory.INSTANCE,
@@ -279,7 +276,6 @@ class LinkPredictionTrainingPipelineTest {
             Log.noOpLog(),
             ExecutionContext.EMPTY_MEMORY_CONTEXT,
             Metrics.DISABLED,
-            NodeLookup.EMPTY,
             ProcedureReturnColumns.EMPTY,
             PlainSimpleRequestCorrelationId.create(),
             EmptyTaskRegistryFactory.INSTANCE,

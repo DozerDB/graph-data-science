@@ -22,7 +22,6 @@ package org.neo4j.gds.procedures.pipelines;
 import org.neo4j.gds.api.CloseableResourceRegistry;
 import org.neo4j.gds.api.DatabaseId;
 import org.neo4j.gds.api.GraphName;
-import org.neo4j.gds.api.NodeLookup;
 import org.neo4j.gds.api.ProcedureReturnColumns;
 import org.neo4j.gds.api.User;
 import org.neo4j.gds.applications.algorithms.machinery.AlgorithmEstimationTemplate;
@@ -90,7 +89,6 @@ public class PipelineApplications {
     private final DatabaseId databaseId;
     private final MemoryEstimationContext memoryEstimationContext;
     private final Metrics metrics;
-    private final NodeLookup nodeLookup;
     private final NodePropertyExporterBuilder nodePropertyExporterBuilder;
     private final ProcedureReturnColumns procedureReturnColumns;
     private final RelationshipExporterBuilder relationshipExporterBuilder;
@@ -128,7 +126,6 @@ public class PipelineApplications {
         DatabaseId databaseId,
         MemoryEstimationContext memoryEstimationContext,
         Metrics metrics,
-        NodeLookup nodeLookup,
         NodePropertyExporterBuilder nodePropertyExporterBuilder,
         ProcedureReturnColumns procedureReturnColumns,
         RelationshipExporterBuilder relationshipExporterBuilder,
@@ -159,7 +156,6 @@ public class PipelineApplications {
         this.databaseId = databaseId;
         this.memoryEstimationContext = memoryEstimationContext;
         this.metrics = metrics;
-        this.nodeLookup = nodeLookup;
         this.nodePropertyExporterBuilder = nodePropertyExporterBuilder;
         this.procedureReturnColumns = procedureReturnColumns;
         this.relationshipExporterBuilder = relationshipExporterBuilder;
@@ -190,7 +186,6 @@ public class PipelineApplications {
         CloseableResourceRegistry closeableResourceRegistry,
         MemoryEstimationContext memoryEstimationContext,
         Metrics metrics,
-        NodeLookup nodeLookup,
         ProcedureReturnColumns procedureReturnColumns,
         TerminationMonitor terminationMonitor,
         RequestScopedDependencies requestScopedDependencies,
@@ -233,7 +228,6 @@ public class PipelineApplications {
             requestScopedDependencies.databaseId(),
             memoryEstimationContext,
             metrics,
-            nodeLookup,
             writeContext.nodePropertyExporterBuilder(),
             procedureReturnColumns,
             writeContext.relationshipExporterBuilder(),
@@ -256,7 +250,6 @@ public class PipelineApplications {
             requestScopedDependencies.databaseId(),
             memoryEstimationContext,
             metrics,
-            nodeLookup,
             writeContext.nodePropertyExporterBuilder(),
             procedureReturnColumns,
             writeContext.relationshipExporterBuilder(),
@@ -781,7 +774,6 @@ public class PipelineApplications {
             databaseId,
             memoryEstimationContext,
             metrics,
-            nodeLookup,
             nodePropertyExporterBuilder,
             procedureReturnColumns,
             relationshipExporterBuilder,
@@ -809,7 +801,6 @@ public class PipelineApplications {
             databaseId,
             memoryEstimationContext,
             metrics,
-            nodeLookup,
             nodePropertyExporterBuilder,
             procedureReturnColumns,
             relationshipExporterBuilder,
@@ -836,7 +827,6 @@ public class PipelineApplications {
             databaseId,
             memoryEstimationContext,
             metrics,
-            nodeLookup,
             nodePropertyExporterBuilder,
             procedureReturnColumns,
             relationshipExporterBuilder,
@@ -863,7 +853,6 @@ public class PipelineApplications {
             databaseId,
             memoryEstimationContext,
             metrics,
-            nodeLookup,
             nodePropertyExporterBuilder,
             procedureReturnColumns,
             relationshipExporterBuilder,
@@ -889,7 +878,6 @@ public class PipelineApplications {
             databaseId,
             memoryEstimationContext,
             metrics,
-            nodeLookup,
             nodePropertyExporterBuilder,
             procedureReturnColumns,
             relationshipExporterBuilder,

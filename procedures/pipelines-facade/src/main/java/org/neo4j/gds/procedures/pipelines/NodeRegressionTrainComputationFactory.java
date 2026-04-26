@@ -21,7 +21,6 @@ package org.neo4j.gds.procedures.pipelines;
 
 import org.neo4j.gds.api.CloseableResourceRegistry;
 import org.neo4j.gds.api.DatabaseId;
-import org.neo4j.gds.api.NodeLookup;
 import org.neo4j.gds.api.ProcedureReturnColumns;
 import org.neo4j.gds.applications.algorithms.machinery.Computation;
 import org.neo4j.gds.applications.algorithms.machinery.ProgressTrackerCreator;
@@ -49,7 +48,6 @@ class NodeRegressionTrainComputationFactory {
     private final DatabaseId databaseId;
     private final MemoryEstimationContext memoryEstimationContext;
     private final Metrics metrics;
-    private final NodeLookup nodeLookup;
     private final NodePropertyExporterBuilder nodePropertyExporterBuilder;
     private final ProcedureReturnColumns procedureReturnColumns;
     private final RelationshipExporterBuilder relationshipExporterBuilder;
@@ -71,7 +69,6 @@ class NodeRegressionTrainComputationFactory {
         DatabaseId databaseId,
         MemoryEstimationContext memoryEstimationContext,
         Metrics metrics,
-        NodeLookup nodeLookup,
         NodePropertyExporterBuilder nodePropertyExporterBuilder,
         ProcedureReturnColumns procedureReturnColumns,
         RelationshipExporterBuilder relationshipExporterBuilder,
@@ -90,7 +87,6 @@ class NodeRegressionTrainComputationFactory {
         this.databaseId = databaseId;
         this.memoryEstimationContext = memoryEstimationContext;
         this.metrics = metrics;
-        this.nodeLookup = nodeLookup;
         this.nodePropertyExporterBuilder = nodePropertyExporterBuilder;
         this.procedureReturnColumns = procedureReturnColumns;
         this.relationshipExporterBuilder = relationshipExporterBuilder;
@@ -112,7 +108,6 @@ class NodeRegressionTrainComputationFactory {
             databaseId,
             memoryEstimationContext,
             metrics,
-            nodeLookup,
             nodePropertyExporterBuilder,
             procedureReturnColumns,
             relationshipExporterBuilder,

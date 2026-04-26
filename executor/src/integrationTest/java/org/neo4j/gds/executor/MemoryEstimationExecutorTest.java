@@ -28,7 +28,6 @@ import org.neo4j.gds.NodeProjections;
 import org.neo4j.gds.RelationshipProjections;
 import org.neo4j.gds.api.CloseableResourceRegistry;
 import org.neo4j.gds.api.DatabaseId;
-import org.neo4j.gds.api.NodeLookup;
 import org.neo4j.gds.api.ProcedureReturnColumns;
 import org.neo4j.gds.api.User;
 import org.neo4j.gds.catalog.GraphProjectProc;
@@ -78,7 +77,6 @@ class MemoryEstimationExecutorTest extends BaseTest {
             Log.noOpLog(),
             new MemoryEstimationContext(true),
             Metrics.DISABLED,
-            NodeLookup.EMPTY,
             ProcedureReturnColumns.EMPTY,
             PlainSimpleRequestCorrelationId.create(),
             EmptyTaskRegistryFactory.INSTANCE,

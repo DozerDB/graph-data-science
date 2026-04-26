@@ -20,7 +20,6 @@
 package org.neo4j.gds.procedures.pipelines;
 
 import org.neo4j.gds.api.CloseableResourceRegistry;
-import org.neo4j.gds.api.NodeLookup;
 import org.neo4j.gds.api.ProcedureReturnColumns;
 import org.neo4j.gds.applications.algorithms.machinery.AlgorithmEstimationTemplate;
 import org.neo4j.gds.applications.algorithms.machinery.AlgorithmProcessingTemplate;
@@ -66,7 +65,6 @@ public final class LocalPipelinesProcedureFacade implements PipelinesProcedureFa
         CloseableResourceRegistry closeableResourceRegistry,
         MemoryEstimationContext memoryEstimationContext,
         Metrics metrics,
-        NodeLookup nodeLookup,
         ProcedureReturnColumns procedureReturnColumns,
         RequestScopedDependencies requestScopedDependencies,
         WriteContext writeContext,
@@ -86,7 +84,6 @@ public final class LocalPipelinesProcedureFacade implements PipelinesProcedureFa
             closeableResourceRegistry,
             memoryEstimationContext,
             metrics,
-            nodeLookup,
             procedureReturnColumns,
             terminationMonitor,
             requestScopedDependencies,

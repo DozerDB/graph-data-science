@@ -25,7 +25,6 @@ import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.api.CloseableResourceRegistry;
 import org.neo4j.gds.api.DatabaseId;
 import org.neo4j.gds.api.GraphStore;
-import org.neo4j.gds.api.NodeLookup;
 import org.neo4j.gds.api.ProcedureReturnColumns;
 import org.neo4j.gds.api.User;
 import org.neo4j.gds.applications.algorithms.machinery.ProgressTrackerCreator;
@@ -127,7 +126,6 @@ class NodeClassificationTrainComputationTest {
             DatabaseId.DEFAULT,
             new MemoryEstimationContext(false),
             Metrics.DISABLED,
-            NodeLookup.EMPTY,
             null,
             ProcedureReturnColumns.EMPTY,
             null,
