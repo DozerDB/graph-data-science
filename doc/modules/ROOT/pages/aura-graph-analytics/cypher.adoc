@@ -279,6 +279,58 @@ Returns a Map value with two entries:
 |===
 
 
+[[session-estimate-procedure]]
+=== Estimating session size
+
+The `gds.session.estimate` procedure estimates the memory required for a GDS Session based on the size and shape of your graph.
+Use it to determine an appropriate session size before creating a session.
+
+==== Syntax
+
+[source, cypher]
+----
+CALL gds.session.estimate(
+  nodeCount: Integer,
+  relationshipCount: Integer,
+  nodeLabelCount: Integer,
+  nodePropertyCount: Integer,
+  relationshipPropertyCount: Integer,
+  algorithmCategories: List of String
+) YIELD
+  estimatedMemory: String,
+  recommendedSize: String
+----
+
+.Parameters
+[opts="header",cols="1,1,1,1,4"]
+|===
+| Name                       | Type           | Optional | Default | Description
+| nodeCount                  | Integer        | no       | n/a     | The number of nodes in the graph.
+| relationshipCount          | Integer        | no       | n/a     | The number of relationships in the graph.
+| nodeLabelCount             | Integer        | yes      | 0       | The number of distinct node labels in the graph.
+| nodePropertyCount          | Integer        | yes      | 0       | The number of node properties in the graph.
+| relationshipPropertyCount  | Integer        | yes      | 0       | The number of relationship properties in the graph.
+| algorithmCategories        | List of String | yes      | []      | The categories of algorithms you plan to run in the session. Providing this helps produce a more tailored estimate. See the valid values below.
+|===
+
+The following values are accepted for `algorithmCategories` (case-insensitive; hyphens and underscores are interchangeable):
+
+* `centrality`
+* `community-detection`
+* `similarity`
+* `path-finding`
+* `node-embedding`
+* `machine-learning`
+
+.Results
+[opts="header",cols="3m,1,6"]
+|===
+| Name              | Type   | Description
+| estimatedMemory   | String | The estimated memory required for the session, e.g. `1.6GB`.
+| recommendedSize   | String | The recommended session size to request, e.g. `2GB`. This is the smallest available tier that covers the estimated memory.
+|===
+
+
 [[limitations]]
 == Limitations
 
