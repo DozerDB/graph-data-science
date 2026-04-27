@@ -292,10 +292,7 @@ Use it to determine an appropriate session size before creating a session.
 CALL gds.session.estimate(
   nodeCount: Integer,
   relationshipCount: Integer,
-  nodeLabelCount: Integer,
-  nodePropertyCount: Integer,
-  relationshipPropertyCount: Integer,
-  algorithmCategories: List of String
+  configuration: Map
 ) YIELD
   estimatedMemory: String,
   recommendedSize: String
@@ -304,9 +301,16 @@ CALL gds.session.estimate(
 .Parameters
 [opts="header",cols="1,1,1,1,4"]
 |===
+| Name              | Type    | Optional | Default | Description
+| nodeCount         | Integer | no       | n/a     | The number of nodes in the graph.
+| relationshipCount | Integer | no       | n/a     | The number of relationships in the graph.
+| configuration     | Map     | yes      | {}      | Optional configuration map. See the configuration keys below.
+|===
+
+.Configuration keys
+[opts="header",cols="1,1,1,1,4"]
+|===
 | Name                       | Type           | Optional | Default | Description
-| nodeCount                  | Integer        | no       | n/a     | The number of nodes in the graph.
-| relationshipCount          | Integer        | no       | n/a     | The number of relationships in the graph.
 | nodeLabelCount             | Integer        | yes      | 0       | The number of distinct node labels in the graph.
 | nodePropertyCount          | Integer        | yes      | 0       | The number of node properties in the graph.
 | relationshipPropertyCount  | Integer        | yes      | 0       | The number of relationship properties in the graph.
