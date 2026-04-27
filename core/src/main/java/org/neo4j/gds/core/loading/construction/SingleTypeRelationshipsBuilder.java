@@ -24,7 +24,6 @@ import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.api.DefaultValue;
 import org.neo4j.gds.api.ImmutableTopology;
 import org.neo4j.gds.api.PartialIdMap;
-import org.neo4j.gds.compression.api.AdjacencyCompressor;
 import org.neo4j.gds.api.compress.AdjacencyListsWithProperties;
 import org.neo4j.gds.api.nodeproperties.ValueType;
 import org.neo4j.gds.api.properties.relationships.ImmutableProperties;
@@ -34,6 +33,7 @@ import org.neo4j.gds.api.schema.Direction;
 import org.neo4j.gds.api.schema.ImmutableRelationshipPropertySchema;
 import org.neo4j.gds.api.schema.MutableRelationshipSchemaEntry;
 import org.neo4j.gds.api.schema.RelationshipPropertySchema;
+import org.neo4j.gds.compression.api.AdjacencyCompressor;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.RunWithConcurrency;
 import org.neo4j.gds.core.loading.AdjacencyBuffer;
@@ -136,6 +136,14 @@ abstract class SingleTypeRelationshipsBuilder {
 
     PartialIdMap partialIdMap() {
         return idMap;
+    }
+
+    List<GraphFactory.PropertyConfig> propertyConfigs() {
+        return propertyConfigs;
+    }
+
+    RelationshipType relationshipType() {
+        return relationshipType;
     }
 
     SingleTypeRelationships build(

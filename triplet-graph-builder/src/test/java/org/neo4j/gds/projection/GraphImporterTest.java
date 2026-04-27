@@ -330,8 +330,55 @@ class GraphImporterTest {
     }
 
     @Test
+    void shouldFailImportRelationshipsWithDifferentProperties() {
+        var importer = new GraphImporter(
+            GraphProjectConfig.emptyWithName("", "g"),
+            List.of(),
+            List.of(),
+            new LazyIdMapBuilderBuilder()
+                .concurrency(new Concurrency(4))
+                .hasLabelInformation(true)
+                .hasProperties(true)
+                .propertyState(PropertyState.REMOTE)
+                .build(),
+            Capabilities.WriteMode.REMOTE,
+            "",
+            ProgressTracker.NULL_TRACKER
+        );
+
+        importer.update(
+            0,
+            1,
+            null,
+            null,
+            NodeLabelTokens.empty(),
+            NodeLabelTokens.empty(),
+            RelationshipType.of("REL"),
+            PropertyValues.of(Map.of("prop", PrimitiveValues.longValue(42)))
+        );
+
+        assertThatThrownBy(() -> importer.update(
+            0,
+            1,
+            null,
+            null,
+            NodeLabelTokens.empty(),
+            NodeLabelTokens.empty(),
+            RelationshipType.of("REL"),
+            PropertyValues.of(Map.of(
+                "prop",
+                PrimitiveValues.longValue(43),
+                "unexpectedProperty",
+                PrimitiveValues.longValue(42)
+            ))
+        )).isInstanceOf(IllegalArgumentException.class).hasMessage(
+            "Unexpected relationship properties for relationships type `REL`. Expected ['prop'], but got ['prop', 'unexpectedProperty'].");
+    }
+
+    @Test
     void shouldFailImportWithUnusedUndirectedRelationshipType() {
-        var importer = new GraphImporter(GraphProjectConfig.emptyWithName("", "g"),
+        var importer = new GraphImporter(
+            GraphProjectConfig.emptyWithName("", "g"),
             List.of("UNUSED_REL"),
             List.of(),
             new LazyIdMapBuilderBuilder().concurrency(new Concurrency(4))
@@ -344,7 +391,8 @@ class GraphImporterTest {
             ProgressTracker.NULL_TRACKER
         );
 
-        importer.update(0,
+        importer.update(
+            0,
             1,
             null,
             null,
@@ -354,15 +402,18 @@ class GraphImporterTest {
             null
         );
 
-        assertThatThrownBy(() -> importer.result(DatabaseInfo.create(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
+        assertThatThrownBy(() -> importer.result(
+            DatabaseInfo.create(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
             ProgressTimer.start(),
             true
-        )).hasMessage("Specified undirectedRelationshipTypes `[UNUSED_REL]` were not projected in the graph. Projected types are: `['REL']`.");
+        )).hasMessage(
+            "Specified undirectedRelationshipTypes `[UNUSED_REL]` were not projected in the graph. Projected types are: `['REL']`.");
     }
 
     @Test
     void shouldFailImportWithUnusedInverseRelationshipType() {
-        var importer = new GraphImporter(GraphProjectConfig.emptyWithName("", "g"),
+        var importer = new GraphImporter(
+            GraphProjectConfig.emptyWithName("", "g"),
             List.of(),
             List.of("UNUSED_REL"),
             new LazyIdMapBuilderBuilder().concurrency(new Concurrency(4))
@@ -375,7 +426,8 @@ class GraphImporterTest {
             ProgressTracker.NULL_TRACKER
         );
 
-        importer.update(0,
+        importer.update(
+            0,
             1,
             null,
             null,
@@ -385,10 +437,12 @@ class GraphImporterTest {
             null
         );
 
-        assertThatThrownBy(() -> importer.result(DatabaseInfo.create(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
+        assertThatThrownBy(() -> importer.result(
+            DatabaseInfo.create(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
             ProgressTimer.start(),
             true
-        )).hasMessage("Specified inverseIndexedRelationshipTypes `[UNUSED_REL]` were not projected in the graph. Projected types are: `['REL']`.");
+        )).hasMessage(
+            "Specified inverseIndexedRelationshipTypes `[UNUSED_REL]` were not projected in the graph. Projected types are: `['REL']`.");
     }
 
     @Test
@@ -453,9 +507,12 @@ class GraphImporterTest {
         log.assertContainsMessage(TestLog.INFO, "Graph aggregation :: Build graph store :: Relationships 100%");
         log.assertContainsMessage(TestLog.INFO, "Graph aggregation :: Build graph store :: Relationships :: Finished");
         log.assertContainsMessage(TestLog.INFO, "Graph aggregation :: Build graph store :: Finished");
-        log.assertContainsMessage(TestLog.INFO, "Graph aggregation :: Build graph store :: Imported Graph: {nodes: {count: 3, propertyCount: 0, labelCount: 1}, relationships: {count: 2, typeCount: 1, propertyCount: 0}}");
+        log.assertContainsMessage(
+            TestLog.INFO,
+            "Graph aggregation :: Build graph store :: Imported Graph: {nodes: {count: 3, propertyCount: 0, labelCount: 1}, relationships: {count: 2, typeCount: 1, propertyCount: 0}}"
+        );
         log.assertContainsMessage(TestLog.INFO, "Graph aggregation :: Finished");
 
         assertThat(taskStore.query()).map(i -> i.task().status()).containsExactly(Status.FINISHED);
-     }
+    }
 }

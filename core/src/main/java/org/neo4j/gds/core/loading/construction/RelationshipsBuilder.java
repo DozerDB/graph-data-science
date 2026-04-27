@@ -19,12 +19,14 @@
  */
 package org.neo4j.gds.core.loading.construction;
 
+import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.api.PartialIdMap;
 import org.neo4j.gds.compression.api.AdjacencyCompressor;
 import org.neo4j.gds.core.loading.SingleTypeRelationships;
 import org.neo4j.gds.utils.StringJoining;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.function.LongConsumer;
@@ -49,6 +51,14 @@ public class RelationshipsBuilder {
         this.idMap = singleTypeRelationshipsBuilder.partialIdMap();
         this.localBuilderProvider = localBuilderProvider;
         this.skipDanglingRelationships = skipDanglingRelationships;
+    }
+
+    public List<GraphFactory.PropertyConfig> propertyConfigs() {
+        return singleTypeRelationshipsBuilder.propertyConfigs();
+    }
+
+    public RelationshipType relationshipType() {
+        return singleTypeRelationshipsBuilder.relationshipType();
     }
 
     public void add(long originalSourceId, long originalTargetId) {
