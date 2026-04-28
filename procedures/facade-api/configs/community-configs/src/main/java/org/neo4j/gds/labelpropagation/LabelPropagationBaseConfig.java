@@ -38,7 +38,7 @@ public interface LabelPropagationBaseConfig extends
     @Override
     @Configuration.IntegerRange(min = 1)
     default int maxIterations() {
-        return 10;
+        return LabelPropagationParameters.DEFAULT_ITERATIONS;
     }
 
     @Configuration.Ignore

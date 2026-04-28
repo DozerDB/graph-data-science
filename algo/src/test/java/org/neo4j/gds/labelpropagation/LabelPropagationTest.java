@@ -59,7 +59,7 @@ class LabelPropagationTest {
 
     private static final LabelPropagationParameters DEFAULT_PARAMETERS = new LabelPropagationParameters(
         new Concurrency(4),
-        10,
+        LabelPropagationParameters.DEFAULT_ITERATIONS,
         null,
         null
     );
@@ -118,7 +118,12 @@ class LabelPropagationTest {
     void shouldUseSeedProperty() {
         LabelPropagation lp = new LabelPropagation(
             graph,
-            new LabelPropagationParameters(new Concurrency(4), 1, null, "seedId"),
+            new LabelPropagationParameters(
+                new Concurrency(4),
+                1,
+                null,
+                "seedId"
+            ),
             DefaultPool.INSTANCE,
             ProgressTracker.NULL_TRACKER,
             TerminationFlag.RUNNING_TRUE

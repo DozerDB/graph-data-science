@@ -31,4 +31,7 @@ public record LabelPropagationParameters(
     @Nullable String nodeWeightProperty,
     @Nullable String seedProperty
 ) implements AlgorithmParameters {
+
+    public final static int DEFAULT_ITERATIONS = 10;
+
 }
