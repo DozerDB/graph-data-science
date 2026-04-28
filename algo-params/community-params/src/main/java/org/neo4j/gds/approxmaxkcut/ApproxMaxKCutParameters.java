@@ -23,6 +23,7 @@ import org.neo4j.gds.AlgorithmParameters;
 import org.neo4j.gds.annotation.Parameters;
 import org.neo4j.gds.core.concurrency.Concurrency;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,4 +39,17 @@ public record ApproxMaxKCutParameters(
     boolean hasRelationshipWeightProperty,
     boolean minimize
 ) implements AlgorithmParameters {
+
+    public static final byte DEFAULT_K =  2;
+    public static final int DEFAULT_ITERATIONS =  8;
+    public static final int DEFAULT_VNS_ORDER =  0;
+    public static final boolean DEFAULT_MINIMIZE =  false;
+
+    public static List<Long> minCommunitySizes(int k,boolean minimize) {
+        if (minimize) {
+            return Collections.nCopies(k, 1L);
+        }
+        return Collections.nCopies(k, 0L);
+    }
+
 }

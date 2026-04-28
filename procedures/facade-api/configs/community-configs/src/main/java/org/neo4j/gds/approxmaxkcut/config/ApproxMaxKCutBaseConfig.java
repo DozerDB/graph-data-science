@@ -28,9 +28,9 @@ import org.neo4j.gds.approxmaxkcut.ApproxMaxKCutParameters;
 import org.neo4j.gds.config.AlgoBaseConfig;
 import org.neo4j.gds.config.RelationshipWeightConfig;
 import org.neo4j.gds.config.SingleThreadedRandomSeedConfig;
+import org.neo4j.gds.core.concurrency.ParallelUtil;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import static org.neo4j.gds.utils.StringFormatting.formatWithLocale;
@@ -42,38 +42,36 @@ public interface ApproxMaxKCutBaseConfig extends AlgoBaseConfig,
 
     @Configuration.IntegerRange(min = 2, max = Byte.MAX_VALUE)
     default byte k() {
-        return 2;
+        return ApproxMaxKCutParameters.DEFAULT_K;
     }
 
     @Configuration.IntegerRange(min = 1)
     default int iterations() {
-        return 8;
+        return ApproxMaxKCutParameters.DEFAULT_ITERATIONS;
     }
 
     @Configuration.IntegerRange(min = 0)
     default int vnsMaxNeighborhoodOrder() {
-        return 0;
+        return ApproxMaxKCutParameters.DEFAULT_VNS_ORDER;
     }
 
     // Min k-cut capabilities not exposed in API yet.
     @Configuration.Ignore
     default boolean minimize() {
-        return false;
+
+        return ApproxMaxKCutParameters.DEFAULT_MINIMIZE;
     }
 
     // Min k-cut capabilities not exposed in API yet.
     @Configuration.Ignore
     default int batchSize() {
-        return 10_000;
+        return ParallelUtil.DEFAULT_BATCH_SIZE;
     }
 
     // Min k-cut capabilities not exposed in API yet.
     @Configuration.Ignore
     default List<Long> minCommunitySizes() {
-        if (minimize()) {
-            return Collections.nCopies(k(), 1L);
-        }
-        return Collections.nCopies(k(), 0L);
+        return  ApproxMaxKCutParameters.minCommunitySizes(k(),minimize());
     }
 
     @Configuration.Check
