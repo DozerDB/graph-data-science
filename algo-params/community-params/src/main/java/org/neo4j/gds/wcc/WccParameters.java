@@ -31,6 +31,8 @@ public record WccParameters(
     Optional<String> seedProperty,
     Concurrency concurrency
 ) implements AlgorithmParameters {
+
+    public  final static double DEFAULT_THRESHOLD=0d;
     public WccParameters(double threshold, Concurrency concurrency) {
         this(threshold, Optional.empty(), concurrency);
     }

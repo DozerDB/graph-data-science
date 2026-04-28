@@ -145,7 +145,11 @@ class WccTest {
     void seededWccOnUnionGraphs(Orientation orientation, String gdl, @SuppressWarnings("unused") String testName) {
         var graph = fromGdl(gdl, orientation);
 
-        var result = run(graph, new WccParameters(0D, Optional.of("componentId"), new Concurrency(4)));
+        var result = run(graph, new WccParameters(
+            WccParameters.DEFAULT_THRESHOLD,
+            Optional.of("componentId"),
+            new Concurrency(4))
+        );
 
         var seen = new LongHashSet();
 
@@ -189,7 +193,13 @@ class WccTest {
     }
 
     DisjointSetStruct run(Graph graph) {
-        return run(graph, new WccParameters(0D, new Concurrency(4)));
+        return run(
+            graph,
+            new WccParameters(
+                WccParameters.DEFAULT_THRESHOLD,
+                new Concurrency(4)
+            )
+        );
     }
 
     DisjointSetStruct run(Graph graph, WccParameters parameters) {
@@ -284,7 +294,7 @@ class WccTest {
         private void assertResults(TestGraph graph) {
             var wccStub = new WccStub(TerminationFlag.RUNNING_TRUE);
 
-            var parameters = new WccParameters(0D, new Concurrency(4));
+            var parameters = new WccParameters(WccParameters.DEFAULT_THRESHOLD, new Concurrency(4));
             var dss = wccStub.wcc(graph, parameters, ProgressTracker.NULL_TRACKER);
 
             var actualCommunities = new ArrayList<Long>();
@@ -310,7 +320,7 @@ class WccTest {
     void shouldLogProgress(Orientation orientation) {
         var graph = createTestGraph(orientation);
 
-        var parameters = new WccParameters(0, new Concurrency(2));
+        var parameters = new WccParameters(WccParameters.DEFAULT_THRESHOLD, new Concurrency(2));
 
         var progressTrackerWithLog = TestProgressTrackerHelper.create(
             new CommunityAlgorithmTasks().wcc(graph),

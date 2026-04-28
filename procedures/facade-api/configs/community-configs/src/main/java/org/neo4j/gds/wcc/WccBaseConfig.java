@@ -30,7 +30,7 @@ import java.util.Optional;
 public interface WccBaseConfig extends AlgoBaseConfig, SeedConfig, ConsecutiveIdsConfig, RelationshipWeightConfig {
 
     default double threshold() {
-        return 0D;
+        return WccParameters.DEFAULT_THRESHOLD;
     }
 
     @Configuration.Check
