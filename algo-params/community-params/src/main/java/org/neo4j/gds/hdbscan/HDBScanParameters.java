@@ -29,4 +29,10 @@ public record HDBScanParameters(
     long minClusterSize,
     String nodeProperty
 ) implements AlgorithmParameters {
+
+
+    public final static long  DEFAULT_LEAF_SIZE=  1;
+    public final static int   DEFAULT_SAMPLES=  10;
+    public final static long  DEFAULT_MIN_CLUSTER=  5L;
+
 }

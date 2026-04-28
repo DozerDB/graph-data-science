@@ -38,17 +38,17 @@ public interface HDBScanBaseConfig extends AlgoBaseConfig {
 
     @Configuration.LongRange(min = 1)
     default long leafSize() {
-        return 1L;
+        return HDBScanParameters.DEFAULT_LEAF_SIZE;
     }
 
     @Configuration.IntegerRange(min = 1)
     default int samples() {
-        return 10;
+        return HDBScanParameters.DEFAULT_SAMPLES;
     }
 
     @Configuration.LongRange(min = 1)
     default long minClusterSize() {
-        return 5L;
+        return HDBScanParameters.DEFAULT_MIN_CLUSTER;
     }
 
     @Configuration.ConvertWith(method = "validatePropertyName")
