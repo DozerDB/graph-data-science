@@ -45,26 +45,26 @@ public interface LeidenBaseConfig extends
     ToleranceConfig {
 
     default double gamma() {
-        return 1.0;
+        return LeidenParameters.DEFAULT_GAMMA;
     }
 
     default double theta() {
-        return 0.01;
+        return LeidenParameters.DEFAULT_THETA;
     }
 
     @Configuration.IntegerRange(min = 1)
     default int maxLevels() {
-        return 10;
+        return LeidenParameters.DEFAULT_LEVELS;
     }
 
     default boolean includeIntermediateCommunities() {
-        return false;
+        return LeidenParameters.DEFAULT_INTERMEDIATE_COMMUNITIES;
     }
 
     @Override
     @Configuration.DoubleRange(min = 0D)
     default double tolerance() {
-        return 0.0001;
+        return LeidenParameters.DEFAULT_TOLERANCE;
     }
 
     @Configuration.Check

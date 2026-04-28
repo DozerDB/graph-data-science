@@ -90,9 +90,9 @@ class LeidenTest {
         Leiden leiden = new Leiden(
             graph,
             maxLevels,
-            1.0,
-            0.01,
-            false,
+            LeidenParameters.DEFAULT_GAMMA,
+            LeidenParameters.DEFAULT_THETA,
+            LeidenParameters.DEFAULT_INTERMEDIATE_COMMUNITIES,
             19L,
             null,
             TOLERANCE_DEFAULT,
@@ -126,9 +126,9 @@ class LeidenTest {
         Leiden leiden = new Leiden(
             graph,
             maxLevels,
-            1.0,
-            0.01,
-            false,
+            LeidenParameters.DEFAULT_GAMMA,
+            LeidenParameters.DEFAULT_THETA,
+            LeidenParameters.DEFAULT_INTERMEDIATE_COMMUNITIES,
             19L,
             graph.nodeProperties("optimal"),
             TOLERANCE_DEFAULT,
@@ -165,9 +165,9 @@ class LeidenTest {
         Leiden leiden = new Leiden(
             graph,
             maxLevels,
-            1.0,
-            0.01,
-            false,
+            LeidenParameters.DEFAULT_GAMMA,
+            LeidenParameters.DEFAULT_THETA,
+            LeidenParameters.DEFAULT_INTERMEDIATE_COMMUNITIES,
             19L,
             graph.nodeProperties("seed"),
             TOLERANCE_DEFAULT,
@@ -201,9 +201,9 @@ class LeidenTest {
         Leiden leiden = new Leiden(
             graph,
             maxLevels,
-            1.0,
-            0.01,
-            false,
+            LeidenParameters.DEFAULT_GAMMA,
+            LeidenParameters.DEFAULT_THETA,
+            LeidenParameters.DEFAULT_INTERMEDIATE_COMMUNITIES,
             19L,
             graph.nodeProperties("seed2"),
             TOLERANCE_DEFAULT,
@@ -360,12 +360,12 @@ class LeidenTest {
         void shouldLogProgress() {
             var parameters = new LeidenParameters(
                 new Concurrency(4),
-                0.0001,
+                LeidenParameters.DEFAULT_TOLERANCE,
                 null,
                 3,
-                1.0,
-                0.01,
-                false,
+                LeidenParameters.DEFAULT_GAMMA,
+                LeidenParameters.DEFAULT_GAMMA,
+                LeidenParameters.DEFAULT_INTERMEDIATE_COMMUNITIES,
                 Optional.of(19L)
             );
             var progressTrackerWithLog = TestProgressTrackerHelper.create(

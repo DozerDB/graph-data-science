@@ -37,6 +37,13 @@ public record LeidenParameters(
     boolean includeIntermediateCommunities,
     Optional<Long> randomSeed
 ) implements AlgorithmParameters {
+
+    public final static double DEFAULT_GAMMA = 1.0;
+    public final static double DEFAULT_THETA = 0.01;
+    public final static int DEFAULT_LEVELS = 10;
+    public final static boolean DEFAULT_INTERMEDIATE_COMMUNITIES = false;
+    public final static double DEFAULT_TOLERANCE = 0.0001;
+
     public long randomSeedOrDefault() {
         return randomSeed.orElse(0L);
     }
