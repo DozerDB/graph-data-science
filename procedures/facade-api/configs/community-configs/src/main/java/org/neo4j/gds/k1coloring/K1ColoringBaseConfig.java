@@ -29,7 +29,7 @@ public interface K1ColoringBaseConfig extends AlgoBaseConfig, IterationsConfig {
     @Override
     @Configuration.IntegerRange(min = 1)
     default int maxIterations() {
-        return 10;
+        return K1ColoringParameters.DEFAULT_ITERATIONS;
     }
 
     default int batchSize() {
