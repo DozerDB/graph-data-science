@@ -28,7 +28,6 @@ import com.carrotsearch.hppc.ObjectIntMap;
 import com.carrotsearch.hppc.cursors.IntObjectCursor;
 import org.immutables.value.Value;
 import org.jetbrains.annotations.Nullable;
-import org.neo4j.gds.ElementProjection;
 import org.neo4j.gds.NodeLabel;
 import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.annotation.ValueClass;
@@ -179,12 +178,13 @@ public interface GraphDimensions {
             .build();
     }
 
-    default long estimatedRelCount(List<String> relationshipTypeNames) {
-        if (!(relationshipTypeNames.contains(ElementProjection.PROJECT_ALL))) {
+    default long estimatedRelCount(List<String> relTypeNames) {
+        return estimatedRelCount(relTypeNames.stream().map(RelationshipType::of).toList());
+    }
+
+    default long estimatedRelCount(Collection<RelationshipType> relationshipTypes) {
+        if (!(relationshipTypes.contains(RelationshipType.ALL_RELATIONSHIPS))) {
             Map<RelationshipType, Long> relCounts = relationshipCounts();
-            List<RelationshipType> relationshipTypes = relationshipTypeNames.stream()
-                .map(RelationshipType::of)
-                .toList();
 
             if (relCounts.keySet().containsAll(relationshipTypes)) {
                 return relationshipTypes.stream().mapToLong(relCounts::get).sum();
@@ -193,5 +193,4 @@ public interface GraphDimensions {
 
         return relCountUpperBound();
     }
-
 }
