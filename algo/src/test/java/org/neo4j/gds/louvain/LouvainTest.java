@@ -128,9 +128,9 @@ class LouvainTest {
         var algorithm = new Louvain(
             graph,
             new Concurrency(1),
-            10,
+            LouvainParameters.DEFAULT_ITERATIONS,
             TOLERANCE_DEFAULT,
-            10,
+            LouvainParameters.DEFAULT_LEVELS,
             true,
             null,
             ProgressTracker.NULL_TRACKER,
@@ -176,9 +176,9 @@ class LouvainTest {
         var algorithm = new Louvain(
             graph,
             new Concurrency(1),
-            10,
+            LouvainParameters.DEFAULT_ITERATIONS,
             TOLERANCE_DEFAULT,
-            10,
+            LouvainParameters.DEFAULT_LEVELS,
             true,
             null,
             ProgressTracker.NULL_TRACKER,
@@ -224,9 +224,9 @@ class LouvainTest {
         var algorithm = new Louvain(
             graph,
             new Concurrency(1),
-            10,
+            LouvainParameters.DEFAULT_ITERATIONS,
             TOLERANCE_DEFAULT,
-            10,
+            LouvainParameters.DEFAULT_LEVELS,
             true,
             "seed",
             ProgressTracker.NULL_TRACKER,
@@ -266,9 +266,9 @@ class LouvainTest {
         var algorithm = new Louvain(
             graph,
             new Concurrency(1),
-            10,
+            LouvainParameters.DEFAULT_ITERATIONS,
             2.0,
-            10,
+            LouvainParameters.DEFAULT_LEVELS,
             false,
             null,
             ProgressTracker.NULL_TRACKER,
@@ -294,7 +294,7 @@ class LouvainTest {
         var algorithm = new Louvain(
             graph,
             new Concurrency(1),
-            10,
+            LouvainParameters.DEFAULT_ITERATIONS,
             TOLERANCE_DEFAULT,
             1,
             false,
@@ -324,10 +324,10 @@ class LouvainTest {
                 var louvain = new Louvain(
                     graph,
                     new Concurrency(2),
-                    10,
+                    LouvainParameters.DEFAULT_ITERATIONS,
                     TOLERANCE_DEFAULT,
-                    10,
-                    false,
+                    LouvainParameters.DEFAULT_LEVELS,
+                    LouvainParameters.DEFAULT_INTERMEDIATE_COMMUNITIES,
                     null,
                     ProgressTracker.NULL_TRACKER,
                     DefaultPool.INSTANCE,
@@ -352,10 +352,10 @@ class LouvainTest {
         var algorithm = new Louvain(
             graph,
             new Concurrency(4),
-            10,
+            LouvainParameters.DEFAULT_ITERATIONS,
             TOLERANCE_DEFAULT,
-            10,
-            false,
+            LouvainParameters.DEFAULT_LEVELS,
+            LouvainParameters.DEFAULT_INTERMEDIATE_COMMUNITIES,
             "seed2",
             ProgressTracker.NULL_TRACKER,
             DefaultPool.INSTANCE,
@@ -384,10 +384,10 @@ class LouvainTest {
         var louvain = new Louvain(
             myGraph,
             new Concurrency(4),
-            10,
+            LouvainParameters.DEFAULT_ITERATIONS,
             TOLERANCE_DEFAULT,
-            10,
-            false,
+            LouvainParameters.DEFAULT_LEVELS,
+            LouvainParameters.DEFAULT_INTERMEDIATE_COMMUNITIES,
             null,
             ProgressTracker.NULL_TRACKER,
             DefaultPool.INSTANCE,
@@ -460,13 +460,12 @@ class LouvainTest {
         void testLogging() {
             var concurrency = new Concurrency(4);
 
-            var parameters = new LouvainParameters(
-                concurrency,
-                10, 0.0001, 10, false, null
-            );
+            var parameters =  LouvainParameters.createWithDefaults(concurrency,null);
+
             var progressTrackerWithLog = TestProgressTrackerHelper.create(
                 new CommunityAlgorithmTasks().louvain(
-                    graph, parameters
+                    graph,
+                    parameters
                 ),
                 concurrency
             );

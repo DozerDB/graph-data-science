@@ -33,4 +33,21 @@ public record LouvainParameters(
     boolean includeIntermediateCommunities,
     @Nullable String seedProperty
 ) implements AlgorithmParameters {
+
+    public final static double DEFAULT_TOLERANCE = 0.0001;
+    public final static int DEFAULT_ITERATIONS = 10;
+    public final static int DEFAULT_LEVELS = 10;
+    public final static boolean DEFAULT_INTERMEDIATE_COMMUNITIES = false;
+
+
+    static LouvainParameters createWithDefaults(Concurrency concurrency, String seedProperty){
+        return new LouvainParameters(
+            concurrency,
+            DEFAULT_ITERATIONS,
+            DEFAULT_TOLERANCE,
+            DEFAULT_LEVELS,
+            DEFAULT_INTERMEDIATE_COMMUNITIES,
+            seedProperty
+        );
+    }
 }

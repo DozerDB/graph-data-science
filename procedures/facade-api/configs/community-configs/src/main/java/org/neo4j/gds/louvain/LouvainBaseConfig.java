@@ -38,22 +38,22 @@ public interface LouvainBaseConfig extends
     @Override
     @Configuration.DoubleRange(min = 0D)
     default double tolerance() {
-        return 0.0001;
+        return LouvainParameters.DEFAULT_TOLERANCE;
     }
 
     @Override
     @Configuration.IntegerRange(min = 1)
     default int maxIterations() {
-        return 10;
+        return LouvainParameters.DEFAULT_ITERATIONS;
     }
 
     @Configuration.IntegerRange(min = 1)
     default int maxLevels() {
-        return 10;
+        return LouvainParameters.DEFAULT_LEVELS;
     }
 
     default boolean includeIntermediateCommunities() {
-        return false;
+        return LouvainParameters.DEFAULT_INTERMEDIATE_COMMUNITIES;
     }
 
     @Configuration.Check
