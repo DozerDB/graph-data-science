@@ -38,21 +38,20 @@ public interface ModularityOptimizationBaseConfig extends
     ToleranceConfig,
     RelationshipWeightConfig {
 
-    int DEFAULT_ITERATIONS = 10;
-
     @Override
     default double tolerance() {
-        return 0.0001;
+        return ModularityOptimizationParameters.DEFAULT_TOLERANCE;
     }
 
     @Override
     default int maxIterations() {
-        return DEFAULT_ITERATIONS;
+        return ModularityOptimizationParameters.DEFAULT_ITERATIONS;
     }
 
     default int batchSize() {
         return ParallelUtil.DEFAULT_BATCH_SIZE;
     }
+
 
     @Configuration.Ignore
     default ModularityOptimizationParameters toParameters() {

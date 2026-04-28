@@ -33,4 +33,7 @@ public record ModularityOptimizationParameters(
     double tolerance,
     Optional<String> seedProperty
 )  implements AlgorithmParameters {
+
+    public final static double DEFAULT_TOLERANCE = 0.0001;
+    public final static int DEFAULT_ITERATIONS = 10;
 }
