@@ -20,24 +20,23 @@
 package org.neo4j.gds.procedures.pipelines;
 
 import org.neo4j.gds.ml.pipeline.nodePipeline.classification.train.NodeClassificationModelResult;
-import org.neo4j.gds.ml.training.TrainingStatistics;
 
-import java.util.Collections;
 import java.util.Map;
-import java.util.Optional;
 
-public class NodeClassificationPipelineTrainResult extends MLTrainResult {
-    @SuppressWarnings("WeakerAccess")
-    public final Map<String, Object> modelSelectionStats;
-
-    public NodeClassificationPipelineTrainResult(
-        Optional<NodeClassificationModelResult> pipelineResult,
+public record NodeClassificationPipelineTrainResult(
+        long trainMillis,
+        Map<String, Object> modelInfo,
+        Map<String, Object> configuration,
+        Map<String, Object> modelSelectionStats
+) implements MLTrainResult {
+    public static NodeClassificationPipelineTrainResult create(
+        NodeClassificationModelResult pipelineResult,
         long trainMillis
     ) {
-        super(pipelineResult.map(NodeClassificationModelResult::model), trainMillis);
-        this.modelSelectionStats = pipelineResult
-            .map(NodeClassificationModelResult::trainingStatistics)
-            .map(TrainingStatistics::toMap)
-            .orElseGet(Collections::emptyMap);
+        var modelSelectionStats = pipelineResult.trainingStatistics().toMap();
+        var modelInfo = MLTrainResult.createModelInfo(pipelineResult.model());
+        var trainConfig = pipelineResult.model().trainConfig().toMap();
+        return new NodeClassificationPipelineTrainResult(trainMillis, modelInfo, trainConfig, modelSelectionStats);
     }
+
 }

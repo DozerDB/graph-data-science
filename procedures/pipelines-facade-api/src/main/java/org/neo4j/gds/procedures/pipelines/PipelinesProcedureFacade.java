@@ -19,19 +19,22 @@
  */
 package org.neo4j.gds.procedures.pipelines;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.stream.Stream;
 
 public interface PipelinesProcedureFacade {
     String NO_VALUE = "__NO_VALUE";
 
-    Stream<PipelineCatalogResult> drop(
+    Stream<PipelineCatalogResult> dropPipeline(
         String pipelineNameAsString,
-        boolean failIfMissing
+        boolean failIfMissing,
+        @Nullable String sessionName
     );
 
-    Stream<PipelineExistsResult> exists(String pipelineNameAsString);
+    Stream<PipelineExistsResult> existsPipeline(String pipelineNameAsString, @Nullable String sessionName);
 
-    Stream<PipelineCatalogResult> list(String pipelineNameAsString);
+    Stream<PipelineCatalogResult> listPipelines(String pipelineNameAsString, @Nullable String sessionName);
 
     LinkPredictionFacade linkPrediction();
 

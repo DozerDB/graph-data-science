@@ -23,7 +23,7 @@ YIELD
 [opts="header",cols="1,1,1m,1,4"]
 |===
 | Name          | Type    | Default | Optional | Description
-| pipelineName  | String  | n/a     | yes      | The name of a pipeline. If not specified, all pipelines in the catalog are listed.
+| pipelineName  | String  | n/a     | no       | The name of a pipeline.
 | failIfMissing | Boolean | true    | yes      | By default, the library will raise an error when trying to remove a non-existing pipeline. When set to `false`, the procedure returns an empty result.
 |===
 

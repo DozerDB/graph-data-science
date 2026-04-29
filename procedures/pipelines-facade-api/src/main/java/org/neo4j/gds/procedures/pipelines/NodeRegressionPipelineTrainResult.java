@@ -26,17 +26,24 @@ import org.neo4j.gds.ml.pipeline.nodePipeline.regression.NodeRegressionPipelineT
 import org.neo4j.gds.ml.training.TrainingStatistics;
 
 import java.util.Map;
-import java.util.Optional;
 
-public class NodeRegressionPipelineTrainResult extends MLTrainResult {
-    public final Map<String, Object> modelSelectionStats;
+public record NodeRegressionPipelineTrainResult(
+    long trainMillis,
+    Map<String, Object> modelInfo,
+    Map<String, Object> configuration,
+    Map<String, Object> modelSelectionStats
+) implements MLTrainResult {
 
     public NodeRegressionPipelineTrainResult(
         Model<Regressor.RegressorData, NodeRegressionPipelineTrainConfig, NodeRegressionPipelineModelInfo> model,
         TrainingStatistics trainingStatistics,
         long trainMillis
     ) {
-        super(Optional.of(model), trainMillis);
-        this.modelSelectionStats = trainingStatistics.toMap();
+        this(
+            trainMillis,
+            MLTrainResult.createModelInfo(model),
+            model.trainConfig().toMap(),
+            trainingStatistics.toMap()
+        );
     }
 }

@@ -43,7 +43,7 @@ public class PipelineDropProc {
         @Name(value = "pipelineName") String pipelineName,
         @Name(value = "failIfMissing", defaultValue = "true") boolean failIfMissing
     ) {
-        return facade.pipelines().drop(pipelineName, failIfMissing);
+        return facade.pipelines().dropPipeline(pipelineName, failIfMissing, null);
     }
 
     @Procedure(name = "gds.beta.pipeline.drop", mode = READ, deprecatedBy = "gds.pipeline.drop")

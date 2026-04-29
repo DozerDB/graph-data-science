@@ -41,7 +41,7 @@ public class PipelineListProc {
     @Procedure(name = "gds.pipeline.list", mode = READ)
     @Description(DESCRIPTION)
     public Stream<PipelineCatalogResult> list(@Name(value = "pipelineName", defaultValue = PipelinesProcedureFacade.NO_VALUE) String pipelineName) {
-        return facade.pipelines().list(pipelineName);
+        return facade.pipelines().listPipelines(pipelineName, null);
     }
 
     @Procedure(name = "gds.beta.pipeline.list", mode = READ, deprecatedBy = "gds.pipeline.list")

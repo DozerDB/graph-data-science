@@ -50,6 +50,6 @@ public class NodeClassificationPipelineTrainProc {
         @Name(value = "graphNameOrConfiguration") Object graphNameOrConfiguration,
         @Name(value = "algoConfiguration") Map<String, Object> algoConfiguration
     ) {
-        return facade.pipelines().nodeClassification().trainEstimate(graphNameOrConfiguration, algoConfiguration);
+        return facade.pipelines().nodeClassification().trainEstimate(graphNameOrConfiguration, algoConfiguration, null);
     }
 }

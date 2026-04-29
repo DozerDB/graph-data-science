@@ -39,8 +39,8 @@ class NodeClassificationTrainResultRenderer implements ResultRenderer<NodeClassi
 
         var nodeClassificationModelResult = result.get();
 
-        var nodeClassificationPipelineTrainResult = new NodeClassificationPipelineTrainResult(
-            Optional.of(nodeClassificationModelResult), // come on now
+        var nodeClassificationPipelineTrainResult = NodeClassificationPipelineTrainResult.create(
+            nodeClassificationModelResult,
             timings.computeMillis
         );
 

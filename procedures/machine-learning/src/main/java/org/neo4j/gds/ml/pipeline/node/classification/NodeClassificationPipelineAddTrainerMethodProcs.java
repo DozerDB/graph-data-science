@@ -42,7 +42,7 @@ public class NodeClassificationPipelineAddTrainerMethodProcs {
         @Name("pipelineName") String pipelineName,
         @Name(value = "config", defaultValue = "{}") Map<String, Object> logisticRegressionClassifierConfig
     ) {
-        return facade.pipelines().nodeClassification().addLogisticRegression(pipelineName, logisticRegressionClassifierConfig);
+        return facade.pipelines().nodeClassification().addLogisticRegression(pipelineName, logisticRegressionClassifierConfig, null);
     }
 
     @Procedure(name = "gds.beta.pipeline.nodeClassification.addRandomForest", mode = READ)
@@ -51,7 +51,7 @@ public class NodeClassificationPipelineAddTrainerMethodProcs {
         @Name("pipelineName") String pipelineName,
         @Name(value = "config") Map<String, Object> randomForestClassifierConfig
     ) {
-        return facade.pipelines().nodeClassification().addRandomForest(pipelineName, randomForestClassifierConfig);
+        return facade.pipelines().nodeClassification().addRandomForest(pipelineName, randomForestClassifierConfig, null);
     }
 
     @Procedure(name = "gds.alpha.pipeline.nodeClassification.addRandomForest", mode = READ, deprecatedBy = "gds.beta.pipeline.nodeClassification.addRandomForest")

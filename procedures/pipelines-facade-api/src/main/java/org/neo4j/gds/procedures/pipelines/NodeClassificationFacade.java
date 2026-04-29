@@ -19,6 +19,7 @@
  */
 package org.neo4j.gds.procedures.pipelines;
 
+import org.jetbrains.annotations.Nullable;
 import org.neo4j.gds.applications.algorithms.machinery.MemoryEstimateResult;
 
 import java.util.Map;
@@ -27,7 +28,8 @@ import java.util.stream.Stream;
 public interface NodeClassificationFacade {
     Stream<NodePipelineInfoResult> addLogisticRegression(
         String pipelineName,
-        Map<String, Object> configuration
+        Map<String, Object> configuration,
+        @Nullable String sessionName
     );
 
     Stream<NodePipelineInfoResult> addMLP(String pipelineName, Map<String, Object> configuration);
@@ -35,16 +37,17 @@ public interface NodeClassificationFacade {
     Stream<NodePipelineInfoResult> addNodeProperty(
         String pipelineNameAsString,
         String taskName,
-        Map<String, Object> procedureConfig
+        Map<String, Object> procedureConfig,
+        @Nullable String sessionName
     );
 
-    Stream<NodePipelineInfoResult> addRandomForest(String pipelineName, Map<String, Object> configuration);
+    Stream<NodePipelineInfoResult> addRandomForest(String pipelineName, Map<String, Object> configuration, @Nullable String sessionName);
 
     Stream<NodePipelineInfoResult> configureAutoTuning(String pipelineName, Map<String, Object> configuration);
 
-    Stream<NodePipelineInfoResult> configureSplit(String pipelineName, Map<String, Object> configuration);
+    Stream<NodePipelineInfoResult> configureSplit(String pipelineName, Map<String, Object> configuration, @Nullable String sessionName);
 
-    Stream<NodePipelineInfoResult> createPipeline(String pipelineNameAsString);
+    Stream<NodePipelineInfoResult> createPipeline(String pipelineNameAsString, @Nullable String sessionName);
 
     Stream<PredictMutateResult> mutate(
         String graphNameAsString,
@@ -56,7 +59,11 @@ public interface NodeClassificationFacade {
         Map<String, Object> rawConfiguration
     );
 
-    Stream<NodePipelineInfoResult> selectFeatures(String pipelineNameAsString, Object nodeFeatureStepsAsObject);
+    Stream<NodePipelineInfoResult> selectFeatures(
+        String pipelineNameAsString,
+        Object nodeFeatureStepsAsObject,
+        @Nullable String sessionName
+    );
 
     Stream<NodeClassificationStreamResult> stream(
         String graphNameAsString,
@@ -75,7 +82,8 @@ public interface NodeClassificationFacade {
 
     Stream<MemoryEstimateResult> trainEstimate(
         Object graphNameOrConfiguration,
-        Map<String, Object> rawConfiguration
+        Map<String, Object> rawConfiguration,
+        @Nullable String sessionName
     );
 
     Stream<WriteResult> write(String graphNameAsString, Map<String, Object> configuration);

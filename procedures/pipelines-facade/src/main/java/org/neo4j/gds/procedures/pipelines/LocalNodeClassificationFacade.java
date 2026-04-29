@@ -19,6 +19,7 @@
  */
 package org.neo4j.gds.procedures.pipelines;
 
+import org.jetbrains.annotations.Nullable;
 import org.neo4j.gds.api.GraphName;
 import org.neo4j.gds.api.User;
 import org.neo4j.gds.applications.algorithms.machinery.MemoryEstimateResult;
@@ -75,7 +76,8 @@ public final class LocalNodeClassificationFacade implements NodeClassificationFa
     @Override
     public Stream<NodePipelineInfoResult> addLogisticRegression(
         String pipelineName,
-        Map<String, Object> configuration
+        Map<String, Object> configuration,
+        @Nullable String sessionName
     ) {
         return configurer.configureNodeClassificationTrainingPipeline(
             pipelineName,
@@ -97,7 +99,8 @@ public final class LocalNodeClassificationFacade implements NodeClassificationFa
     public Stream<NodePipelineInfoResult> addNodeProperty(
         String pipelineNameAsString,
         String taskName,
-        Map<String, Object> procedureConfig
+        Map<String, Object> procedureConfig,
+        @Nullable String sessionName
     ) {
         var pipelineName = PipelineName.parse(pipelineNameAsString);
 
@@ -113,7 +116,7 @@ public final class LocalNodeClassificationFacade implements NodeClassificationFa
     }
 
     @Override
-    public Stream<NodePipelineInfoResult> addRandomForest(String pipelineName, Map<String, Object> configuration) {
+    public Stream<NodePipelineInfoResult> addRandomForest(String pipelineName, Map<String, Object> configuration, @Nullable String sessionName) {
         return configurer.configureNodeClassificationTrainingPipeline(
             pipelineName,
             () -> pipelineConfigurationParser.parseRandomForestClassifierTrainerConfigForLinkPredictionOrNodeClassification(configuration),
@@ -131,7 +134,7 @@ public final class LocalNodeClassificationFacade implements NodeClassificationFa
     }
 
     @Override
-    public Stream<NodePipelineInfoResult> configureSplit(String pipelineName, Map<String, Object> configuration) {
+    public Stream<NodePipelineInfoResult> configureSplit(String pipelineName, Map<String, Object> configuration, @Nullable String sessionName) {
         return configurer.configureNodeClassificationTrainingPipeline(
             pipelineName,
             () -> pipelineConfigurationParser.parseNodePropertyPredictionSplitConfig(configuration),
@@ -140,7 +143,7 @@ public final class LocalNodeClassificationFacade implements NodeClassificationFa
     }
 
     @Override
-    public Stream<NodePipelineInfoResult> createPipeline(String pipelineNameAsString) {
+    public Stream<NodePipelineInfoResult> createPipeline(String pipelineNameAsString, @Nullable String sessionName) {
         var pipelineName = PipelineName.parse(pipelineNameAsString);
 
         var pipeline = pipelineApplications.createNodeClassificationTrainingPipeline(pipelineName);
@@ -188,7 +191,7 @@ public final class LocalNodeClassificationFacade implements NodeClassificationFa
     }
 
     @Override
-    public Stream<NodePipelineInfoResult> selectFeatures(String pipelineNameAsString, Object nodeFeatureStepsAsObject) {
+    public Stream<NodePipelineInfoResult> selectFeatures(String pipelineNameAsString, Object nodeFeatureStepsAsObject, @Nullable String sessionName) {
         var pipelineName = PipelineName.parse(pipelineNameAsString);
 
         var nodeFeatureSteps = nodeFeatureStepsParser.parse(nodeFeatureStepsAsObject, "nodeProperties");
@@ -247,7 +250,8 @@ public final class LocalNodeClassificationFacade implements NodeClassificationFa
     @Override
     public Stream<MemoryEstimateResult> trainEstimate(
         Object graphNameOrConfiguration,
-        Map<String, Object> rawConfiguration
+        Map<String, Object> rawConfiguration,
+        @Nullable String sessionName
     ) {
         PipelineCompanion.preparePipelineConfig(graphNameOrConfiguration, rawConfiguration);
         var configuration = pipelineConfigurationParser.parseNodeClassificationTrainConfig(rawConfiguration);

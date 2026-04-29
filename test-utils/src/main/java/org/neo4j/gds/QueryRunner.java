@@ -69,7 +69,7 @@ public final class QueryRunner {
         Map<String, Object> params,
         BiConsumer<Transaction, Result.ResultRow> rowConsumer
     ) {
-        return runQueryWithRowConsumer(db, username, query, params, READ, rowConsumer);
+        return runQueryWithRowConsumer(db, username, query, params, StaticAccessMode.FULL, rowConsumer);
     }
 
     @TestOnly

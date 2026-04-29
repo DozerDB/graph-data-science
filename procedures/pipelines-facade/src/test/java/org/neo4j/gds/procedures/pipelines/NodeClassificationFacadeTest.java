@@ -66,7 +66,7 @@ class NodeClassificationFacadeTest {
         );
         var facade = new LocalNodeClassificationFacade(null, null, null, applications);
 
-        var result = facade.createPipeline("myPipeline").findAny().orElseThrow();
+        var result = facade.createPipeline("myPipeline", null).findAny().orElseThrow();
 
         assertThat(result.name()).isEqualTo("myPipeline");
         assertThat(result.nodePropertySteps()).isEqualTo(List.of());
@@ -115,7 +115,7 @@ class NodeClassificationFacadeTest {
         var facade = new LocalNodeClassificationFacade(null, null, null, applications);
 
         assertThatIllegalStateException()
-            .isThrownBy(() -> facade.createPipeline("myPipeline"))
+            .isThrownBy(() -> facade.createPipeline("myPipeline", null))
             .withMessage("Pipeline named `myPipeline` already exists.");
     }
 
@@ -124,7 +124,7 @@ class NodeClassificationFacadeTest {
         var facade = new LocalNodeClassificationFacade(null, null, null, null);
 
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> facade.createPipeline("   blanks!"))
+            .isThrownBy(() -> facade.createPipeline("   blanks!", null))
             .withMessage("`pipelineName` must not end or begin with whitespace characters, but got `   blanks!`.");
     }
 }

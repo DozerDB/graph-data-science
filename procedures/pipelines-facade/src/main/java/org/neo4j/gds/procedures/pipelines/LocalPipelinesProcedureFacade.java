@@ -19,6 +19,7 @@
  */
 package org.neo4j.gds.procedures.pipelines;
 
+import org.jetbrains.annotations.Nullable;
 import org.neo4j.gds.api.CloseableResourceRegistry;
 import org.neo4j.gds.api.ProcedureReturnColumns;
 import org.neo4j.gds.applications.algorithms.machinery.AlgorithmEstimationTemplate;
@@ -126,10 +127,10 @@ public final class LocalPipelinesProcedureFacade implements PipelinesProcedureFa
         );
     }
 
-    @Override
-    public Stream<PipelineCatalogResult> drop(
+    public Stream<PipelineCatalogResult> dropPipeline(
         String pipelineNameAsString,
-        boolean failIfMissing
+        boolean failIfMissing,
+        @Nullable String sessionName
     ) {
         var pipelineName = PipelineName.parse(pipelineNameAsString);
 
@@ -148,8 +149,7 @@ public final class LocalPipelinesProcedureFacade implements PipelinesProcedureFa
         return Stream.of(pipelineCatalogResult);
     }
 
-    @Override
-    public Stream<PipelineExistsResult> exists(String pipelineNameAsString) {
+    public Stream<PipelineExistsResult> existsPipeline(String pipelineNameAsString, @Nullable String sessionName) {
         var pipelineName = PipelineName.parse(pipelineNameAsString);
 
         var pipelineType = pipelineApplications.exists(pipelineName);
@@ -161,8 +161,7 @@ public final class LocalPipelinesProcedureFacade implements PipelinesProcedureFa
         return Stream.of(result);
     }
 
-    @Override
-    public Stream<PipelineCatalogResult> list(String pipelineNameAsString) {
+    public Stream<PipelineCatalogResult> listPipelines(String pipelineNameAsString, @Nullable String sessionName) {
         if (pipelineNameAsString == null || pipelineNameAsString.equals(NO_VALUE)) {
             var pipelineEntries = pipelineApplications.getAll();
 

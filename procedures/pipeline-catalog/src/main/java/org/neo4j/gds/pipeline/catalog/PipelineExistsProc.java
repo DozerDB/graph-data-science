@@ -40,7 +40,7 @@ public class PipelineExistsProc {
     @Procedure(name = "gds.pipeline.exists", mode = READ)
     @Description(DESCRIPTION)
     public Stream<PipelineExistsResult> exists(@Name(value = "pipelineName") String pipelineName) {
-        return facade.pipelines().exists(pipelineName);
+        return facade.pipelines().existsPipeline(pipelineName, null);
     }
 
     @Procedure(name = "gds.beta.pipeline.exists", mode = READ, deprecatedBy = "gds.pipeline.exists")

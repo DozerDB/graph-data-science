@@ -26,17 +26,18 @@ import org.neo4j.gds.ml.pipeline.linkPipeline.train.LinkPredictionTrainConfig;
 import org.neo4j.gds.ml.training.TrainingStatistics;
 
 import java.util.Map;
-import java.util.Optional;
 
-public class LinkPredictionTrainResult extends MLTrainResult {
-    public final Map<String, Object> modelSelectionStats;
-
+public record LinkPredictionTrainResult(
+        long trainMillis,
+        Map<String, Object> modelInfo,
+        Map<String, Object> configuration,
+        Map<String, Object> modelSelectionStats
+) implements MLTrainResult {
     public LinkPredictionTrainResult(
         Model<Classifier.ClassifierData, LinkPredictionTrainConfig, LinkPredictionModelInfo> model,
         TrainingStatistics trainingStatistics,
         long trainMillis
     ) {
-        super(Optional.of(model), trainMillis);
-        this.modelSelectionStats = trainingStatistics.toMap();
+        this(trainMillis, MLTrainResult.createModelInfo(model), model.trainConfig().toMap(), trainingStatistics.toMap());
     }
 }
