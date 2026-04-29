@@ -21,7 +21,7 @@ package org.neo4j.gds.pagerank;
 
 import org.junit.jupiter.api.Test;
 import org.neo4j.gds.scaling.ScalerFactory;
-import org.neo4j.gds.scaling.scale.ScalerType;
+import org.neo4j.gds.scaling.ScalerType;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 

@@ -21,7 +21,6 @@ package org.neo4j.gds.scaling;
 
 import org.jetbrains.annotations.NotNull;
 import org.neo4j.gds.core.CypherMapWrapper;
-import org.neo4j.gds.scaling.scale.ScalerType;
 import org.neo4j.gds.utils.StringJoining;
 
 import java.util.List;

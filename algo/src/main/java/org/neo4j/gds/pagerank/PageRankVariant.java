@@ -20,7 +20,7 @@
 package org.neo4j.gds.pagerank;
 
 import org.neo4j.gds.scaling.ScalerFactory;
-import org.neo4j.gds.scaling.scale.ScalerType;
+import org.neo4j.gds.scaling.ScalerType;
 
 public enum PageRankVariant {
     PAGE_RANK,

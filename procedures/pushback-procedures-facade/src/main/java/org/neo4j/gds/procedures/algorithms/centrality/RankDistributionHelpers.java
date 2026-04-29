@@ -23,7 +23,7 @@ import org.neo4j.gds.api.IdMap;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.result.CentralityDistribution;
 import org.neo4j.gds.scaling.ScalerFactory;
-import org.neo4j.gds.scaling.scale.ScalerType;
+import org.neo4j.gds.scaling.ScalerType;
 
 import java.util.HashMap;
 import java.util.Map;

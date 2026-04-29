@@ -29,7 +29,7 @@ import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.DefaultPool;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.nodeproperties.DoubleTestPropertyValues;
-import org.neo4j.gds.scaling.build.MaxBuilder;
+import org.neo4j.gds.scaling.compute.MaxComputer;
 import org.neo4j.gds.scaling.scale.Max;
 
 import java.util.List;
@@ -67,7 +67,7 @@ class MaxTest {
     @ParameterizedTest
     @MethodSource("properties")
     void scale(int nodeCount, NodePropertyValues properties, double absMax, double[] expected) {
-        var scaler = (Max) MaxBuilder.create(
+        var scaler = (Max) MaxComputer.create(
             properties,
             nodeCount,
             new Concurrency(1),
@@ -85,7 +85,7 @@ class MaxTest {
     @Test
     void avoidsDivByZero() {
         var properties = new DoubleTestPropertyValues(nodeId -> 0D);
-        var scaler = MaxBuilder.create(
+        var scaler = MaxComputer.create(
             properties,
             10,
             new Concurrency(1),
@@ -103,7 +103,7 @@ class MaxTest {
     @Test
     void handlesMissingValue() {
         var properties = new DoubleTestPropertyValues(value -> value == 5 ? Double.NaN : value);
-        var scaler = MaxBuilder.create(
+        var scaler = MaxComputer.create(
             properties,
             10,
             new Concurrency(1),

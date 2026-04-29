@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.neo4j.gds.scaling.build;
+package org.neo4j.gds.scaling.compute;
 
 import org.neo4j.gds.api.properties.nodes.NodePropertyValues;
 import org.neo4j.gds.core.concurrency.Concurrency;
@@ -25,18 +25,16 @@ import org.neo4j.gds.core.concurrency.RunWithConcurrency;
 import org.neo4j.gds.core.utils.partition.Partition;
 import org.neo4j.gds.core.utils.partition.PartitionUtils;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
-import org.neo4j.gds.scaling.scale.MinMax;
+import org.neo4j.gds.scaling.scale.L2Norm;
 import org.neo4j.gds.scaling.scale.ScalarScaler;
 import org.neo4j.gds.scaling.scale.Scaler;
 import org.neo4j.gds.scaling.scale.Zero;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
-public final class MinMaxBuilder {
-    private MinMaxBuilder() {}
+public final class L2NormComputer {
+    private L2NormComputer() {}
 
     public static ScalarScaler create(
         NodePropertyValues properties,
@@ -48,7 +46,7 @@ public final class MinMaxBuilder {
         var tasks = PartitionUtils.rangePartition(
             concurrency,
             nodeCount,
-            partition -> new ComputeMaxMin(partition, properties, progressTracker),
+            partition -> new ComputeSquaredSum(partition, properties, progressTracker),
             Optional.empty()
         );
         RunWithConcurrency.builder()
@@ -57,50 +55,32 @@ public final class MinMaxBuilder {
             .executor(executor)
             .run();
 
-        var min = tasks.stream().mapToDouble(ComputeMaxMin::min).min().orElse(Double.MAX_VALUE);
-        var max = tasks.stream().mapToDouble(ComputeMaxMin::max).max().orElse(-Double.MAX_VALUE);
+        var squaredSum = tasks.stream().mapToDouble(ComputeSquaredSum::squaredSum).sum();
+        var euclideanLength = Math.sqrt(squaredSum);
 
-        var statistics = Map.of(
-            "min", List.of(min),
-            "max", List.of(max)
-        );
-
-        var maxMinDiff = max - min;
-
-        if (Math.abs(maxMinDiff) < Scaler.CLOSE_TO_ZERO) {
-            return Zero.of(statistics);
+        if (euclideanLength < Scaler.CLOSE_TO_ZERO) {
+            return Zero.of();
         } else {
-            return new MinMax(properties, statistics, min, maxMinDiff);
+            return new L2Norm(properties, euclideanLength);
         }
     }
 
-    static class ComputeMaxMin extends AggregatesComputer {
+    static class ComputeSquaredSum extends AggregatesComputer {
 
-        private double min;
-        private double max;
+        private double squaredSum;
 
-        ComputeMaxMin(Partition partition, NodePropertyValues property, ProgressTracker progressTracker) {
+        ComputeSquaredSum(Partition partition, NodePropertyValues property, ProgressTracker progressTracker) {
             super(partition, property, progressTracker);
-            this.min = Double.MAX_VALUE;
-            this.max = -Double.MAX_VALUE;
+            this.squaredSum = 0D;
         }
 
         @Override
         void compute(double propertyValue) {
-            if (propertyValue < min) {
-                min = propertyValue;
-            }
-            if (propertyValue > max) {
-                max = propertyValue;
-            }
+            squaredSum += propertyValue * propertyValue;
         }
 
-        double max() {
-            return max;
-        }
-
-        double min() {
-            return min;
+        double squaredSum() {
+            return squaredSum;
         }
     }
 }

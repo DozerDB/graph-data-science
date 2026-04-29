@@ -20,7 +20,6 @@
 package org.neo4j.gds.scaling;
 
 import org.junit.jupiter.api.Test;
-import org.neo4j.gds.scaling.scale.ScalerType;
 
 import java.util.List;
 import java.util.Map;

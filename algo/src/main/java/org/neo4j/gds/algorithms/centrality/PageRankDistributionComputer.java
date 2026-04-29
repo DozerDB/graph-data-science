@@ -24,7 +24,7 @@ import org.neo4j.gds.pagerank.PageRankResult;
 import org.neo4j.gds.pagerank.RankConfig;
 import org.neo4j.gds.result.CentralityDistribution;
 import org.neo4j.gds.result.CentralityStatistics;
-import org.neo4j.gds.scaling.scale.ScalerType;
+import org.neo4j.gds.scaling.ScalerType;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -39,7 +39,7 @@ import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
 import org.neo4j.gds.scaling.ScalerFactory;
 import org.neo4j.gds.scaling.ScalerParser;
-import org.neo4j.gds.scaling.scale.ScalerType;
+import org.neo4j.gds.scaling.ScalerType;
 import org.neo4j.gds.termination.TerminationFlag;
 
 import java.util.List;

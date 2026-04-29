@@ -22,17 +22,16 @@ package org.neo4j.gds.scaling;
 import org.neo4j.gds.api.properties.nodes.NodePropertyValues;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
-import org.neo4j.gds.scaling.build.CenterBuilder;
-import org.neo4j.gds.scaling.build.L1NormBuilder;
-import org.neo4j.gds.scaling.build.L2NormBuilder;
-import org.neo4j.gds.scaling.build.MaxBuilder;
-import org.neo4j.gds.scaling.build.MeanBuilder;
-import org.neo4j.gds.scaling.build.MinMaxBuilder;
-import org.neo4j.gds.scaling.build.StdBuilder;
+import org.neo4j.gds.scaling.compute.CenterComputer;
+import org.neo4j.gds.scaling.compute.L1NormComputer;
+import org.neo4j.gds.scaling.compute.L2NormComputer;
+import org.neo4j.gds.scaling.compute.MaxComputer;
+import org.neo4j.gds.scaling.compute.MeanComputer;
+import org.neo4j.gds.scaling.compute.MinMaxComputer;
+import org.neo4j.gds.scaling.compute.StdComputer;
 import org.neo4j.gds.scaling.scale.LogScaler;
 import org.neo4j.gds.scaling.scale.NoneScaler;
 import org.neo4j.gds.scaling.scale.ScalarScaler;
-import org.neo4j.gds.scaling.scale.ScalerType;
 import org.neo4j.gds.scaling.scale.Zero;
 
 import java.util.Locale;
@@ -76,43 +75,43 @@ public final class ScalerFactory {
             case None -> NoneScaler.of(properties);
             case Zero -> Zero.of();
             case Log -> LogScaler.of(properties, offset);
-            case Center -> CenterBuilder.create(
+            case Center -> CenterComputer.create(
                 properties,
                 nodeCount,
                 concurrency,
                 progressTracker,
                 executor);
-            case Mean -> MeanBuilder.create(
+            case Mean -> MeanComputer.create(
                 properties,
                 nodeCount,
                 concurrency,
                 progressTracker,
                 executor);
-            case Max -> MaxBuilder.create(
+            case Max -> MaxComputer.create(
                 properties,
                 nodeCount,
                 concurrency,
                 progressTracker,
                 executor);
-            case MinMax -> MinMaxBuilder.create(
+            case MinMax -> MinMaxComputer.create(
                 properties,
                 nodeCount,
                 concurrency,
                 progressTracker,
                 executor);
-            case L1Norm -> L1NormBuilder.create(
+            case L1Norm -> L1NormComputer.create(
                 properties,
                 nodeCount,
                 concurrency,
                 progressTracker,
                 executor);
-            case L2Norm -> L2NormBuilder.create(
+            case L2Norm -> L2NormComputer.create(
                 properties,
                 nodeCount,
                 concurrency,
                 progressTracker,
                 executor);
-            case Std -> StdBuilder.create(
+            case Std -> StdComputer.create(
                 properties,
                 nodeCount,
                 concurrency,

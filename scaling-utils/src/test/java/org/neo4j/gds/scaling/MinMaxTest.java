@@ -29,7 +29,7 @@ import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.DefaultPool;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.nodeproperties.DoubleTestPropertyValues;
-import org.neo4j.gds.scaling.build.MinMaxBuilder;
+import org.neo4j.gds.scaling.compute.MinMaxComputer;
 import org.neo4j.gds.scaling.scale.MinMax;
 
 import java.util.List;
@@ -50,7 +50,7 @@ class MinMaxTest {
     @ParameterizedTest
     @MethodSource("properties")
     void normalizes(NodePropertyValues properties, double min, double max) {
-        var scaler = (MinMax) MinMaxBuilder.create(
+        var scaler = (MinMax) MinMaxComputer.create(
             properties,
             10,
             new Concurrency(1),
@@ -74,7 +74,7 @@ class MinMaxTest {
     void avoidsDivByZero() {
         double propValue = 4D;
         var properties = new DoubleTestPropertyValues(nodeId -> propValue);
-        var scaler = MinMaxBuilder.create(
+        var scaler = MinMaxComputer.create(
             properties,
             10,
             new Concurrency(1),
@@ -95,7 +95,7 @@ class MinMaxTest {
     @Test
     void handlesMissingValue() {
         var properties = new DoubleTestPropertyValues(value -> value == 5 ? Double.NaN : value);
-        var scaler = MinMaxBuilder.create(
+        var scaler = MinMaxComputer.create(
             properties,
             10,
             new Concurrency(1),

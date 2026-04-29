@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.neo4j.gds.scaling.build;
+package org.neo4j.gds.scaling.compute;
 
 import org.neo4j.gds.api.properties.nodes.NodePropertyValues;
 import org.neo4j.gds.core.concurrency.Concurrency;
@@ -25,18 +25,16 @@ import org.neo4j.gds.core.concurrency.RunWithConcurrency;
 import org.neo4j.gds.core.utils.partition.Partition;
 import org.neo4j.gds.core.utils.partition.PartitionUtils;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
-import org.neo4j.gds.scaling.scale.Max;
+import org.neo4j.gds.scaling.scale.L1Norm;
 import org.neo4j.gds.scaling.scale.ScalarScaler;
 import org.neo4j.gds.scaling.scale.Scaler;
 import org.neo4j.gds.scaling.scale.Zero;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
-public final class MaxBuilder {
-    private MaxBuilder() {}
+public final class L1NormComputer {
+    private L1NormComputer() {}
 
     public static ScalarScaler create(
         NodePropertyValues properties,
@@ -48,7 +46,7 @@ public final class MaxBuilder {
         var tasks = PartitionUtils.rangePartition(
             concurrency,
             nodeCount,
-            partition -> new ComputeAbsMax(partition, properties, progressTracker),
+            partition -> new ComputeAbsoluteSum(partition, properties, progressTracker),
             Optional.empty()
         );
         RunWithConcurrency.builder()
@@ -57,36 +55,31 @@ public final class MaxBuilder {
             .executor(executor)
             .run();
 
-        var absMax = tasks.stream().mapToDouble(ComputeAbsMax::absMax).max().orElse(0);
+        var absoluteSum = tasks.stream().mapToDouble(ComputeAbsoluteSum::sum).sum();
 
-        var statistics = Map.of("absMax", List.of(absMax));
-
-        if (absMax < Scaler.CLOSE_TO_ZERO) {
-            return Zero.of(statistics);
+        if (absoluteSum < Scaler.CLOSE_TO_ZERO) {
+            return Zero.of();
         } else {
-            return new Max(properties, statistics, absMax);
+            return new L1Norm(properties, absoluteSum);
         }
     }
 
-    static class ComputeAbsMax extends AggregatesComputer {
+    static class ComputeAbsoluteSum extends AggregatesComputer {
 
-        private double absMax;
+        private double sum;
 
-        ComputeAbsMax(Partition partition, NodePropertyValues property, ProgressTracker progressTracker) {
+        ComputeAbsoluteSum(Partition partition, NodePropertyValues property, ProgressTracker progressTracker) {
             super(partition, property, progressTracker);
-            this.absMax = 0;
+            this.sum = 0;
         }
 
         @Override
         void compute(double propertyValue) {
-            var absoluteValue = Math.abs(propertyValue);
-            if (absoluteValue > absMax) {
-                absMax = absoluteValue;
-            }
+            sum += Math.abs(propertyValue);
         }
 
-        double absMax() {
-            return absMax;
+        double sum() {
+            return sum;
         }
     }
 }

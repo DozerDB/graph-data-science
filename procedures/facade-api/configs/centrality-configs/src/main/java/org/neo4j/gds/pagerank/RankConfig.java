@@ -26,7 +26,7 @@ import org.neo4j.gds.beta.pregel.PregelConfig;
 import org.neo4j.gds.config.SourceNodesWithPropertiesConfig;
 import org.neo4j.gds.config.ToleranceConfig;
 import org.neo4j.gds.scaling.ScalerFactory;
-import org.neo4j.gds.scaling.scale.ScalerType;
+import org.neo4j.gds.scaling.ScalerType;
 
 @Configuration("RankConfigImpl")
 public interface RankConfig extends

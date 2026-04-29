@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.neo4j.gds.scaling.build;
+package org.neo4j.gds.scaling.compute;
 
 import org.neo4j.gds.api.properties.nodes.NodePropertyValues;
 import org.neo4j.gds.core.concurrency.Concurrency;
@@ -25,16 +25,18 @@ import org.neo4j.gds.core.concurrency.RunWithConcurrency;
 import org.neo4j.gds.core.utils.partition.Partition;
 import org.neo4j.gds.core.utils.partition.PartitionUtils;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
-import org.neo4j.gds.scaling.scale.L1Norm;
+import org.neo4j.gds.scaling.scale.MinMax;
 import org.neo4j.gds.scaling.scale.ScalarScaler;
 import org.neo4j.gds.scaling.scale.Scaler;
 import org.neo4j.gds.scaling.scale.Zero;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
-public final class L1NormBuilder {
-    private L1NormBuilder() {}
+public final class MinMaxComputer {
+    private MinMaxComputer() {}
 
     public static ScalarScaler create(
         NodePropertyValues properties,
@@ -46,7 +48,7 @@ public final class L1NormBuilder {
         var tasks = PartitionUtils.rangePartition(
             concurrency,
             nodeCount,
-            partition -> new ComputeAbsoluteSum(partition, properties, progressTracker),
+            partition -> new ComputeMaxMin(partition, properties, progressTracker),
             Optional.empty()
         );
         RunWithConcurrency.builder()
@@ -55,31 +57,50 @@ public final class L1NormBuilder {
             .executor(executor)
             .run();
 
-        var absoluteSum = tasks.stream().mapToDouble(ComputeAbsoluteSum::sum).sum();
+        var min = tasks.stream().mapToDouble(ComputeMaxMin::min).min().orElse(Double.MAX_VALUE);
+        var max = tasks.stream().mapToDouble(ComputeMaxMin::max).max().orElse(-Double.MAX_VALUE);
 
-        if (absoluteSum < Scaler.CLOSE_TO_ZERO) {
-            return Zero.of();
+        var statistics = Map.of(
+            "min", List.of(min),
+            "max", List.of(max)
+        );
+
+        var maxMinDiff = max - min;
+
+        if (Math.abs(maxMinDiff) < Scaler.CLOSE_TO_ZERO) {
+            return Zero.of(statistics);
         } else {
-            return new L1Norm(properties, absoluteSum);
+            return new MinMax(properties, statistics, min, maxMinDiff);
         }
     }
 
-    static class ComputeAbsoluteSum extends AggregatesComputer {
+    static class ComputeMaxMin extends AggregatesComputer {
 
-        private double sum;
+        private double min;
+        private double max;
 
-        ComputeAbsoluteSum(Partition partition, NodePropertyValues property, ProgressTracker progressTracker) {
+        ComputeMaxMin(Partition partition, NodePropertyValues property, ProgressTracker progressTracker) {
             super(partition, property, progressTracker);
-            this.sum = 0;
+            this.min = Double.MAX_VALUE;
+            this.max = -Double.MAX_VALUE;
         }
 
         @Override
         void compute(double propertyValue) {
-            sum += Math.abs(propertyValue);
+            if (propertyValue < min) {
+                min = propertyValue;
+            }
+            if (propertyValue > max) {
+                max = propertyValue;
+            }
         }
 
-        double sum() {
-            return sum;
+        double max() {
+            return max;
+        }
+
+        double min() {
+            return min;
         }
     }
 }

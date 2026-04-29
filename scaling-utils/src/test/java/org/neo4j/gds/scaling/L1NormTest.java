@@ -29,7 +29,7 @@ import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.DefaultPool;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.nodeproperties.DoubleTestPropertyValues;
-import org.neo4j.gds.scaling.build.L1NormBuilder;
+import org.neo4j.gds.scaling.compute.L1NormComputer;
 import org.neo4j.gds.scaling.scale.L1Norm;
 
 import java.util.stream.IntStream;
@@ -59,7 +59,7 @@ class L1NormTest {
     @ParameterizedTest
     @MethodSource("properties")
     void scale(int nodeCount, NodePropertyValues properties, double l1norm, double[] expected) {
-        var scaler = (L1Norm) L1NormBuilder.create(
+        var scaler = (L1Norm) L1NormComputer.create(
             properties,
             nodeCount,
             new Concurrency(1),
@@ -76,7 +76,7 @@ class L1NormTest {
     @Test
     void avoidsDivByZero() {
         var properties = new DoubleTestPropertyValues(nodeId -> 0D);
-        var scaler = L1NormBuilder.create(
+        var scaler = L1NormComputer.create(
             properties,
             10,
             new Concurrency(1),
@@ -92,7 +92,7 @@ class L1NormTest {
     @Test
     void handlesMissingValue() {
         var properties = new DoubleTestPropertyValues(value -> value == 5 ? Double.NaN : value);
-        var scaler = L1NormBuilder.create(
+        var scaler = L1NormComputer.create(
             properties,
             10,
             new Concurrency(1),
