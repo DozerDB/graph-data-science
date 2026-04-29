@@ -29,7 +29,7 @@ import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.DefaultPool;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.nodeproperties.DoubleTestPropertyValues;
-import org.neo4j.gds.scaling.build.MaxBuilder;
+import org.neo4j.gds.scaling.compute.MaxBuilder;
 import org.neo4j.gds.scaling.scale.Max;
 
 import java.util.List;

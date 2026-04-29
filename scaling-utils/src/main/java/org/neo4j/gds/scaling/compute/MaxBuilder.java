@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.neo4j.gds.scaling.build;
+package org.neo4j.gds.scaling.compute;
 
 import org.neo4j.gds.api.properties.nodes.NodePropertyValues;
 import org.neo4j.gds.core.concurrency.Concurrency;
@@ -25,7 +25,7 @@ import org.neo4j.gds.core.concurrency.RunWithConcurrency;
 import org.neo4j.gds.core.utils.partition.Partition;
 import org.neo4j.gds.core.utils.partition.PartitionUtils;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
-import org.neo4j.gds.scaling.scale.MinMax;
+import org.neo4j.gds.scaling.scale.Max;
 import org.neo4j.gds.scaling.scale.ScalarScaler;
 import org.neo4j.gds.scaling.scale.Scaler;
 import org.neo4j.gds.scaling.scale.Zero;
@@ -35,8 +35,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
-public final class MinMaxBuilder {
-    private MinMaxBuilder() {}
+public final class MaxBuilder {
+    private MaxBuilder() {}
 
     public static ScalarScaler create(
         NodePropertyValues properties,
@@ -48,7 +48,7 @@ public final class MinMaxBuilder {
         var tasks = PartitionUtils.rangePartition(
             concurrency,
             nodeCount,
-            partition -> new ComputeMaxMin(partition, properties, progressTracker),
+            partition -> new ComputeAbsMax(partition, properties, progressTracker),
             Optional.empty()
         );
         RunWithConcurrency.builder()
@@ -57,50 +57,36 @@ public final class MinMaxBuilder {
             .executor(executor)
             .run();
 
-        var min = tasks.stream().mapToDouble(ComputeMaxMin::min).min().orElse(Double.MAX_VALUE);
-        var max = tasks.stream().mapToDouble(ComputeMaxMin::max).max().orElse(-Double.MAX_VALUE);
+        var absMax = tasks.stream().mapToDouble(ComputeAbsMax::absMax).max().orElse(0);
 
-        var statistics = Map.of(
-            "min", List.of(min),
-            "max", List.of(max)
-        );
+        var statistics = Map.of("absMax", List.of(absMax));
 
-        var maxMinDiff = max - min;
-
-        if (Math.abs(maxMinDiff) < Scaler.CLOSE_TO_ZERO) {
+        if (absMax < Scaler.CLOSE_TO_ZERO) {
             return Zero.of(statistics);
         } else {
-            return new MinMax(properties, statistics, min, maxMinDiff);
+            return new Max(properties, statistics, absMax);
         }
     }
 
-    static class ComputeMaxMin extends AggregatesComputer {
+    static class ComputeAbsMax extends AggregatesComputer {
 
-        private double min;
-        private double max;
+        private double absMax;
 
-        ComputeMaxMin(Partition partition, NodePropertyValues property, ProgressTracker progressTracker) {
+        ComputeAbsMax(Partition partition, NodePropertyValues property, ProgressTracker progressTracker) {
             super(partition, property, progressTracker);
-            this.min = Double.MAX_VALUE;
-            this.max = -Double.MAX_VALUE;
+            this.absMax = 0;
         }
 
         @Override
         void compute(double propertyValue) {
-            if (propertyValue < min) {
-                min = propertyValue;
-            }
-            if (propertyValue > max) {
-                max = propertyValue;
+            var absoluteValue = Math.abs(propertyValue);
+            if (absoluteValue > absMax) {
+                absMax = absoluteValue;
             }
         }
 
-        double max() {
-            return max;
-        }
-
-        double min() {
-            return min;
+        double absMax() {
+            return absMax;
         }
     }
 }

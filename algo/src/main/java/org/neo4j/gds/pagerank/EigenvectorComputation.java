@@ -35,7 +35,7 @@ import org.neo4j.gds.core.concurrency.RunWithConcurrency;
 import org.neo4j.gds.core.utils.partition.PartitionUtils;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.mem.MemoryEstimateDefinition;
-import org.neo4j.gds.scaling.build.L2NormBuilder;
+import org.neo4j.gds.scaling.compute.L2NormBuilder;
 
 import java.util.Optional;
 import java.util.function.LongToDoubleFunction;
