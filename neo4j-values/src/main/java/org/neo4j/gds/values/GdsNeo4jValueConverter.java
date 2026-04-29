@@ -28,6 +28,7 @@ import org.neo4j.values.storable.IntegralValue;
 import org.neo4j.values.storable.NoValue;
 import org.neo4j.values.storable.Value;
 import org.neo4j.values.storable.ValueGroup;
+import org.neo4j.values.storable.ValueWriter;
 import org.neo4j.values.virtual.ListValue;
 
 import static org.neo4j.gds.utils.StringFormatting.formatWithLocale;
@@ -48,6 +49,59 @@ public final class GdsNeo4jValueConverter {
                 return PrimitiveValues.floatingPointValue(doubleValue.doubleValue());
             } else if (storableValue instanceof IntegralValue integralValue) {
                 return PrimitiveValues.longValue(integralValue.longValue());
+            }
+        }
+        if (value instanceof org.neo4j.values.storable.FloatingPointVector floatingPointVector) {
+            switch (floatingPointVector) {
+                case org.neo4j.values.storable.Float32Vector float32Vector -> {
+                    float[] collector = new float[float32Vector.dimensions()];
+                    for (int i = 0; i < float32Vector.dimensions(); i++) {
+                        collector[i] = float32Vector.floatValue(i);
+                    }
+                    return PrimitiveValues.floatArray(collector);
+                }
+                case org.neo4j.values.storable.Float64Vector float64Vector -> {
+                    double[] collector = new double[float64Vector.dimensions()];
+                    for (int i = 0; i < float64Vector.dimensions(); i++) {
+                        collector[i] = float64Vector.doubleValue(i);
+                    }
+                    return PrimitiveValues.doubleArray(collector);
+                }
+            }
+        }
+        if (value instanceof org.neo4j.values.storable.IntegralVector integralVector) {
+            switch (integralVector) {
+                case org.neo4j.values.storable.Int64Vector int64Vector -> {
+                    final long[][] collector = new long[1][];
+                    int64Vector.writeTo(new ValueWriter.Adapter<>() {
+                        @Override
+                        public void writeInt64Vector(long[] values) {
+                            collector[0] = values;
+                        }
+                    });
+                    return PrimitiveValues.longArray(collector[0]);
+                }
+                case org.neo4j.values.storable.Int32Vector int32Vector -> {
+                    int[] collector = new int[int32Vector.dimensions()];
+                    for (int i = 0; i < int32Vector.dimensions(); i++) {
+                        collector[i] = (int) int32Vector.doubleValue(i);
+                    }
+                    return PrimitiveValues.intArray(collector);
+                }
+                case org.neo4j.values.storable.Int16Vector int16Vector -> {
+                    short[] collector = new short[int16Vector.dimensions()];
+                    for (int i = 0; i < int16Vector.dimensions(); i++) {
+                        collector[i] = (short) int16Vector.doubleValue(i);
+                    }
+                    return PrimitiveValues.shortArray(collector);
+                }
+                case org.neo4j.values.storable.Int8Vector int8Vector -> {
+                    byte[] collector = new byte[int8Vector.dimensions()];
+                    for (int i = 0; i < int8Vector.dimensions(); i++) {
+                        collector[i] = (byte) int8Vector.doubleValue(i);
+                    }
+                    return PrimitiveValues.byteArray(collector);
+                }
             }
         }
         throw new IllegalArgumentException(formatWithLocale(
