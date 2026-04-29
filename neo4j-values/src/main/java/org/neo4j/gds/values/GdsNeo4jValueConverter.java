@@ -24,11 +24,10 @@ import org.neo4j.gds.values.primitive.PrimitiveValues;
 import org.neo4j.values.AnyValue;
 import org.neo4j.values.SequenceValue;
 import org.neo4j.values.storable.ArrayValue;
-import org.neo4j.values.storable.IntegralValue;
 import org.neo4j.values.storable.NoValue;
-import org.neo4j.values.storable.Value;
+import org.neo4j.values.storable.NumberValue;
 import org.neo4j.values.storable.ValueGroup;
-import org.neo4j.values.storable.ValueWriter;
+import org.neo4j.values.storable.VectorValue;
 import org.neo4j.values.virtual.ListValue;
 
 import static org.neo4j.gds.utils.StringFormatting.formatWithLocale;
@@ -36,72 +35,53 @@ import static org.neo4j.gds.utils.StringFormatting.formatWithLocale;
 public final class GdsNeo4jValueConverter {
 
     public static GdsValue toValue(@NotNull AnyValue value) {
-        if (value == NoValue.NO_VALUE) {
-            return GdsNoValue.NO_VALUE;
-        }
-        if (value.isSequenceValue()) { // ArrayValue or ListValue
-            return convertSequenceValueOrFail((SequenceValue) value);
-        }
-        if (value instanceof Value storableValue && storableValue.valueGroup() == ValueGroup.NUMBER) {
-            if (storableValue instanceof org.neo4j.values.storable.FloatValue floatValue) {
-                return PrimitiveValues.floatingPointValue(floatValue.floatValue());
-            } else if (storableValue instanceof org.neo4j.values.storable.DoubleValue doubleValue) {
-                return PrimitiveValues.floatingPointValue(doubleValue.doubleValue());
-            } else if (storableValue instanceof IntegralValue integralValue) {
-                return PrimitiveValues.longValue(integralValue.longValue());
+        switch (value) {
+            case NoValue ignored -> {
+                return GdsNoValue.NO_VALUE;
             }
-        }
-        if (value instanceof org.neo4j.values.storable.FloatingPointVector floatingPointVector) {
-            switch (floatingPointVector) {
-                case org.neo4j.values.storable.Float32Vector float32Vector -> {
-                    float[] collector = new float[float32Vector.dimensions()];
-                    for (int i = 0; i < float32Vector.dimensions(); i++) {
-                        collector[i] = float32Vector.floatValue(i);
+            case SequenceValue sequenceValue -> {
+                return convertSequenceValueOrFail(sequenceValue);
+            }
+            case NumberValue numberValue -> {
+                switch (numberValue) {
+                    case org.neo4j.values.storable.FloatValue floatValue -> {
+                        return PrimitiveValues.floatingPointValue(floatValue.floatValue());
                     }
-                    return PrimitiveValues.floatArray(collector);
-                }
-                case org.neo4j.values.storable.Float64Vector float64Vector -> {
-                    double[] collector = new double[float64Vector.dimensions()];
-                    for (int i = 0; i < float64Vector.dimensions(); i++) {
-                        collector[i] = float64Vector.doubleValue(i);
+                    case org.neo4j.values.storable.DoubleValue doubleValue -> {
+                        return PrimitiveValues.floatingPointValue(doubleValue.doubleValue());
                     }
-                    return PrimitiveValues.doubleArray(collector);
+                    case org.neo4j.values.storable.IntegralValue integralValue -> {
+                        return PrimitiveValues.longValue(integralValue.longValue());
+                    }
+                    default -> {
+                    }
                 }
             }
-        }
-        if (value instanceof org.neo4j.values.storable.IntegralVector integralVector) {
-            switch (integralVector) {
-                case org.neo4j.values.storable.Int64Vector int64Vector -> {
-                    final long[][] collector = new long[1][];
-                    int64Vector.writeTo(new ValueWriter.Adapter<>() {
-                        @Override
-                        public void writeInt64Vector(long[] values) {
-                            collector[0] = values;
-                        }
-                    });
-                    return PrimitiveValues.longArray(collector[0]);
-                }
-                case org.neo4j.values.storable.Int32Vector int32Vector -> {
-                    int[] collector = new int[int32Vector.dimensions()];
-                    for (int i = 0; i < int32Vector.dimensions(); i++) {
-                        collector[i] = (int) int32Vector.doubleValue(i);
+            case VectorValue vectorValue -> {
+                switch (vectorValue) {
+                    case org.neo4j.values.storable.Float64Vector float64Vector -> {
+                        return PrimitiveValues.doubleArray(GdsNeo4jVectorValuesCollector.collectFloat64(float64Vector));
                     }
-                    return PrimitiveValues.intArray(collector);
-                }
-                case org.neo4j.values.storable.Int16Vector int16Vector -> {
-                    short[] collector = new short[int16Vector.dimensions()];
-                    for (int i = 0; i < int16Vector.dimensions(); i++) {
-                        collector[i] = (short) int16Vector.doubleValue(i);
+                    case org.neo4j.values.storable.Float32Vector float32Vector -> {
+                        return PrimitiveValues.floatArray(GdsNeo4jVectorValuesCollector.collectFloat32(float32Vector));
                     }
-                    return PrimitiveValues.shortArray(collector);
-                }
-                case org.neo4j.values.storable.Int8Vector int8Vector -> {
-                    byte[] collector = new byte[int8Vector.dimensions()];
-                    for (int i = 0; i < int8Vector.dimensions(); i++) {
-                        collector[i] = (byte) int8Vector.doubleValue(i);
+                    case org.neo4j.values.storable.Int64Vector int64Vector -> {
+                        return PrimitiveValues.longArray(GdsNeo4jVectorValuesCollector.collectInt64(int64Vector));
                     }
-                    return PrimitiveValues.byteArray(collector);
+                    case org.neo4j.values.storable.Int32Vector int32Vector -> {
+                        return PrimitiveValues.intArray(GdsNeo4jVectorValuesCollector.collectInt32(int32Vector));
+                    }
+                    case org.neo4j.values.storable.Int16Vector int16Vector -> {
+                        return PrimitiveValues.shortArray(GdsNeo4jVectorValuesCollector.collectInt16(int16Vector));
+                    }
+                    case org.neo4j.values.storable.Int8Vector int8Vector -> {
+                        return PrimitiveValues.byteArray(GdsNeo4jVectorValuesCollector.collectInt8(int8Vector));
+                    }
+                    default -> {
+                    }
                 }
+            }
+            default -> {
             }
         }
         throw new IllegalArgumentException(formatWithLocale(

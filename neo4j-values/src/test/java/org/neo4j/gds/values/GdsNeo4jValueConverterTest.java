@@ -27,6 +27,7 @@ import org.neo4j.gds.values.primitive.ShortLongArrayImpl;
 import org.neo4j.values.storable.Values;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class GdsNeo4jValueConverterTest {
 
@@ -130,5 +131,12 @@ class GdsNeo4jValueConverterTest {
         assertThat(GdsNeo4jValueConverter.toValue(Values.int8Vector((byte) 1, (byte) -1, Byte.MAX_VALUE, Byte.MIN_VALUE)))
             .isInstanceOf(ByteLongArrayImpl.class)
             .isEqualTo(PrimitiveValues.byteArray(new byte[]{1, -1, Byte.MAX_VALUE, Byte.MIN_VALUE}));
+    }
+
+    @Test
+    void shouldFailOnUnsupportedValueType() {
+        assertThatThrownBy(() -> GdsNeo4jValueConverter.toValue(Values.stringValue("unsupported")))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("Unsupported conversion to GDS Value from Neo4j Value with type `String`.");
     }
 }
