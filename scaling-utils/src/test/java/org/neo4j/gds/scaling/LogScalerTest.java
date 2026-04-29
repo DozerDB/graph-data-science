@@ -31,7 +31,6 @@ import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.nodeproperties.DoubleTestPropertyValues;
 import org.neo4j.gds.nodeproperties.LongTestPropertyValues;
 import org.neo4j.gds.scaling.scale.LogScaler;
-import org.neo4j.gds.scaling.scale.ScalerType;
 
 import java.util.Map;
 import java.util.stream.IntStream;

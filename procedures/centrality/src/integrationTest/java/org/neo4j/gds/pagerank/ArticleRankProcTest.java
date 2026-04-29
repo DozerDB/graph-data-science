@@ -30,7 +30,7 @@ import org.neo4j.gds.catalog.GraphProjectProc;
 import org.neo4j.gds.extension.IdFunction;
 import org.neo4j.gds.extension.Inject;
 import org.neo4j.gds.extension.Neo4jGraph;
-import org.neo4j.gds.scaling.scale.ScalerType;
+import org.neo4j.gds.scaling.ScalerType;
 
 import java.util.List;
 import java.util.Map;

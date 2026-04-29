@@ -32,7 +32,6 @@ import org.neo4j.gds.scaling.build.StdBuilder;
 import org.neo4j.gds.scaling.scale.LogScaler;
 import org.neo4j.gds.scaling.scale.NoneScaler;
 import org.neo4j.gds.scaling.scale.ScalarScaler;
-import org.neo4j.gds.scaling.scale.ScalerType;
 import org.neo4j.gds.scaling.scale.Zero;
 
 import java.util.Locale;
