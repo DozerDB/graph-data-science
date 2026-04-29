@@ -29,7 +29,7 @@ import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.DefaultPool;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.nodeproperties.DoubleTestPropertyValues;
-import org.neo4j.gds.scaling.compute.StdBuilder;
+import org.neo4j.gds.scaling.compute.StdComputer;
 import org.neo4j.gds.scaling.scale.StdScore;
 
 import java.util.List;
@@ -53,7 +53,7 @@ class StdScoreTest {
     @ParameterizedTest
     @MethodSource("properties")
     void normalizes(NodePropertyValues properties, double avg, double std, double[] expected) {
-        var scaler = (StdScore) StdBuilder.create(
+        var scaler = (StdScore) StdComputer.create(
             properties,
             10,
             new Concurrency(1),
@@ -75,7 +75,7 @@ class StdScoreTest {
     @Test
     void handlesMissingValue() {
         var properties = new DoubleTestPropertyValues(value -> value == 5 ? Double.NaN : value);
-        var scaler = StdBuilder.create(
+        var scaler = StdComputer.create(
             properties,
             10,
             new Concurrency(1),
@@ -97,7 +97,7 @@ class StdScoreTest {
     @Test
     void avoidsDivByZero() {
         var properties = new DoubleTestPropertyValues(nodeId -> 4D);
-        var scaler = StdBuilder.create(
+        var scaler = StdComputer.create(
             properties,
             10,
             new Concurrency(1),

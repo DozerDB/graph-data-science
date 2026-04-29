@@ -25,18 +25,16 @@ import org.neo4j.gds.core.concurrency.RunWithConcurrency;
 import org.neo4j.gds.core.utils.partition.Partition;
 import org.neo4j.gds.core.utils.partition.PartitionUtils;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
+import org.neo4j.gds.scaling.scale.L1Norm;
 import org.neo4j.gds.scaling.scale.ScalarScaler;
 import org.neo4j.gds.scaling.scale.Scaler;
-import org.neo4j.gds.scaling.scale.StdScore;
 import org.neo4j.gds.scaling.scale.Zero;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
-public final class StdBuilder {
-    private StdBuilder() {}
+public final class L1NormComputer {
+    private L1NormComputer() {}
 
     public static ScalarScaler create(
         NodePropertyValues properties,
@@ -48,7 +46,7 @@ public final class StdBuilder {
         var tasks = PartitionUtils.rangePartition(
             concurrency,
             nodeCount,
-            partition -> new ComputeSumAndSquaredSum(partition, properties, progressTracker),
+            partition -> new ComputeAbsoluteSum(partition, properties, progressTracker),
             Optional.empty()
         );
         RunWithConcurrency.builder()
@@ -57,49 +55,27 @@ public final class StdBuilder {
             .executor(executor)
             .run();
 
-        // calculate global metrics
-        var squaredSum = tasks.stream().mapToDouble(ComputeSumAndSquaredSum::squaredSum).sum();
-        var sum = tasks.stream().mapToDouble(ComputeSumAndSquaredSum::sum).sum();
-        var nodeCountOmittingMissingProperties = tasks.stream().mapToLong(AggregatesComputer::nodeCountOmittingMissingValues).sum();
-        var avg = sum / nodeCountOmittingMissingProperties;
-        // std = σ² = Σ(pᵢ - avg)² / N =
-        // (Σ(pᵢ²) + Σ(avg²) - 2avgΣ(pᵢ)) / N =
-        // (Σ(pᵢ²) + Navg² - 2avgΣ(pᵢ)) / N =
-        // (Σ(pᵢ²) + avg(Navg - 2Σ(pᵢ)) / N
-        var variance = (squaredSum - avg * sum) / nodeCountOmittingMissingProperties;
-        var std = Math.sqrt(variance);
+        var absoluteSum = tasks.stream().mapToDouble(ComputeAbsoluteSum::sum).sum();
 
-        var statistics = Map.of(
-            "avg", List.of(avg),
-            "std", List.of(std)
-        );
-
-        if (std < Scaler.CLOSE_TO_ZERO) {
-            return Zero.of(statistics);
+        if (absoluteSum < Scaler.CLOSE_TO_ZERO) {
+            return Zero.of();
         } else {
-            return new StdScore(properties, statistics, avg, std);
+            return new L1Norm(properties, absoluteSum);
         }
     }
 
-    static class ComputeSumAndSquaredSum extends AggregatesComputer {
+    static class ComputeAbsoluteSum extends AggregatesComputer {
 
-        private double squaredSum;
         private double sum;
 
-        ComputeSumAndSquaredSum(Partition partition, NodePropertyValues property, ProgressTracker progressTracker) {
+        ComputeAbsoluteSum(Partition partition, NodePropertyValues property, ProgressTracker progressTracker) {
             super(partition, property, progressTracker);
-            this.squaredSum = 0D;
-            this.sum = 0D;
+            this.sum = 0;
         }
 
         @Override
         void compute(double propertyValue) {
-            this.sum += propertyValue;
-            this.squaredSum += propertyValue * propertyValue;
-        }
-
-        double squaredSum() {
-            return squaredSum;
+            sum += Math.abs(propertyValue);
         }
 
         double sum() {

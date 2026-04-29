@@ -25,14 +25,18 @@ import org.neo4j.gds.core.concurrency.RunWithConcurrency;
 import org.neo4j.gds.core.utils.partition.Partition;
 import org.neo4j.gds.core.utils.partition.PartitionUtils;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
-import org.neo4j.gds.scaling.scale.Center;
+import org.neo4j.gds.scaling.scale.MinMax;
 import org.neo4j.gds.scaling.scale.ScalarScaler;
+import org.neo4j.gds.scaling.scale.Scaler;
+import org.neo4j.gds.scaling.scale.Zero;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
-public final class CenterBuilder {
-    private CenterBuilder() {}
+public final class MinMaxComputer {
+    private MinMaxComputer() {}
 
     public static ScalarScaler create(
         NodePropertyValues properties,
@@ -44,7 +48,7 @@ public final class CenterBuilder {
         var tasks = PartitionUtils.rangePartition(
             concurrency,
             nodeCount,
-            partition -> new ComputeSum(partition, properties, progressTracker),
+            partition -> new ComputeMaxMin(partition, properties, progressTracker),
             Optional.empty()
         );
         RunWithConcurrency.builder()
@@ -52,30 +56,51 @@ public final class CenterBuilder {
             .tasks(tasks)
             .executor(executor)
             .run();
-        var sum = tasks.stream().mapToDouble(ComputeSum::sum).sum();
-        var nodeCountOmittingMissingProperties = tasks.stream().mapToLong(AggregatesComputer::nodeCountOmittingMissingValues).sum();
 
-        var avg = sum / nodeCountOmittingMissingProperties;
+        var min = tasks.stream().mapToDouble(ComputeMaxMin::min).min().orElse(Double.MAX_VALUE);
+        var max = tasks.stream().mapToDouble(ComputeMaxMin::max).max().orElse(-Double.MAX_VALUE);
 
-        return new Center(properties, avg);
+        var statistics = Map.of(
+            "min", List.of(min),
+            "max", List.of(max)
+        );
+
+        var maxMinDiff = max - min;
+
+        if (Math.abs(maxMinDiff) < Scaler.CLOSE_TO_ZERO) {
+            return Zero.of(statistics);
+        } else {
+            return new MinMax(properties, statistics, min, maxMinDiff);
+        }
     }
 
-    static class ComputeSum extends AggregatesComputer {
+    static class ComputeMaxMin extends AggregatesComputer {
 
-        private double sum;
+        private double min;
+        private double max;
 
-        ComputeSum(Partition partition, NodePropertyValues property, ProgressTracker progressTracker) {
+        ComputeMaxMin(Partition partition, NodePropertyValues property, ProgressTracker progressTracker) {
             super(partition, property, progressTracker);
-            this.sum = 0D;
+            this.min = Double.MAX_VALUE;
+            this.max = -Double.MAX_VALUE;
         }
 
         @Override
         void compute(double propertyValue) {
-            this.sum += propertyValue;
+            if (propertyValue < min) {
+                min = propertyValue;
+            }
+            if (propertyValue > max) {
+                max = propertyValue;
+            }
         }
 
-        double sum() {
-            return sum;
+        double max() {
+            return max;
+        }
+
+        double min() {
+            return min;
         }
     }
 }

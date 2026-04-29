@@ -29,7 +29,7 @@ import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.DefaultPool;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.nodeproperties.DoubleTestPropertyValues;
-import org.neo4j.gds.scaling.compute.CenterBuilder;
+import org.neo4j.gds.scaling.compute.CenterComputer;
 import org.neo4j.gds.scaling.scale.Center;
 
 import java.util.List;
@@ -60,7 +60,7 @@ class CenterTest {
     @ParameterizedTest
     @MethodSource("properties")
     void normalizes(NodePropertyValues properties, double avg, double[] expected) {
-        var scaler = (Center) CenterBuilder.create(
+        var scaler = (Center) CenterComputer.create(
             properties,
             10,
             new Concurrency(1),
@@ -78,7 +78,7 @@ class CenterTest {
     @Test
     void handlesMissingValue() {
         var properties = new DoubleTestPropertyValues(value -> value == 5 ? Double.NaN : value);
-        var scaler = CenterBuilder.create(
+        var scaler = CenterComputer.create(
             properties,
             10,
             new Concurrency(1),

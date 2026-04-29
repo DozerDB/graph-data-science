@@ -25,9 +25,9 @@ import org.neo4j.gds.core.concurrency.RunWithConcurrency;
 import org.neo4j.gds.core.utils.partition.Partition;
 import org.neo4j.gds.core.utils.partition.PartitionUtils;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
-import org.neo4j.gds.scaling.scale.MinMax;
 import org.neo4j.gds.scaling.scale.ScalarScaler;
 import org.neo4j.gds.scaling.scale.Scaler;
+import org.neo4j.gds.scaling.scale.StdScore;
 import org.neo4j.gds.scaling.scale.Zero;
 
 import java.util.List;
@@ -35,8 +35,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
-public final class MinMaxBuilder {
-    private MinMaxBuilder() {}
+public final class StdComputer {
+    private StdComputer() {}
 
     public static ScalarScaler create(
         NodePropertyValues properties,
@@ -48,7 +48,7 @@ public final class MinMaxBuilder {
         var tasks = PartitionUtils.rangePartition(
             concurrency,
             nodeCount,
-            partition -> new ComputeMaxMin(partition, properties, progressTracker),
+            partition -> new ComputeSumAndSquaredSum(partition, properties, progressTracker),
             Optional.empty()
         );
         RunWithConcurrency.builder()
@@ -57,50 +57,53 @@ public final class MinMaxBuilder {
             .executor(executor)
             .run();
 
-        var min = tasks.stream().mapToDouble(ComputeMaxMin::min).min().orElse(Double.MAX_VALUE);
-        var max = tasks.stream().mapToDouble(ComputeMaxMin::max).max().orElse(-Double.MAX_VALUE);
+        // calculate global metrics
+        var squaredSum = tasks.stream().mapToDouble(ComputeSumAndSquaredSum::squaredSum).sum();
+        var sum = tasks.stream().mapToDouble(ComputeSumAndSquaredSum::sum).sum();
+        var nodeCountOmittingMissingProperties = tasks.stream().mapToLong(AggregatesComputer::nodeCountOmittingMissingValues).sum();
+        var avg = sum / nodeCountOmittingMissingProperties;
+        // std = σ² = Σ(pᵢ - avg)² / N =
+        // (Σ(pᵢ²) + Σ(avg²) - 2avgΣ(pᵢ)) / N =
+        // (Σ(pᵢ²) + Navg² - 2avgΣ(pᵢ)) / N =
+        // (Σ(pᵢ²) + avg(Navg - 2Σ(pᵢ)) / N
+        var variance = (squaredSum - avg * sum) / nodeCountOmittingMissingProperties;
+        var std = Math.sqrt(variance);
 
         var statistics = Map.of(
-            "min", List.of(min),
-            "max", List.of(max)
+            "avg", List.of(avg),
+            "std", List.of(std)
         );
 
-        var maxMinDiff = max - min;
-
-        if (Math.abs(maxMinDiff) < Scaler.CLOSE_TO_ZERO) {
+        if (std < Scaler.CLOSE_TO_ZERO) {
             return Zero.of(statistics);
         } else {
-            return new MinMax(properties, statistics, min, maxMinDiff);
+            return new StdScore(properties, statistics, avg, std);
         }
     }
 
-    static class ComputeMaxMin extends AggregatesComputer {
+    static class ComputeSumAndSquaredSum extends AggregatesComputer {
 
-        private double min;
-        private double max;
+        private double squaredSum;
+        private double sum;
 
-        ComputeMaxMin(Partition partition, NodePropertyValues property, ProgressTracker progressTracker) {
+        ComputeSumAndSquaredSum(Partition partition, NodePropertyValues property, ProgressTracker progressTracker) {
             super(partition, property, progressTracker);
-            this.min = Double.MAX_VALUE;
-            this.max = -Double.MAX_VALUE;
+            this.squaredSum = 0D;
+            this.sum = 0D;
         }
 
         @Override
         void compute(double propertyValue) {
-            if (propertyValue < min) {
-                min = propertyValue;
-            }
-            if (propertyValue > max) {
-                max = propertyValue;
-            }
+            this.sum += propertyValue;
+            this.squaredSum += propertyValue * propertyValue;
         }
 
-        double max() {
-            return max;
+        double squaredSum() {
+            return squaredSum;
         }
 
-        double min() {
-            return min;
+        double sum() {
+            return sum;
         }
     }
 }

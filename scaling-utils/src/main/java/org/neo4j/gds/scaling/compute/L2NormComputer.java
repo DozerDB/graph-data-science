@@ -25,18 +25,16 @@ import org.neo4j.gds.core.concurrency.RunWithConcurrency;
 import org.neo4j.gds.core.utils.partition.Partition;
 import org.neo4j.gds.core.utils.partition.PartitionUtils;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
-import org.neo4j.gds.scaling.scale.Max;
+import org.neo4j.gds.scaling.scale.L2Norm;
 import org.neo4j.gds.scaling.scale.ScalarScaler;
 import org.neo4j.gds.scaling.scale.Scaler;
 import org.neo4j.gds.scaling.scale.Zero;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
-public final class MaxBuilder {
-    private MaxBuilder() {}
+public final class L2NormComputer {
+    private L2NormComputer() {}
 
     public static ScalarScaler create(
         NodePropertyValues properties,
@@ -48,7 +46,7 @@ public final class MaxBuilder {
         var tasks = PartitionUtils.rangePartition(
             concurrency,
             nodeCount,
-            partition -> new ComputeAbsMax(partition, properties, progressTracker),
+            partition -> new ComputeSquaredSum(partition, properties, progressTracker),
             Optional.empty()
         );
         RunWithConcurrency.builder()
@@ -57,36 +55,32 @@ public final class MaxBuilder {
             .executor(executor)
             .run();
 
-        var absMax = tasks.stream().mapToDouble(ComputeAbsMax::absMax).max().orElse(0);
+        var squaredSum = tasks.stream().mapToDouble(ComputeSquaredSum::squaredSum).sum();
+        var euclideanLength = Math.sqrt(squaredSum);
 
-        var statistics = Map.of("absMax", List.of(absMax));
-
-        if (absMax < Scaler.CLOSE_TO_ZERO) {
-            return Zero.of(statistics);
+        if (euclideanLength < Scaler.CLOSE_TO_ZERO) {
+            return Zero.of();
         } else {
-            return new Max(properties, statistics, absMax);
+            return new L2Norm(properties, euclideanLength);
         }
     }
 
-    static class ComputeAbsMax extends AggregatesComputer {
+    static class ComputeSquaredSum extends AggregatesComputer {
 
-        private double absMax;
+        private double squaredSum;
 
-        ComputeAbsMax(Partition partition, NodePropertyValues property, ProgressTracker progressTracker) {
+        ComputeSquaredSum(Partition partition, NodePropertyValues property, ProgressTracker progressTracker) {
             super(partition, property, progressTracker);
-            this.absMax = 0;
+            this.squaredSum = 0D;
         }
 
         @Override
         void compute(double propertyValue) {
-            var absoluteValue = Math.abs(propertyValue);
-            if (absoluteValue > absMax) {
-                absMax = absoluteValue;
-            }
+            squaredSum += propertyValue * propertyValue;
         }
 
-        double absMax() {
-            return absMax;
+        double squaredSum() {
+            return squaredSum;
         }
     }
 }

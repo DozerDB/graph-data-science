@@ -25,16 +25,14 @@ import org.neo4j.gds.core.concurrency.RunWithConcurrency;
 import org.neo4j.gds.core.utils.partition.Partition;
 import org.neo4j.gds.core.utils.partition.PartitionUtils;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
-import org.neo4j.gds.scaling.scale.L1Norm;
+import org.neo4j.gds.scaling.scale.Center;
 import org.neo4j.gds.scaling.scale.ScalarScaler;
-import org.neo4j.gds.scaling.scale.Scaler;
-import org.neo4j.gds.scaling.scale.Zero;
 
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
-public final class L1NormBuilder {
-    private L1NormBuilder() {}
+public final class CenterComputer {
+    private CenterComputer() {}
 
     public static ScalarScaler create(
         NodePropertyValues properties,
@@ -46,7 +44,7 @@ public final class L1NormBuilder {
         var tasks = PartitionUtils.rangePartition(
             concurrency,
             nodeCount,
-            partition -> new ComputeAbsoluteSum(partition, properties, progressTracker),
+            partition -> new ComputeSum(partition, properties, progressTracker),
             Optional.empty()
         );
         RunWithConcurrency.builder()
@@ -54,28 +52,26 @@ public final class L1NormBuilder {
             .tasks(tasks)
             .executor(executor)
             .run();
+        var sum = tasks.stream().mapToDouble(ComputeSum::sum).sum();
+        var nodeCountOmittingMissingProperties = tasks.stream().mapToLong(AggregatesComputer::nodeCountOmittingMissingValues).sum();
 
-        var absoluteSum = tasks.stream().mapToDouble(ComputeAbsoluteSum::sum).sum();
+        var avg = sum / nodeCountOmittingMissingProperties;
 
-        if (absoluteSum < Scaler.CLOSE_TO_ZERO) {
-            return Zero.of();
-        } else {
-            return new L1Norm(properties, absoluteSum);
-        }
+        return new Center(properties, avg);
     }
 
-    static class ComputeAbsoluteSum extends AggregatesComputer {
+    static class ComputeSum extends AggregatesComputer {
 
         private double sum;
 
-        ComputeAbsoluteSum(Partition partition, NodePropertyValues property, ProgressTracker progressTracker) {
+        ComputeSum(Partition partition, NodePropertyValues property, ProgressTracker progressTracker) {
             super(partition, property, progressTracker);
-            this.sum = 0;
+            this.sum = 0D;
         }
 
         @Override
         void compute(double propertyValue) {
-            sum += Math.abs(propertyValue);
+            this.sum += propertyValue;
         }
 
         double sum() {

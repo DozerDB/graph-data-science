@@ -35,8 +35,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
-public final class MeanBuilder {
-    private MeanBuilder() {}
+public final class MeanComputer {
+    private MeanComputer() {}
 
     public static ScalarScaler create(
         NodePropertyValues properties,
