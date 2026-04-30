@@ -41,6 +41,6 @@ public class NodeRegressionPipelineConfigureAutoTuningProc {
         @Name("pipelineName") String pipelineName,
         @Name("configuration") Map<String, Object> configMap
     ) {
-        return facade.pipelines().nodeRegression().configureAutoTuning(pipelineName, configMap);
+        return facade.pipelines().nodeRegression().configureAutoTuning(pipelineName, configMap, null);
     }
 }

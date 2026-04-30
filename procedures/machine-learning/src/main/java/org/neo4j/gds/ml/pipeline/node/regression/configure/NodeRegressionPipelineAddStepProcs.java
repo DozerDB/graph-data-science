@@ -42,7 +42,7 @@ public class NodeRegressionPipelineAddStepProcs {
         @Name("procedureName") String taskName,
         @Name("procedureConfiguration") Map<String, Object> procedureConfig
     ) {
-        return facade.pipelines().nodeRegression().addNodeProperty(pipelineName, taskName, procedureConfig);
+        return facade.pipelines().nodeRegression().addNodeProperty(pipelineName, taskName, procedureConfig, null);
     }
 
     @Procedure(name = "gds.alpha.pipeline.nodeRegression.selectFeatures", mode = READ)
@@ -51,6 +51,6 @@ public class NodeRegressionPipelineAddStepProcs {
         @Name("pipelineName") String pipelineName,
         @Name("featureProperties") Object featureProperties
     ) {
-        return facade.pipelines().nodeRegression().selectFeatures(pipelineName, featureProperties);
+        return facade.pipelines().nodeRegression().selectFeatures(pipelineName, featureProperties, null);
     }
 }

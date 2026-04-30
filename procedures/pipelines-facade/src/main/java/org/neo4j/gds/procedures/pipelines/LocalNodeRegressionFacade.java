@@ -19,6 +19,7 @@
  */
 package org.neo4j.gds.procedures.pipelines;
 
+import org.jetbrains.annotations.Nullable;
 import org.neo4j.gds.api.GraphName;
 import org.neo4j.gds.api.User;
 import org.neo4j.gds.core.model.ModelCatalog;
@@ -71,7 +72,8 @@ final class LocalNodeRegressionFacade implements NodeRegressionFacade {
     @Override
     public Stream<NodePipelineInfoResult> addLogisticRegression(
         String pipelineName,
-        Map<String, Object> configuration
+        Map<String, Object> configuration,
+        @Nullable String sessionName
     ) {
         return configurer.configureNodeRegressionTrainingPipeline(
             pipelineName,
@@ -82,7 +84,10 @@ final class LocalNodeRegressionFacade implements NodeRegressionFacade {
 
     @Override
     public Stream<NodePipelineInfoResult> addNodeProperty(
-        String pipelineNameAsString, String taskName, Map<String, Object> procedureConfig
+        String pipelineNameAsString,
+        String taskName,
+        Map<String, Object> procedureConfig,
+        @Nullable String sessionName
     ) {
         var pipelineName = PipelineName.parse(pipelineNameAsString);
 
@@ -98,7 +103,11 @@ final class LocalNodeRegressionFacade implements NodeRegressionFacade {
     }
 
     @Override
-    public Stream<NodePipelineInfoResult> addRandomForest(String pipelineName, Map<String, Object> configuration) {
+    public Stream<NodePipelineInfoResult> addRandomForest(
+        String pipelineName,
+        Map<String, Object> configuration,
+        @Nullable String sessionName
+    ) {
         return configurer.configureNodeRegressionTrainingPipeline(
             pipelineName,
             () -> pipelineConfigurationParser.parseRandomForestClassifierTrainerConfigForNodeRegression(configuration),
@@ -107,7 +116,11 @@ final class LocalNodeRegressionFacade implements NodeRegressionFacade {
     }
 
     @Override
-    public Stream<NodePipelineInfoResult> configureAutoTuning(String pipelineName, Map<String, Object> configuration) {
+    public Stream<NodePipelineInfoResult> configureAutoTuning(
+        String pipelineName,
+        Map<String, Object> configuration,
+        @Nullable String sessionName
+    ) {
         return configurer.configureNodeRegressionTrainingPipeline(
             pipelineName,
             () -> pipelineConfigurationParser.parseAutoTuningConfig(configuration),
@@ -116,7 +129,11 @@ final class LocalNodeRegressionFacade implements NodeRegressionFacade {
     }
 
     @Override
-    public Stream<NodePipelineInfoResult> configureSplit(String pipelineName, Map<String, Object> configuration) {
+    public Stream<NodePipelineInfoResult> configureSplit(
+        String pipelineName,
+        Map<String, Object> configuration,
+        @Nullable String sessionName
+    ) {
         return configurer.configureNodeRegressionTrainingPipeline(
             pipelineName,
             () -> pipelineConfigurationParser.parseNodePropertyPredictionSplitConfig(configuration),
@@ -125,7 +142,7 @@ final class LocalNodeRegressionFacade implements NodeRegressionFacade {
     }
 
     @Override
-    public Stream<NodePipelineInfoResult> createPipeline(String pipelineNameAsString) {
+    public Stream<NodePipelineInfoResult> createPipeline(String pipelineNameAsString, @Nullable String sessionName) {
         var pipelineName = PipelineName.parse(pipelineNameAsString);
 
         var pipeline = pipelineApplications.createNodeRegressionTrainingPipeline(pipelineName);
@@ -158,7 +175,11 @@ final class LocalNodeRegressionFacade implements NodeRegressionFacade {
     }
 
     @Override
-    public Stream<NodePipelineInfoResult> selectFeatures(String pipelineNameAsString, Object nodeFeatureStepsAsObject) {
+    public Stream<NodePipelineInfoResult> selectFeatures(
+        String pipelineNameAsString,
+        Object nodeFeatureStepsAsObject,
+        @Nullable String sessionName
+    ) {
         var pipelineName = PipelineName.parse(pipelineNameAsString);
 
         var nodeFeatureSteps = nodeFeatureStepsParser.parse(nodeFeatureStepsAsObject, "featureProperties");

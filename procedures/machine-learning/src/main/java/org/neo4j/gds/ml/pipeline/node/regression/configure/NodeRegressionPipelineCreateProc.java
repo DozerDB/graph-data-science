@@ -37,6 +37,6 @@ public class NodeRegressionPipelineCreateProc {
     @Procedure(name = "gds.alpha.pipeline.nodeRegression.create", mode = READ)
     @Description("Creates a node regression training pipeline in the pipeline catalog.")
     public Stream<NodePipelineInfoResult> create(@Name("pipelineName") String pipelineName) {
-        return facade.pipelines().nodeRegression().createPipeline(pipelineName);
+        return facade.pipelines().nodeRegression().createPipeline(pipelineName, null);
     }
 }

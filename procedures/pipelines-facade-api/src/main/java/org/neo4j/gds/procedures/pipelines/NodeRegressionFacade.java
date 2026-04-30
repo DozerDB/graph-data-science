@@ -19,31 +19,101 @@
  */
 package org.neo4j.gds.procedures.pipelines;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Map;
 import java.util.stream.Stream;
 
 public interface NodeRegressionFacade {
-    Stream<NodePipelineInfoResult> addLogisticRegression(String pipelineName, Map<String, Object> configuration);
+    Stream<NodePipelineInfoResult> addLogisticRegression(
+        String pipelineName,
+        Map<String, Object> configuration,
+        @Nullable String sessionName
+    );
+
+    default Stream<NodePipelineInfoResult> addLogisticRegression(
+        String pipelineName,
+        Map<String, Object> configuration
+    ) {
+        return addLogisticRegression(pipelineName, configuration, null);
+    }
 
     Stream<NodePipelineInfoResult> addNodeProperty(
         String pipelineName,
         String taskName,
-        Map<String, Object> procedureConfig
+        Map<String, Object> procedureConfig,
+        @Nullable String sessionName
     );
 
-    Stream<NodePipelineInfoResult> addRandomForest(String pipelineName, Map<String, Object> configuration);
+    default Stream<NodePipelineInfoResult> addNodeProperty(
+        String pipelineName,
+        String taskName,
+        Map<String, Object> procedureConfig
+    ) {
+        return addNodeProperty(pipelineName, taskName, procedureConfig, null);
+    }
 
-    Stream<NodePipelineInfoResult> configureAutoTuning(String pipelineName, Map<String, Object> configuration);
+    Stream<NodePipelineInfoResult> addRandomForest(
+        String pipelineName,
+        Map<String, Object> configuration,
+        @Nullable String sessionName
+    );
 
-    Stream<NodePipelineInfoResult> configureSplit(String pipelineName, Map<String, Object> configuration);
+    default Stream<NodePipelineInfoResult> addRandomForest(
+        String pipelineName,
+        Map<String, Object> configuration
+    ) {
+        return addRandomForest(pipelineName, configuration, null);
+    }
 
-    Stream<NodePipelineInfoResult> createPipeline(String pipelineName);
+    Stream<NodePipelineInfoResult> configureAutoTuning(
+        String pipelineName,
+        Map<String, Object> configuration,
+        @Nullable String sessionName
+    );
+
+    default Stream<NodePipelineInfoResult> configureAutoTuning(
+        String pipelineName,
+        Map<String, Object> configuration
+    ) {
+        return configureAutoTuning(pipelineName, configuration, null);
+    }
+
+    Stream<NodePipelineInfoResult> configureSplit(
+        String pipelineName,
+        Map<String, Object> configuration,
+        @Nullable String sessionName
+    );
+
+    default Stream<NodePipelineInfoResult> configureSplit(
+        String pipelineName,
+        Map<String, Object> configuration
+    ) {
+        return configureSplit(pipelineName, configuration, null);
+    }
+
+    Stream<NodePipelineInfoResult> createPipeline(String pipelineName, @Nullable String sessionName);
+
+    default Stream<NodePipelineInfoResult> createPipeline(String pipelineName) {
+        return createPipeline(pipelineName, null);
+    }
 
     Stream<PredictMutateResult> mutate(String graphName, Map<String, Object> configuration);
 
     Stream<NodeRegressionStreamResult> stream(String graphName, Map<String, Object> configuration);
 
-    Stream<NodePipelineInfoResult> selectFeatures(String pipelineName, Object featureProperties);
+    Stream<NodePipelineInfoResult> selectFeatures(
+        String pipelineName,
+        Object featureProperties,
+        @Nullable String sessionName
+    );
+
+    default Stream<NodePipelineInfoResult> selectFeatures(
+        String pipelineName,
+        Object featureProperties
+    ) {
+        return selectFeatures(pipelineName, featureProperties, null);
+    }
 
     Stream<NodeRegressionPipelineTrainResult> train(String graphName, Map<String, Object> configuration);
 

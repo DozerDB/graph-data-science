@@ -41,6 +41,6 @@ public class NodeRegressionPipelineConfigureSplitProc {
         @Name("pipelineName") String pipelineName,
         @Name("configuration") Map<String, Object> configMap
     ) {
-        return facade.pipelines().nodeRegression().configureSplit(pipelineName, configMap);
+        return facade.pipelines().nodeRegression().configureSplit(pipelineName, configMap, null);
     }
 }

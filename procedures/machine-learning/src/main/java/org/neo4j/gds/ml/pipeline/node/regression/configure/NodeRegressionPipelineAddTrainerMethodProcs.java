@@ -41,7 +41,7 @@ public class NodeRegressionPipelineAddTrainerMethodProcs {
         @Name("pipelineName") String pipelineName,
         @Name(value = "configuration", defaultValue = "{}") Map<String, Object> configuration
     ) {
-        return facade.pipelines().nodeRegression().addLogisticRegression(pipelineName, configuration);
+        return facade.pipelines().nodeRegression().addLogisticRegression(pipelineName, configuration, null);
     }
 
     @Procedure(name = "gds.alpha.pipeline.nodeRegression.addRandomForest", mode = READ)
@@ -50,6 +50,6 @@ public class NodeRegressionPipelineAddTrainerMethodProcs {
         @Name("pipelineName") String pipelineName,
         @Name(value = "configuration") Map<String, Object> configuration
     ) {
-        return facade.pipelines().nodeRegression().addRandomForest(pipelineName, configuration);
+        return facade.pipelines().nodeRegression().addRandomForest(pipelineName, configuration, null);
     }
 }
