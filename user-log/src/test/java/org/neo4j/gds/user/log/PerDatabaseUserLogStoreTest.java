@@ -17,13 +17,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.neo4j.gds.core.utils.warnings;
+package org.neo4j.gds.user.log;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.neo4j.gds.api.User;
-import org.neo4j.gds.core.utils.progress.tasks.Task;
 
 import java.util.function.Function;
 
@@ -41,7 +39,7 @@ class PerDatabaseUserLogStoreTest {
     void shouldStoreAndRetrieveUserLogEntry() {
         var userLogStore = new PerDatabaseUserLogStore();
 
-        userLogStore.addUserLogMessage(new User("user 1", false), new Task("task description 1", null), "log message 1");
+        userLogStore.addUserLogMessage(new User("user 1", false), new TestGroupingKey("task description 1"), "log message 1");
 
         assertThat(userLogStore.query(new User("user 1", false))).map(mapToSomethingUseful()).containsExactly(
             Pair.of("log message 1", "task description 1")
@@ -52,12 +50,12 @@ class PerDatabaseUserLogStoreTest {
     void shouldStoreAndRetrieveUserLogEntries() {
         var userLogStore = new PerDatabaseUserLogStore();
 
-        userLogStore.addUserLogMessage(new User("user 1", false), new Task("task description 1", null), "log message 01");
-        userLogStore.addUserLogMessage(new User("user 1", false), new Task("task description 2", null), "log message 02");
-        userLogStore.addUserLogMessage(new User("user 1", false), new Task("task description 2", null), "log message 03");
-        userLogStore.addUserLogMessage(new User("user 2", false), new Task("task description 1", null), "log message 04");
-        userLogStore.addUserLogMessage(new User("user 3", false), new Task("task description 1", null), "log message 05");
-        userLogStore.addUserLogMessage(new User("user 3", false), new Task("task description 1", null), "log message 06");
+        userLogStore.addUserLogMessage(new User("user 1", false), new TestGroupingKey("task description 1"), "log message 01");
+        userLogStore.addUserLogMessage(new User("user 1", false), new TestGroupingKey("task description 2"), "log message 02");
+        userLogStore.addUserLogMessage(new User("user 1", false), new TestGroupingKey("task description 2"), "log message 03");
+        userLogStore.addUserLogMessage(new User("user 2", false), new TestGroupingKey("task description 1"), "log message 04");
+        userLogStore.addUserLogMessage(new User("user 3", false), new TestGroupingKey("task description 1"), "log message 05");
+        userLogStore.addUserLogMessage(new User("user 3", false), new TestGroupingKey("task description 1"), "log message 06");
 
         assertThat(userLogStore.query(new User("user 1", false))).map(mapToSomethingUseful()).containsExactly(
             Pair.of("log message 01", "task description 1"),
@@ -74,12 +72,12 @@ class PerDatabaseUserLogStoreTest {
             Pair.of("log message 06", "task description 1")
         );
 
-        userLogStore.addUserLogMessage(new User("user 1", false), new Task("task description 1", null), "log message 07");
-        userLogStore.addUserLogMessage(new User("user 1", false), new Task("task description 2", null), "log message 08");
-        userLogStore.addUserLogMessage(new User("user 2", false), new Task("task description 3", null), "log message 09");
-        userLogStore.addUserLogMessage(new User("user 3", false), new Task("task description 1", null), "log message 10");
-        userLogStore.addUserLogMessage(new User("user 3", false), new Task("task description 3", null), "log message 11");
-        userLogStore.addUserLogMessage(new User("user 3", false), new Task("task description 3", null), "log message 12");
+        userLogStore.addUserLogMessage(new User("user 1", false), new TestGroupingKey("task description 1"), "log message 07");
+        userLogStore.addUserLogMessage(new User("user 1", false), new TestGroupingKey("task description 2"), "log message 08");
+        userLogStore.addUserLogMessage(new User("user 2", false), new TestGroupingKey("task description 3"), "log message 09");
+        userLogStore.addUserLogMessage(new User("user 3", false), new TestGroupingKey("task description 1"), "log message 10");
+        userLogStore.addUserLogMessage(new User("user 3", false), new TestGroupingKey("task description 3"), "log message 11");
+        userLogStore.addUserLogMessage(new User("user 3", false), new TestGroupingKey("task description 3"), "log message 12");
 
         assertThat(userLogStore.query(new User("user 1", false))).map(mapToSomethingUseful()).containsExactly(
             Pair.of("log message 01", "task description 1"),
@@ -103,7 +101,6 @@ class PerDatabaseUserLogStoreTest {
         );
     }
 
-    @NotNull
     private static Function<UserLogEntry, Pair<String, String>> mapToSomethingUseful() {
         return ule -> Pair.of(ule.message, ule.taskName);
     }

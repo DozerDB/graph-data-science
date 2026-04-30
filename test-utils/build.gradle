@@ -43,6 +43,7 @@ dependencies {
     implementation project(':string-formatting')
     implementation project(':transaction')
     implementation project(':termination')
+    implementation project(':user-log')
 
     implementation(
         openGds.neo4j.cypher.dsl,

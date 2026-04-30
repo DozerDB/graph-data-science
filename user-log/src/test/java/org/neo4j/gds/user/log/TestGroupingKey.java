@@ -17,28 +17,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.neo4j.gds.core.utils.warnings;
+package org.neo4j.gds.user.log;
 
-import org.neo4j.gds.api.User;
-import org.neo4j.gds.core.utils.progress.tasks.Task;
+import org.apache.commons.lang3.builder.CompareToBuilder;
 
-/**
- * This a great and Neo4j-agnostic class.
- * It listens to log events and stores them.
- * Scope is one of these per ~~database~~ data source.
- */
-public class UserLogRegistry {
-    public static final UserLogRegistry EMPTY = new UserLogRegistry(User.DEFAULT, EmptyUserLogStore.INSTANCE);
+class TestGroupingKey implements GroupingKey {
+    private final String description;
 
-    private final User user;
-    private final UserLogStore userLogStore;
-
-    public UserLogRegistry(User user, UserLogStore userLogStore) {
-        this.user = user;
-        this.userLogStore = userLogStore;
+    TestGroupingKey(String description) {
+        this.description = description;
     }
 
-    public void addWarningToLog(Task task, String message) {
-        userLogStore.addUserLogMessage(user, task, message);
+    @Override
+    public String description() {
+        return description;
+    }
+
+    @Override
+    public long startTime() {
+        return 42;
+    }
+
+    @Override
+    public int compareTo(GroupingKey o) {
+        return CompareToBuilder.reflectionCompare(description, o.description());
     }
 }

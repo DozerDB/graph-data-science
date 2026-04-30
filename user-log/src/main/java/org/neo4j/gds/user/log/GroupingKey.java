@@ -17,19 +17,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.neo4j.gds.core.utils.warnings;
-
-import org.neo4j.gds.api.User;
-import org.neo4j.gds.core.utils.progress.tasks.Task;
-
-import java.util.stream.Stream;
+package org.neo4j.gds.user.log;
 
 /**
- * In a deployed system, there will exist one of these per ~~database~~ data source, or namespace.
- * That is handled up stream.
+ * The grouping key for user log messages. You supply something comparable, we group for you.
+ * Your groups are sorted using this key too.
+ * So you have consistency within your group,
+ * but obviously not between your type of group and other types of groups.
  */
-public interface UserLogStore {
-    void addUserLogMessage(User user, Task taskId, String message);
+public interface GroupingKey extends Comparable<GroupingKey> {
+    long startTime();
 
-    Stream<UserLogEntry> query(User user);
+    String description();
 }

@@ -32,7 +32,7 @@ import org.neo4j.gds.core.utils.progress.EmptyTaskRegistryFactory;
 import org.neo4j.gds.core.utils.progress.PerDatabaseTaskStore;
 import org.neo4j.gds.core.utils.progress.TaskRegistry;
 import org.neo4j.gds.core.utils.progress.UserTask;
-import org.neo4j.gds.core.utils.warnings.UserLogRegistry;
+import org.neo4j.gds.user.log.UserLogRegistry;
 import org.neo4j.gds.logging.GdsTestLog;
 import org.neo4j.gds.logging.Log;
 

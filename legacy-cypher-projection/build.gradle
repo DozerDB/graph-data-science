@@ -38,6 +38,7 @@ dependencies {
     implementation project(':projection')
     implementation project(':string-formatting')
     implementation project(':transaction')
+    implementation project(':user-log')
 
     // Test dependencies
     testAnnotationProcessor project(':annotations')

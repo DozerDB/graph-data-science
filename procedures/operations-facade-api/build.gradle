@@ -7,20 +7,15 @@ description = 'Neo4j Graph Data Science :: Operations Procedure Facade API'
 group = 'org.neo4j.gds'
 
 dependencies {
-
     implementation openGds.commons.lang3
 
-    // Because `org.neo4j.gds.core.utils.ClockService`
     implementation project(':core-utils')
-
-    // Because of `UserLogEntry`
     implementation project(':progress-tracking')
-
     implementation project(':string-formatting')
+    implementation project(':user-log')
 
     testImplementation platform(openGds.junit.bom)
     testImplementation openGds.bundles.test.basic
 
     testRuntimeOnly openGds.bundles.test.platforms
-
 }

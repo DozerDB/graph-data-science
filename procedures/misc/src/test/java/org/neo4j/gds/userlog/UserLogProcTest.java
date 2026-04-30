@@ -20,8 +20,7 @@
 package org.neo4j.gds.userlog;
 
 import org.junit.jupiter.api.Test;
-import org.neo4j.gds.core.utils.progress.tasks.LeafTask;
-import org.neo4j.gds.core.utils.warnings.UserLogEntry;
+import org.neo4j.gds.user.log.UserLogEntry;
 import org.neo4j.gds.procedures.GraphDataScienceProcedures;
 import org.neo4j.gds.procedures.operations.OperationsProcedureFacade;
 
@@ -39,9 +38,9 @@ class UserLogProcTest {
         userLogProc.facade = facade;
 
         var expectedWarnings = Stream.of(
-            new UserLogEntry(new LeafTask("lt", 42), "going once"),
-            new UserLogEntry(new LeafTask("lt", 87), "going twice..."),
-            new UserLogEntry(new LeafTask("lt", 23), "gone!")
+            UserLogEntry.create("lt", "going once", 1),
+            UserLogEntry.create("lt", "going twice...", 2),
+            UserLogEntry.create("lt", "gone!", 3)
         );
         var operationsProcedureFacade = mock(OperationsProcedureFacade.class);
         when(facade.operations()).thenReturn(operationsProcedureFacade);
