@@ -29,6 +29,7 @@ dependencies {
     implementation project(':config-api')
     implementation project(':core')
     implementation project(':core-write')
+    implementation project(':defaults-and-limits-configuration')
     implementation project(':graph-store-catalog-applications')
     implementation project(':logging')
     implementation project(':memory-estimation')
@@ -43,8 +44,9 @@ dependencies {
     implementation project(':projection')
     implementation project(':transaction')
     implementation project(':string-formatting')
-    implementation project(':defaults-and-limits-configuration')
     implementation project(':termination')
+    implementation project(':user-log')
+
     implementation openGds.reflections
 
     // Test dependencies

@@ -38,7 +38,6 @@ dependencies {
     implementation project(':core')
     implementation project(':executor')
     implementation project(':logging')
-
     implementation project(':neo4j-api')
     implementation project(':neo4j-log-adapter')
     implementation project(':open-licensing')
@@ -47,6 +46,7 @@ dependencies {
     implementation project(':progress-tracking')
     implementation project(':termination')
     implementation project(':transaction')
+    implementation project(':user-log')
 
     implementation openGds.reflections
 

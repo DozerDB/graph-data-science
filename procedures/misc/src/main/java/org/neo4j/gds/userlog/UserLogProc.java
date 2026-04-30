@@ -19,7 +19,7 @@
  */
 package org.neo4j.gds.userlog;
 
-import org.neo4j.gds.core.utils.warnings.UserLogEntry;
+import org.neo4j.gds.user.log.UserLogEntry;
 import org.neo4j.gds.procedures.GraphDataScienceProcedures;
 import org.neo4j.procedure.Context;
 import org.neo4j.procedure.Description;

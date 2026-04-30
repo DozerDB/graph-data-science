@@ -1,0 +1,18 @@
+plugins {
+    id 'buildlogic-gds-java'
+}
+
+description = 'Neo4j Graph Data Science :: User Log'
+group = 'org.neo4j.gds'
+
+dependencies {
+    implementation project(':core-api')
+
+    implementation openGds.commons.lang3
+
+    testImplementation platform(openGds.junit.bom)
+    testImplementation openGds.bundles.test.basic
+    testImplementation openGds.mockito.junit.jupiter
+
+    testRuntimeOnly openGds.bundles.test.platforms
+}

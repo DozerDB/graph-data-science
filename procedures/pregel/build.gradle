@@ -20,14 +20,15 @@ dependencies {
     implementation project(':core')
     implementation project(':core-write')
     implementation project(':executor')
-    implementation project(":miscellaneous-algorithms")
+    implementation project(':graph-schema-api')
     implementation project(':logging')
+    implementation project(":miscellaneous-algorithms")
     implementation project(':proc-common')
     implementation project(':progress-tracking')
     implementation project(':string-formatting')
     implementation project(':termination')
+    implementation project(':user-log')
 
-    implementation project(':graph-schema-api')
 
     // Test dependencies
     testAnnotationProcessor project(':annotations')

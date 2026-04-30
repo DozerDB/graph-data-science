@@ -17,34 +17,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.neo4j.gds.core.utils.warnings;
+package org.neo4j.gds.user.log;
 
-import org.neo4j.gds.core.utils.progress.tasks.Task;
+import org.neo4j.gds.api.User;
 
-import java.time.Instant;
-import java.time.LocalTime;
-import java.time.ZoneId;
+/**
+ * This a great and Neo4j-agnostic class.
+ * It listens to log events and stores them.
+ * Scope is one of these per ~~database~~ data source.
+ */
+public class UserLogRegistry {
+    public static final UserLogRegistry EMPTY = new UserLogRegistry(User.DEFAULT, EmptyUserLogStore.INSTANCE);
 
-public class UserLogEntry {
-    public String taskName;
-    public String message;
-    public LocalTime timeStarted;
+    private final User user;
+    private final UserLogStore userLogStore;
 
-    public UserLogEntry(Task task, String message) {
-        this.taskName = task.description();
-        this.message = message;
-        this.timeStarted = LocalTime.ofInstant(Instant.ofEpochMilli(task.startTime()), ZoneId.systemDefault());
+    public UserLogRegistry(User user, UserLogStore userLogStore) {
+        this.user = user;
+        this.userLogStore = userLogStore;
     }
 
-    public String getTaskName() {
-        return taskName;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public LocalTime getTimeStarted() {
-        return timeStarted;
+    public void addWarningToLog(GroupingKey groupingKey, String message) {
+        userLogStore.addUserLogMessage(user, groupingKey, message);
     }
 }

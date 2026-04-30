@@ -24,7 +24,7 @@ import org.neo4j.gds.core.RequestCorrelationId;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.utils.progress.TaskRegistry;
 import org.neo4j.gds.core.utils.progress.TaskRegistryFactory;
-import org.neo4j.gds.core.utils.warnings.UserLogRegistry;
+import org.neo4j.gds.user.log.UserLogRegistry;
 import org.neo4j.gds.mem.MemoryRange;
 
 import java.util.Locale;
@@ -241,7 +241,7 @@ public final class TaskProgressTracker implements ProgressTracker {
     public void logMessage(LogLevel level, String message) {
         switch (level) {
             case WARNING:
-                userLogRegistry.addWarningToLog(baseTask, message);
+                userLogRegistry.addWarningToLog(TaskGroupingKey.create(baseTask), message);
                 taskProgressLogger.logWarning(":: " + message);
                 break;
             case INFO:

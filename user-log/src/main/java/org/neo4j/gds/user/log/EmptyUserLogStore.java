@@ -17,10 +17,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.neo4j.gds.core.utils.warnings;
+package org.neo4j.gds.user.log;
 
 import org.neo4j.gds.api.User;
-import org.neo4j.gds.core.utils.progress.tasks.Task;
 
 import java.util.stream.Stream;
 
@@ -28,7 +27,7 @@ public enum EmptyUserLogStore implements UserLogStore {
     INSTANCE;
 
     @Override
-    public void addUserLogMessage(User user, Task taskId, String message) {}
+    public void addUserLogMessage(User user, GroupingKey key, String message) { /* no op */ }
 
     @Override
     public Stream<UserLogEntry> query(User user) {

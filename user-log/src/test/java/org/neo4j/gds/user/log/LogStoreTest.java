@@ -17,12 +17,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.neo4j.gds.core.utils.warnings;
+package org.neo4j.gds.user.log;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
-import org.neo4j.gds.core.utils.progress.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,16 +33,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 class LogStoreTest {
     @Test
     void shouldDealWithNewTasks() {
-        var logStore = new LogStore();
+        var logStore = new PerUserLogStore();
 
         assertThat(logStore.stream()).isEmpty();
     }
 
     @Test
     void shouldStoreAndRetrieveMessage() {
-        var logStore = new LogStore();
+        var logStore = new PerUserLogStore();
 
-        logStore.addLogMessage(new Task("foo", null), "bar");
+        logStore.addLogMessage(new TestGroupingKey("foo"), "bar");
         var stream = logStore.stream();
 
         assertThat(stream.map(mapToSomethingUseful())).containsExactly(
@@ -54,11 +52,11 @@ class LogStoreTest {
 
     @Test
     void shouldStoreAndRetrieveMessages() {
-        var logStore = new LogStore();
+        var logStore = new PerUserLogStore();
 
-        logStore.addLogMessage(new Task("foo", null), "bar 1");
-        logStore.addLogMessage(new Task("foo", null), "bar 2");
-        logStore.addLogMessage(new Task("baz", null), "quux 1");
+        logStore.addLogMessage(new TestGroupingKey("foo"), "bar 1");
+        logStore.addLogMessage(new TestGroupingKey("foo"), "bar 2");
+        logStore.addLogMessage(new TestGroupingKey("baz"), "quux 1");
         var stream = logStore.stream();
 
         /*
@@ -71,8 +69,7 @@ class LogStoreTest {
         );
     }
 
-    @NotNull
-    private static Function<Map.Entry<Task, Queue<String>>, Pair<String, List<String>>> mapToSomethingUseful() {
+    private static Function<Map.Entry<GroupingKey, Queue<String>>, Pair<String, List<String>>> mapToSomethingUseful() {
         return e -> Pair.of(
             e.getKey().description(),
             (List<String>) new ArrayList<>(e.getValue())
@@ -80,15 +77,15 @@ class LogStoreTest {
     }
 
     @Test
-    void shouldCapNumberOfTasksTracked() {
-        var logStore = new LogStore(3);
+    void shouldCapNumberOfTersksTracked() {
+        var logStore = new PerUserLogStore(3);
 
-        logStore.addLogMessage(new Task("task description 1", null), "log message 11");
-        logStore.addLogMessage(new Task("task description 1", null), "log message 12");
-        logStore.addLogMessage(new Task("task description 1", null), "log message 13");
-        logStore.addLogMessage(new Task("task description 2", null), "log message 21");
-        logStore.addLogMessage(new Task("task description 3", null), "log message 31");
-        logStore.addLogMessage(new Task("task description 3", null), "log message 32");
+        logStore.addLogMessage(new TestGroupingKey("task description 1"), "log message 11");
+        logStore.addLogMessage(new TestGroupingKey("task description 1"), "log message 12");
+        logStore.addLogMessage(new TestGroupingKey("task description 1"), "log message 13");
+        logStore.addLogMessage(new TestGroupingKey("task description 2"), "log message 21");
+        logStore.addLogMessage(new TestGroupingKey("task description 3"), "log message 31");
+        logStore.addLogMessage(new TestGroupingKey("task description 3"), "log message 32");
 
         assertThat(logStore.stream().map(mapToSomethingUseful())).containsExactly(
             Pair.of("task description 1", List.of("log message 11", "log message 12", "log message 13")),
@@ -96,7 +93,7 @@ class LogStoreTest {
             Pair.of("task description 3", List.of("log message 31", "log message 32"))
         );
 
-        logStore.addLogMessage(new Task("task description 4", null), "log message 41");
+        logStore.addLogMessage(new TestGroupingKey("task description 4"), "log message 41");
 
         assertThat(logStore.stream().map(mapToSomethingUseful())).containsExactly(
             Pair.of("task description 2", List.of("log message 21")),

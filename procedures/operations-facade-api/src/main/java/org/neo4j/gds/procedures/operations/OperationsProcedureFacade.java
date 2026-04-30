@@ -19,7 +19,7 @@
  */
 package org.neo4j.gds.procedures.operations;
 
-import org.neo4j.gds.core.utils.warnings.UserLogEntry;
+import org.neo4j.gds.user.log.UserLogEntry;
 
 import java.util.stream.Stream;
 

@@ -21,9 +21,9 @@ package org.neo4j.gds.procedures;
 
 import org.neo4j.gds.api.DatabaseId;
 import org.neo4j.gds.api.User;
-import org.neo4j.gds.core.utils.warnings.PerDatabaseUserLogStore;
-import org.neo4j.gds.core.utils.warnings.UserLogRegistry;
-import org.neo4j.gds.core.utils.warnings.UserLogStore;
+import org.neo4j.gds.user.log.PerDatabaseUserLogStore;
+import org.neo4j.gds.user.log.UserLogRegistry;
+import org.neo4j.gds.user.log.UserLogStore;
 
 import java.util.Comparator;
 import java.util.Map;
