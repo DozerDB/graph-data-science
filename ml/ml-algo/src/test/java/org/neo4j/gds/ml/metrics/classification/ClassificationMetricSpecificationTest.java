@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 class ClassificationMetricSpecificationTest {
     @Test
     void shouldCreateF1Metric() {
-        var metricSpecification = ClassificationMetricSpecification.Parser.parse(List.of("F1(clAss =  42 )")).get(0);
+        var metricSpecification = ClassificationMetricSpecification.Parser.parseList(List.of("F1(clAss =  42 )")).get(0);
 
         var classCounts = new LongMultiSet();
         classCounts.add(1337L);
@@ -50,7 +50,7 @@ class ClassificationMetricSpecificationTest {
 
     @Test
     void shouldCreateAccuracyMetric() {
-        var metricSpecification = ClassificationMetricSpecification.Parser.parse(List.of("Accuracy")).get(0);
+        var metricSpecification = ClassificationMetricSpecification.Parser.parseList(List.of("Accuracy")).get(0);
 
         var classCounts = new LongMultiSet();
         classCounts.add(1337L);
@@ -62,7 +62,7 @@ class ClassificationMetricSpecificationTest {
 
     @Test
     void shouldCreateGlobalAccuracyMetric() {
-        var metricSpecification = ClassificationMetricSpecification.Parser.parse(List.of("Accuracy(class=1337)")).get(0);
+        var metricSpecification = ClassificationMetricSpecification.Parser.parseList(List.of("Accuracy(class=1337)")).get(0);
 
         var classCounts = new LongMultiSet();
         classCounts.add(1337L);
@@ -73,7 +73,7 @@ class ClassificationMetricSpecificationTest {
 
     @Test
     void shouldCreateF1WeightedMetric() {
-        var metricSpecification = ClassificationMetricSpecification.Parser.parse(List.of("F1_WeIGhTED")).get(0);
+        var metricSpecification = ClassificationMetricSpecification.Parser.parseList(List.of("F1_WeIGhTED")).get(0);
 
         var classCounts = new LongMultiSet();
         classCounts.add(1337L);
@@ -84,7 +84,7 @@ class ClassificationMetricSpecificationTest {
 
     @Test
     void shouldCreateF1MacroMetric() {
-        var metricSpecification = ClassificationMetricSpecification.Parser.parse(List.of("F1_maCRo")).get(0);
+        var metricSpecification = ClassificationMetricSpecification.Parser.parseList(List.of("F1_maCRo")).get(0);
 
         var classCounts = new LongMultiSet();
         classCounts.add(1337L);
@@ -95,7 +95,7 @@ class ClassificationMetricSpecificationTest {
 
     @Test
     void shouldCreateOOBEMetric() {
-        var metricSpecification = ClassificationMetricSpecification.Parser.parse(List.of("OuT_Of_BAG_ErROR")).get(0);
+        var metricSpecification = ClassificationMetricSpecification.Parser.parseList(List.of("OuT_Of_BAG_ErROR")).get(0);
 
         var classCounts = new LongMultiSet();
         classCounts.add(1337L);
@@ -108,7 +108,7 @@ class ClassificationMetricSpecificationTest {
 
     @Test
     void shouldParseSyntacticSugar() {
-        var metricSpecification = ClassificationMetricSpecification.Parser.parse(List.of("Accuracy", "F1(class=*)")).get(1);
+        var metricSpecification = ClassificationMetricSpecification.Parser.parseList(List.of("Accuracy", "F1(class=*)")).get(1);
 
         var classCounts = new LongMultiSet();
         classCounts.add(-1337L);
@@ -131,7 +131,7 @@ class ClassificationMetricSpecificationTest {
     @Test
     void shouldFailOnMultipleInvalidSingleClassSpecifications() {
         assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> ClassificationMetricSpecification.Parser.parse(invalidSingleClassSpecifications()))
+            .isThrownBy(() -> ClassificationMetricSpecification.Parser.parseList(invalidSingleClassSpecifications()))
             .withMessageContaining(
                 "Invalid metric expressions"
             );

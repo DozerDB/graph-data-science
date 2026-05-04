@@ -131,7 +131,7 @@ public final class ClassificationMetricSpecification {
 
         public static Iterable<String> allClassMetrics() { return ALL_CLASS_METRIC_FACTORIES.keySet(); }
 
-        public static List<ClassificationMetricSpecification> parse(List<?> userSpecifications) {
+        public static List<ClassificationMetricSpecification> parseList(List<?> userSpecifications) {
             if (userSpecifications.isEmpty()) {
                 throw new IllegalArgumentException(formatWithLocale("No metrics specified, we require at least one"));
             }
