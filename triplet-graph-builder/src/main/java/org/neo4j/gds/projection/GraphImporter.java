@@ -179,7 +179,9 @@ public final class GraphImporter {
                 "Unexpected relationship properties for relationships type `%s`. " +
                     "Expected %s, but got %s.",
                 relImporter.relationshipType().name,
-                StringJoining.join(relImporter.propertyConfigs().stream().map(GraphFactory.PropertyConfig::propertyKey)),
+                StringJoining.join(relImporter.propertyConfigs()
+                    .stream()
+                    .map(GraphFactory.PropertyConfig::propertyKey)),
                 StringJoining.join(
                     StreamSupport.stream(relationshipProperties.propertyKeys().spliterator(), false))
             ));
@@ -348,8 +350,7 @@ public final class GraphImporter {
 
         this.graphSchemaBuilder.nodeSchema(nodeSchema);
 
-        var nodes = new Nodes(nodeSchema, idMap,idMapAndProperties.propertyStore())
-            ;
+        var nodes = new Nodes(nodeSchema, idMap, idMapAndProperties.propertyStore());
 
         graphStoreBuilder.nodes(nodes);
 
