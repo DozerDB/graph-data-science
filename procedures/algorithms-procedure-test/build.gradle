@@ -3,7 +3,7 @@ plugins {
     id 'buildlogic-gds-java-with-it'
 }
 
-description = 'Neo4j Graph Data Science :: Algorithm Specifications'
+description = 'Neo4j Graph Data Science :: Algorithms Procedure Test'
 
 group = 'org.neo4j.gds'
 
