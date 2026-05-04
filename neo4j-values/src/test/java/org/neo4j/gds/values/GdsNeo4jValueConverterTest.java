@@ -20,10 +20,14 @@
 package org.neo4j.gds.values;
 
 import org.junit.jupiter.api.Test;
+import org.neo4j.gds.values.primitive.ByteLongArrayImpl;
+import org.neo4j.gds.values.primitive.IntLongArrayImpl;
 import org.neo4j.gds.values.primitive.PrimitiveValues;
+import org.neo4j.gds.values.primitive.ShortLongArrayImpl;
 import org.neo4j.values.storable.Values;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class GdsNeo4jValueConverterTest {
 
@@ -38,6 +42,7 @@ class GdsNeo4jValueConverterTest {
         assertThat(GdsNeo4jValueConverter.toValue(Values.of(new double[]{1, -1})))
             .isEqualTo(PrimitiveValues.doubleArray(new double[]{1, -1}));
     }
+
     @Test
     void shouldConvertLongArray() {
         assertThat(GdsNeo4jValueConverter.toValue(Values.of(new long[]{1, -1})))
@@ -86,4 +91,52 @@ class GdsNeo4jValueConverterTest {
             .isEqualTo(PrimitiveValues.longValue(1L));
     }
 
+    @Test
+    void shouldConvertFloat64Vector() {
+        assertThat(GdsNeo4jValueConverter.toValue(Values.float64Vector(1D, -1D, Double.MAX_VALUE, Double.MIN_VALUE, Double.MAX_VALUE-1, Double.MIN_VALUE+1)))
+            .isInstanceOf(DoubleArray.class)
+            .isEqualTo(PrimitiveValues.doubleArray(new double[]{1D, -1D, Double.MAX_VALUE, Double.MIN_VALUE, Double.MAX_VALUE-1, Double.MIN_VALUE+1}));
+    }
+
+    @Test
+    void shouldConvertFloat32Vector() {
+        assertThat(GdsNeo4jValueConverter.toValue(Values.float32Vector(1F, -1F, Float.MAX_VALUE, Float.MIN_VALUE, Float.MAX_VALUE-1, Float.MIN_VALUE+1)))
+            .isInstanceOf(FloatArray.class)
+            .isEqualTo(PrimitiveValues.floatArray(new float[]{1F, -1F, Float.MAX_VALUE, Float.MIN_VALUE, Float.MAX_VALUE-1, Float.MIN_VALUE+1}));
+    }
+
+    @Test
+    void shouldConvertInt64Vector() {
+        assertThat(GdsNeo4jValueConverter.toValue(Values.int64Vector(1, -1, Long.MAX_VALUE, Long.MIN_VALUE, Long.MAX_VALUE-1, Long.MIN_VALUE+1)))
+            .isInstanceOf(LongArray.class)
+            .isEqualTo(PrimitiveValues.longArray(new long[]{1L, -1L, Long.MAX_VALUE, Long.MIN_VALUE, Long.MAX_VALUE-1, Long.MIN_VALUE+1}));
+    }
+
+    @Test
+    void shouldConvertInt32Vector() {
+        assertThat(GdsNeo4jValueConverter.toValue(Values.int32Vector(1, -1, Integer.MAX_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE-1, Integer.MIN_VALUE+1)))
+            .isInstanceOf(IntLongArrayImpl.class)
+            .isEqualTo(PrimitiveValues.intArray(new int[]{1, -1, Integer.MAX_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE-1, Integer.MIN_VALUE+1}));
+    }
+
+    @Test
+    void shouldConvertInt16Vector() {
+        assertThat(GdsNeo4jValueConverter.toValue(Values.int16Vector((short) 1, (short) -1, Short.MAX_VALUE, Short.MIN_VALUE)))
+            .isInstanceOf(ShortLongArrayImpl.class)
+            .isEqualTo(PrimitiveValues.shortArray(new short[]{1, -1, Short.MAX_VALUE, Short.MIN_VALUE}));
+    }
+
+    @Test
+    void shouldConvertInt8Vector() {
+        assertThat(GdsNeo4jValueConverter.toValue(Values.int8Vector((byte) 1, (byte) -1, Byte.MAX_VALUE, Byte.MIN_VALUE)))
+            .isInstanceOf(ByteLongArrayImpl.class)
+            .isEqualTo(PrimitiveValues.byteArray(new byte[]{1, -1, Byte.MAX_VALUE, Byte.MIN_VALUE}));
+    }
+
+    @Test
+    void shouldFailOnUnsupportedValueType() {
+        assertThatThrownBy(() -> GdsNeo4jValueConverter.toValue(Values.stringValue("unsupported")))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("Unsupported conversion to GDS Value from Neo4j Value with type `String`.");
+    }
 }
