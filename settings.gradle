@@ -191,6 +191,9 @@ project(':graph-catalog-procedure-facade').projectDir = file('procedures/graph-c
 include('graph-dimensions')
 project(':graph-dimensions').projectDir = file('graph-dimensions')
 
+include(':graph-memory-usage')
+project(':graph-memory-usage').projectDir = file("graph-memory-usage")
+
 include('graph-projection-api')
 project(':graph-projection-api').projectDir = file('graph-projection-api')
 
