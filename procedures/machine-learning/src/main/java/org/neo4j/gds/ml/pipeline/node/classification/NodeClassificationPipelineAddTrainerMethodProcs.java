@@ -74,6 +74,6 @@ public class NodeClassificationPipelineAddTrainerMethodProcs {
         @Name("pipelineName") String pipelineName,
         @Name(value = "config", defaultValue = "{}") Map<String, Object> mlpClassifierConfig
     ) {
-        return facade.pipelines().nodeClassification().addMLP(pipelineName, mlpClassifierConfig);
+        return facade.pipelines().nodeClassification().addMLP(pipelineName, mlpClassifierConfig, null);
     }
 }

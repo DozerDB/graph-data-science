@@ -32,7 +32,11 @@ public interface NodeClassificationFacade {
         @Nullable String sessionName
     );
 
-    Stream<NodePipelineInfoResult> addMLP(String pipelineName, Map<String, Object> configuration);
+    Stream<NodePipelineInfoResult> addMLP(
+        String pipelineName,
+        Map<String, Object> configuration,
+        @Nullable String sessionName
+    );
 
     Stream<NodePipelineInfoResult> addNodeProperty(
         String pipelineNameAsString,
@@ -43,7 +47,11 @@ public interface NodeClassificationFacade {
 
     Stream<NodePipelineInfoResult> addRandomForest(String pipelineName, Map<String, Object> configuration, @Nullable String sessionName);
 
-    Stream<NodePipelineInfoResult> configureAutoTuning(String pipelineName, Map<String, Object> configuration);
+    Stream<NodePipelineInfoResult> configureAutoTuning(
+        String pipelineName,
+        Map<String, Object> configuration,
+        @Nullable String sessionName
+    );
 
     Stream<NodePipelineInfoResult> configureSplit(String pipelineName, Map<String, Object> configuration, @Nullable String sessionName);
 

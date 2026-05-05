@@ -87,7 +87,11 @@ public final class LocalNodeClassificationFacade implements NodeClassificationFa
     }
 
     @Override
-    public Stream<NodePipelineInfoResult> addMLP(String pipelineName, Map<String, Object> configuration) {
+    public Stream<NodePipelineInfoResult> addMLP(
+        String pipelineName,
+        Map<String, Object> configuration,
+        @Nullable String sessionName
+    ) {
         return configurer.configureNodeClassificationTrainingPipeline(
             pipelineName,
             () -> pipelineConfigurationParser.parseMLPClassifierTrainConfig(configuration),
@@ -125,7 +129,11 @@ public final class LocalNodeClassificationFacade implements NodeClassificationFa
     }
 
     @Override
-    public Stream<NodePipelineInfoResult> configureAutoTuning(String pipelineName, Map<String, Object> configuration) {
+    public Stream<NodePipelineInfoResult> configureAutoTuning(
+        String pipelineName,
+        Map<String, Object> configuration,
+        @Nullable String sessionName
+    ) {
         return configurer.configureNodeClassificationTrainingPipeline(
             pipelineName,
             () -> pipelineConfigurationParser.parseAutoTuningConfig(configuration),
