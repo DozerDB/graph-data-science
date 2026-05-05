@@ -41,6 +41,7 @@ import org.neo4j.gds.domain.services.GloballyScopedDependencies;
 import org.neo4j.gds.graphsampling.RandomWalkSamplerType;
 import org.neo4j.gds.legacycypherprojection.GraphProjectCypherResult;
 import org.neo4j.gds.logging.Log;
+import org.neo4j.gds.mem.GraphMemoryUsage;
 import org.neo4j.gds.metrics.projections.ProjectionMetricsService;
 import org.neo4j.gds.projection.GraphProjectNativeResult;
 import org.neo4j.gds.projection.GraphStoreFactorySuppliers;

@@ -34,6 +34,9 @@ dependencies {
     compileOnly openGds.jetbrains.annotations
 
     implementation(
+        project(':core'),
+        project(':histogram'),
+        project(':memory-info'),
         project(':memory-usage'),
         openGds.jol.core,
     )
@@ -42,6 +45,9 @@ dependencies {
 
     testImplementation platform(openGds.junit.bom)
     testImplementation openGds.bundles.test.basic
-
     testRuntimeOnly openGds.bundles.test.platforms
+
+    testImplementation project(":core-utils")
+    testImplementation project(":gdl-graph")
+    testImplementation project(":test-utils")
 }

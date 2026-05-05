@@ -36,6 +36,7 @@ dependencies {
     implementation project(':domain-services')
     implementation project(':core-write')
     implementation project(':csv')
+    implementation project(':graph-memory-usage')
     implementation project(':graph-projection-api')
     implementation project(':graph-sampling')
     implementation project(':graph-schema-api')

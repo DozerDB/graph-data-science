@@ -17,16 +17,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.neo4j.gds.applications.graphstorecatalog;
+package org.neo4j.gds.mem;
 
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.neo4j.gds.api.ResultStore;
+import org.neo4j.gds.GdlSupport;
+import org.neo4j.gds.api.GraphName;
 import org.neo4j.gds.core.TestMethodRunner;
-import org.neo4j.gds.core.loading.GraphStoreCatalogEntry;
-import org.neo4j.gds.gdl.GdlFactory;
 import org.neo4j.gds.utils.GdsFeatureToggles;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,13 +37,8 @@ class GraphMemoryUsageTest {
         @MethodSource("org.neo4j.gds.core.TestMethodRunner#adjacencyCompressions")
         void shouldContainAdjacencyListMemoryInfo(TestMethodRunner runner) {
             runner.run(() -> {
-                var gdlFactory = GdlFactory.of("()-[:R1]->()");
-
-                var config = gdlFactory.graphProjectConfig();
-                var graphStore = gdlFactory.build();
-
-                var graphStoreWithConfig = new GraphStoreCatalogEntry(graphStore, config, ResultStore.EMPTY);
-                var graphMemoryUsage = GraphMemoryUsage.of(graphStoreWithConfig);
+                var graphStore = GdlSupport.graphStoreFromGDL("()-[:R1]->()");
+                var graphMemoryUsage = GraphMemoryUsage.of(graphStore, GraphName.parse("mygraph"));
                 assertThat(graphMemoryUsage.detailSizeInBytes.get("adjacencyLists"))
                     .asInstanceOf(InstanceOfAssertFactories.MAP)
                     .hasEntrySatisfying(

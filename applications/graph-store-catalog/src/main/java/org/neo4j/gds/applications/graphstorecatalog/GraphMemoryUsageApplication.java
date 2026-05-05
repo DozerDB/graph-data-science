@@ -23,6 +23,7 @@ import org.neo4j.gds.api.GraphName;
 import org.neo4j.gds.applications.algorithms.machinery.RequestScopedDependencies;
 import org.neo4j.gds.core.loading.CatalogRequest;
 import org.neo4j.gds.core.loading.GraphStoreCatalogService;
+import org.neo4j.gds.mem.GraphMemoryUsage;
 
 class GraphMemoryUsageApplication {
     private final GraphStoreCatalogService graphStoreCatalogService;
@@ -39,6 +40,6 @@ class GraphMemoryUsageApplication {
 
         var graphStoreWithConfig = graphStoreCatalogService.get(catalogRequest, graphName);
 
-        return GraphMemoryUsage.of(graphStoreWithConfig);
+        return GraphMemoryUsage.of(graphStoreWithConfig.graphStore(), graphName);
     }
 }
