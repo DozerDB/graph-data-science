@@ -19,10 +19,14 @@
  */
 package org.neo4j.gds.core.utils.progress;
 
+import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
+import org.neo4j.gds.core.utils.progress.tasks.Task;
 
-/**
- * Just a marker interface
- */
-public interface BatchingTaskProgressTracker extends ProgressTracker {
+public final class BatchingTaskProgressTrackerFactory {
+    public BatchingTaskProgressTracker create(ProgressTracker delegate, long volume, Concurrency concurrency) {
+        return volume == Task.UNKNOWN_VOLUME
+            ? new BatchingTaskProgressTrackerWithoutLogging(delegate)
+            : BatchingTaskProgressTrackerWithLogging.create(delegate, volume, concurrency);
+    }
 }

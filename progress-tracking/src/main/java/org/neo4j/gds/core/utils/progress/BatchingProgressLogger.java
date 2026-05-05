@@ -24,7 +24,6 @@ import org.neo4j.gds.core.RequestCorrelationId;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.utils.progress.tasks.LoggerForProgressTracking;
 import org.neo4j.gds.core.utils.progress.tasks.Task;
-import org.neo4j.gds.mem.BitUtil;
 import org.neo4j.gds.utils.CloseableThreadLocal;
 
 import java.util.Objects;
@@ -47,21 +46,14 @@ public class BatchingProgressLogger implements ProgressLogger {
 
     private int globalPercentage;
 
-    private static long calculateBatchSize(Task task, Concurrency concurrency) {
-        return calculateBatchSize(Math.max(1L, task.getProgress().volume()), concurrency);
-    }
-
-    static long calculateBatchSize(long taskVolume, Concurrency concurrency) {
-        // target 100 logs per full run (every 1 percent)
-        var batchSize = taskVolume / 100;
-        // split batchSize into thread-local chunks
-        batchSize /= concurrency.value();
-        // batchSize needs to be a power of two
-        return Math.max(1, BitUtil.nextHighestPowerOfTwo(batchSize));
-    }
-
     public BatchingProgressLogger(LoggerForProgressTracking log, RequestCorrelationId requestCorrelationId, Task task, Concurrency concurrency) {
-        this(log, requestCorrelationId, task, calculateBatchSize(task, concurrency), concurrency);
+        this(
+            log,
+            requestCorrelationId,
+            task,
+            new BatchSizeCalculator().calculateBatchSize(Math.max(1L, task.getProgress().volume()), concurrency),
+            concurrency
+        );
     }
 
     public BatchingProgressLogger(LoggerForProgressTracking log, RequestCorrelationId requestCorrelationId, Task task, long batchSize, Concurrency concurrency) {
@@ -177,7 +169,7 @@ public class BatchingProgressLogger implements ProgressLogger {
     public long reset(long newTaskVolume) {
         var remainingVolume = taskVolume - progressCounter.sum();
         this.taskVolume = newTaskVolume;
-        this.batchSize = calculateBatchSize(newTaskVolume, concurrency);
+        this.batchSize = new BatchSizeCalculator().calculateBatchSize(newTaskVolume, concurrency);
         progressCounter.reset();
         globalPercentage = -1;
         return remainingVolume;
