@@ -35,7 +35,7 @@ import org.neo4j.gds.core.loading.construction.GraphFactory;
 import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.ml.linkmodels.LinkPredictionResult;
 
-class LinkPredictionPipelineWriteToResultStoreStep implements WriteStep<LinkPredictionResult, RelationshipsWritten> {
+class LinkPredictionPipelineWriteToResultStoreStep implements WriteStep<LinkPredictionResult, LinkPredictionPredictWriteMetadata> {
     private final Log log;
     private final LinkPredictionPredictPipelineWriteConfig configuration;
     private final org.neo4j.gds.termination.TerminationFlag terminationFlag;
@@ -54,7 +54,7 @@ class LinkPredictionPipelineWriteToResultStoreStep implements WriteStep<LinkPred
     }
 
     @Override
-    public RelationshipsWritten execute(
+    public LinkPredictionPredictWriteMetadata execute(
         Graph unused,
         GraphStore graphStore,
         ResultStore resultStore,
@@ -84,15 +84,20 @@ class LinkPredictionPipelineWriteToResultStoreStep implements WriteStep<LinkPred
             .executorService(DefaultPool.INSTANCE)
             .build();
 
+        var histogram = readyHistogram(true);
+
         ParallelUtil.parallelStreamConsume(
             result.stream(),
             configuration.concurrency(),
             terminationFlag,
-            stream -> stream.forEach(predictedLink -> relationshipsBuilder.addFromInternal(
-                filteredGraph.toRootNodeId(predictedLink.sourceId()),
-                filteredGraph.toRootNodeId(predictedLink.targetId()),
-                predictedLink.probability()
-            ))
+            stream -> stream.forEach(predictedLink -> {
+                relationshipsBuilder.addFromInternal(
+                    filteredGraph.toRootNodeId(predictedLink.sourceId()),
+                    filteredGraph.toRootNodeId(predictedLink.targetId()),
+                    predictedLink.probability()
+                );
+                histogram.onPredictedLink(predictedLink.probability());
+            })
         );
 
         var relationships = relationshipsBuilder.build();
@@ -108,6 +113,15 @@ class LinkPredictionPipelineWriteToResultStoreStep implements WriteStep<LinkPred
             )
         );
 
-        return new RelationshipsWritten(resultGraph.relationshipCount());
+        return new LinkPredictionPredictWriteMetadata(
+            new RelationshipsWritten(resultGraph.relationshipCount()),
+            histogram.finalise()
+        );
+    }
+
+    private GdsHistogram readyHistogram(boolean shouldProduceHistogram) {
+        if (shouldProduceHistogram) return new HdrBackedGdsHistogram();
+
+        return GdsHistogram.DISABLED;
     }
 }

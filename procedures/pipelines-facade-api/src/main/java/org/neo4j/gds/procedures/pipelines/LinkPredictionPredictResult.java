@@ -23,6 +23,7 @@ import org.neo4j.gds.applications.algorithms.machinery.AlgorithmProcessingTiming
 import org.neo4j.gds.applications.algorithms.metadata.RelationshipsWritten;
 import org.neo4j.gds.procedures.algorithms.results.WriteRelationshipsResult;
 
+import java.util.Collections;
 import java.util.Map;
 
 public record LinkPredictionPredictResult(
@@ -31,13 +32,17 @@ public record LinkPredictionPredictResult(
     long writeMillis,
     long postProcessingMillis,
     long relationshipsWritten,
-    Map<String, Object> configuration
+    Map<String, Object> configuration,
+    Map<String, Object> probabilityDistribution,
+    Map<String, Object> samplingStats
 ) implements WriteRelationshipsResult {
 
     static LinkPredictionPredictResult create(
         AlgorithmProcessingTimings timings,
         RelationshipsWritten metadata,
-        Map<String, Object> configurationMap
+        Map<String, Object> configurationMap,
+        Map<String, Object> probabilityDistribution,
+        Map<String, Object> samplingStats
     ) {
         return new LinkPredictionPredictResult(
             timings.preProcessingMillis,
@@ -45,7 +50,9 @@ public record LinkPredictionPredictResult(
             timings.sideEffectMillis,
             0L,
             metadata.value(),
-            configurationMap
+            configurationMap,
+            probabilityDistribution,
+            samplingStats
         );
     }
 
@@ -56,7 +63,9 @@ public record LinkPredictionPredictResult(
             timings.sideEffectMillis,
             0L,
             0L,
-            configurationMap
+            configurationMap,
+            Collections.emptyMap(),
+            Collections.emptyMap()
         );
     }
 }

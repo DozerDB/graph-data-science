@@ -42,7 +42,7 @@ public class LinkPredictionPipelineAddStepProcs {
         @Name("procedureName") String taskName,
         @Name("procedureConfiguration") Map<String, Object> procedureConfig
     ) {
-        return facade.pipelines().linkPrediction().addNodeProperty(pipelineName, taskName, procedureConfig);
+        return facade.pipelines().linkPrediction().addNodeProperty(pipelineName, taskName, procedureConfig, null);
     }
 
     @Procedure(name = "gds.beta.pipeline.linkPrediction.addFeature", mode = READ)
@@ -52,6 +52,6 @@ public class LinkPredictionPipelineAddStepProcs {
         @Name("featureType") String featureType,
         @Name("configuration") Map<String, Object> config
     ) {
-        return facade.pipelines().linkPrediction().addFeature(pipelineName, featureType, config);
+        return facade.pipelines().linkPrediction().addFeature(pipelineName, featureType, config, null);
     }
 }

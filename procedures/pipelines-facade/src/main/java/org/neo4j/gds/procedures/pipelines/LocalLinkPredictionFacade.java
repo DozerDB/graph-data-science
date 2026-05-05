@@ -19,6 +19,7 @@
  */
 package org.neo4j.gds.procedures.pipelines;
 
+import org.jetbrains.annotations.Nullable;
 import org.neo4j.gds.api.GraphName;
 import org.neo4j.gds.api.User;
 import org.neo4j.gds.applications.algorithms.machinery.MemoryEstimateResult;
@@ -59,7 +60,8 @@ public final class LocalLinkPredictionFacade implements LinkPredictionFacade {
     public Stream<PipelineInfoResult> addFeature(
         String pipelineNameAsString,
         String featureType,
-        Map<String, Object> rawConfiguration
+        Map<String, Object> rawConfiguration,
+        @Nullable String sessionName
     ) {
         var pipelineName = PipelineName.parse(pipelineNameAsString);
         var configuration = pipelineConfigurationParser.parseLinkFeatureStepConfiguration(rawConfiguration);
@@ -72,7 +74,11 @@ public final class LocalLinkPredictionFacade implements LinkPredictionFacade {
     }
 
     @Override
-    public Stream<PipelineInfoResult> addLogisticRegression(String pipelineName, Map<String, Object> configuration) {
+    public Stream<PipelineInfoResult> addLogisticRegression(
+        String pipelineName,
+        Map<String, Object> configuration,
+        @Nullable String sessionName
+    ) {
         return configurer.configureLinkPredictionTrainingPipeline(
             pipelineName,
             () -> pipelineConfigurationParser.parseLogisticRegressionTrainerConfigForLinkPredictionOrNodeClassification(configuration),
@@ -81,7 +87,11 @@ public final class LocalLinkPredictionFacade implements LinkPredictionFacade {
     }
 
     @Override
-    public Stream<PipelineInfoResult> addMLP(String pipelineName, Map<String, Object> configuration) {
+    public Stream<PipelineInfoResult> addMLP(
+        String pipelineName,
+        Map<String, Object> configuration,
+        @Nullable String sessionName
+    ) {
         return configurer.configureLinkPredictionTrainingPipeline(
             pipelineName,
             () -> pipelineConfigurationParser.parseMLPClassifierTrainConfig(configuration),
@@ -93,7 +103,8 @@ public final class LocalLinkPredictionFacade implements LinkPredictionFacade {
     public Stream<PipelineInfoResult> addNodeProperty(
         String pipelineNameAsString,
         String taskName,
-        Map<String, Object> procedureConfig
+        Map<String, Object> procedureConfig,
+        @Nullable String sessionName
     ) {
         var pipelineName = PipelineName.parse(pipelineNameAsString);
 
@@ -109,7 +120,11 @@ public final class LocalLinkPredictionFacade implements LinkPredictionFacade {
     }
 
     @Override
-    public Stream<PipelineInfoResult> addRandomForest(String pipelineName, Map<String, Object> configuration) {
+    public Stream<PipelineInfoResult> addRandomForest(
+        String pipelineName,
+        Map<String, Object> configuration,
+        @Nullable String sessionName
+    ) {
         return configurer.configureLinkPredictionTrainingPipeline(
             pipelineName,
             () -> pipelineConfigurationParser.parseRandomForestClassifierTrainerConfigForLinkPredictionOrNodeClassification(configuration),
@@ -118,7 +133,11 @@ public final class LocalLinkPredictionFacade implements LinkPredictionFacade {
     }
 
     @Override
-    public Stream<PipelineInfoResult> configureAutoTuning(String pipelineName, Map<String, Object> configuration) {
+    public Stream<PipelineInfoResult> configureAutoTuning(
+        String pipelineName,
+        Map<String, Object> configuration,
+        @Nullable String sessionName
+    ) {
         return configurer.configureLinkPredictionTrainingPipeline(
             pipelineName,
             () -> pipelineConfigurationParser.parseAutoTuningConfig(configuration),
@@ -127,7 +146,11 @@ public final class LocalLinkPredictionFacade implements LinkPredictionFacade {
     }
 
     @Override
-    public Stream<PipelineInfoResult> configureSplit(String pipelineName, Map<String, Object> configuration) {
+    public Stream<PipelineInfoResult> configureSplit(
+        String pipelineName,
+        Map<String, Object> configuration,
+        @Nullable String sessionName
+    ) {
         return configurer.configureLinkPredictionTrainingPipeline(
             pipelineName,
             () -> pipelineConfigurationParser.parseLinkPredictionSplitConfig(configuration),
@@ -136,7 +159,7 @@ public final class LocalLinkPredictionFacade implements LinkPredictionFacade {
     }
 
     @Override
-    public Stream<PipelineInfoResult> createPipeline(String pipelineNameAsString) {
+    public Stream<PipelineInfoResult> createPipeline(String pipelineNameAsString, @Nullable String sessionName) {
         var pipelineName = PipelineName.parse(pipelineNameAsString);
 
         var pipeline = pipelineApplications.createLinkPredictionTrainingPipeline(pipelineName);
@@ -241,7 +264,8 @@ public final class LocalLinkPredictionFacade implements LinkPredictionFacade {
     @Override
     public Stream<MemoryEstimateResult> trainEstimate(
         Object graphNameOrConfiguration,
-        Map<String, Object> rawConfiguration
+        Map<String, Object> rawConfiguration,
+        @Nullable String sessionName
     ) {
         PipelineCompanion.preparePipelineConfig(graphNameOrConfiguration, rawConfiguration);
 

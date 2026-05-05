@@ -44,7 +44,8 @@ public class LinkPredictionPipelineAddTrainerMethodProcs {
     ) {
         return facade.pipelines().linkPrediction().addLogisticRegression(
             pipelineName,
-            logisticRegressionClassifierConfig
+            logisticRegressionClassifierConfig,
+            null
         );
     }
 
@@ -54,7 +55,7 @@ public class LinkPredictionPipelineAddTrainerMethodProcs {
         @Name("pipelineName") String pipelineName,
         @Name(value = "config") Map<String, Object> randomForestClassifierConfig
     ) {
-        return facade.pipelines().linkPrediction().addRandomForest(pipelineName, randomForestClassifierConfig);
+        return facade.pipelines().linkPrediction().addRandomForest(pipelineName, randomForestClassifierConfig, null);
     }
 
     @Procedure(name = "gds.alpha.pipeline.linkPrediction.addRandomForest", mode = READ, deprecatedBy = "gds.beta.pipeline.linkPrediction.addRandomForest")
@@ -79,6 +80,6 @@ public class LinkPredictionPipelineAddTrainerMethodProcs {
         @Name("pipelineName") String pipelineName,
         @Name(value = "config", defaultValue = "{}") Map<String, Object> mlpClassifierConfig
     ) {
-        return facade.pipelines().linkPrediction().addMLP(pipelineName, mlpClassifierConfig);
+        return facade.pipelines().linkPrediction().addMLP(pipelineName, mlpClassifierConfig, null);
     }
 }

@@ -22,12 +22,11 @@ package org.neo4j.gds.procedures.pipelines;
 import org.neo4j.gds.api.Graph;
 import org.neo4j.gds.applications.algorithms.machinery.AlgorithmProcessingTimings;
 import org.neo4j.gds.applications.algorithms.machinery.ResultBuilder;
-import org.neo4j.gds.applications.algorithms.metadata.RelationshipsWritten;
 import org.neo4j.gds.ml.linkmodels.LinkPredictionResult;
 
 import java.util.Optional;
 
-class LinkPredictionPipelinePredictResultBuilder implements ResultBuilder<LinkPredictionPredictPipelineWriteConfig, LinkPredictionResult, LinkPredictionPredictResult, RelationshipsWritten> {
+class LinkPredictionPipelinePredictResultBuilder implements ResultBuilder<LinkPredictionPredictPipelineWriteConfig, LinkPredictionResult, LinkPredictionPredictResult, LinkPredictionPredictWriteMetadata> {
     private final LinkPredictionPredictPipelineWriteConfig configuration;
 
     LinkPredictionPipelinePredictResultBuilder(LinkPredictionPredictPipelineWriteConfig configuration) {
@@ -40,14 +39,14 @@ class LinkPredictionPipelinePredictResultBuilder implements ResultBuilder<LinkPr
         LinkPredictionPredictPipelineWriteConfig configuration,
         Optional<LinkPredictionResult> result,
         AlgorithmProcessingTimings timings,
-        Optional<RelationshipsWritten> metadata
+        Optional<LinkPredictionPredictWriteMetadata> metadata
     ) {
-        if (result.isEmpty()) return LinkPredictionPredictResult.emptyFrom(timings, this.configuration.toMap());
-
-        return LinkPredictionPredictResult.create(
+        return result.map(linkPredictionResult -> LinkPredictionPredictResult.create(
             timings,
-            metadata.orElseThrow(),
-            this.configuration.toMap()
-        );
+            metadata.orElseThrow().relationshipsWritten(),
+            this.configuration.toMap(),
+            metadata.orElseThrow().probabilityDistribution(),
+            linkPredictionResult.samplingStats()
+        )).orElseGet(() -> LinkPredictionPredictResult.emptyFrom(timings, this.configuration.toMap()));
     }
 }

@@ -394,8 +394,6 @@ The following Machine Learning procedures are not supported:
 * `gds.linkprediction.totalNeighbors`
 * `gds.splitRelationships`
 
-Additionally, all `Link Prediction` pipeline procedures are unsupported.
-
 
 ==== Additional operations
 

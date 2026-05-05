@@ -38,6 +38,6 @@ public class LinkPredictionPipelineConfigureAutoTuningProc {
     @Procedure(name = "gds.alpha.pipeline.linkPrediction.configureAutoTuning", mode = READ)
     @Description("Configures the auto-tuning of the link prediction pipeline.")
     public Stream<PipelineInfoResult> configureAutoTuning(@Name("pipelineName") String pipelineName, @Name("configuration") Map<String, Object> configMap) {
-        return facade.pipelines().linkPrediction().configureAutoTuning(pipelineName, configMap);
+        return facade.pipelines().linkPrediction().configureAutoTuning(pipelineName, configMap, null);
     }
 }

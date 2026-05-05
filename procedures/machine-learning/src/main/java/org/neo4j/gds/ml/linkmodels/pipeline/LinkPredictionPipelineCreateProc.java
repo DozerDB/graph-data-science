@@ -37,6 +37,6 @@ public class LinkPredictionPipelineCreateProc {
     @Procedure(name = "gds.beta.pipeline.linkPrediction.create", mode = READ)
     @Description("Creates a link prediction pipeline in the pipeline catalog.")
     public Stream<PipelineInfoResult> create(@Name("pipelineName") String input) {
-        return facade.pipelines().linkPrediction().createPipeline(input);
+        return facade.pipelines().linkPrediction().createPipeline(input, null);
     }
 }

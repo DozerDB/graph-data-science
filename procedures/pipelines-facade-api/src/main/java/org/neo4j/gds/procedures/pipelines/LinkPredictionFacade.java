@@ -19,6 +19,7 @@
  */
 package org.neo4j.gds.procedures.pipelines;
 
+import org.jetbrains.annotations.Nullable;
 import org.neo4j.gds.applications.algorithms.machinery.MemoryEstimateResult;
 
 import java.util.Map;
@@ -28,26 +29,48 @@ public interface LinkPredictionFacade {
     Stream<PipelineInfoResult> addFeature(
         String pipelineNameAsString,
         String featureType,
-        Map<String, Object> rawConfiguration
+        Map<String, Object> rawConfiguration,
+        @Nullable String sessionName
     );
 
-    Stream<PipelineInfoResult> addLogisticRegression(String pipelineName, Map<String, Object> configuration);
+    Stream<PipelineInfoResult> addLogisticRegression(
+        String pipelineName,
+        Map<String, Object> configuration,
+        @Nullable String sessionName
+    );
 
-    Stream<PipelineInfoResult> addMLP(String pipelineName, Map<String, Object> configuration);
+    Stream<PipelineInfoResult> addMLP(
+        String pipelineName,
+        Map<String, Object> configuration,
+        @Nullable String sessionName
+    );
 
     Stream<PipelineInfoResult> addNodeProperty(
         String pipelineNameAsString,
         String taskName,
-        Map<String, Object> procedureConfig
+        Map<String, Object> procedureConfig,
+        @Nullable String sessionName
     );
 
-    Stream<PipelineInfoResult> addRandomForest(String pipelineName, Map<String, Object> configuration);
+    Stream<PipelineInfoResult> addRandomForest(
+        String pipelineName,
+        Map<String, Object> configuration,
+        @Nullable String sessionName
+    );
 
-    Stream<PipelineInfoResult> configureAutoTuning(String pipelineName, Map<String, Object> configuration);
+    Stream<PipelineInfoResult> configureAutoTuning(
+        String pipelineName,
+        Map<String, Object> configuration,
+        @Nullable String sessionName
+    );
 
-    Stream<PipelineInfoResult> configureSplit(String pipelineName, Map<String, Object> configuration);
+    Stream<PipelineInfoResult> configureSplit(
+        String pipelineName,
+        Map<String, Object> configuration,
+        @Nullable String sessionName
+    );
 
-    Stream<PipelineInfoResult> createPipeline(String pipelineNameAsString);
+    Stream<PipelineInfoResult> createPipeline(String pipelineNameAsString, @Nullable String sessionName);
 
     Stream<MutateResult> mutate(
         String graphNameAsString,
@@ -81,6 +104,7 @@ public interface LinkPredictionFacade {
 
     Stream<MemoryEstimateResult> trainEstimate(
         Object graphNameOrConfiguration,
-        Map<String, Object> rawConfiguration
+        Map<String, Object> rawConfiguration,
+        @Nullable String sessionName
     );
 }

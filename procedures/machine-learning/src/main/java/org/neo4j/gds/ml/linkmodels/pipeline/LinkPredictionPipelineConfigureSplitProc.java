@@ -38,6 +38,6 @@ public class LinkPredictionPipelineConfigureSplitProc {
     @Procedure(name = "gds.beta.pipeline.linkPrediction.configureSplit", mode = READ)
     @Description("Configures the split of the link prediction pipeline.")
     public Stream<PipelineInfoResult> configureSplit(@Name("pipelineName") String pipelineName, @Name("configuration") Map<String, Object> configMap) {
-        return facade.pipelines().linkPrediction().configureSplit(pipelineName, configMap);
+        return facade.pipelines().linkPrediction().configureSplit(pipelineName, configMap, null);
     }
 }

@@ -52,6 +52,6 @@ public class LinkPredictionPipelineTrainProc {
         @Name(value = "graphNameOrConfiguration") Object graphNameOrConfiguration,
         @Name(value = "algoConfiguration") Map<String, Object> algoConfiguration
     ) {
-        return facade.pipelines().linkPrediction().trainEstimate(graphNameOrConfiguration, algoConfiguration);
+        return facade.pipelines().linkPrediction().trainEstimate(graphNameOrConfiguration, algoConfiguration, null);
     }
 }
