@@ -40,7 +40,7 @@ import org.neo4j.gds.core.loading.construction.NodeLabelTokens;
 import org.neo4j.gds.core.loading.construction.PropertyValues;
 import org.neo4j.gds.core.utils.ProgressTimer;
 import org.neo4j.gds.core.utils.logging.LoggerForProgressTrackingAdapter;
-import org.neo4j.gds.core.utils.progress.BatchingTaskProgressTracker;
+import org.neo4j.gds.core.utils.progress.BatchingTaskProgressTrackerFactory;
 import org.neo4j.gds.core.utils.progress.TaskRegistryFactory;
 import org.neo4j.gds.core.utils.progress.TaskStore;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
@@ -226,7 +226,7 @@ abstract class GraphAggregator implements UserAggregationReducer, UserAggregatio
             TaskRegistryFactory.local(username, taskStore),
             UserLogRegistry.EMPTY
         );
-        this.progressTracker = BatchingTaskProgressTracker.create(internalProgressTracker, taskVolume, config.readConcurrency());
+        this.progressTracker = new BatchingTaskProgressTrackerFactory().create(internalProgressTracker, taskVolume, config.readConcurrency());
 
         return new GraphImporter(
             config,

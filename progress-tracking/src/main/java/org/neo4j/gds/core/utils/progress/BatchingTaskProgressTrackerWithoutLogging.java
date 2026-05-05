@@ -20,9 +20,25 @@
 package org.neo4j.gds.core.utils.progress;
 
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
+import org.neo4j.gds.core.utils.progress.tasks.ProgressTrackerAdapter;
 
-/**
- * Just a marker interface
- */
-public interface BatchingTaskProgressTracker extends ProgressTracker {
+class BatchingTaskProgressTrackerWithoutLogging extends ProgressTrackerAdapter implements BatchingTaskProgressTracker {
+    BatchingTaskProgressTrackerWithoutLogging(ProgressTracker delegate) {
+        super(delegate);
+    }
+
+    @Override
+    public void logProgress() {
+        // disabled
+    }
+
+    @Override
+    public void logProgress(long value) {
+        // disabled
+    }
+
+    @Override
+    public void logProgress(long value, String messageTemplate) {
+        // disabled
+    }
 }

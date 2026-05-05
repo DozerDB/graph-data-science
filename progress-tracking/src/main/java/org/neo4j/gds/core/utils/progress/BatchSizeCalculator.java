@@ -19,10 +19,16 @@
  */
 package org.neo4j.gds.core.utils.progress;
 
-import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
+import org.neo4j.gds.core.concurrency.Concurrency;
+import org.neo4j.gds.mem.BitUtil;
 
-/**
- * Just a marker interface
- */
-public interface BatchingTaskProgressTracker extends ProgressTracker {
+final class BatchSizeCalculator {
+    long calculateBatchSize(long taskVolume, Concurrency concurrency) {
+        // target 100 logs per full run (every 1 percent)
+        var batchSize = taskVolume / 100;
+        // split batchSize into thread-local chunks
+        batchSize /= concurrency.value();
+        // batchSize needs to be a power of two
+        return Math.max(1, BitUtil.nextHighestPowerOfTwo(batchSize));
+    }
 }
