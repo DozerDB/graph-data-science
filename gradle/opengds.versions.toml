@@ -113,7 +113,7 @@ stormpot = { module = "com.github.chrisvest:stormpot", version.ref = "stormpot" 
 [plugins]
 champeau-mrjar = "me.champeau.mrjar:0.1.1"
 forbiddenapis = "de.thetaphi.forbiddenapis:3.10"
-google-protobuf = "com.google.protobuf:0.9.6"
+google-protobuf = "com.google.protobuf:0.10.0"
 nebula-basic = "com.netflix.nebula.info-basic:16.1.0"
 nebula-broker = "com.netflix.nebula.info-broker:16.1.0"
 nebula-dependencies = "com.netflix.nebula.info-dependencies:16.1.0"
