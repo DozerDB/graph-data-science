@@ -27,7 +27,6 @@ dependencies {
     implementation project(':legacy-cypher-projection')
 
     implementation project(':memory-usage')
-    implementation project(':graph-memory-usage')
 
     // `GraphProjectNativeResult`
     implementation project(':native-projection')

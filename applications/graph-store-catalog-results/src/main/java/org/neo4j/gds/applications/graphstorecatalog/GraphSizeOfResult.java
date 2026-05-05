@@ -17,26 +17,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.neo4j.gds.catalog;
+package org.neo4j.gds.applications.graphstorecatalog;
 
-import org.neo4j.gds.mem.GraphMemoryUsage;
-import org.neo4j.gds.procedures.GraphDataScienceProcedures;
-import org.neo4j.procedure.Context;
-import org.neo4j.procedure.Internal;
-import org.neo4j.procedure.Name;
-import org.neo4j.procedure.Procedure;
+import java.util.Map;
 
-import java.util.stream.Stream;
-
-import static org.neo4j.procedure.Mode.READ;
-
-public class GraphMemoryUsageProc {
-    @Context
-    public GraphDataScienceProcedures facade;
-
-    @Internal
-    @Procedure(name = "gds.internal.graph.sizeOf", mode = READ)
-    public Stream<GraphMemoryUsage> list(@Name(value = "graphName") String graphName) {
-        return facade.graphCatalog().sizeOf(graphName);
-    }
+public record GraphSizeOfResult(
+    String graphName,
+    String memoryUsage,
+    long sizeInBytes,
+    Map<String, Object> detailSizeInBytes,
+    long nodeCount,
+    long relationshipCount
+) {
 }

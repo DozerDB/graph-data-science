@@ -23,23 +23,32 @@ import org.neo4j.gds.api.GraphName;
 import org.neo4j.gds.applications.algorithms.machinery.RequestScopedDependencies;
 import org.neo4j.gds.core.loading.CatalogRequest;
 import org.neo4j.gds.core.loading.GraphStoreCatalogService;
-import org.neo4j.gds.mem.GraphMemoryUsage;
+import org.neo4j.gds.mem.GraphMemoryUsageFactory;
 
-class GraphMemoryUsageApplication {
+class GraphSizeOfApplication {
     private final GraphStoreCatalogService graphStoreCatalogService;
 
-    GraphMemoryUsageApplication(GraphStoreCatalogService graphStoreCatalogService) {
+    GraphSizeOfApplication(GraphStoreCatalogService graphStoreCatalogService) {
         this.graphStoreCatalogService = graphStoreCatalogService;
     }
 
-    public GraphMemoryUsage sizeOf(RequestScopedDependencies requestScopedDependencies, GraphName graphName) {
+    public GraphSizeOfResult sizeOf(RequestScopedDependencies requestScopedDependencies, GraphName graphName) {
         var catalogRequest = CatalogRequest.of(
             requestScopedDependencies.user().getUsername(),
             requestScopedDependencies.databaseId().databaseName()
         );
 
         var graphStoreWithConfig = graphStoreCatalogService.get(catalogRequest, graphName);
+        var graphStore = graphStoreWithConfig.graphStore();
+        var graphMemoryUsage = GraphMemoryUsageFactory.of(graphStore);
 
-        return GraphMemoryUsage.of(graphStoreWithConfig.graphStore(), graphName);
+        return new GraphSizeOfResult(
+            graphName.value(),
+            graphMemoryUsage.memoryUsage(),
+            graphMemoryUsage.sizeInBytes(),
+            graphMemoryUsage.detailSizeInBytes(),
+            graphStore.nodeCount(),
+            graphStore.relationshipCount()
+        );
     }
 }

@@ -23,6 +23,7 @@ import org.neo4j.gds.applications.algorithms.machinery.MemoryEstimateResult;
 import org.neo4j.gds.applications.graphstorecatalog.DatabaseExportResult;
 import org.neo4j.gds.applications.graphstorecatalog.FileExportResult;
 import org.neo4j.gds.applications.graphstorecatalog.GraphGenerationStats;
+import org.neo4j.gds.applications.graphstorecatalog.GraphSizeOfResult;
 import org.neo4j.gds.applications.graphstorecatalog.GraphStreamNodePropertiesResult;
 import org.neo4j.gds.applications.graphstorecatalog.GraphStreamNodePropertyResult;
 import org.neo4j.gds.applications.graphstorecatalog.GraphStreamRelationshipPropertiesResult;
@@ -38,7 +39,6 @@ import org.neo4j.gds.beta.filter.GraphFilterResult;
 import org.neo4j.gds.core.loading.GraphDropNodePropertiesResult;
 import org.neo4j.gds.core.loading.GraphDropRelationshipResult;
 import org.neo4j.gds.legacycypherprojection.GraphProjectCypherResult;
-import org.neo4j.gds.mem.GraphMemoryUsage;
 import org.neo4j.gds.projection.GraphProjectNativeResult;
 
 import java.util.List;
@@ -102,7 +102,7 @@ public interface GraphCatalogProcedureFacade {
         Map<String, Object> configuration
     );
 
-    Stream<GraphMemoryUsage> sizeOf(String graphName);
+    Stream<GraphSizeOfResult> sizeOf(String graphName);
 
     Stream<GraphDropNodePropertiesResult> dropNodeProperties(
         String graphName,

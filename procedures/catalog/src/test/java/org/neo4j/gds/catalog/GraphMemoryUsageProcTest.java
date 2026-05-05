@@ -44,7 +44,7 @@ class GraphMemoryUsageProcTest extends BaseProcTest {
     @BeforeEach
     void setup() throws Exception {
         registerProcedures(
-            GraphMemoryUsageProc.class,
+            GraphSizeOfProc.class,
             GraphGenerateProc.class
         );
     }

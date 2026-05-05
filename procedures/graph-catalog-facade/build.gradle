@@ -20,7 +20,6 @@ dependencies {
     implementation project(':core')
     implementation project(':core-write')
     implementation project(':graph-catalog-facade-api')
-    implementation project(':graph-memory-usage')
     implementation project(':graph-schema-api')
     implementation project(':graph-store-catalog-applications')
     implementation project(':legacy-cypher-projection')

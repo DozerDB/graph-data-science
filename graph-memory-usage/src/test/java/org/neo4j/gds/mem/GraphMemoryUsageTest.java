@@ -24,7 +24,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.neo4j.gds.GdlSupport;
-import org.neo4j.gds.api.GraphName;
 import org.neo4j.gds.core.TestMethodRunner;
 import org.neo4j.gds.utils.GdsFeatureToggles;
 
@@ -38,8 +37,8 @@ class GraphMemoryUsageTest {
         void shouldContainAdjacencyListMemoryInfo(TestMethodRunner runner) {
             runner.run(() -> {
                 var graphStore = GdlSupport.graphStoreFromGDL("()-[:R1]->()");
-                var graphMemoryUsage = GraphMemoryUsage.of(graphStore, GraphName.parse("mygraph"));
-                assertThat(graphMemoryUsage.detailSizeInBytes.get("adjacencyLists"))
+                var graphMemoryUsage = GraphMemoryUsageFactory.of(graphStore);
+                assertThat(graphMemoryUsage.detailSizeInBytes().get("adjacencyLists"))
                     .asInstanceOf(InstanceOfAssertFactories.MAP)
                     .hasEntrySatisfying(
                         "R1",

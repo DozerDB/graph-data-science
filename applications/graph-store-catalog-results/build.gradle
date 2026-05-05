@@ -10,20 +10,6 @@ dependencies {
 
     implementation project(':config-api')
 
-    // TODO:
-    //  `AbstractResultBuilder`
-    //  `GraphProjectResult`
-    //  `GraphDimensions`
-    //  live here 🙈move them away and don't bring the entire `:core` module!!!
-    // `GraphMemoryUsage` uses
-    implementation project(':core')
-
-    implementation openGds.jol.core
-
-    implementation project(':histogram')
-    implementation project(':memory-info')
-    implementation project(':memory-usage')
-
     testImplementation openGds.assertj.core
     testImplementation platform(openGds.junit.bom)
     testImplementation openGds.junit.jupiter.api

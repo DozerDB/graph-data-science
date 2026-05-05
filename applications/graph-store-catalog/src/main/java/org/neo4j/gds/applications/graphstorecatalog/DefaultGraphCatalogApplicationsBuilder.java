@@ -39,7 +39,7 @@ class DefaultGraphCatalogApplicationsBuilder {
     private NativeProjectApplication nativeProjectApplication;
     private CypherProjectApplication cypherProjectApplication;
     private SubGraphProjectApplication subGraphProjectApplication;
-    private GraphMemoryUsageApplication graphMemoryUsageApplication;
+    private GraphSizeOfApplication graphSizeOfApplication;
     private DropNodePropertiesApplication dropNodePropertiesApplication;
     private DropRelationshipsApplication dropRelationshipsApplication;
     private NodeLabelMutatorApplication nodeLabelMutatorApplication;
@@ -132,8 +132,8 @@ class DefaultGraphCatalogApplicationsBuilder {
         return this;
     }
 
-    DefaultGraphCatalogApplicationsBuilder withGraphMemoryUsageApplication(GraphMemoryUsageApplication graphMemoryUsageApplication) {
-        this.graphMemoryUsageApplication = graphMemoryUsageApplication;
+    DefaultGraphCatalogApplicationsBuilder withGraphMemoryUsageApplication(GraphSizeOfApplication graphSizeOfApplication) {
+        this.graphSizeOfApplication = graphSizeOfApplication;
         return this;
     }
 
@@ -213,7 +213,7 @@ class DefaultGraphCatalogApplicationsBuilder {
             dropRelationshipsApplication,
             estimateCommonNeighbourAwareRandomWalkApplication,
             generateGraphApplication,
-            graphMemoryUsageApplication,
+            graphSizeOfApplication,
             graphSamplingApplication,
             listGraphApplication,
             nativeProjectApplication,

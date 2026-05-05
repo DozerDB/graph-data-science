@@ -41,7 +41,6 @@ import org.neo4j.gds.domain.services.GloballyScopedDependencies;
 import org.neo4j.gds.graphsampling.RandomWalkSamplerType;
 import org.neo4j.gds.legacycypherprojection.GraphProjectCypherResult;
 import org.neo4j.gds.logging.Log;
-import org.neo4j.gds.mem.GraphMemoryUsage;
 import org.neo4j.gds.metrics.projections.ProjectionMetricsService;
 import org.neo4j.gds.projection.GraphProjectNativeResult;
 import org.neo4j.gds.projection.GraphStoreFactorySuppliers;
@@ -94,7 +93,7 @@ public class DefaultGraphCatalogApplications implements GraphCatalogApplications
     private final NativeProjectApplication nativeProjectApplication;
     private final CypherProjectApplication cypherProjectApplication;
     private final SubGraphProjectApplication subGraphProjectApplication;
-    private final GraphMemoryUsageApplication graphMemoryUsageApplication;
+    private final GraphSizeOfApplication graphSizeOfApplication;
     private final DropNodePropertiesApplication dropNodePropertiesApplication;
     private final DropRelationshipsApplication dropRelationshipsApplication;
     private final NodeLabelMutatorApplication nodeLabelMutatorApplication;
@@ -123,7 +122,7 @@ public class DefaultGraphCatalogApplications implements GraphCatalogApplications
         DropRelationshipsApplication dropRelationshipsApplication,
         EstimateCommonNeighbourAwareRandomWalkApplication estimateCommonNeighbourAwareRandomWalkApplication,
         GenerateGraphApplication generateGraphApplication,
-        GraphMemoryUsageApplication graphMemoryUsageApplication,
+        GraphSizeOfApplication graphSizeOfApplication,
         GraphSamplingApplication graphSamplingApplication,
         ListGraphApplication listGraphApplication,
         NativeProjectApplication nativeProjectApplication,
@@ -151,7 +150,7 @@ public class DefaultGraphCatalogApplications implements GraphCatalogApplications
         this.nativeProjectApplication = nativeProjectApplication;
         this.cypherProjectApplication = cypherProjectApplication;
         this.subGraphProjectApplication = subGraphProjectApplication;
-        this.graphMemoryUsageApplication = graphMemoryUsageApplication;
+        this.graphSizeOfApplication = graphSizeOfApplication;
         this.dropNodePropertiesApplication = dropNodePropertiesApplication;
         this.dropRelationshipsApplication = dropRelationshipsApplication;
         this.nodeLabelMutatorApplication = nodeLabelMutatorApplication;
@@ -206,7 +205,7 @@ public class DefaultGraphCatalogApplications implements GraphCatalogApplications
             procedureTransaction
         );
         var generateGraphApplication = new GenerateGraphApplication(loggers.log(), globallyScopedDependencies.graphStoreCatalogService());
-        var graphMemoryUsageApplication = new GraphMemoryUsageApplication(globallyScopedDependencies.graphStoreCatalogService());
+        var graphMemoryUsageApplication = new GraphSizeOfApplication(globallyScopedDependencies.graphStoreCatalogService());
         var graphSamplingApplication = new GraphSamplingApplication(
             loggers.loggerForProgressTracking(),
             globallyScopedDependencies.graphStoreCatalogService()
@@ -484,7 +483,7 @@ public class DefaultGraphCatalogApplications implements GraphCatalogApplications
     }
 
     @Override
-    public GraphMemoryUsage sizeOf(RequestScopedDependencies requestScopedDependencies, String graphNameAsString) {
+    public GraphSizeOfResult sizeOf(RequestScopedDependencies requestScopedDependencies, String graphNameAsString) {
         var graphName = graphNameValidationService.validate(graphNameAsString);
 
         if (!globallyScopedDependencies.graphStoreCatalogService().graphExists(
@@ -495,7 +494,7 @@ public class DefaultGraphCatalogApplications implements GraphCatalogApplications
             throw new IllegalArgumentException("Graph '" + graphNameAsString + "' does not exist");
         }
 
-        return graphMemoryUsageApplication.sizeOf(
+        return graphSizeOfApplication.sizeOf(
             requestScopedDependencies,
             graphName
         );
