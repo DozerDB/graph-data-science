@@ -43,30 +43,74 @@ class GraphMemoryUsageTest {
 
         var graphMemoryUsage = GraphMemoryUsageFactory.of(graphStore);
 
+        assertThat(graphMemoryUsage.sizeInBytes()).isGreaterThan(0L);
         assertThat(graphMemoryUsage.detailSizeInBytes().get("nodes"))
             .asInstanceOf(InstanceOfAssertFactories.MAP)
-            .hasEntrySatisfying("total",
+            .hasEntrySatisfying(
+                "total",
                 total -> assertThat(total)
                     .asInstanceOf(InstanceOfAssertFactories.LONG)
                     .as("total")
                     .isGreaterThan(0L)
             )
-            .hasEntrySatisfying("mapping",
+            .hasEntrySatisfying(
+                "mapping",
                 total -> assertThat(total)
                     .asInstanceOf(InstanceOfAssertFactories.LONG)
                     .as("mapping")
                     .isGreaterThan(0L)
             )
-            .hasEntrySatisfying("forwardMapping",
+            .hasEntrySatisfying(
+                "forwardMapping",
                 fwMapping -> assertThat(fwMapping)
                     .asInstanceOf(InstanceOfAssertFactories.LONG)
                     .as("forwardMapping")
                     .isGreaterThan(0L)
             )
-            .hasEntrySatisfying("backwardMapping",
+            .hasEntrySatisfying(
+                "backwardMapping",
                 bwMapping -> assertThat(bwMapping)
                     .asInstanceOf(InstanceOfAssertFactories.LONG)
                     .as("backwardMapping")
+                    .isGreaterThan(0L)
+            );
+    }
+
+    @Test
+    void shouldContainAdjacencyListInformation() {
+        var graphStore = GdlSupport.graphStoreFromGDL("()-[:R1]->()");
+
+        var graphMemoryUsage = GraphMemoryUsageFactory.of(graphStore);
+
+        assertThat(graphMemoryUsage.sizeInBytes()).isGreaterThan(0L);
+        assertThat(graphMemoryUsage.detailSizeInBytes().get("relationships"))
+            .asInstanceOf(InstanceOfAssertFactories.MAP)
+            .hasEntrySatisfying(
+                "total",
+                total -> assertThat(total).asInstanceOf(InstanceOfAssertFactories.LONG).as("total").isGreaterThan(0L)
+            )
+            .hasEntrySatisfying(
+                "adjacencyLists",
+                adjLists -> assertThat(adjLists).asInstanceOf(InstanceOfAssertFactories.LONG)
+                    .as("adjacencyLists")
+                    .isGreaterThan(0L)
+            )
+            .hasEntrySatisfying(
+                "degrees",
+                degrees -> assertThat(degrees).asInstanceOf(InstanceOfAssertFactories.LONG)
+                    .as("degrees")
+                    .isGreaterThan(0L)
+            )
+            .hasEntrySatisfying(
+                "offsets",
+                offsets -> assertThat(offsets).asInstanceOf(InstanceOfAssertFactories.LONG)
+                    .as("degrees")
+                    .isGreaterThan(0L)
+            )
+            .hasEntrySatisfying(
+                "targetIds",
+                targetIds -> assertThat(targetIds).asInstanceOf(InstanceOfAssertFactories.LONG)
+                    .as("targetIds")
                     .isGreaterThan(0L)
             );
     }
