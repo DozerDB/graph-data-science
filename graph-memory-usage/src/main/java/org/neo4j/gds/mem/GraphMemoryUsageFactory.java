@@ -107,10 +107,10 @@ public final class GraphMemoryUsageFactory {
             if (path.startsWith(".nodes.sparseLongArray")) {
                 mappingSparseLongArray.add(size);
             }
-            if (path.startsWith(".nodes.graphIds")) {
+            if (path.startsWith(".nodes.internalToOriginalIds")) {
                 mappingForward.add(size);
             }
-            if (path.startsWith(".nodes.nodeToGraphIds")) {
+            if (path.startsWith(".nodes.originalToInternalIds")) {
                 mappingBackward.add(size);
             }
             if (ADJ_DEGREES.matcher(path).matches()) {
