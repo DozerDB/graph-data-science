@@ -20,7 +20,10 @@
 package org.neo4j.gds.mem;
 
 import org.apache.commons.lang3.mutable.MutableLong;
+import org.neo4j.gds.api.AdjacencyList;
 import org.neo4j.gds.api.GraphStore;
+import org.neo4j.gds.api.IdMap;
+import org.neo4j.gds.api.Topology;
 import org.neo4j.gds.core.loading.CSRGraphStore;
 import org.openjdk.jol.info.GraphWalker;
 
@@ -49,7 +52,6 @@ public final class GraphMemoryUsageFactory {
     private static final Pattern ADJ_DEGREES = Pattern.compile(".*.adjacencyList.degrees.*$");
     private static final Pattern ADJ_LIST = Pattern.compile(".*.adjacencyList.pages.*$");
     private static final Pattern ADJ_OFFSETS = Pattern.compile("^.*adjacencyList.offsets.*$");
-    private static final Pattern DOT = Pattern.compile("\\.");
     private static final Object DUMMY = new Object();
 
     private static final class PackedUnsupported extends RuntimeException {
@@ -92,15 +94,11 @@ public final class GraphMemoryUsageFactory {
 
             var size = gpr.size();
             var path = gpr.path();
+            var klass = gpr.klass();
 
-            var firstField = DOT.splitAsStream(path)
-                .skip(1)
-                .findFirst()
-                .orElse("");
-
-            if ("nodes".equals(firstField)) {
+            if (IdMap.class.isAssignableFrom(klass)) {
                 nodesTotal.add(size);
-            } else if ("relationships".equals(firstField)) {
+            } else if (AdjacencyList.class.isAssignableFrom(klass)) {
                 relationshipsTotal.add(size);
             }
 
