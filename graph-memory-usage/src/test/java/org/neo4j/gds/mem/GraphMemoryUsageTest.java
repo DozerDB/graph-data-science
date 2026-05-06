@@ -21,15 +21,56 @@ package org.neo4j.gds.mem;
 
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.neo4j.gds.GdlGraphStoreBuilder;
 import org.neo4j.gds.GdlSupport;
 import org.neo4j.gds.core.TestMethodRunner;
+import org.neo4j.gds.core.loading.ArrayIdMapBuilder;
 import org.neo4j.gds.utils.GdsFeatureToggles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class GraphMemoryUsageTest {
+
+    @Test
+    void shouldContainArrayIdMapInformation() {
+        var graphStore = new GdlGraphStoreBuilder()
+            .gdl("(a)-[r]->(b)")
+            .idMapBuilderType(ArrayIdMapBuilder.ID)
+            .build();
+
+        var graphMemoryUsage = GraphMemoryUsageFactory.of(graphStore);
+
+        assertThat(graphMemoryUsage.detailSizeInBytes().get("nodes"))
+            .asInstanceOf(InstanceOfAssertFactories.MAP)
+            .hasEntrySatisfying("total",
+                total -> assertThat(total)
+                    .asInstanceOf(InstanceOfAssertFactories.LONG)
+                    .as("total")
+                    .isGreaterThan(0L)
+            )
+            .hasEntrySatisfying("mapping",
+                total -> assertThat(total)
+                    .asInstanceOf(InstanceOfAssertFactories.LONG)
+                    .as("mapping")
+                    .isGreaterThan(0L)
+            )
+            .hasEntrySatisfying("forwardMapping",
+                fwMapping -> assertThat(fwMapping)
+                    .asInstanceOf(InstanceOfAssertFactories.LONG)
+                    .as("forwardMapping")
+                    .isGreaterThan(0L)
+            )
+            .hasEntrySatisfying("backwardMapping",
+                bwMapping -> assertThat(bwMapping)
+                    .asInstanceOf(InstanceOfAssertFactories.LONG)
+                    .as("backwardMapping")
+                    .isGreaterThan(0L)
+            );
+    }
+
     @Nested
     class VariableCompressionTest {
         @ParameterizedTest
