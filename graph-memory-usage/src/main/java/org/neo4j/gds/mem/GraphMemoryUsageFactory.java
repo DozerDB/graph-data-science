@@ -23,7 +23,6 @@ import org.apache.commons.lang3.mutable.MutableLong;
 import org.neo4j.gds.api.AdjacencyList;
 import org.neo4j.gds.api.GraphStore;
 import org.neo4j.gds.api.IdMap;
-import org.neo4j.gds.api.Topology;
 import org.neo4j.gds.core.loading.CSRGraphStore;
 import org.openjdk.jol.info.GraphWalker;
 
