@@ -19,42 +19,8 @@
  */
 package org.neo4j.gds.applications.modelcatalog;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
-/**
- * Micro types FTW!
- */
-public final class ModelName {
-    private final String value;
-
-    private ModelName(String value) {
-        this.value = value;
-    }
-
-    /**
-     * Trim the incoming string and use that.
-     */
+public record ModelName(String value) {
     public static ModelName parse(String modelNameAsString) {
         return new ModelName(modelNameAsString.trim());
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
-    }
-
-    @Override
-    public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
-    }
-
-    @Override
-    public String toString() {
-        return value;
     }
 }

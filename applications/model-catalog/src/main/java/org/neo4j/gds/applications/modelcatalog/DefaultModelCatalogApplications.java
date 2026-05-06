@@ -41,14 +41,14 @@ public final class DefaultModelCatalogApplications implements ModelCatalogApplic
 
     @Override
     public Model<?, ?, ?> drop(ModelName modelName, boolean failIfMissing) {
-        if (failIfMissing) return modelCatalog.dropOrThrow(user.getUsername(), modelName.getValue());
+        if (failIfMissing) return modelCatalog.dropOrThrow(user.getUsername(), modelName.value());
 
-        return modelCatalog.drop(user.getUsername(), modelName.getValue());
+        return modelCatalog.drop(user.getUsername(), modelName.value());
     }
 
     @Override
     public Optional<Model<?, ?, ?>> exists(ModelName modelName) {
-        return Optional.ofNullable(modelCatalog.getUntyped(user.getUsername(), modelName.getValue()));
+        return Optional.ofNullable(modelCatalog.getUntyped(user.getUsername(), modelName.value()));
     }
 
     @Override
@@ -58,6 +58,6 @@ public final class DefaultModelCatalogApplications implements ModelCatalogApplic
 
     @Override
     public Model<?, ?, ?> lookup(ModelName modelName) {
-        return modelCatalog.getUntyped(user.getUsername(), modelName.getValue());
+        return modelCatalog.getUntyped(user.getUsername(), modelName.value());
     }
 }
