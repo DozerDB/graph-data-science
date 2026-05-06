@@ -111,7 +111,8 @@ public final class GdlSupport {
         Optional<Aggregation> aggregation,
         Optional<LongSupplier> idSupplier,
         Optional<DatabaseId> databaseId,
-        Optional<Boolean> indexInverse
+        Optional<Boolean> indexInverse,
+        Optional<String> idMapBuilderType
     ) {
         var graphName = graphName(name);
 
@@ -122,7 +123,8 @@ public final class GdlSupport {
             aggregation,
             idSupplier,
             databaseId,
-            indexInverse
+            indexInverse,
+            idMapBuilderType
         );
 
         return new TestGraph(gdlFactory.build().getUnion(), gdlFactory::nodeId, graphName);
@@ -136,7 +138,8 @@ public final class GdlSupport {
         Optional<Aggregation> aggregation,
         Optional<LongSupplier> idSupplier,
         Optional<DatabaseId> databaseId,
-        Optional<Boolean> indexInverse
+        Optional<Boolean> indexInverse,
+        Optional<String> idMapBuilderType
     ) {
         return gdlFactory(
             gdl,
@@ -145,7 +148,8 @@ public final class GdlSupport {
             aggregation,
             idSupplier,
             databaseId,
-            indexInverse
+            indexInverse,
+            idMapBuilderType
         ).build();
     }
 
@@ -160,7 +164,8 @@ public final class GdlSupport {
         Optional<Aggregation> aggregation,
         Optional<LongSupplier> idSupplier,
         Optional<DatabaseId> databaseId,
-        Optional<Boolean> indexInverse
+        Optional<Boolean> indexInverse,
+        Optional<String> idMapBuilderType
     ) {
         Objects.requireNonNull(gdl);
 
@@ -177,6 +182,7 @@ public final class GdlSupport {
             .nodeIdFunction(idSupplier.orElse(new OffsetIdSupplier(0L)))
             .graphProjectConfig(config)
             .databaseId(databaseId.orElse(DATABASE_ID))
+            .idMapBuilderType(idMapBuilderType)
             .build();
     }
 

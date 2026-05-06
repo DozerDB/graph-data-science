@@ -123,6 +123,7 @@ class MinCostMaxFlowTest {
             Optional.empty(),
             Optional.empty(),
             Optional.empty(),
+            Optional.empty(),
             Optional.empty()
         );
         var idMap = graphStore.nodes();
@@ -147,6 +148,7 @@ class MinCostMaxFlowTest {
                     (a1)-[:R {u: 10, c:8}]->(a3),
                     (a2)-[:R {u: 12, c:6}]->(a3)
                 """,
+            Optional.empty(),
             Optional.empty(),
             Optional.empty(),
             Optional.empty(),
@@ -183,6 +185,7 @@ class MinCostMaxFlowTest {
                     (a4)-[:R {u: 12, c:30}]->(a2),
                     (a4)-[:R {u: 20, c:22}]->(a0)
                 """,
+            Optional.empty(),
             Optional.empty(),
             Optional.empty(),
             Optional.empty(),
@@ -467,6 +470,7 @@ class MinCostMaxFlowTest {
               (a19)-[:R {u: 29, c:10}]->(a0),
               (a19)-[:R {u: 83, c:39}]->(a1)
             """,
+            Optional.empty(),
             Optional.empty(),
             Optional.empty(),
             Optional.empty(),
