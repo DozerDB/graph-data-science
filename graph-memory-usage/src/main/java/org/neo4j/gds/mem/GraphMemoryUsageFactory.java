@@ -46,9 +46,9 @@ public final class GraphMemoryUsageFactory {
         );
     }
 
-    private static final Pattern ADJ_DEGREES = Pattern.compile("^.relationships.table\\[\\d+].value.topology.adjacencyList.degrees.*$");
-    private static final Pattern ADJ_LIST = Pattern.compile("^.relationships.table\\[\\d+].value.topology.adjacencyList.pages.*$");
-    private static final Pattern ADJ_OFFSETS = Pattern.compile("^.relationships.table\\[\\d+].value.topology.adjacencyList.offsets.*$");
+    private static final Pattern ADJ_DEGREES = Pattern.compile(".*.adjacencyList.degrees.*$");
+    private static final Pattern ADJ_LIST = Pattern.compile(".*.adjacencyList.pages.*$");
+    private static final Pattern ADJ_OFFSETS = Pattern.compile("^.*adjacencyList.offsets.*$");
     private static final Pattern DOT = Pattern.compile("\\.");
     private static final Object DUMMY = new Object();
 
