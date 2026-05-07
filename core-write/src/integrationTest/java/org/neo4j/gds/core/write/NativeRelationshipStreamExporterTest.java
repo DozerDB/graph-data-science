@@ -263,8 +263,8 @@ class NativeRelationshipStreamExporterTest extends BaseTest {
 
         var log = new GdsTestLog();
         var progressTracker = TaskProgressTracker.create(
-            RelationshipStreamExporter.baseTask("OpName"),
             new LoggerForProgressTrackingAdapter(log),
+            RelationshipStreamExporter.baseTask("OpName"),
             new Concurrency(1),
             PlainSimpleRequestCorrelationId.create(),
             EmptyTaskRegistryFactory.INSTANCE

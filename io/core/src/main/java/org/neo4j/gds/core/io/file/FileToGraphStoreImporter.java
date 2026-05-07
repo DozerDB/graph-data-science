@@ -153,8 +153,8 @@ public abstract class FileToGraphStoreImporter {
         );
 
         return TaskProgressTracker.create(
-            task,
             new LoggerForProgressTrackingAdapter(log),
+            task,
             concurrency,
             requestCorrelationId,
             taskRegistryFactory

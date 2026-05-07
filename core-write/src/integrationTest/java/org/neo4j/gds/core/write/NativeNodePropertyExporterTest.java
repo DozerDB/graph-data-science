@@ -177,8 +177,8 @@ class NativeNodePropertyExporterTest extends BaseTest {
         var log = new GdsTestLog();
         var writeConcurrency = new Concurrency(4);
         var progressTracker = TaskProgressTracker.create(
-            NodePropertyExporter.baseTask("AlgoNameGoesHere", graph.nodeCount()),
             new LoggerForProgressTrackingAdapter(log),
+            NodePropertyExporter.baseTask("AlgoNameGoesHere", graph.nodeCount()),
             writeConcurrency,
             PlainSimpleRequestCorrelationId.create(),
             EmptyTaskRegistryFactory.INSTANCE

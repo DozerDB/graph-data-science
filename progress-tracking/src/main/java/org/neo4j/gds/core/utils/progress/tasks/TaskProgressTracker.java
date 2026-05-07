@@ -53,8 +53,8 @@ public final class TaskProgressTracker implements ProgressTracker {
     public double progressLeftOvers = 0;
 
     public static TaskProgressTracker create(
-        Task baseTask,
         LoggerForProgressTracking log,
+        Task baseTask,
         Concurrency concurrency,
         RequestCorrelationId requestCorrelationId,
         TaskRegistryFactory taskRegistryFactory
