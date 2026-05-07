@@ -69,8 +69,8 @@ public final class InspectableTestProgressTracker implements ProgressTracker {
         LoggerForProgressTracking log
     ) {
         var delegate = TaskProgressTracker.create(
-            baseTask,
             log,
+            baseTask,
             new Concurrency(1),
             jobId,
             PlainSimpleRequestCorrelationId.create(),

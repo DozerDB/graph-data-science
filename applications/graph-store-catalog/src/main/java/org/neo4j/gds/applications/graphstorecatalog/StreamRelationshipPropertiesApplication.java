@@ -76,8 +76,8 @@ public class StreamRelationshipPropertiesApplication {
 
         final JobId jobId = new JobId();
         var taskProgressTracker = TaskProgressTracker.create(
-            task,
             log,
+            task,
             configuration.concurrency(),
             jobId,
             requestScopedDependencies.correlationId(),

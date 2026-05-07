@@ -214,8 +214,8 @@ class NodeClassificationPredictTest {
         var log = new GdsTestLog();
         var concurrency = new Concurrency(1);
         var progressTracker = TaskProgressTracker.create(
-            NodeClassificationPredict.progressTask(graph.nodeCount()),
             new LoggerForProgressTrackingAdapter(log),
+            NodeClassificationPredict.progressTask(graph.nodeCount()),
             concurrency,
             new JobId(),
             PlainSimpleRequestCorrelationId.create(),

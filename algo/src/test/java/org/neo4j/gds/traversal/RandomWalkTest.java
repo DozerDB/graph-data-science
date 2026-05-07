@@ -609,8 +609,8 @@ class RandomWalkTest {
             var taskStore = new PerDatabaseTaskStore(Duration.ZERO);
 
             var testTracker = TaskProgressTracker.create(
-                RandomWalkProgressTask.create(graph),
                 LoggerForProgressTracking.noOpLog(),
+                RandomWalkProgressTask.create(graph),
                 new Concurrency(4),
                 PlainSimpleRequestCorrelationId.create(),
                 TaskRegistryFactory.local("rw", taskStore)

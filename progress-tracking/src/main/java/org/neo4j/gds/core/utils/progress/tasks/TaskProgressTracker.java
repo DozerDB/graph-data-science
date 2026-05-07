@@ -43,29 +43,30 @@ public final class TaskProgressTracker implements ProgressTracker {
     private final Stack<Task> nestedTasks = new Stack<>();
 
     private final Task baseTask;
+    private final Consumer<RuntimeException> onError;
+    private final TaskProgressLogger taskProgressLogger;
     private final TaskRegistry taskRegistry;
     private final UserLogRegistry userLogRegistry;
-    private final TaskProgressLogger taskProgressLogger;
-    private final Consumer<RuntimeException> onError;
 
     public Optional<Task> currentTask = Optional.empty();
     public long currentTotalSteps = UNKNOWN_STEPS;
     public double progressLeftOvers = 0;
 
     public static TaskProgressTracker create(
-        Task baseTask,
         LoggerForProgressTracking log,
+        Task baseTask,
         Concurrency concurrency,
         RequestCorrelationId requestCorrelationId,
         TaskRegistryFactory taskRegistryFactory
     ) {
         var jobId = new JobId();
-        return create(baseTask, log, concurrency, jobId, requestCorrelationId, taskRegistryFactory, UserLogRegistry.EMPTY);
+
+        return create(log, baseTask, concurrency, jobId, requestCorrelationId, taskRegistryFactory, UserLogRegistry.EMPTY);
     }
 
     public static TaskProgressTracker create(
-        Task baseTask,
         LoggerForProgressTracking log,
+        Task baseTask,
         Concurrency concurrency,
         JobId jobId,
         RequestCorrelationId requestCorrelationId,
@@ -74,17 +75,18 @@ public final class TaskProgressTracker implements ProgressTracker {
     ) {
         var taskProgressLogger = TaskProgressLogger.create(log, requestCorrelationId, baseTask, concurrency);
 
-        return create(baseTask, jobId, taskRegistryFactory, taskProgressLogger, userLogRegistry);
+        return create(baseTask, jobId, taskProgressLogger, taskRegistryFactory, userLogRegistry);
     }
 
     public static TaskProgressTracker create(
         Task baseTask,
         JobId jobId,
-        TaskRegistryFactory taskRegistryFactory,
         TaskProgressLogger taskProgressLogger,
+        TaskRegistryFactory taskRegistryFactory,
         UserLogRegistry userLogRegistry
     ) {
         var didLog = new AtomicBoolean(false);
+
         Consumer<RuntimeException> onError = error -> {
             if (!didLog.get()) {
                 taskProgressLogger.logWarning(String.format(Locale.US, ":: %s", error.getMessage()));
@@ -92,21 +94,29 @@ public final class TaskProgressTracker implements ProgressTracker {
             }
         };
 
-        return new TaskProgressTracker(baseTask, taskRegistryFactory.newInstance(jobId), userLogRegistry, taskProgressLogger, onError);
+        var taskRegistry = taskRegistryFactory.newInstance(jobId);
+
+        return new TaskProgressTracker(
+            baseTask,
+            onError,
+            taskProgressLogger,
+            taskRegistry,
+            userLogRegistry
+        );
     }
 
     private TaskProgressTracker(
         Task baseTask,
-        TaskRegistry taskRegistry,
-        UserLogRegistry userLogRegistry,
+        Consumer<RuntimeException> onError,
         TaskProgressLogger taskProgressLogger,
-        Consumer<RuntimeException> onError
+        TaskRegistry taskRegistry,
+        UserLogRegistry userLogRegistry
     ) {
         this.baseTask = baseTask;
+        this.onError = onError;
+        this.taskProgressLogger = taskProgressLogger;
         this.taskRegistry = taskRegistry;
         this.userLogRegistry = userLogRegistry;
-        this.taskProgressLogger = taskProgressLogger;
-        this.onError = onError;
     }
 
     @Override

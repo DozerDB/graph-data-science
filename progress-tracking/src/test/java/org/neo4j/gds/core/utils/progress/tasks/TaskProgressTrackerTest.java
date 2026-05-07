@@ -87,8 +87,8 @@ class TaskProgressTrackerTest {
         var task = Tasks.leaf("leaf");
         var log = new GdsTestLog();
         var progressTracker = TaskProgressTracker.create(
-            task,
             new LoggerForProgressTrackingAdapter(log),
+            task,
             new Concurrency(1),
             PlainSimpleRequestCorrelationId.create(),
             EmptyTaskRegistryFactory.INSTANCE
@@ -174,8 +174,8 @@ class TaskProgressTrackerTest {
             var task = Tasks.leaf("leaf", 4);
             var log = new GdsTestLog();
             var progressTracker = TaskProgressTracker.create(
-                task,
                 new LoggerForProgressTrackingAdapter(log),
+                task,
                 new Concurrency(1),
                 new JobId(),
                 new RequestCorrelationIdForTesting("our request correlation id"),
@@ -204,7 +204,10 @@ class TaskProgressTrackerTest {
         try (var ignored = RenamesCurrentThread.renameThread("test")) {
             var task = Tasks.task("root", Tasks.leaf("leaf", 4));
             var log = new GdsTestLog();
-            var progressTracker = TaskProgressTracker.create(task, new LoggerForProgressTrackingAdapter(log), new Concurrency(1),
+            var progressTracker = TaskProgressTracker.create(
+                new LoggerForProgressTrackingAdapter(log),
+                task,
+                new Concurrency(1),
                 new JobId(),
                 new RequestCorrelationIdForTesting("what request correlation id?"),
                 EmptyTaskRegistryFactory.INSTANCE,
@@ -235,8 +238,8 @@ class TaskProgressTrackerTest {
         var taskStore = new PerDatabaseTaskStore(Duration.ZERO);
         var taskRegistry = new TaskRegistry("", taskStore);
         var progressTracker = TaskProgressTracker.create(
-            task,
             LoggerForProgressTracking.noOpLog(),
+            task,
             new Concurrency(1),
             PlainSimpleRequestCorrelationId.create(),
             jobId -> taskRegistry
@@ -293,8 +296,8 @@ class TaskProgressTrackerTest {
 
     private TaskProgressTracker progressTracker(Task task, Log log) {
         return TaskProgressTracker.create(
-            task,
             new LoggerForProgressTrackingAdapter(log),
+            task,
             new Concurrency(1),
             PlainSimpleRequestCorrelationId.create(),
             EmptyTaskRegistryFactory.INSTANCE

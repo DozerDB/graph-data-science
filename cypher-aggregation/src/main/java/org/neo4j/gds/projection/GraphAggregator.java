@@ -218,8 +218,8 @@ abstract class GraphAggregator implements UserAggregationReducer, UserAggregatio
 
         var taskVolume = queryEstimator.estimateRows(query);
         var internalProgressTracker = TaskProgressTracker.create(
-            GraphImporter.graphImporterTask(taskVolume),
             new LoggerForProgressTrackingAdapter(log),
+            GraphImporter.graphImporterTask(taskVolume),
             config.readConcurrency(),
             config.jobId(),
             requestCorrelationId,

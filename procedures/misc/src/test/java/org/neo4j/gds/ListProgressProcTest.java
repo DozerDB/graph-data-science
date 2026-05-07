@@ -160,8 +160,8 @@ class ListProgressProcTest extends BaseProgressTest {
             this.taskRegistryFactory = jobId -> new NonReleasingTaskRegistry(taskRegistry);
 
             var taskProgressTracker = TaskProgressTracker.create(
-                task,
                 LoggerForProgressTracking.noOpLog(),
+                task,
                 new Concurrency(1),
                 Neo4jPoweredRequestCorrelationId.create(transaction.getTransactionSequenceNumber()),
                 taskRegistryFactory

@@ -216,8 +216,8 @@ class PageRankTest {
             var config = PageRankConfigImpl.builder().maxIterations(maxIterations).build();
 
             var progressTracker = TaskProgressTracker.create(
-                tasks.pageRank(graph, config),
                 new LoggerForProgressTrackingAdapter(log),
+                tasks.pageRank(graph, config),
                 config.concurrency(),
                 config.jobId(),
                 PlainSimpleRequestCorrelationId.create(),

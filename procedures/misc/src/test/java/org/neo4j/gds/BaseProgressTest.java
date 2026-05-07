@@ -79,8 +79,8 @@ public abstract class BaseProgressTest extends BaseTest {
             }
 
             var taskProgressTracker = TaskProgressTracker.create(
-                task,
                 LoggerForProgressTracking.noOpLog(),
+                task,
                 new Concurrency(1),
                 PlainSimpleRequestCorrelationId.create(),
                 taskRegistryFactory

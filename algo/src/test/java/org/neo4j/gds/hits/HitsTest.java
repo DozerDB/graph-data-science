@@ -109,8 +109,8 @@ class HitsTest {
         var progressTask = HitsProgressTrackerCreator.progressTask(graph.nodeCount(),config.maxIterations());
         var log = new GdsTestLog();
         var progressTracker = TaskProgressTracker.create(
-            progressTask,
             new LoggerForProgressTrackingAdapter(log),
+            progressTask,
             new Concurrency(1),
             PlainSimpleRequestCorrelationId.create(),
             EmptyTaskRegistryFactory.INSTANCE

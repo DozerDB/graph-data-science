@@ -220,8 +220,8 @@ class PregelTest {
 
         var task = Pregel.progressTask(graph, config, computation.getClass().getSimpleName());
         var progressTracker = TaskProgressTracker.create(
-            task,
             new LoggerForProgressTrackingAdapter(Log.noOpLog()),
+            task,
             config.concurrency(),
             PlainSimpleRequestCorrelationId.create(),
             jobId -> new TaskRegistry("", taskStore, jobId)

@@ -39,8 +39,8 @@ class TaskProgressTrackerFailMethodTest {
         var log = new GdsTestLog();
         var taskStore = new TestTaskStore();
         var tracker = TaskProgressTracker.create(
-            failingTask,
             new LoggerForProgressTrackingAdapter(log),
+            failingTask,
             new Concurrency(1),
             PlainSimpleRequestCorrelationId.create(),
             TaskRegistryFactory.local("", taskStore)
@@ -70,8 +70,8 @@ class TaskProgressTrackerFailMethodTest {
         var log = new GdsTestLog();
         var taskStore = new TestTaskStore();
         var tracker = TaskProgressTracker.create(
-            rootTask,
             new LoggerForProgressTrackingAdapter(log),
+            rootTask,
             new Concurrency(1),
             PlainSimpleRequestCorrelationId.create(),
             TaskRegistryFactory.local("", taskStore)

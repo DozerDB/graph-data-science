@@ -180,8 +180,8 @@ class NativeRelationshipExporterTest extends BaseTest {
         var log = new GdsTestLog();
         var task = Tasks.leaf("WriteRelationships", graph.relationshipCount());
         var progressTracker = TaskProgressTracker.create(
-            task,
             new LoggerForProgressTrackingAdapter(log),
+            task,
             RelationshipExporterBuilder.TYPED_DEFAULT_WRITE_CONCURRENCY,
             PlainSimpleRequestCorrelationId.create(),
             EmptyTaskRegistryFactory.INSTANCE

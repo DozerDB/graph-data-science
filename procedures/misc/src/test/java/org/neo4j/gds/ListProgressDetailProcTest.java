@@ -156,8 +156,8 @@ class ListProgressDetailProcTest extends BaseProgressTest {
             );
 
             var taskProgressTracker = TaskProgressTracker.create(
-                task,
                 LoggerForProgressTracking.noOpLog(),
+                task,
                 new Concurrency(1),
                 PlainSimpleRequestCorrelationId.create(),
                 executionContext().taskRegistryFactory()

@@ -83,8 +83,8 @@ public interface AlgorithmFactory<G, ALGO extends Algorithm<?>, CONFIG extends A
 
         if (configuration.logProgress()) {
             return TaskProgressTracker.create(
-                progressTask,
                 new LoggerForProgressTrackingAdapter(log),
+                progressTask,
                 configuration.concurrency(),
                 configuration.jobId(),
                 requestCorrelationId,
