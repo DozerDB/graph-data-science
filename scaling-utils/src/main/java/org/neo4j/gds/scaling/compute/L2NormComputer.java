@@ -27,7 +27,6 @@ import org.neo4j.gds.core.utils.partition.PartitionUtils;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.scaling.scale.L2Norm;
 import org.neo4j.gds.scaling.scale.ScalarScaler;
-import org.neo4j.gds.scaling.scale.Scaler;
 import org.neo4j.gds.scaling.scale.Zero;
 
 import java.util.Optional;
@@ -58,7 +57,7 @@ public final class L2NormComputer {
         var squaredSum = tasks.stream().mapToDouble(ComputeSquaredSum::squaredSum).sum();
         var euclideanLength = Math.sqrt(squaredSum);
 
-        if (euclideanLength < Scaler.CLOSE_TO_ZERO) {
+        if (euclideanLength < AggregatesComputer.CLOSE_TO_ZERO) {
             return Zero.of();
         } else {
             return new L2Norm(properties, euclideanLength);

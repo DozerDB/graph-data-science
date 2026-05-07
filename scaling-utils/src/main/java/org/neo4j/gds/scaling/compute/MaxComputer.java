@@ -27,7 +27,6 @@ import org.neo4j.gds.core.utils.partition.PartitionUtils;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.scaling.scale.Max;
 import org.neo4j.gds.scaling.scale.ScalarScaler;
-import org.neo4j.gds.scaling.scale.Scaler;
 import org.neo4j.gds.scaling.scale.Zero;
 
 import java.util.List;
@@ -61,7 +60,7 @@ public final class MaxComputer {
 
         var statistics = Map.of("absMax", List.of(absMax));
 
-        if (absMax < Scaler.CLOSE_TO_ZERO) {
+        if (absMax < AggregatesComputer.CLOSE_TO_ZERO) {
             return Zero.of(statistics);
         } else {
             return new Max(properties, statistics, absMax);

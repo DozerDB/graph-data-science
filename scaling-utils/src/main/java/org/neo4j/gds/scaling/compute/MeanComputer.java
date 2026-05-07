@@ -27,7 +27,6 @@ import org.neo4j.gds.core.utils.partition.PartitionUtils;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.scaling.scale.Mean;
 import org.neo4j.gds.scaling.scale.ScalarScaler;
-import org.neo4j.gds.scaling.scale.Scaler;
 import org.neo4j.gds.scaling.scale.Zero;
 
 import java.util.List;
@@ -70,7 +69,7 @@ public final class MeanComputer {
             "max", List.of(max)
         );
 
-        if (Math.abs(maxMinDiff) < Scaler.CLOSE_TO_ZERO) {
+        if (Math.abs(maxMinDiff) < AggregatesComputer.CLOSE_TO_ZERO) {
             return Zero.of(statistics);
         } else {
             return new Mean(properties, statistics, avg, maxMinDiff);

@@ -27,7 +27,6 @@ import org.neo4j.gds.core.utils.partition.PartitionUtils;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.scaling.scale.L1Norm;
 import org.neo4j.gds.scaling.scale.ScalarScaler;
-import org.neo4j.gds.scaling.scale.Scaler;
 import org.neo4j.gds.scaling.scale.Zero;
 
 import java.util.Optional;
@@ -57,7 +56,7 @@ public final class L1NormComputer {
 
         var absoluteSum = tasks.stream().mapToDouble(ComputeAbsoluteSum::sum).sum();
 
-        if (absoluteSum < Scaler.CLOSE_TO_ZERO) {
+        if (absoluteSum < AggregatesComputer.CLOSE_TO_ZERO) {
             return Zero.of();
         } else {
             return new L1Norm(properties, absoluteSum);

@@ -26,7 +26,6 @@ import org.neo4j.gds.core.utils.partition.Partition;
 import org.neo4j.gds.core.utils.partition.PartitionUtils;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.scaling.scale.ScalarScaler;
-import org.neo4j.gds.scaling.scale.Scaler;
 import org.neo4j.gds.scaling.scale.StdScore;
 import org.neo4j.gds.scaling.scale.Zero;
 
@@ -74,7 +73,7 @@ public final class StdComputer {
             "std", List.of(std)
         );
 
-        if (std < Scaler.CLOSE_TO_ZERO) {
+        if (std < AggregatesComputer.CLOSE_TO_ZERO) {
             return Zero.of(statistics);
         } else {
             return new StdScore(properties, statistics, avg, std);
