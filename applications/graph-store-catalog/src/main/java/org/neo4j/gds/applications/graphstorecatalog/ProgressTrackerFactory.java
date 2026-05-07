@@ -54,8 +54,8 @@ class ProgressTrackerFactory {
     ProgressTracker create(Task task) {
         var jobId = new JobId();
         return TaskProgressTracker.create(
-            task,
             log,
+            task,
             new Concurrency(1),
             jobId,
             requestCorrelationId,

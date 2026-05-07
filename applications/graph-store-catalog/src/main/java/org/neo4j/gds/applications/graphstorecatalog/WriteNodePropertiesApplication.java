@@ -72,8 +72,8 @@ public class WriteNodePropertiesApplication {
         );
         var jobId = new JobId();
         var progressTracker = TaskProgressTracker.create(
-            task,
             loggers.loggerForProgressTracking(),
+            task,
             configuration.writeConcurrency(),
             jobId,
             requestScopedDependencies.correlationId(),

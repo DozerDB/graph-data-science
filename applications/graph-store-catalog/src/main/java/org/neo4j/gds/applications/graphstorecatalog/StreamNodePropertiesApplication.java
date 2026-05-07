@@ -91,8 +91,8 @@ public class StreamNodePropertiesApplication {
 
         var jobId = new JobId();
         var progressTracker = TaskProgressTracker.create(
-            task,
             log,
+            task,
             configuration.concurrency(),
             jobId,
             requestScopedDependencies.correlationId(),

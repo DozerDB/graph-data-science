@@ -48,8 +48,8 @@ public final class TestProgressTracker implements ProgressTracker {
         TaskRegistryFactory taskRegistryFactory
     ) {
         var delegate = TaskProgressTracker.create(
-            baseTask,
             log,
+            baseTask,
             concurrency,
             new JobId(),
             PlainSimpleRequestCorrelationId.create(),

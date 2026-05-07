@@ -46,8 +46,8 @@ public class ProgressTrackerFactory {
         ProgressTracker progressTracker;
         if (logProgress) {
             progressTracker = TaskProgressTracker.create(
-                task,
                 log,
+                task,
                 concurrency,
                 jobId,
                 requestScopedDependencies.correlationId(),

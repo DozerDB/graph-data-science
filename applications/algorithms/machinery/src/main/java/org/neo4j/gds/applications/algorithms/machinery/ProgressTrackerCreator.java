@@ -63,8 +63,8 @@ public class ProgressTrackerCreator {
             var requestCorrelationId = requestScopedDependencies.correlationId();
 
             return TaskProgressTracker.create(
-                task,
                 log,
+                task,
                 concurrency,
                 jobId,
                 requestCorrelationId,

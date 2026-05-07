@@ -60,12 +60,13 @@ public final class TaskProgressTracker implements ProgressTracker {
         TaskRegistryFactory taskRegistryFactory
     ) {
         var jobId = new JobId();
-        return create(baseTask, log, concurrency, jobId, requestCorrelationId, taskRegistryFactory, UserLogRegistry.EMPTY);
+
+        return create(log, baseTask, concurrency, jobId, requestCorrelationId, taskRegistryFactory, UserLogRegistry.EMPTY);
     }
 
     public static TaskProgressTracker create(
-        Task baseTask,
         LoggerForProgressTracking log,
+        Task baseTask,
         Concurrency concurrency,
         JobId jobId,
         RequestCorrelationId requestCorrelationId,

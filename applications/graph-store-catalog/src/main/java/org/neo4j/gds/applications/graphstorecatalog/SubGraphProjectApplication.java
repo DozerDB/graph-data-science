@@ -122,8 +122,8 @@ public class SubGraphProjectApplication {
         var task = graphStoreFilterService.progressTask(originGraphStore);
 
         var progressTracker = TaskProgressTracker.create(
-            task,
             loggers.loggerForProgressTracking(),
+            task,
             configuration.typedConcurrency(),
             configuration.jobId(),
             requestScopedDependencies.correlationId(),
