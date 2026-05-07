@@ -55,7 +55,7 @@ dependencies {
     testAnnotationProcessor project(':config-generator')
     testAnnotationProcessor openGds.immutables.value
 
-    testImplementation project(':proc-test-utilities')
+    testImplementation project(':test-utils')
     testCompileOnly openGds.immutables.value.annotations
     testCompileOnly openGds.immutables.builder
     testCompileOnly openGds.jetbrains.annotations

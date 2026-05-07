@@ -16,5 +16,6 @@ dependencies {
     testImplementation project(':proc-embeddings')
     testImplementation project(':proc-similarity')
     testImplementation project(':proc-test-utilities')
+    testImplementation project(':progress-tracking')
     testImplementation project(':string-formatting')
 }
