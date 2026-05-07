@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.neo4j.gds.TestGraph;
 import org.neo4j.gds.compat.TestLog;
+import org.neo4j.gds.core.JobId;
 import org.neo4j.gds.core.PlainSimpleRequestCorrelationId;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.utils.logging.LoggerForProgressTrackingAdapter;
@@ -35,6 +36,7 @@ import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
 import org.neo4j.gds.logging.GdsTestLog;
 import org.neo4j.gds.termination.TerminationFlag;
+import org.neo4j.gds.user.log.UserLogRegistry;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.neo4j.gds.assertj.Extractors.removingThreadId;
@@ -97,15 +99,16 @@ class HDBScanE2ETest {
 
         @Test
         void shouldLogProgress() {
-
-            var progressTask = HDBScanProgressTrackerCreator.hdbscanTask("foo", graph.nodeCount());
             var log = new GdsTestLog();
+
             var progressTracker = TaskProgressTracker.create(
                 new LoggerForProgressTrackingAdapter(log),
-                progressTask,
+                HDBScanProgressTrackerCreator.hdbscanTask("foo", graph.nodeCount()),
                 new Concurrency(1),
+                new JobId(),
                 PlainSimpleRequestCorrelationId.create(),
-                EmptyTaskRegistryFactory.INSTANCE
+                EmptyTaskRegistryFactory.INSTANCE,
+                UserLogRegistry.EMPTY
             );
 
             new HDBScan(

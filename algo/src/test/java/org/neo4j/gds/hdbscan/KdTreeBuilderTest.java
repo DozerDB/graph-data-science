@@ -19,10 +19,10 @@
  */
 package org.neo4j.gds.hdbscan;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.neo4j.gds.TestGraph;
 import org.neo4j.gds.compat.TestLog;
+import org.neo4j.gds.core.JobId;
 import org.neo4j.gds.core.PlainSimpleRequestCorrelationId;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.utils.logging.LoggerForProgressTrackingAdapter;
@@ -33,6 +33,7 @@ import org.neo4j.gds.extension.GdlExtension;
 import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
 import org.neo4j.gds.logging.GdsTestLog;
+import org.neo4j.gds.user.log.UserLogRegistry;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.neo4j.gds.assertj.Extractors.removingThreadId;
@@ -209,27 +210,27 @@ class KdTreeBuilderTest {
     }
 
     @Test
-    void shouldLogProgress(){
+    void shouldLogProgress() {
+        var log = new GdsTestLog();
 
-            var progressTask = HDBScanProgressTrackerCreator.kdBuildingTask("foo",graph.nodeCount());
-            var log = new GdsTestLog();
-            var progressTracker = TaskProgressTracker.create(
-                new LoggerForProgressTrackingAdapter(log),
-                progressTask,
-                new Concurrency(1),
-                PlainSimpleRequestCorrelationId.create(),
-                EmptyTaskRegistryFactory.INSTANCE
-            );
+        var progressTracker = TaskProgressTracker.create(
+            new LoggerForProgressTrackingAdapter(log),
+            HDBScanProgressTrackerCreator.kdBuildingTask("foo", graph.nodeCount()),
+            new Concurrency(1),
+            new JobId(),
+            PlainSimpleRequestCorrelationId.create(),
+            EmptyTaskRegistryFactory.INSTANCE,
+            UserLogRegistry.EMPTY
+        );
 
-            var points = graph.nodeProperties("point");
+        var points = graph.nodeProperties("point");
 
-          new KdTreeBuilder(graph.nodeCount(), points, 1, 1, null,progressTracker)
-            .build();
+        new KdTreeBuilder(graph.nodeCount(), points, 1, 1, null, progressTracker).build();
 
-            Assertions.assertThat(log.getMessages(TestLog.INFO))
-                .extracting(removingThreadId())
-                .extracting(replaceTimings())
-                .containsExactly(
+        assertThat(log.getMessages(TestLog.INFO))
+            .extracting(removingThreadId())
+            .extracting(replaceTimings())
+            .containsExactly(
                 "foo :: Start",
                 "foo 16%",
                 "foo 33%",
@@ -238,8 +239,6 @@ class KdTreeBuilderTest {
                 "foo 83%",
                 "foo 100%",
                 "foo :: Finished"
-                );
-
+            );
     }
-
 }

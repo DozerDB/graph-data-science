@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.neo4j.gds.Orientation;
 import org.neo4j.gds.TestGraph;
 import org.neo4j.gds.compat.TestLog;
+import org.neo4j.gds.core.JobId;
 import org.neo4j.gds.core.PlainSimpleRequestCorrelationId;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.utils.logging.LoggerForProgressTrackingAdapter;
@@ -36,6 +37,7 @@ import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
 import org.neo4j.gds.logging.GdsTestLog;
 import org.neo4j.gds.termination.TerminationFlag;
+import org.neo4j.gds.user.log.UserLogRegistry;
 
 import java.util.function.LongToDoubleFunction;
 import java.util.stream.LongStream;
@@ -87,15 +89,16 @@ class PCSTFastTest {
 
         @Test
         void shouldLogProgress() {
-
-            var progressTask = PCSTProgressTrackerTaskCreator.progressTask(graph.nodeCount(),graph.relationshipCount());
             var log = new GdsTestLog();
+
             var progressTracker = TaskProgressTracker.create(
                 new LoggerForProgressTrackingAdapter(log),
-                progressTask,
+                PCSTProgressTrackerTaskCreator.progressTask(graph.nodeCount(),graph.relationshipCount()),
                 new Concurrency(1),
+                new JobId(),
                 PlainSimpleRequestCorrelationId.create(),
-                EmptyTaskRegistryFactory.INSTANCE
+                EmptyTaskRegistryFactory.INSTANCE,
+                UserLogRegistry.EMPTY
             );
 
            new PCSTFast(graph, x->20, progressTracker,TerminationFlag.RUNNING_TRUE).compute();

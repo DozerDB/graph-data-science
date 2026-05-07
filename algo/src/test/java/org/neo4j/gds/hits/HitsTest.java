@@ -23,6 +23,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.neo4j.gds.TestGraph;
 import org.neo4j.gds.compat.TestLog;
+import org.neo4j.gds.core.JobId;
 import org.neo4j.gds.core.PlainSimpleRequestCorrelationId;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.DefaultPool;
@@ -35,6 +36,7 @@ import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
 import org.neo4j.gds.logging.GdsTestLog;
 import org.neo4j.gds.termination.TerminationFlag;
+import org.neo4j.gds.user.log.UserLogRegistry;
 
 import java.util.HashMap;
 import java.util.List;
@@ -104,16 +106,17 @@ class HitsTest {
 
     @Test
     void shouldLogProgress(){
-
         var config = HitsConfigImpl.builder().concurrency(1).hitsIterations(5).build();
-        var progressTask = HitsProgressTrackerCreator.progressTask(graph.nodeCount(),config.maxIterations());
         var log = new GdsTestLog();
+
         var progressTracker = TaskProgressTracker.create(
             new LoggerForProgressTrackingAdapter(log),
-            progressTask,
+            HitsProgressTrackerCreator.progressTask(graph.nodeCount(),config.maxIterations()),
             new Concurrency(1),
+            new JobId(),
             PlainSimpleRequestCorrelationId.create(),
-            EmptyTaskRegistryFactory.INSTANCE
+            EmptyTaskRegistryFactory.INSTANCE,
+            UserLogRegistry.EMPTY
         );
 
         var hitsp =new Hits(graph,config,DefaultPool.INSTANCE,progressTracker,TerminationFlag.RUNNING_TRUE);

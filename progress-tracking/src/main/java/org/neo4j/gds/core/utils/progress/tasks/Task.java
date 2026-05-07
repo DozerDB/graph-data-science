@@ -37,21 +37,18 @@ public class Task {
     public static final long NOT_FINISHED = -1L;
 
     private final String description;
-    private Status status;
-    private long startTime;
-    private long finishTime;
+    protected final List<Task> subTasks;
 
+    private Status status = Status.PENDING;
+    private long startTime = NOT_STARTED;
+    private long finishTime = NOT_FINISHED;
     private MemoryRange estimatedMemoryRangeInBytes = MemoryRange.empty();
     private int maxConcurrency = UNKNOWN_CONCURRENCY;
 
-    protected final List<Task> subTasks;
 
     public Task(String description, List<Task> subTasks) {
         this.description = description;
         this.subTasks = subTasks;
-        this.status = Status.PENDING;
-        this.startTime = NOT_STARTED;
-        this.finishTime = NOT_FINISHED;
     }
 
     public String description() {
@@ -206,7 +203,7 @@ public class Task {
     }
 
     private static void render(StringBuilder sb, Task task, int depth) {
-        sb.append("\t".repeat(Math.max(0, depth - 1)));
+        sb.repeat("\t", Math.max(0, depth - 1));
 
         if (depth > 0) {
             sb.append("|-- ");

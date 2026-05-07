@@ -30,6 +30,7 @@ import org.neo4j.gds.api.DefaultValue;
 import org.neo4j.gds.api.ExportedRelationship;
 import org.neo4j.gds.api.Graph;
 import org.neo4j.gds.api.nodeproperties.ValueType;
+import org.neo4j.gds.core.JobId;
 import org.neo4j.gds.core.PlainSimpleRequestCorrelationId;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.utils.logging.LoggerForProgressTrackingAdapter;
@@ -45,6 +46,7 @@ import org.neo4j.gds.projection.GraphProjectFromStoreConfig;
 import org.neo4j.gds.projection.GraphStoreFactorySuppliers;
 import org.neo4j.gds.projection.NativeProjectionGraphStoreFactorySupplier;
 import org.neo4j.gds.termination.TerminationFlag;
+import org.neo4j.gds.user.log.UserLogRegistry;
 import org.neo4j.graphdb.security.AuthorizationViolationException;
 import org.neo4j.internal.kernel.api.security.StaticAccessMode;
 import org.neo4j.values.storable.Value;
@@ -262,12 +264,15 @@ class NativeRelationshipStreamExporterTest extends BaseTest {
         var rand = new Random();
 
         var log = new GdsTestLog();
+
         var progressTracker = TaskProgressTracker.create(
             new LoggerForProgressTrackingAdapter(log),
             RelationshipStreamExporter.baseTask("OpName"),
             new Concurrency(1),
+            new JobId(),
             PlainSimpleRequestCorrelationId.create(),
-            EmptyTaskRegistryFactory.INSTANCE
+            EmptyTaskRegistryFactory.INSTANCE,
+            UserLogRegistry.EMPTY
         );
 
         var relationshipStream = IntStream

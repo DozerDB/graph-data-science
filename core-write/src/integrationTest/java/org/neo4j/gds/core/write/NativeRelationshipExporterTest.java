@@ -32,6 +32,7 @@ import org.neo4j.gds.TestSupport;
 import org.neo4j.gds.api.DefaultValue;
 import org.neo4j.gds.api.Graph;
 import org.neo4j.gds.api.GraphStore;
+import org.neo4j.gds.core.JobId;
 import org.neo4j.gds.core.PlainSimpleRequestCorrelationId;
 import org.neo4j.gds.core.utils.logging.LoggerForProgressTrackingAdapter;
 import org.neo4j.gds.core.utils.progress.EmptyTaskRegistryFactory;
@@ -44,6 +45,7 @@ import org.neo4j.gds.projection.GraphProjectFromStoreConfig;
 import org.neo4j.gds.projection.GraphStoreFactorySuppliers;
 import org.neo4j.gds.projection.NativeProjectionGraphStoreFactorySupplier;
 import org.neo4j.gds.termination.TerminationFlag;
+import org.neo4j.gds.user.log.UserLogRegistry;
 import org.neo4j.graphdb.security.AuthorizationViolationException;
 import org.neo4j.internal.kernel.api.security.StaticAccessMode;
 import org.neo4j.values.storable.Values;
@@ -178,13 +180,15 @@ class NativeRelationshipExporterTest extends BaseTest {
 
         // with a rel exporter
         var log = new GdsTestLog();
-        var task = Tasks.leaf("WriteRelationships", graph.relationshipCount());
+
         var progressTracker = TaskProgressTracker.create(
             new LoggerForProgressTrackingAdapter(log),
-            task,
+            Tasks.leaf("WriteRelationships", graph.relationshipCount()),
             RelationshipExporterBuilder.TYPED_DEFAULT_WRITE_CONCURRENCY,
+            new JobId(),
             PlainSimpleRequestCorrelationId.create(),
-            EmptyTaskRegistryFactory.INSTANCE
+            EmptyTaskRegistryFactory.INSTANCE,
+            UserLogRegistry.EMPTY
         );
 
         var exporter = NativeRelationshipExporter

@@ -33,6 +33,7 @@ import org.neo4j.gds.beta.generator.PropertyProducer;
 import org.neo4j.gds.beta.generator.RandomGraphGeneratorBuilder;
 import org.neo4j.gds.beta.generator.RelationshipDistribution;
 import org.neo4j.gds.compat.TestLog;
+import org.neo4j.gds.core.JobId;
 import org.neo4j.gds.core.PlainSimpleRequestCorrelationId;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.DefaultPool;
@@ -47,6 +48,7 @@ import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
 import org.neo4j.gds.logging.GdsTestLog;
 import org.neo4j.gds.termination.TerminationFlag;
+import org.neo4j.gds.user.log.UserLogRegistry;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -612,8 +614,10 @@ class RandomWalkTest {
                 LoggerForProgressTracking.noOpLog(),
                 RandomWalkProgressTask.create(graph),
                 new Concurrency(4),
+                new JobId(),
                 PlainSimpleRequestCorrelationId.create(),
-                TaskRegistryFactory.local("rw", taskStore)
+                TaskRegistryFactory.local("rw", taskStore),
+                UserLogRegistry.EMPTY
             );
 
             // run the algorithm and consume the result stream

@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.neo4j.gds.collections.ha.HugeDoubleArray;
 import org.neo4j.gds.collections.ha.HugeLongArray;
 import org.neo4j.gds.compat.TestLog;
+import org.neo4j.gds.core.JobId;
 import org.neo4j.gds.core.PlainSimpleRequestCorrelationId;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.utils.logging.LoggerForProgressTrackingAdapter;
@@ -31,6 +32,7 @@ import org.neo4j.gds.core.utils.progress.EmptyTaskRegistryFactory;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.core.utils.progress.tasks.TaskProgressTracker;
 import org.neo4j.gds.logging.GdsTestLog;
+import org.neo4j.gds.user.log.UserLogRegistry;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.neo4j.gds.assertj.Extractors.removingThreadId;
@@ -136,16 +138,17 @@ class CondenseStepTest {
         var lambda = HugeDoubleArray.of(7d, 8d, 9d, 10d, 11d, 12d);
         var size = HugeLongArray.of(2, 3, 2, 5, 2, 7);
 
-        var progressTask = HDBScanProgressTrackerCreator.condenseTask("condense",nodeCount);
         var log = new GdsTestLog();
+
         var progressTracker = TaskProgressTracker.create(
             new LoggerForProgressTrackingAdapter(log),
-            progressTask,
+            HDBScanProgressTrackerCreator.condenseTask("condense",nodeCount),
             new Concurrency(1),
+            new JobId(),
             PlainSimpleRequestCorrelationId.create(),
-            EmptyTaskRegistryFactory.INSTANCE
+            EmptyTaskRegistryFactory.INSTANCE,
+            UserLogRegistry.EMPTY
         );
-
 
         var clusterHierarchy = new ClusterHierarchy(root, left, right, lambda, size, nodeCount);
 

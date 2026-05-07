@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.neo4j.gds.collections.ha.HugeObjectArray;
 import org.neo4j.gds.compat.TestLog;
+import org.neo4j.gds.core.JobId;
 import org.neo4j.gds.core.PlainSimpleRequestCorrelationId;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.utils.logging.LoggerForProgressTrackingAdapter;
@@ -34,6 +35,7 @@ import org.neo4j.gds.core.utils.progress.EmptyTaskRegistryFactory;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.core.utils.progress.tasks.TaskProgressTracker;
 import org.neo4j.gds.logging.GdsTestLog;
+import org.neo4j.gds.user.log.UserLogRegistry;
 
 import static org.neo4j.gds.assertj.Extractors.removingThreadId;
 import static org.neo4j.gds.assertj.Extractors.replaceTimings;
@@ -152,14 +154,16 @@ class ClusterHierarchyTest {
             new Edge(0, 1, 5.)
         );
 
-        var progressTask = HDBScanProgressTrackerCreator.hierarchyTask("foo",3);
         var log = new GdsTestLog();
+
         var progressTracker = TaskProgressTracker.create(
             new LoggerForProgressTrackingAdapter(log),
-            progressTask,
+            HDBScanProgressTrackerCreator.hierarchyTask("foo",3),
             new Concurrency(1),
+            new JobId(),
             PlainSimpleRequestCorrelationId.create(),
-            EmptyTaskRegistryFactory.INSTANCE
+            EmptyTaskRegistryFactory.INSTANCE,
+            UserLogRegistry.EMPTY
         );
 
         ClusterHierarchy.create(3, edges, progressTracker);
