@@ -74,17 +74,18 @@ public final class TaskProgressTracker implements ProgressTracker {
     ) {
         var taskProgressLogger = TaskProgressLogger.create(log, requestCorrelationId, baseTask, concurrency);
 
-        return create(baseTask, jobId, taskRegistryFactory, taskProgressLogger, userLogRegistry);
+        return create(baseTask, jobId, taskProgressLogger, taskRegistryFactory, userLogRegistry);
     }
 
     public static TaskProgressTracker create(
         Task baseTask,
         JobId jobId,
-        TaskRegistryFactory taskRegistryFactory,
         TaskProgressLogger taskProgressLogger,
+        TaskRegistryFactory taskRegistryFactory,
         UserLogRegistry userLogRegistry
     ) {
         var didLog = new AtomicBoolean(false);
+
         Consumer<RuntimeException> onError = error -> {
             if (!didLog.get()) {
                 taskProgressLogger.logWarning(String.format(Locale.US, ":: %s", error.getMessage()));
@@ -92,11 +93,13 @@ public final class TaskProgressTracker implements ProgressTracker {
             }
         };
 
+        var taskRegistry = taskRegistryFactory.newInstance(jobId);
+
         return new TaskProgressTracker(
             baseTask,
             onError,
             taskProgressLogger,
-            taskRegistryFactory.newInstance(jobId),
+            taskRegistry,
             userLogRegistry
         );
     }
