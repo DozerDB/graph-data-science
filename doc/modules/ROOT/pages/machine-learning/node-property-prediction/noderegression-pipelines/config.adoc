@@ -162,7 +162,7 @@ When executing the pipeline, the selected `nodeProperties` must be either presen
 ----
 CALL gds.alpha.pipeline.nodeRegression.selectFeatures(
   pipelineName: String,
-  featureProperties: List or String
+  nodeProperties: List or String
 ) YIELD
   name: String,
   nodePropertySteps: List of Map,
@@ -177,7 +177,7 @@ CALL gds.alpha.pipeline.nodeRegression.selectFeatures(
 |===
 | Name                   | Type            | Description
 | pipelineName           | String          | The name of the pipeline.
-| featureProperties      | List or String  | Node properties to use as model features.
+| nodeProperties      | List or String  | Node properties to use as model features.
 |===
 
 include::partial$/machine-learning/node-property-prediction/pipelineInfoResult.adoc[]
