@@ -30,6 +30,7 @@ import org.neo4j.gds.TestSupport;
 import org.neo4j.gds.api.DefaultValue;
 import org.neo4j.gds.api.Graph;
 import org.neo4j.gds.api.properties.nodes.NodePropertyRecord;
+import org.neo4j.gds.core.JobId;
 import org.neo4j.gds.core.PlainSimpleRequestCorrelationId;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.DefaultPool;
@@ -45,6 +46,7 @@ import org.neo4j.gds.projection.GraphProjectFromStoreConfig;
 import org.neo4j.gds.projection.GraphStoreFactorySuppliers;
 import org.neo4j.gds.projection.NativeProjectionGraphStoreFactorySupplier;
 import org.neo4j.gds.termination.TerminationFlag;
+import org.neo4j.gds.user.log.UserLogRegistry;
 
 import java.util.Arrays;
 import java.util.List;
@@ -176,13 +178,17 @@ class NativeNodePropertyExporterTest extends BaseTest {
         // with a node exporter
         var log = new GdsTestLog();
         var writeConcurrency = new Concurrency(4);
+
         var progressTracker = TaskProgressTracker.create(
             new LoggerForProgressTrackingAdapter(log),
             NodePropertyExporter.baseTask("AlgoNameGoesHere", graph.nodeCount()),
             writeConcurrency,
+            new JobId(),
             PlainSimpleRequestCorrelationId.create(),
-            EmptyTaskRegistryFactory.INSTANCE
+            EmptyTaskRegistryFactory.INSTANCE,
+            UserLogRegistry.EMPTY
         );
+
         var exporterBuilder = NativeNodePropertyExporter
             .builder(TestSupport.fullAccessTransaction(db), graph, TerminationFlag.RUNNING_TRUE)
             .withProgressTracker(progressTracker);

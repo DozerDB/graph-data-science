@@ -75,6 +75,16 @@ public final class TaskProgressTracker implements ProgressTracker {
     ) {
         var taskProgressLogger = TaskProgressLogger.create(log, requestCorrelationId, baseTask, concurrency);
 
+        return create(baseTask, jobId, taskProgressLogger, taskRegistryFactory, userLogRegistry);
+    }
+
+    public static TaskProgressTracker create(
+        Task baseTask,
+        JobId jobId,
+        TaskProgressLogger taskProgressLogger,
+        TaskRegistryFactory taskRegistryFactory,
+        UserLogRegistry userLogRegistry
+    ) {
         var didLog = new AtomicBoolean(false);
 
         Consumer<RuntimeException> onError = error -> {

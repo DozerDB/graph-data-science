@@ -44,11 +44,12 @@ public final class TaskTreeProgressTracker implements ProgressTracker {
     ) {
         var taskVisitor = new PassThroughTaskVisitor();
         var taskProgressLogger = TaskProgressLogger.create(log, requestCorrelationId, baseTask, concurrency, taskVisitor);
+
         var delegate = TaskProgressTracker.create(
             baseTask,
             jobId,
-            taskRegistryFactory,
             taskProgressLogger,
+            taskRegistryFactory,
             userLogRegistry
         );
 
