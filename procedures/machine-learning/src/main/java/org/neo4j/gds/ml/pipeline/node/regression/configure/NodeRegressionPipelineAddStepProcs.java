@@ -49,8 +49,8 @@ public class NodeRegressionPipelineAddStepProcs {
     @Description("Add one or several features to an existing node regression training pipeline.")
     public Stream<NodePipelineInfoResult> selectFeatures(
         @Name("pipelineName") String pipelineName,
-        @Name("nodeProperties") Object nodeProperties
+        @Name("featureProperties") Object featureProperties
     ) {
-        return facade.pipelines().nodeRegression().selectFeatures(pipelineName, nodeProperties, null);
+        return facade.pipelines().nodeRegression().selectFeatures(pipelineName, featureProperties, null);
     }
 }
