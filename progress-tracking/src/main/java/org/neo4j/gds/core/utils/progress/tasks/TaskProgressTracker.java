@@ -43,10 +43,10 @@ public final class TaskProgressTracker implements ProgressTracker {
     private final Stack<Task> nestedTasks = new Stack<>();
 
     private final Task baseTask;
+    private final Consumer<RuntimeException> onError;
+    private final TaskProgressLogger taskProgressLogger;
     private final TaskRegistry taskRegistry;
     private final UserLogRegistry userLogRegistry;
-    private final TaskProgressLogger taskProgressLogger;
-    private final Consumer<RuntimeException> onError;
 
     public Optional<Task> currentTask = Optional.empty();
     public long currentTotalSteps = UNKNOWN_STEPS;
@@ -92,21 +92,27 @@ public final class TaskProgressTracker implements ProgressTracker {
             }
         };
 
-        return new TaskProgressTracker(baseTask, taskRegistryFactory.newInstance(jobId), userLogRegistry, taskProgressLogger, onError);
+        return new TaskProgressTracker(
+            baseTask,
+            onError,
+            taskProgressLogger,
+            taskRegistryFactory.newInstance(jobId),
+            userLogRegistry
+        );
     }
 
     private TaskProgressTracker(
         Task baseTask,
-        TaskRegistry taskRegistry,
-        UserLogRegistry userLogRegistry,
+        Consumer<RuntimeException> onError,
         TaskProgressLogger taskProgressLogger,
-        Consumer<RuntimeException> onError
+        TaskRegistry taskRegistry,
+        UserLogRegistry userLogRegistry
     ) {
         this.baseTask = baseTask;
+        this.onError = onError;
+        this.taskProgressLogger = taskProgressLogger;
         this.taskRegistry = taskRegistry;
         this.userLogRegistry = userLogRegistry;
-        this.taskProgressLogger = taskProgressLogger;
-        this.onError = onError;
     }
 
     @Override
