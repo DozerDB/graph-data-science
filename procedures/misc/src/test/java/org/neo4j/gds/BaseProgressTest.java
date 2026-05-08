@@ -30,6 +30,7 @@ import org.neo4j.gds.extensions.shared.TaskStoreExtension;
 import org.neo4j.gds.mem.MemoryRange;
 import org.neo4j.gds.procedures.memory.MemoryFacade;
 import org.neo4j.gds.settings.GdsSettings;
+import org.neo4j.gds.user.log.UserLogRegistry;
 import org.neo4j.procedure.Context;
 import org.neo4j.procedure.Name;
 import org.neo4j.procedure.Procedure;
@@ -82,8 +83,10 @@ public abstract class BaseProgressTest extends BaseTest {
                 LoggerForProgressTracking.noOpLog(),
                 task,
                 new Concurrency(1),
+                new JobId(),
                 PlainSimpleRequestCorrelationId.create(),
-                taskRegistryFactory
+                taskRegistryFactory,
+                UserLogRegistry.EMPTY
             );
             taskProgressTracker.beginSubTask();
             taskProgressTracker.beginSubTask();

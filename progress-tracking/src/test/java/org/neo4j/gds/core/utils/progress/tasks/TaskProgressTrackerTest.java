@@ -86,12 +86,15 @@ class TaskProgressTrackerTest {
     void shouldNotThrowIfEndMoreTasksThanStarted() {
         var task = Tasks.leaf("leaf");
         var log = new GdsTestLog();
+
         var progressTracker = TaskProgressTracker.create(
             new LoggerForProgressTrackingAdapter(log),
             task,
             new Concurrency(1),
+            new JobId(),
             PlainSimpleRequestCorrelationId.create(),
-            EmptyTaskRegistryFactory.INSTANCE
+            EmptyTaskRegistryFactory.INSTANCE,
+            UserLogRegistry.EMPTY
         );
         progressTracker.beginSubTask();
         progressTracker.endSubTask();
@@ -237,12 +240,15 @@ class TaskProgressTrackerTest {
 
         var taskStore = new PerDatabaseTaskStore(Duration.ZERO);
         var taskRegistry = new TaskRegistry("", taskStore);
+
         var progressTracker = TaskProgressTracker.create(
             LoggerForProgressTracking.noOpLog(),
             task,
             new Concurrency(1),
+            new JobId(),
             PlainSimpleRequestCorrelationId.create(),
-            jobId -> taskRegistry
+            jobId -> taskRegistry,
+            UserLogRegistry.EMPTY
         );
 
         assertThat(taskStore.query("")).isEmpty();
@@ -299,8 +305,10 @@ class TaskProgressTrackerTest {
             new LoggerForProgressTrackingAdapter(log),
             task,
             new Concurrency(1),
+            new JobId(),
             PlainSimpleRequestCorrelationId.create(),
-            EmptyTaskRegistryFactory.INSTANCE
+            EmptyTaskRegistryFactory.INSTANCE,
+            UserLogRegistry.EMPTY
         );
     }
 

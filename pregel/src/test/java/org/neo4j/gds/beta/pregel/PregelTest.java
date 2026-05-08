@@ -44,6 +44,7 @@ import org.neo4j.gds.beta.pregel.context.MasterComputeContext;
 import org.neo4j.gds.collections.ha.HugeDoubleArray;
 import org.neo4j.gds.compat.TestLog;
 import org.neo4j.gds.core.ImmutableGraphDimensions;
+import org.neo4j.gds.core.JobId;
 import org.neo4j.gds.core.PlainSimpleRequestCorrelationId;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.DefaultPool;
@@ -61,6 +62,7 @@ import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.mem.MemoryEstimateDefinition;
 import org.neo4j.gds.mem.MemoryRange;
 import org.neo4j.gds.termination.TerminationFlag;
+import org.neo4j.gds.user.log.UserLogRegistry;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -218,13 +220,14 @@ class PregelTest {
         var taskStore = new TestTaskStore();
         var computation = new TestPregelComputation();
 
-        var task = Pregel.progressTask(graph, config, computation.getClass().getSimpleName());
         var progressTracker = TaskProgressTracker.create(
             new LoggerForProgressTrackingAdapter(Log.noOpLog()),
-            task,
+            Pregel.progressTask(graph, config, computation.getClass().getSimpleName()),
             config.concurrency(),
+            new JobId(),
             PlainSimpleRequestCorrelationId.create(),
-            jobId -> new TaskRegistry("", taskStore, jobId)
+            jobId -> new TaskRegistry("", taskStore, jobId),
+            UserLogRegistry.EMPTY
         );
 
         var pregelAlgo = Pregel.create(
