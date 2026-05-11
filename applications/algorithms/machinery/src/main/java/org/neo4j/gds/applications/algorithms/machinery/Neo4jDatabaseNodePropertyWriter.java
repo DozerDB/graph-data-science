@@ -39,6 +39,7 @@ import org.neo4j.gds.core.write.NodePropertyExporter;
 import org.neo4j.gds.core.write.NodePropertyExporterBuilder;
 import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.termination.TerminationFlag;
+import org.neo4j.gds.user.log.UserLogRegistry;
 
 import java.util.Collection;
 import java.util.List;
@@ -60,6 +61,7 @@ final class Neo4jDatabaseNodePropertyWriter {
         RequestCorrelationId requestCorrelationId,
         NodePropertyExporterBuilder nodePropertyExporterBuilder,
         TaskRegistryFactory taskRegistryFactory,
+        UserLogRegistry userLogRegistry,
         Graph graph,
         GraphStore graphStore,
         Concurrency writeConcurrency,
@@ -80,10 +82,12 @@ final class Neo4jDatabaseNodePropertyWriter {
         var progressTracker = createProgressTracker(
             requestCorrelationId,
             taskRegistryFactory,
+            userLogRegistry,
             graph.nodeCount(),
             writeConcurrency,
             procedureName,
-            log
+            log,
+            jobId
         );
 
         var exporter = nodePropertyExporterBuilder
@@ -109,17 +113,21 @@ final class Neo4jDatabaseNodePropertyWriter {
     private static ProgressTracker createProgressTracker(
         RequestCorrelationId requestCorrelationId,
         TaskRegistryFactory taskRegistryFactory,
+        UserLogRegistry userLogRegistry,
         long taskVolume,
         Concurrency writeConcurrency,
         String name,
-        Log log
+        Log log,
+        JobId jobId
     ) {
         return TaskProgressTracker.create(
             new LoggerForProgressTrackingAdapter(log),
             NodePropertyExporter.baseTask(name, taskVolume),
             writeConcurrency,
+            jobId,
             requestCorrelationId,
-            taskRegistryFactory
+            taskRegistryFactory,
+            userLogRegistry
         );
     }
 

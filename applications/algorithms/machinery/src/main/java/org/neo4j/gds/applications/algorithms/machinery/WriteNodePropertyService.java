@@ -80,6 +80,7 @@ public class WriteNodePropertyService {
             requestScopedDependencies.correlationId(),
             writeContext.nodePropertyExporterBuilder(),
             requestScopedDependencies.taskRegistryFactory(),
+            requestScopedDependencies.userLogRegistry(),
             graph,
             graphStore,
             writeConfiguration.writeConcurrency(),
@@ -129,6 +130,7 @@ public class WriteNodePropertyService {
             requestScopedDependencies.correlationId(),
             writeContext.nodePropertyExporterBuilder(),
             requestScopedDependencies.taskRegistryFactory(),
+            requestScopedDependencies.userLogRegistry(),
             graph,
             graphStore,
             writeConcurrency,
@@ -140,9 +142,4 @@ public class WriteNodePropertyService {
             log
         );
     }
-
-
-
-
-
 }
