@@ -29,6 +29,7 @@ import org.neo4j.gds.api.DatabaseId;
 import org.neo4j.gds.api.DatabaseInfo;
 import org.neo4j.gds.api.GraphStore;
 import org.neo4j.gds.api.GraphStoreAdapter;
+import org.neo4j.gds.core.JobId;
 import org.neo4j.gds.core.PlainSimpleRequestCorrelationId;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.DefaultPool;
@@ -41,6 +42,7 @@ import org.neo4j.gds.core.utils.progress.TaskRegistryFactory;
 import org.neo4j.gds.core.utils.progress.tasks.LoggerForProgressTracking;
 import org.neo4j.gds.gdl.GdlFactory;
 import org.neo4j.gds.logging.Log;
+import org.neo4j.gds.user.log.UserLogRegistry;
 
 import java.nio.file.Path;
 import java.util.Optional;
@@ -105,7 +107,9 @@ class CsvToGraphStoreImporterIntegrationTest {
             graphLocation,
             Log.noOpLog(),
             requestCorrelationId,
-            EmptyTaskRegistryFactory.INSTANCE
+            EmptyTaskRegistryFactory.INSTANCE,
+            UserLogRegistry.EMPTY,
+            new JobId()
         );
         var userGraphStore = importer.run();
 
@@ -137,7 +141,9 @@ class CsvToGraphStoreImporterIntegrationTest {
             graphLocation,
             Log.noOpLog(),
             requestCorrelationId,
-            EmptyTaskRegistryFactory.INSTANCE
+            EmptyTaskRegistryFactory.INSTANCE,
+            UserLogRegistry.EMPTY,
+            new JobId()
         );
         var userGraphStore = importer.run();
 
@@ -168,7 +174,9 @@ class CsvToGraphStoreImporterIntegrationTest {
             graphLocation,
             Log.noOpLog(),
             requestCorrelationId,
-            EmptyTaskRegistryFactory.INSTANCE
+            EmptyTaskRegistryFactory.INSTANCE,
+            UserLogRegistry.EMPTY,
+            new JobId()
         );
         var userGraphStore = importer.run();
 
@@ -204,7 +212,9 @@ class CsvToGraphStoreImporterIntegrationTest {
             graphLocation,
             Log.noOpLog(),
             requestCorrelationId,
-            EmptyTaskRegistryFactory.INSTANCE
+            EmptyTaskRegistryFactory.INSTANCE,
+            UserLogRegistry.EMPTY,
+            new JobId()
         );
         var userGraphStore = importer.run();
 
@@ -242,7 +252,9 @@ class CsvToGraphStoreImporterIntegrationTest {
             graphLocation,
             Log.noOpLog(),
             requestCorrelationId,
-            EmptyTaskRegistryFactory.INSTANCE
+            EmptyTaskRegistryFactory.INSTANCE,
+            UserLogRegistry.EMPTY,
+            new JobId()
         );
         var userGraphStore = importer.run();
 
@@ -274,7 +286,9 @@ class CsvToGraphStoreImporterIntegrationTest {
             graphLocation,
             Log.noOpLog(),
             requestCorrelationId,
-            EmptyTaskRegistryFactory.INSTANCE
+            EmptyTaskRegistryFactory.INSTANCE,
+            UserLogRegistry.EMPTY,
+            new JobId()
         );
         var userGraphStore = importer.run();
 

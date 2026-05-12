@@ -24,11 +24,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.neo4j.gds.GdlSupport;
 import org.neo4j.gds.compat.TestLog;
+import org.neo4j.gds.core.JobId;
 import org.neo4j.gds.core.PlainSimpleRequestCorrelationId;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.utils.progress.EmptyTaskRegistryFactory;
 import org.neo4j.gds.logging.GdsTestLog;
 import org.neo4j.gds.logging.Log;
+import org.neo4j.gds.user.log.UserLogRegistry;
 
 import java.net.URISyntaxException;
 import java.nio.file.Path;
@@ -49,7 +51,9 @@ class CsvToGraphStoreImporterTest {
             importPath(),
             Log.noOpLog(),
             PlainSimpleRequestCorrelationId.create(),
-            EmptyTaskRegistryFactory.INSTANCE
+            EmptyTaskRegistryFactory.INSTANCE,
+            UserLogRegistry.EMPTY,
+            new JobId()
         );
         var userGraphStore = importer.run();
 
@@ -83,7 +87,9 @@ class CsvToGraphStoreImporterTest {
             importPath(),
             log,
             PlainSimpleRequestCorrelationId.create(),
-            EmptyTaskRegistryFactory.INSTANCE
+            EmptyTaskRegistryFactory.INSTANCE,
+            UserLogRegistry.EMPTY,
+            new JobId()
         );
         exporter.run();
 

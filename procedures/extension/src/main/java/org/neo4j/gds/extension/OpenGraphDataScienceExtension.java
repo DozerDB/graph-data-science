@@ -73,9 +73,7 @@ public class OpenGraphDataScienceExtension extends ExtensionFactory<OpenGraphDat
             limitsConfiguration
         );
 
-        var graphDataScienceExtensionBuilder = graphDataScienceExtensionBuilderAndAssociatedProducts.getLeft();
-
-        return graphDataScienceExtensionBuilder.build();
+        return graphDataScienceExtensionBuilderAndAssociatedProducts.graphDataScienceExtensionBuilder().build();
     }
 
     public interface Dependencies {

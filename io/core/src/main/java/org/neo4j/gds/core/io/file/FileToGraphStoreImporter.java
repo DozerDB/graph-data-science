@@ -25,6 +25,7 @@ import org.neo4j.gds.api.GraphStore;
 import org.neo4j.gds.api.IdMap;
 import org.neo4j.gds.api.schema.ImmutableMutableGraphSchema;
 import org.neo4j.gds.api.schema.MutableNodeSchema;
+import org.neo4j.gds.core.JobId;
 import org.neo4j.gds.core.RequestCorrelationId;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.DefaultPool;
@@ -44,6 +45,7 @@ import org.neo4j.gds.core.utils.progress.tasks.Task;
 import org.neo4j.gds.core.utils.progress.tasks.TaskProgressTracker;
 import org.neo4j.gds.core.utils.progress.tasks.Tasks;
 import org.neo4j.gds.logging.Log;
+import org.neo4j.gds.user.log.UserLogRegistry;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -65,6 +67,8 @@ public abstract class FileToGraphStoreImporter {
     private final Log log;
     private final RequestCorrelationId requestCorrelationId;
     private final TaskRegistryFactory taskRegistryFactory;
+    private final UserLogRegistry userLogRegistry;
+    private final JobId jobId;
 
     private ProgressTracker progressTracker;
 
@@ -73,9 +77,12 @@ public abstract class FileToGraphStoreImporter {
         Path importPath,
         Log log,
         RequestCorrelationId requestCorrelationId,
-        TaskRegistryFactory taskRegistryFactory
+        TaskRegistryFactory taskRegistryFactory,
+        UserLogRegistry userLogRegistry,
+        JobId jobId
     ) {
         this.requestCorrelationId = requestCorrelationId;
+        this.userLogRegistry = userLogRegistry;
         this.nodeVisitorBuilder = new GraphStoreNodeVisitor.Builder();
         this.relationshipVisitorBuilder = new GraphStoreRelationshipVisitor.Builder();
         this.concurrency = concurrency;
@@ -86,6 +93,7 @@ public abstract class FileToGraphStoreImporter {
             .capabilities(new Capabilities(Capabilities.WriteMode.LOCAL));
         this.log = log;
         this.taskRegistryFactory = taskRegistryFactory;
+        this.jobId = jobId;
     }
 
     protected abstract FileInput fileInput(Path importPath);
@@ -147,17 +155,14 @@ public abstract class FileToGraphStoreImporter {
             : graphInfo.relationshipTypeCounts().values().stream().mapToLong(Long::longValue).sum();
         importTasks.add(Tasks.leaf("Import relationships", relationshipTaskVolume));
 
-        var task = Tasks.task(
-            rootTaskName() + " import",
-            importTasks
-        );
-
         return TaskProgressTracker.create(
             new LoggerForProgressTrackingAdapter(log),
-            task,
+            Tasks.task(rootTaskName() + " import", importTasks),
             concurrency,
+            jobId,
             requestCorrelationId,
-            taskRegistryFactory
+            taskRegistryFactory,
+            userLogRegistry
         );
     }
 

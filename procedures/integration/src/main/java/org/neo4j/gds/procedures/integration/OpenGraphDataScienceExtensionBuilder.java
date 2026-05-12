@@ -19,7 +19,6 @@
  */
 package org.neo4j.gds.procedures.integration;
 
-import org.apache.commons.lang3.tuple.Triple;
 import org.neo4j.common.DependencySatisfier;
 import org.neo4j.dbms.api.DatabaseManagementService;
 import org.neo4j.gds.LicenseDetails;
@@ -134,7 +133,7 @@ public final class OpenGraphDataScienceExtensionBuilder {
      * We want to build a GDS, we receive a few customisations and are able to read configuration,
      * and all the rest of the machinery goes here
      */
-    public static Triple<OpenGraphDataScienceExtensionBuilder, TaskRegistryFactoryService, TaskStoreService> create(
+    public static OpenGraphDataScienceExtensionProducts create(
         Log log,
         DatabaseManagementService databaseManagementService,
         DependencySatisfier dependencySatisfier,
@@ -253,7 +252,12 @@ public final class OpenGraphDataScienceExtensionBuilder {
             gcListener
         );
 
-        return Triple.of(graphDataScienceExtensionBuilder, taskRegistryFactoryService, taskStoreService);
+        return new OpenGraphDataScienceExtensionProducts(
+            graphDataScienceExtensionBuilder,
+            taskRegistryFactoryService,
+            taskStoreService,
+            userLogServices
+        );
     }
 
     private static void registerCypherAggregation(
