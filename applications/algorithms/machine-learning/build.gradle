@@ -20,4 +20,5 @@ dependencies {
     implementation project(":progress-tracking")
     implementation project(":similarity-configs")
     implementation project(":termination")
+    implementation project(":user-log")
 }

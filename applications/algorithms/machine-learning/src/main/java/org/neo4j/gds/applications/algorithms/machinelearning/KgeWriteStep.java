@@ -65,13 +65,14 @@ class KgeWriteStep implements WriteStep<KGEPredictResult, RelationshipsWritten> 
     ) {
         var topKGraph = new TopKGraph(graph, result.topKMap());
 
-        var task = NodePropertyExporter.baseTask(AlgorithmLabel.KGE.asString(), graph.nodeCount());
         var progressTracker = TaskProgressTracker.create(
             new LoggerForProgressTrackingAdapter(log),
-            task,
+            NodePropertyExporter.baseTask(AlgorithmLabel.KGE.asString(), graph.nodeCount()),
             RelationshipExporterBuilder.TYPED_DEFAULT_WRITE_CONCURRENCY,
+            jobId,
             requestScopedDependencies.correlationId(),
-            requestScopedDependencies.taskRegistryFactory()
+            requestScopedDependencies.taskRegistryFactory(),
+            requestScopedDependencies.userLogRegistry()
         );
 
         var relationshipExporter = writeContext.relationshipExporterBuilder()
