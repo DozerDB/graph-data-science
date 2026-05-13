@@ -41,7 +41,7 @@ class UserLogRegistryProvider implements ThrowingFunction<Context, UserLogRegist
 
     @Override
     public UserLogRegistry apply(Context context) throws ProcedureException {
-        var databaseId = new DatabaseIdSupplier().databaseId(context);
+        var databaseId = DatabaseIdSupplier.create().databaseId(context);
         var user = userAccessor.getUser(context.securityContext());
 
         return userLogServices.getUserLogRegistry(databaseId, user);

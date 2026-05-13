@@ -108,7 +108,7 @@ public class CypherAggregation implements CallableUserAggregationFunction {
             var requestCorrelationId = Neo4jPoweredRequestCorrelationId.create(transactionSequenceNumber);
 
             ProductGraphAggregator productGraphAggregator = new ProductGraphAggregator(
-                new DatabaseIdSupplier().databaseId(ctx),
+                DatabaseIdSupplier.create().databaseId(ctx),
                 username,
                 writeMode,
                 queryEstimator,

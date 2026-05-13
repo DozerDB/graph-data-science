@@ -39,7 +39,7 @@ public class TaskRegistryFactoryProvider implements ThrowingFunction<Context, Ta
 
     @Override
     public TaskRegistryFactory apply(Context context) {
-        var databaseId = new DatabaseIdSupplier().databaseId(context);
+        var databaseId = DatabaseIdSupplier.create().databaseId(context);
         var user = userAccessor.getUser(context.securityContext());
 
         return taskRegistryFactoryService.getTaskRegistryFactory(databaseId, user);

@@ -36,7 +36,7 @@ public class TaskStoreProvider implements ThrowingFunction<Context, TaskStore, P
 
     @Override
     public TaskStore apply(Context context) {
-        var databaseId = new DatabaseIdSupplier().databaseId(context);
+        var databaseId = DatabaseIdSupplier.create().databaseId(context);
 
         return taskStoreService.getOrCreateTaskStore(databaseId);
     }

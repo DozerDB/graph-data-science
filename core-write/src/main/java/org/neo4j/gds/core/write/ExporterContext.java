@@ -62,7 +62,7 @@ public interface ExporterContext {
 
         @Override
         public String databaseName() {
-            return new DatabaseIdSupplier().databaseName(procedureContext);
+            return DatabaseIdSupplier.create().databaseName(procedureContext);
         }
     }
 }

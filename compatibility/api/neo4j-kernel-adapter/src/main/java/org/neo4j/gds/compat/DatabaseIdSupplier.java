@@ -29,8 +29,10 @@ public class DatabaseIdSupplier {
         this.spdBuiltInProceduresProvider = spdBuiltInProceduresProvider;
     }
 
-    public DatabaseIdSupplier() {
-        this(new SpdBuiltInProceduresProvider());
+    public static DatabaseIdSupplier create() {
+        var spdBuiltInProceduresProvider = new SpdBuiltInProceduresProvider();
+
+        return new DatabaseIdSupplier(spdBuiltInProceduresProvider);
     }
 
     public DatabaseId databaseId(Context context) {
@@ -39,6 +41,7 @@ public class DatabaseIdSupplier {
 
     public String databaseName(Context context) {
         var spdBuiltInProcedures = spdBuiltInProceduresProvider.spdBuiltInProcedures(context);
+
         if (spdBuiltInProcedures.isGraphShard()) {
             return spdBuiltInProcedures.virtualSpdName();
         }

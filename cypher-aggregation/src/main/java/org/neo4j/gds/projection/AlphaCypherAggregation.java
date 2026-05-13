@@ -108,7 +108,7 @@ public class AlphaCypherAggregation implements CallableUserAggregationFunction {
         var requestCorrelationId = Neo4jPoweredRequestCorrelationId.create(transactionSequenceNumber);
 
         return new AlphaGraphAggregator(
-            new DatabaseIdSupplier().databaseId(ctx),
+            DatabaseIdSupplier.create().databaseId(ctx),
             username,
             writeMode,
             queryProvider,

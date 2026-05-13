@@ -135,7 +135,7 @@ public class GraphDataScienceProceduresProvider implements ThrowingFunction<Cont
         var procedureCallContext = context.procedureCallContext();
         var procedureTransaction = procedureTransactionAccessor.getProcedureTransaction(context);
 
-        var databaseId = new DatabaseIdSupplier().databaseId(context);
+        var databaseId = DatabaseIdSupplier.create().databaseId(context);
         var procedureReturnColumns = new ProcedureCallContextReturnColumns(procedureCallContext);
         var requestCorrelationId = requestCorrelationIdAccessor.getRequestCorrelationId(kernelTransaction);
         var terminationMonitor = new TransactionTerminationMonitor(kernelTransaction);
