@@ -53,13 +53,14 @@ final class Neo4jDatabaseRelationshipWriter {
         Optional<ResultStore> resultStore,
         JobId jobId
     ) {
-
         var progressTracker = TaskProgressTracker.create(
             new LoggerForProgressTrackingAdapter(log),
             RelationshipExporter.baseTask(taskName, graph.relationshipCount()),
             RelationshipExporterBuilder.TYPED_DEFAULT_WRITE_CONCURRENCY,
+            jobId,
             requestScopedDependencies.correlationId(),
-            requestScopedDependencies.taskRegistryFactory()
+            requestScopedDependencies.taskRegistryFactory(),
+            requestScopedDependencies.userLogRegistry()
         );
 
         var exporter = relationshipExporterBuilder
