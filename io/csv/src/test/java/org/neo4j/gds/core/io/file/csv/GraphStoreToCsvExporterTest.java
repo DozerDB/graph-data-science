@@ -28,6 +28,7 @@ import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.api.GraphStore;
 import org.neo4j.gds.api.PropertyState;
 import org.neo4j.gds.api.nodeproperties.ValueType;
+import org.neo4j.gds.core.JobId;
 import org.neo4j.gds.core.PlainSimpleRequestCorrelationId;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.DefaultPool;
@@ -40,6 +41,7 @@ import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.IdFunction;
 import org.neo4j.gds.extension.Inject;
 import org.neo4j.gds.gdl.GdlFactory;
+import org.neo4j.gds.user.log.UserLogRegistry;
 
 import java.io.File;
 import java.io.IOException;
@@ -141,7 +143,9 @@ class GraphStoreToCsvExporterTest extends CsvTest {
             tempDir,
             Optional.empty(),
             PlainSimpleRequestCorrelationId.create(),
+            new JobId(),
             TaskRegistryFactory.empty(),
+            UserLogRegistry.EMPTY,
             LoggerForProgressTracking.noOpLog(),
             DefaultPool.INSTANCE
         );
@@ -257,7 +261,9 @@ class GraphStoreToCsvExporterTest extends CsvTest {
             tempDir,
             Optional.empty(),
             PlainSimpleRequestCorrelationId.create(),
+            new JobId(),
             TaskRegistryFactory.empty(),
+            UserLogRegistry.EMPTY,
             LoggerForProgressTracking.noOpLog(),
             DefaultPool.INSTANCE
         );
@@ -334,7 +340,9 @@ class GraphStoreToCsvExporterTest extends CsvTest {
             tempDir,
             Optional.empty(),
             PlainSimpleRequestCorrelationId.create(),
+            new JobId(),
             TaskRegistryFactory.empty(),
+            UserLogRegistry.EMPTY,
             LoggerForProgressTracking.noOpLog(),
             DefaultPool.INSTANCE
         );
@@ -506,7 +514,9 @@ class GraphStoreToCsvExporterTest extends CsvTest {
             tempDir,
             Optional.empty(),
             PlainSimpleRequestCorrelationId.create(),
+            new JobId(),
             TaskRegistryFactory.empty(),
+            UserLogRegistry.EMPTY,
             LoggerForProgressTracking.noOpLog(),
             DefaultPool.INSTANCE
         );
@@ -535,7 +545,9 @@ class GraphStoreToCsvExporterTest extends CsvTest {
             tempDir,
             Optional.empty(),
             PlainSimpleRequestCorrelationId.create(),
+            new JobId(),
             TaskRegistryFactory.empty(),
+            UserLogRegistry.EMPTY,
             LoggerForProgressTracking.noOpLog(),
             DefaultPool.INSTANCE
         );
@@ -589,7 +601,9 @@ class GraphStoreToCsvExporterTest extends CsvTest {
             tempDir,
             Optional.empty(),
             PlainSimpleRequestCorrelationId.create(),
+            new JobId(),
             TaskRegistryFactory.empty(),
+            UserLogRegistry.EMPTY,
             LoggerForProgressTracking.noOpLog(),
             DefaultPool.INSTANCE
         );
@@ -636,7 +650,9 @@ class GraphStoreToCsvExporterTest extends CsvTest {
             tempDir,
             Optional.empty(),
             PlainSimpleRequestCorrelationId.create(),
+            new JobId(),
             TaskRegistryFactory.empty(),
+            UserLogRegistry.EMPTY,
             LoggerForProgressTracking.noOpLog(),
             DefaultPool.INSTANCE
         );

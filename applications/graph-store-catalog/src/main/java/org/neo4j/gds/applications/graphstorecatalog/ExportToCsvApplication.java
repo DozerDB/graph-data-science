@@ -24,6 +24,7 @@ import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.api.GraphName;
 import org.neo4j.gds.api.GraphStore;
 import org.neo4j.gds.applications.algorithms.machinery.RequestScopedDependencies;
+import org.neo4j.gds.core.JobId;
 import org.neo4j.gds.core.concurrency.DefaultPool;
 import org.neo4j.gds.core.io.NeoNodeProperties;
 import org.neo4j.gds.core.io.file.GraphStoreExporterUtil;
@@ -77,13 +78,18 @@ class ExportToCsvApplication {
         var exportLocation = this.exportLocation.getAcceptingError();
         var exportDirectory = readyExportDirectory(exportParameters.exportName(), exportLocation);
 
+        // configuration did not supply a job id, so we make one up
+        var jobId = new JobId();
+
         var result = GraphStoreExporterUtil.export(
             graphStore,
             exportDirectory,
             exportParameters,
             neoNodeProperties(configuration.additionalNodeProperties(), graphStore),
             requestScopedDependencies.correlationId(),
+            jobId,
             requestScopedDependencies.taskRegistryFactory(),
+            requestScopedDependencies.userLogRegistry(),
             loggers,
             DefaultPool.INSTANCE
         );

@@ -24,6 +24,7 @@ import org.neo4j.batchimport.api.input.Input;
 import org.neo4j.gds.NodeLabel;
 import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.api.GraphStore;
+import org.neo4j.gds.core.JobId;
 import org.neo4j.gds.core.RequestCorrelationId;
 import org.neo4j.gds.core.concurrency.ParallelUtil;
 import org.neo4j.gds.core.concurrency.RunWithConcurrency;
@@ -41,6 +42,7 @@ import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.core.utils.progress.tasks.Task;
 import org.neo4j.gds.core.utils.progress.tasks.TaskProgressTracker;
 import org.neo4j.gds.core.utils.progress.tasks.Tasks;
+import org.neo4j.gds.user.log.UserLogRegistry;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -66,7 +68,9 @@ public class GraphStoreToFileExporter extends GraphStoreExporter {
     private final Supplier<SimpleWriter<Capabilities>> graphCapabilitiesWriterSupplier;
 
     private final RequestCorrelationId requestCorrelationId;
+    private final JobId jobId;
     private final TaskRegistryFactory taskRegistryFactory;
+    private final UserLogRegistry userLogRegistry;
     private final LoggerForProgressTracking log;
     private final String rootTaskName;
     private final ExecutorService executorService;
@@ -87,7 +91,9 @@ public class GraphStoreToFileExporter extends GraphStoreExporter {
         VisitorProducer<NodeVisitor> nodeVisitorSupplier,
         VisitorProducer<RelationshipVisitor> relationshipVisitorSupplier,
         RequestCorrelationId requestCorrelationId,
+        JobId jobId,
         TaskRegistryFactory taskRegistryFactory,
+        UserLogRegistry userLogRegistry,
         LoggerForProgressTracking log,
         String rootTaskName,
         ExecutorService executorService
@@ -112,7 +118,9 @@ public class GraphStoreToFileExporter extends GraphStoreExporter {
         this.relationshipSchemaVisitorSupplier = relationshipSchemaVisitorSupplier;
         this.graphCapabilitiesWriterSupplier = graphCapabilitiesWriterSupplier;
         this.requestCorrelationId = requestCorrelationId;
+        this.jobId = jobId;
         this.taskRegistryFactory = taskRegistryFactory;
+        this.userLogRegistry = userLogRegistry;
         this.log = log;
         this.rootTaskName = rootTaskName;
         this.executorService = executorService;
@@ -158,7 +166,14 @@ public class GraphStoreToFileExporter extends GraphStoreExporter {
 
         var task = Tasks.task(rootTaskName + " export", importTasks);
 
-        return TaskProgressTracker.create(log, task, concurrency, requestCorrelationId, taskRegistryFactory);
+        return TaskProgressTracker.create(
+            log,
+            task,
+            concurrency,
+            jobId,
+            requestCorrelationId,
+            taskRegistryFactory,
+            userLogRegistry);
     }
 
     private void exportNodes(

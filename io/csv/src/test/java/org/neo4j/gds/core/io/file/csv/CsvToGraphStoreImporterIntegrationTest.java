@@ -97,7 +97,9 @@ class CsvToGraphStoreImporterIntegrationTest {
             graphLocation,
             Optional.empty(),
             requestCorrelationId,
+            new JobId(),
             TaskRegistryFactory.empty(),
+            UserLogRegistry.EMPTY,
             LoggerForProgressTracking.noOpLog(),
             DefaultPool.INSTANCE
         ).run();
@@ -131,7 +133,9 @@ class CsvToGraphStoreImporterIntegrationTest {
             graphLocation,
             Optional.empty(),
             requestCorrelationId,
+            new JobId(),
             TaskRegistryFactory.empty(),
+            UserLogRegistry.EMPTY,
             LoggerForProgressTracking.noOpLog(),
             DefaultPool.INSTANCE
         ).run();
@@ -164,7 +168,9 @@ class CsvToGraphStoreImporterIntegrationTest {
             graphLocation,
             Optional.empty(),
             requestCorrelationId,
+            new JobId(),
             TaskRegistryFactory.empty(),
+            UserLogRegistry.EMPTY,
             LoggerForProgressTracking.noOpLog(),
             DefaultPool.INSTANCE
         ).run();
@@ -202,7 +208,9 @@ class CsvToGraphStoreImporterIntegrationTest {
             graphLocation,
             Optional.empty(),
             requestCorrelationId,
+            new JobId(),
             TaskRegistryFactory.empty(),
+            UserLogRegistry.EMPTY,
             LoggerForProgressTracking.noOpLog(),
             DefaultPool.INSTANCE
         ).run();
@@ -242,7 +250,9 @@ class CsvToGraphStoreImporterIntegrationTest {
             graphLocation,
             Optional.empty(),
             requestCorrelationId,
+            new JobId(),
             TaskRegistryFactory.empty(),
+            UserLogRegistry.EMPTY,
             LoggerForProgressTracking.noOpLog(),
             DefaultPool.INSTANCE
         ).run();
@@ -276,7 +286,9 @@ class CsvToGraphStoreImporterIntegrationTest {
             graphLocation,
             Optional.empty(),
             requestCorrelationId,
+            new JobId(),
             TaskRegistryFactory.empty(),
+            UserLogRegistry.EMPTY,
             LoggerForProgressTracking.noOpLog(),
             DefaultPool.INSTANCE
         ).run();

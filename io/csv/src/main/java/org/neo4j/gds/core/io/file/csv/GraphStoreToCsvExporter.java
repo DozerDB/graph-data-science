@@ -24,6 +24,7 @@ import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.api.GraphStore;
 import org.neo4j.gds.api.nodeproperties.ValueType;
 import org.neo4j.gds.api.schema.MutableNodeSchema;
+import org.neo4j.gds.core.JobId;
 import org.neo4j.gds.core.RequestCorrelationId;
 import org.neo4j.gds.core.io.IdentifierMapper;
 import org.neo4j.gds.core.io.NeoNodeProperties;
@@ -31,6 +32,7 @@ import org.neo4j.gds.core.io.file.GraphStoreToFileExporter;
 import org.neo4j.gds.core.io.file.GraphStoreToFileExporterParameters;
 import org.neo4j.gds.core.utils.progress.TaskRegistryFactory;
 import org.neo4j.gds.core.utils.progress.tasks.LoggerForProgressTracking;
+import org.neo4j.gds.user.log.UserLogRegistry;
 
 import java.nio.file.Path;
 import java.util.Optional;
@@ -46,7 +48,9 @@ public final class GraphStoreToCsvExporter {
         Path exportPath,
         Optional<NeoNodeProperties> neoNodeProperties,
         RequestCorrelationId requestCorrelationId,
+        JobId jobId,
         TaskRegistryFactory taskRegistryFactory,
+        UserLogRegistry userLogRegistry,
         LoggerForProgressTracking log,
         ExecutorService executorService
     ) {
@@ -98,7 +102,9 @@ public final class GraphStoreToCsvExporter {
             ),
             (index) -> new CsvRelationshipVisitor(exportPath, relationshipSchema, headerFiles, index, relationshipTypeMapper),
             requestCorrelationId,
+            jobId,
             taskRegistryFactory,
+            userLogRegistry,
             log,
             "Csv",
             executorService
