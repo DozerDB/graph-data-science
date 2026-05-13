@@ -80,8 +80,10 @@ public class KSpanningTreeWriteStep implements WriteStep<SpanningTree, Void> {
             new LoggerForProgressTrackingAdapter(log),
             NodePropertyExporter.baseTask(AlgorithmLabel.KSpanningTree.asString(), graph.nodeCount()),
             writeConcurrency,
+            jobId,
             requestScopedDependencies.correlationId(),
-            requestScopedDependencies.taskRegistryFactory()
+            requestScopedDependencies.taskRegistryFactory(),
+            requestScopedDependencies.userLogRegistry()
         );
 
         var nodePropertyExporter = writeContext.nodePropertyExporterBuilder()
