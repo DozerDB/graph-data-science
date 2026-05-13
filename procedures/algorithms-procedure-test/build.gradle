@@ -1,0 +1,26 @@
+plugins {
+    // FIXME: see https://linear.app/neo4j/issue/GDS-186/replace-defaults-javagradle-with-gradle-build-logic-conventions
+    id 'buildlogic-gds-java-with-it'
+}
+
+description = 'Neo4j Graph Data Science :: Algorithms Procedure Test'
+
+group = 'org.neo4j.gds'
+
+dependencies {
+    integrationTestAnnotationProcessor project(':procedure-collector')
+
+    integrationTestImplementation project(':algo')
+    integrationTestImplementation project(':algo-common')
+    integrationTestImplementation project(':algorithms-machinery')
+    integrationTestImplementation project(':annotations')
+    integrationTestImplementation project(':config-api')
+    integrationTestImplementation project(':executor')
+    integrationTestImplementation project(':opengds-extension')
+    integrationTestImplementation project(':proc-common')
+    integrationTestImplementation project(':proc-catalog')
+    integrationTestImplementation project(':proc-test-utilities')
+    integrationTestImplementation project(':progress-tracking')
+    integrationTestImplementation project(':test-utils')
+
+}
