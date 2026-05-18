@@ -31,7 +31,7 @@ The `gds.model.store_location` parameter must be configured for this feature.
 [source, cypher, role=noplay]
 ----
 CALL gds.model.store(
-    [ sessionInfo: String or Map, ]
+    [ sessionName: String or Map, ]
     modelName: String,
     failIfUnsupported: Boolean
 )
@@ -44,7 +44,7 @@ YIELD
 [opts="header",cols="3,1,1m,1,4"]
 |===
 | Name                                                  | Type              | Default | Optional | Description
-| sessionInfo label:serverless[Aura Graph Analytics]    | String or Map     | n/a     | no       | The name of the xref:aura-graph-analytics/index.adoc[GDS Session] which holds the model. Accepts the output of the helper function `sessionInfo`.
+| sessionName label:serverless[Aura Graph Analytics]    | String or Map     | n/a     | no       | The name of the xref:aura-graph-analytics/index.adoc[GDS Session] which holds the model. Accepts the output of the helper function `sessionInfo`.
 | modelName                                             | String            | n/a     | no       | The name of a model.
 | failIfUnsupported                                     | Boolean           | true    | yes      | By default, the library will raise an error when trying to store a non-supported model. When set to `false`, the procedure returns an empty result.
 |===

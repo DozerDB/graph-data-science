@@ -12,7 +12,7 @@ If we no longer need a trained model and want to free up memory, we can drop the
 [source, cypher, role=noplay]
 ----
 CALL gds.model.drop(
-  [ sessionInfo: String or Map, ]
+  [ sessionName: String or Map, ]
   modelName: String,
   failIfMissing: Boolean
 )
@@ -32,7 +32,7 @@ YIELD
 [opts="header",cols="3,1,1m,1,4"]
 |===
 | Name                                                  | Type              | Default | Optional | Description
-| sessionInfo label:serverless[Aura Graph Analytics]    | String or Map     | n/a     | no       | The name of the xref:aura-graph-analytics/index.adoc[GDS Session] the model should be dropped from. Accepts the output of the helper function `sessionInfo`.
+| sessionName label:serverless[Aura Graph Analytics]    | String or Map     | n/a     | no       | The name of the xref:aura-graph-analytics/index.adoc[GDS Session] the model should be dropped from. Accepts the output of the helper function `sessionInfo`.
 | modelName                                             | String            | n/a     | no       | Name of a model stored in the catalog.
 | failIfMissing                                         | Boolean           | true    | yes      | Whether an error should be raised when the model does not exist. When set to `false`, the procedure returns an empty result if the model does not exist.
 |===
