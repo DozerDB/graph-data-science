@@ -56,18 +56,6 @@ public final class TaskProgressTracker implements ProgressTracker {
         LoggerForProgressTracking log,
         Task baseTask,
         Concurrency concurrency,
-        RequestCorrelationId requestCorrelationId,
-        TaskRegistryFactory taskRegistryFactory
-    ) {
-        var jobId = new JobId();
-
-        return create(log, baseTask, concurrency, jobId, requestCorrelationId, taskRegistryFactory, UserLogRegistry.EMPTY);
-    }
-
-    public static TaskProgressTracker create(
-        LoggerForProgressTracking log,
-        Task baseTask,
-        Concurrency concurrency,
         JobId jobId,
         RequestCorrelationId requestCorrelationId,
         TaskRegistryFactory taskRegistryFactory,
