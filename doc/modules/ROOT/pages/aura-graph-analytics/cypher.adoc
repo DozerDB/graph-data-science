@@ -10,10 +10,7 @@ You can now use the Cypher API inside an AuraDB without xref:aura-api-auth[Aura 
 
 == Projecting a graph
 
-[IMPORTANT]
-====
-Native projections and legacy Cypher projections are not supported in Aura Graph Analytics.
-====
+=== Cypher projections
 
 Use a xref:management-ops/graph-creation/graph-project-cypher-projection.adoc[Cypher projection] with the additional authentication clause to project a graph into a GDS Session.
 
@@ -51,6 +48,98 @@ RETURN gds.graph.project('g',
 )
 ----
 <1> The Cypher `parallel` runtime is recommended but not mandatory.
+
+=== Native projections
+
+  Aura Graph Analytics supports xref:management-ops/graph-creation/graph-project.adoc[native projections] with a limited feature set.
+
+--
+[source, cypher, role=noplay]
+----
+CALL gds.graph.project(
+  graphName: String,
+  nodeLabels: String or List,
+  relationshipTypes: String or List,
+  configuration: Map
+) YIELD
+  graphName: String,
+  nodeProjection: Map,
+  nodeCount: Integer,
+  relationshipProjection: Map,
+  relationshipCount: Integer,
+  projectMillis: Integer
+----
+
+.Parameters
+[opts="header",cols="1,1,1,4"]
+|===
+| Name                  | Type                | Optional | Description
+| graphName             | String              | no       | The name under which the graph is stored in the catalog.
+| nodeLabels            | String, List        | no       | One or more node labels to include in the projection. Can be `*` to project all nodes.
+| relationshipTypes     | String, List        | no       | One or more relationship types to include in the projection. Can be `*` to project al relationships. Can be an empty list to project no relationships.
+| configuration         | Map                 | no       | <<graph-store-project-syntax-configuration, Additional parameters>> to configure the native projection.
+|===
+
+[[graph-store-project-syntax-configuration]]
+.Configuration
+[opts="header",cols="1,1,1,1,4"]
+|===
+| Name                                | Type         | Default              | Optional | Description
+| nodeProperties                      | String, List | {}                   | yes      | The node properties to load from nodes that match _any_ of the labels specified in `nodeLabels`.
+| relationshipProperties              | String, List | {}                   | yes      | The relationship properties to load from relationships that match _any_ of the types specified in `relationshipTypes`.
+| undirectedRelationshipTypes         | List         | []                   | yes      | The relationship types that should be projected as undirected.
+| inverseIndexedRelationshipTypes     | List         | []                   | yes      | The relationship types for which an inverse index wil be generated.
+| readConcurrency                     | Integer      | All available cores  | yes      | The number of concurrent threads used for creating the graph.
+| batchSize                           | Integer      | 16000                | yes      | The size of each batch of data send to the session.
+| jobId                               | String       | Generated internally | yes      | An ID that can be provided to more easily track the projection's progress.
+| sessionId                           | String       | null                 | yes      | The session in which the graph will be projected.
+| memory                              | String       | null                 | yes      | The size of the GDS Session, e.g. `4GB`, `8GB`, etc.
+| ttl                                 | Duration     | 1h                   | yes      | The time to live of the GDS Session when no activity is recorded, e.g. `duration({days: 1})`, `duration({hours: 12})`, etc. The default value is 1 hour.
+|===
+
+.Results
+[opts="header",cols="2,1,4"]
+|===
+| Name                   | Type     | Description
+| graphName              | String   | The name under which the graph is stored in the catalog.
+| nodeProjection         | Map      | The xref:management-ops/graph-creation/graph-project.adoc#node-projection-syntax[node projections] used to project the graph.
+| nodeCount              | Integer  | The number of nodes stored in the projected graph.
+| relationshipProjection | Map      | The xref:management-ops/graph-creation/graph-project.adoc#relationship-projection-syntax[relationship projections] used to project the graph.
+| relationshipCount      | Integer  | The number of relationships stored in the projected graph.
+| projectMillis          | Integer  | Milliseconds for projecting the graph.
+|===
+--
+
+The following query will create a new session and project the graph into it.
+In this case the `memory` parameter is required to determine the size of the newly created session.
+
+.Project a graph into a new GDS Session
+[source, cypher]
+----
+CALL gds.graph.project(
+  'g',
+  '*',
+  '*',
+  {
+    memory: '2GB'
+  }
+) YIELD nodeCount, relationshipCount, projectMillis
+----
+
+If you have created a session <<session-create-procedure, explicitly>>, add the session ID as the `sessionId` parameter to use that session instead.
+
+.Project a graph into an existing GDS Session
+[source, cypher]
+----
+CALL gds.graph.project(
+  'g',
+  '*',
+  '*',
+  {
+    sessionId: '00000000-11111111'
+  }
+) YIELD nodeCount, relationshipCount, projectMillis
+----
 
 == Running algorithms
 

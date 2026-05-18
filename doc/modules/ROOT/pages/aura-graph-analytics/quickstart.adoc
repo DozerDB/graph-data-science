@@ -35,25 +35,24 @@ CREATE
 image::example-graphs/aura-graph-analytics-serverless.png[]
 
 The next step is to project the data into a graph within a remote session.
-The following example shows how to run a Cypher projection and xref:aura-graph-analytics/index.adoc#implicit-sessions[create a session] at the same time.
+The following example shows how to run a projection and xref:aura-graph-analytics/index.adoc#implicit-sessions[create a session] at the same time.
 
-.Project a graph called 'myGraph' using a remote Cypher projection into a new GDS Session
+.Project a graph called 'myGraph' using a remote projection into a new GDS Session
 [source, cypher, role=noplay setup-query]
 ----
-CYPHER runtime=parallel // <1>
-MATCH (source:User)
-OPTIONAL MATCH (source)-[r:LINK]->(target:User)
-WITH gds.graph.project('myGraph', source, target, {
-  sourceNodeProperties: source { .age },
-  targetNodeProperties: target { .age },
-  relationshipProperties: r { .weight }
-}, {
-  memory: '2GB', ttl: duration({minutes: 30}) // <2>
-}) AS g
-RETURN g.graphName, g.nodeCount, g.relationshipCount
+CALL gds.graph.project(
+  '*', // <1>
+  '*', // <2>
+  {
+    nodeProperties: ['age']
+    relationshipProperties: ['weight'],
+    {memory: '2GB', ttl: duration({minutes: 30})}
+  }
+) YIELD graphName, nodeCount, relationshipCount // <3>
 ----
-<1> The Cypher `parallel` runtime is recommended but not mandatory.
-<2> Set the `memory` (mandatory) and `ttl` (optional) parameters.
+<1> Project all nodes in the graph.
+<2> Project all relationships in the graph.
+<3> Set the `memory` (mandatory) and `ttl` (optional) parameters.
 
 .Results
 [opts="header"]
