@@ -316,10 +316,6 @@ public final class TaskProgressTracker implements ProgressTracker {
                 baseTask.description()
             );
 
-            // As a bug in logging should not hinder the user in running procedures
-            // but only in our tests, we only use an assertion here
-            assert false : message;
-
             taskProgressLogger.logWarning(message);
         }
     }
