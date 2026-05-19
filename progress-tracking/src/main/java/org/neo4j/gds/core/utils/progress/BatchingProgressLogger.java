@@ -35,38 +35,54 @@ import static org.neo4j.gds.utils.StringFormatting.formatWithLocale;
 public class BatchingProgressLogger implements ProgressLogger {
     public static final long MAXIMUM_LOG_INTERVAL = (long) Math.pow(2, 13);
 
+    private static final BatchSizeCalculator BatchSizeCalculator = new BatchSizeCalculator();
+
+    private final CloseableThreadLocal<MutableLong> callCounter = CloseableThreadLocal.withInitial(MutableLong::new);
+    private final LongAdder progressCounter = new LongAdder();
+
     private final LoggerForProgressTracking log;
     private final RequestCorrelationId requestCorrelationId;
     private final Concurrency concurrency;
+
+    private int globalPercentage = -1;
+
     private long taskVolume;
     private long batchSize;
     private String taskName;
-    private final LongAdder progressCounter;
-    private final CloseableThreadLocal<MutableLong> callCounter;
 
-    private int globalPercentage;
+    /**
+     * A little bit of convenience
+     */
+    public static BatchingProgressLogger create(
+        LoggerForProgressTracking log,
+        RequestCorrelationId requestCorrelationId,
+        Task task,
+        Concurrency concurrency
+    ) {
+        var taskVolume = task.getProgress().volume();
+        var batchSize = BatchSizeCalculator.calculateBatchSize(Math.max(1L, taskVolume), concurrency);
+        var description = task.description();
 
-    public BatchingProgressLogger(LoggerForProgressTracking log, RequestCorrelationId requestCorrelationId, Task task, Concurrency concurrency) {
-        this(
-            log,
-            requestCorrelationId,
-            task,
-            new BatchSizeCalculator().calculateBatchSize(Math.max(1L, task.getProgress().volume()), concurrency),
-            concurrency
-        );
+        return new BatchingProgressLogger(log, requestCorrelationId, taskVolume, batchSize, description, concurrency);
     }
 
-    public BatchingProgressLogger(LoggerForProgressTracking log, RequestCorrelationId requestCorrelationId, Task task, long batchSize, Concurrency concurrency) {
+    /**
+     * This is the only constructor, and it is just assignments
+     */
+    BatchingProgressLogger(
+        LoggerForProgressTracking log,
+        RequestCorrelationId requestCorrelationId,
+        long taskVolume,
+        long batchSize,
+        String taskName,
+        Concurrency concurrency
+    ) {
         this.log = log;
         this.requestCorrelationId = requestCorrelationId;
-        this.taskVolume = task.getProgress().volume();
+        this.taskVolume = taskVolume;
         this.batchSize = batchSize;
-        this.taskName = task.description();
-
-        this.progressCounter = new LongAdder();
-        this.callCounter = CloseableThreadLocal.withInitial(MutableLong::new);
+        this.taskName = taskName;
         this.concurrency = concurrency;
-        this.globalPercentage = -1;
     }
 
     @Override
@@ -169,7 +185,7 @@ public class BatchingProgressLogger implements ProgressLogger {
     public long reset(long newTaskVolume) {
         var remainingVolume = taskVolume - progressCounter.sum();
         this.taskVolume = newTaskVolume;
-        this.batchSize = new BatchSizeCalculator().calculateBatchSize(newTaskVolume, concurrency);
+        this.batchSize = BatchSizeCalculator.calculateBatchSize(newTaskVolume, concurrency);
         progressCounter.reset();
         globalPercentage = -1;
         return remainingVolume;

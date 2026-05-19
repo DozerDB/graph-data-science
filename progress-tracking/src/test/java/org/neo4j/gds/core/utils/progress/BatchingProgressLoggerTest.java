@@ -63,13 +63,13 @@ class BatchingProgressLoggerTest {
         var log = new GdsTestLog();
         var taskVolume = 42;
         var batchSize = 8;
-        var concurrency = new Concurrency(1);
         var logger = new BatchingProgressLogger(
             new LoggerForProgressTrackingAdapter(log),
             new RequestCorrelationIdForTesting("some request correlation id"),
-            Tasks.leaf("foo", taskVolume),
+            taskVolume,
             batchSize,
-            concurrency
+            "foo",
+            new Concurrency(1)
         );
 
         for (int i = 0; i < taskVolume; i++) {
@@ -97,13 +97,13 @@ class BatchingProgressLoggerTest {
         var taskVolume = 1337;
         var progressStep = 5;
         var batchSize = 16;
-        var concurrency = new Concurrency(1);
         var logger = new BatchingProgressLogger(
             new LoggerForProgressTrackingAdapter(log),
             new RequestCorrelationIdForTesting("a request correlation id"),
-            Tasks.leaf("foo", taskVolume),
+            taskVolume,
             batchSize,
-            concurrency
+            "foo",
+            new Concurrency(1)
         );
 
         for (int i = 0; i < taskVolume; i += progressStep) {
@@ -158,7 +158,7 @@ class BatchingProgressLoggerTest {
         var taskVolume = 1337;
 
         var log = new GdsTestLog();
-        var logger = new BatchingProgressLogger(
+        var logger = BatchingProgressLogger.create(
             new LoggerForProgressTrackingAdapter(log),
             PlainSimpleRequestCorrelationId.create(),
             Tasks.leaf("Test", taskVolume),
@@ -179,7 +179,7 @@ class BatchingProgressLoggerTest {
     void log100Percent() {
         var log = new GdsTestLog();
         var concurrency = new Concurrency(1);
-        var testProgressLogger = new BatchingProgressLogger(new LoggerForProgressTrackingAdapter(log), PlainSimpleRequestCorrelationId.create(), Tasks.leaf("Test"), concurrency);
+        var testProgressLogger = BatchingProgressLogger.create(new LoggerForProgressTrackingAdapter(log), PlainSimpleRequestCorrelationId.create(), Tasks.leaf("Test"), concurrency);
         testProgressLogger.reset(1337);
         testProgressLogger.logFinishPercentage();
         assertThat(log.getMessages(TestLog.INFO))
@@ -191,7 +191,7 @@ class BatchingProgressLoggerTest {
     void shouldLog100OnlyOnce() {
         var log = new GdsTestLog();
         var concurrency = new Concurrency(1);
-        var testProgressLogger = new BatchingProgressLogger(new LoggerForProgressTrackingAdapter(log), PlainSimpleRequestCorrelationId.create(), Tasks.leaf("Test"), concurrency);
+        var testProgressLogger = BatchingProgressLogger.create(new LoggerForProgressTrackingAdapter(log), PlainSimpleRequestCorrelationId.create(), Tasks.leaf("Test"), concurrency);
         testProgressLogger.reset(1);
         testProgressLogger.logProgress(1);
         testProgressLogger.logFinishPercentage();
@@ -204,7 +204,7 @@ class BatchingProgressLoggerTest {
     void shouldNotExceed100Percent() {
         var log = new GdsTestLog();
         var concurrency = new Concurrency(1);
-        var testProgressLogger = new BatchingProgressLogger(new LoggerForProgressTrackingAdapter(log), PlainSimpleRequestCorrelationId.create(), Tasks.leaf("Test"), concurrency);
+        var testProgressLogger = BatchingProgressLogger.create(new LoggerForProgressTrackingAdapter(log), PlainSimpleRequestCorrelationId.create(), Tasks.leaf("Test"), concurrency);
         testProgressLogger.reset(1);
         testProgressLogger.logProgress(1); // reaches 100 %
         testProgressLogger.logProgress(1); // exceeds 100 %
@@ -215,7 +215,7 @@ class BatchingProgressLoggerTest {
 
     @Test
     void closesThreadLocal() {
-        var logger = new BatchingProgressLogger(
+        var logger = BatchingProgressLogger.create(
             LoggerForProgressTracking.noOpLog(),
             PlainSimpleRequestCorrelationId.create(),
             Tasks.leaf("foo", 42),
@@ -239,7 +239,7 @@ class BatchingProgressLoggerTest {
 
     private static List<Integer> performLogging(long taskVolume, Concurrency concurrency) {
         var log = new GdsTestLog();
-        var logger = new BatchingProgressLogger(
+        var logger = BatchingProgressLogger.create(
             new LoggerForProgressTrackingAdapter(log),
             PlainSimpleRequestCorrelationId.create(),
             Tasks.leaf("Test", taskVolume),
@@ -274,7 +274,7 @@ class BatchingProgressLoggerTest {
     @Test
     void shouldPrependCorrelationIdToInfoLogMessages() {
         var log = mock(Log.class);
-        var batchingProgressLogger = new BatchingProgressLogger(
+        var batchingProgressLogger = BatchingProgressLogger.create(
             new LoggerForProgressTrackingAdapter(log),
             new RequestCorrelationIdForTesting("my request correlation id"),
             new LeafTask("Monsieur Alfonse", 42),
@@ -289,7 +289,7 @@ class BatchingProgressLoggerTest {
     @Test
     void shouldPrependCorrelationIdToDebugLogMessages() {
         var log = mock(Log.class);
-        var batchingProgressLogger = new BatchingProgressLogger(
+        var batchingProgressLogger = BatchingProgressLogger.create(
             new LoggerForProgressTrackingAdapter(log),
             new RequestCorrelationIdForTesting("my request correlation id"),
             new LeafTask("Monsieur Alfonse", 42),
@@ -305,7 +305,7 @@ class BatchingProgressLoggerTest {
     @Test
     void shouldPrependCorrelationIdToWarningLogMessages() {
         var log = mock(Log.class);
-        var batchingProgressLogger = new BatchingProgressLogger(
+        var batchingProgressLogger = BatchingProgressLogger.create(
             new LoggerForProgressTrackingAdapter(log),
             new RequestCorrelationIdForTesting("my request correlation id"),
             new LeafTask("Monsieur Alfonse", 42),
@@ -320,7 +320,7 @@ class BatchingProgressLoggerTest {
     @Test
     void shouldPrependCorrelationIdToErrorLogMessages() {
         var log = mock(Log.class);
-        var batchingProgressLogger = new BatchingProgressLogger(
+        var batchingProgressLogger = BatchingProgressLogger.create(
             new LoggerForProgressTrackingAdapter(log),
             new RequestCorrelationIdForTesting("my request correlation id"),
             new LeafTask("Monsieur Alfonse", 42),

@@ -34,14 +34,14 @@ public final class TaskProgressLogger implements ProgressLogger {
     private final TaskVisitor loggingLeafTaskVisitor;
 
     static TaskProgressLogger create(LoggerForProgressTracking log, RequestCorrelationId requestCorrelationId, Task baseTask, Concurrency concurrency) {
-        var batchingProgressLogger = new BatchingProgressLogger(log, requestCorrelationId, baseTask, concurrency);
+        var batchingProgressLogger = BatchingProgressLogger.create(log, requestCorrelationId, baseTask, concurrency);
         var loggingLeafTaskVisitor = new LoggingLeafTaskVisitor(batchingProgressLogger);
 
         return new TaskProgressLogger(batchingProgressLogger, baseTask, loggingLeafTaskVisitor);
     }
 
     static TaskProgressLogger create(LoggerForProgressTracking log, RequestCorrelationId requestCorrelationId, Task baseTask, Concurrency concurrency, TaskVisitor leafTaskVisitor) {
-        var batchingProgressLogger = new BatchingProgressLogger(log, requestCorrelationId, baseTask, concurrency);
+        var batchingProgressLogger = BatchingProgressLogger.create(log, requestCorrelationId, baseTask, concurrency);
 
         return new TaskProgressLogger(batchingProgressLogger, baseTask, leafTaskVisitor);
     }
