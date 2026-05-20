@@ -28,6 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -53,11 +54,11 @@ public final class CsvTestSupport {
         var expectedContent = new ArrayList<>(mandatoryColumns);
 
         properties
-            .entrySet()
+            .values()
             .stream()
-            .sorted(Map.Entry.comparingByKey())
-            .forEach(entry -> {
-                var propAndType = entry.getKey() + ":" + entry.getValue().valueType().csvName();
+            .sorted(Comparator.comparing(PropertySchema::key))
+            .forEach(propertySchema -> {
+                var propAndType = propertySchema.key() + ":" + propertySchema.valueType().csvName();
                 // magic value from CsvEncoder.MAX_QUOTE_CHECK
                 if (propAndType.length() > 24) {
                     propAndType = "\"" + propAndType + "\"";

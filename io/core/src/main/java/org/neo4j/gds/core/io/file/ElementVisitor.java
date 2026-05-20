@@ -95,8 +95,9 @@ abstract class ElementVisitor<PROPERTY_SCHEMA extends PropertySchema> implements
     }
 
     private void computeElementSchema() {
-        var propertySchema = getPropertySchema();
-        propertySchema.sort(Comparator.comparing(PropertySchema::key));
+        var propertySchema = getPropertySchema().stream()
+            .sorted(Comparator.comparing(PropertySchema::key))
+            .toList();
         propertySchemas.put(elementIdentifier(), propertySchema);
     }
 }

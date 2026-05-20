@@ -35,6 +35,7 @@ import org.neo4j.gds.core.utils.progress.tasks.LoggerForProgressTracking;
 import org.neo4j.gds.user.log.UserLogRegistry;
 
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -70,7 +71,11 @@ public final class GraphStoreToCsvExporter {
             ));
 
         var labelMapperBuilder = IdentifierMapper.<NodeLabel>builder("label");
-        for (var nodeLabel : graphStore.nodeLabels()) {
+        // For testing purposes we sort the node labels to get the rows in predictable order
+        var sortedNodeLabels = graphStore.nodeLabels().stream()
+            .sorted(Comparator.comparing(NodeLabel::name))
+            .toList();
+        for (var nodeLabel : sortedNodeLabels) {
             labelMapperBuilder.getOrCreateIdentifierFor(nodeLabel);
         }
         var labelMapper = labelMapperBuilder.build();

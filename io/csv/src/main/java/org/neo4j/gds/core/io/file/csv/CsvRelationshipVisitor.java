@@ -154,8 +154,9 @@ public class CsvRelationshipVisitor extends RelationshipVisitor {
     }
 
     private JacksonFileAppender fileAppender(Path filePath) {
-        var propertySchema = getPropertySchema();
-        propertySchema.sort(Comparator.comparing(PropertySchema::key));
+        var propertySchema = getPropertySchema().stream()
+            .sorted(Comparator.comparing(PropertySchema::key))
+            .toList();
         return JacksonFileAppender.of(
             filePath,
             propertySchema,

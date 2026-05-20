@@ -160,8 +160,9 @@ public class CsvNodeVisitor extends NodeVisitor {
     }
 
     private JacksonFileAppender fileAppender(Path filePath, UnaryOperator<CsvSchema.Builder> builderUnaryOperator) {
-        var propertySchema = getPropertySchema();
-        propertySchema.sort(Comparator.comparing(PropertySchema::key));
+        var propertySchema = getPropertySchema().stream()
+            .sorted(Comparator.comparing(PropertySchema::key))
+            .toList();
         return JacksonFileAppender.of(
             filePath,
             propertySchema,
@@ -174,7 +175,7 @@ public class CsvNodeVisitor extends NodeVisitor {
         var nodeLabelList = currentLabels.isEmpty()
             ? EMPTY_LABELS_LABEL
             : currentLabels.stream()
-                .map(s -> this.nodeLabelMapping.forIdentifier(s))
+                .map(this.nodeLabelMapping::forIdentifier)
                 .collect(Collectors.toSet());
         var propertySchemaForLabels = nodeSchema.filter(nodeLabelList);
         return new ArrayList<>(propertySchemaForLabels.unionProperties().values());
