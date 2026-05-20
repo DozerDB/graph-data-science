@@ -44,7 +44,7 @@ CALL gds.graph.project(
   '*', // <1>
   '*', // <2>
   {
-    nodeProperties: ['age']
+    nodeProperties: ['age'],
     relationshipProperties: ['weight'],
     {memory: '2GB', ttl: duration({minutes: 30})}
   }
