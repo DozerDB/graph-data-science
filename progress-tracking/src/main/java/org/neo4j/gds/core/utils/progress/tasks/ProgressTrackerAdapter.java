@@ -22,6 +22,7 @@ package org.neo4j.gds.core.utils.progress.tasks;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.mem.MemoryRange;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public abstract class ProgressTrackerAdapter implements ProgressTracker {
@@ -93,13 +94,13 @@ public abstract class ProgressTrackerAdapter implements ProgressTracker {
     }
 
     @Override
-    public void setVolume(long volume) {
-        delegate.setVolume(volume);
+    public void logProgress(Function<Long, Long> valueCalculator) {
+        delegate.logProgress(valueCalculator);
     }
 
     @Override
-    public long currentVolume() {
-        return delegate.currentVolume();
+    public void setVolume(long volume) {
+        delegate.setVolume(volume);
     }
 
     @Override

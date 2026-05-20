@@ -34,6 +34,7 @@ import org.neo4j.gds.mem.MemoryRange;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public final class TestProgressTracker implements ProgressTracker {
@@ -74,6 +75,11 @@ public final class TestProgressTracker implements ProgressTracker {
     public void logProgress(long progress) {
         progresses.getLast().addAndGet(progress);
         delegate.logProgress(progress);
+    }
+
+    @Override
+    public void logProgress(Function<Long, Long> valueCalculator) {
+        delegate.logProgress(valueCalculator);
     }
 
     @Override
@@ -140,11 +146,6 @@ public final class TestProgressTracker implements ProgressTracker {
     public void setVolume(long volume) {
         delegate.setVolume(volume);
         progresses.add(new AtomicLong());
-    }
-
-    @Override
-    public long currentVolume() {
-        return delegate.currentVolume();
     }
 
     @Override

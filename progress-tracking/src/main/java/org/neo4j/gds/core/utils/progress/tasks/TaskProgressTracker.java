@@ -32,9 +32,9 @@ import java.util.Optional;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static org.neo4j.gds.core.utils.progress.tasks.Task.UNKNOWN_VOLUME;
 import static org.neo4j.gds.utils.StringFormatting.formatWithLocale;
 
 public final class TaskProgressTracker implements ProgressTracker {
@@ -212,6 +212,15 @@ public final class TaskProgressTracker implements ProgressTracker {
     }
 
     @Override
+    public void logProgress(Function<Long, Long> valueCalculator) {
+        requireCurrentTask();
+
+        var currentVolume = (long) currentTask.map(task -> task.getProgress().volume()).orElse(Task.UNKNOWN_VOLUME);
+
+        logProgress(valueCalculator.apply(currentVolume));
+    }
+
+    @Override
     public void logProgress(long value, String messageTemplate) {
         requireCurrentTask();
         currentTask.ifPresent(task -> {
@@ -227,12 +236,6 @@ public final class TaskProgressTracker implements ProgressTracker {
             task.setVolume(volume);
             taskProgressLogger.reset(volume);
         });
-    }
-
-    @Override
-    public long currentVolume() {
-        requireCurrentTask();
-        return currentTask.map(task -> task.getProgress().volume()).orElse(UNKNOWN_VOLUME);
     }
 
     @Override

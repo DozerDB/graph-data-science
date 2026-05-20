@@ -22,6 +22,7 @@ package org.neo4j.gds.core.utils.progress.tasks;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.mem.MemoryRange;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public interface ProgressTracker {
@@ -68,17 +69,17 @@ public interface ProgressTracker {
         }
 
         @Override
+        public void logProgress(Function<Long, Long> valueCalculator) {
+
+        }
+
+        @Override
         public void logProgress(long value, String messageTemplate) {
 
         }
 
         @Override
         public void setVolume(long volume) {
-        }
-
-        @Override
-        public long currentVolume() {
-            return Task.UNKNOWN_VOLUME;
         }
 
         @Override
@@ -136,6 +137,8 @@ public interface ProgressTracker {
 
     void logProgress(long value);
 
+    void logProgress(Function<Long, Long> valueCalculator);
+
     default void logProgress() {
         logProgress(1);
     }
@@ -145,12 +148,6 @@ public interface ProgressTracker {
     // prefer setting volume via factory method for leaves
     // to make root progress available from the start
     void setVolume(long volume);
-
-    /**
-     * Returns the task volume of the currently running task or
-     * {@link Task#UNKNOWN_VOLUME} if no task volume is set.
-     */
-    long currentVolume();
 
     void logDebug(Supplier<String> messageSupplier);
 

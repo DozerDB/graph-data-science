@@ -198,8 +198,8 @@ class SequentialDischarging {
             excess.addTo(s, -delta);
             excess.addTo(t, delta);
             if (label.get(t) == 0) {
-                progressTracker.logProgress((long) (Math.ceil((excessAtDestinations + delta) * progressTracker.currentVolume() / totalExcess) - Math.ceil(
-                    excessAtDestinations * progressTracker.currentVolume() / totalExcess)));
+                progressTracker.logProgress(volume -> (long) (Math.ceil((excessAtDestinations + delta) * volume / totalExcess) - Math.ceil(
+                    excessAtDestinations * volume / totalExcess)));
                 excessAtDestinations += delta;
             } else if (!inWorkingQueue.getAndSet(t)) {
                 workingQueue.add(t);

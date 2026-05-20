@@ -36,6 +36,7 @@ import org.neo4j.gds.mem.MemoryRange;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
@@ -84,6 +85,11 @@ public final class InspectableTestProgressTracker implements ProgressTracker {
     @Override
     public void logProgress(long progress) {
         delegate.logProgress(progress);
+    }
+
+    @Override
+    public void logProgress(Function<Long, Long> valueCalculator) {
+        delegate.logProgress(valueCalculator);
     }
 
     @Override
@@ -146,11 +152,6 @@ public final class InspectableTestProgressTracker implements ProgressTracker {
     @Override
     public void setVolume(long volume) {
         delegate.setVolume(volume);
-    }
-
-    @Override
-    public long currentVolume() {
-        return delegate.currentVolume();
     }
 
     @Override
