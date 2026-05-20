@@ -19,12 +19,15 @@
  */
 package org.neo4j.gds.applications.algorithms.machinery;
 
+import org.neo4j.gds.GraphParameters;
 import org.neo4j.gds.api.GraphName;
 import org.neo4j.gds.config.AlgoBaseConfig;
 import org.neo4j.gds.config.GraphProjectConfig;
 import org.neo4j.gds.core.GraphDimensions;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.loading.GraphStoreCatalogService;
+import org.neo4j.gds.core.loading.validation.GraphStoreValidation;
+import org.neo4j.gds.core.loading.validation.NoAlgorithmRequirements;
 import org.neo4j.gds.mem.MemoryEstimation;
 import org.neo4j.gds.mem.MemoryEstimations;
 import org.neo4j.gds.memest.DatabaseGraphStoreEstimationService;
@@ -33,6 +36,7 @@ import org.neo4j.gds.memest.GraphMemoryEstimation;
 import org.neo4j.gds.memest.MemoryEstimationGraphConfigParser;
 
 import java.util.Map;
+import java.util.Optional;
 
 import static org.neo4j.gds.utils.StringFormatting.formatWithLocale;
 
@@ -66,13 +70,33 @@ public class AlgorithmEstimationTemplate {
         Object graphNameOrConfiguration,
         MemoryEstimation memoryEstimation
     ) {
-        return estimate(configuration, graphNameOrConfiguration, memoryEstimation, DimensionTransformer.DISABLED);
+        return estimate(
+            configuration.toGraphParameters(),
+            graphNameOrConfiguration,
+            memoryEstimation,
+            configuration.concurrency(), DimensionTransformer.DISABLED
+        );
     }
 
-    public <CONFIGURATION extends AlgoBaseConfig> MemoryEstimateResult estimate(
-        CONFIGURATION configuration,
+    public MemoryEstimateResult estimate(
+        GraphParameters graphParameters,
         Object graphNameOrConfiguration,
         MemoryEstimation memoryEstimation,
+        Concurrency concurrency
+    ) {
+        return estimate(
+            graphParameters,
+            graphNameOrConfiguration,
+            memoryEstimation,
+            concurrency, DimensionTransformer.DISABLED
+        );
+    }
+
+    public MemoryEstimateResult estimate(
+        GraphParameters graphParameters,
+        Object graphNameOrConfiguration,
+        MemoryEstimation memoryEstimation,
+        Concurrency concurrency,
         DimensionTransformer dimensionTransformer
     ) {
         var estimationBuilder = MemoryEstimations.builder("Memory Estimation");
@@ -93,18 +117,18 @@ public class AlgorithmEstimationTemplate {
                 estimationBuilder,
                 memoryEstimation,
                 transformedDimensions,
-                configuration.concurrency()
+                concurrency
             );
         }
 
         if (graphNameOrConfiguration instanceof String rawGraphName) {
             GraphName graphName = GraphName.parse(rawGraphName);
 
-            var graphDimensions = dimensionsFromActualGraph(graphName, configuration);
+            var graphDimensions = dimensionsFromActualGraph(graphName, graphParameters);
 
             var transformedDimensions = dimensionTransformer.transform(graphDimensions);
 
-            return estimate(estimationBuilder, memoryEstimation, transformedDimensions, configuration.concurrency());
+            return estimate(estimationBuilder, memoryEstimation, transformedDimensions, concurrency);
         }
 
         throw new IllegalArgumentException(formatWithLocale(
@@ -125,18 +149,21 @@ public class AlgorithmEstimationTemplate {
             );
     }
 
-    private <CONFIGURATION extends AlgoBaseConfig> GraphDimensions dimensionsFromActualGraph(
+    private GraphDimensions dimensionsFromActualGraph(
         GraphName graphName,
-        CONFIGURATION configuration
+        GraphParameters graphParameters
     ) {
-        var graphStore = graphStoreCatalogService.getGraphStoreCatalogEntry(
+        var graphResources = graphStoreCatalogService.fetchGraphResources(
             graphName,
+            graphParameters,
+            Optional.empty(),
+            new GraphStoreValidation(new NoAlgorithmRequirements()),
+            Optional.empty(),
             requestScopedDependencies.user(),
-            configuration.usernameOverride(),
             requestScopedDependencies.databaseId()
-        ).graphStore();
+        );
 
-        return GraphDimensionsComputer.of(graphStore, configuration);
+        return GraphDimensionsComputer.of(graphParameters,graphResources);
     }
 
     private MemoryEstimateResult estimate(
