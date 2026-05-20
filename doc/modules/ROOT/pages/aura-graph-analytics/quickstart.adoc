@@ -41,12 +41,14 @@ The following example shows how to run a projection and xref:aura-graph-analytic
 [source, cypher, role=noplay setup-query]
 ----
 CALL gds.graph.project(
+  'myGraph',
   '*', // <1>
   '*', // <2>
   {
     nodeProperties: ['age'],
     relationshipProperties: ['weight'],
-    {memory: '2GB', ttl: duration({minutes: 30})}
+    memory: '2GB',
+    ttl: toString(duration({minutes: 30}))
   }
 ) YIELD graphName, nodeCount, relationshipCount // <3>
 ----
