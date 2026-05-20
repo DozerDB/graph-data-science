@@ -41,7 +41,6 @@ import org.neo4j.gds.collections.ha.HugeDoubleArray;
 import org.neo4j.gds.core.RequestCorrelationId;
 import org.neo4j.gds.core.utils.logging.GdsLoggers;
 import org.neo4j.gds.core.utils.progress.TaskRegistryFactory;
-import org.neo4j.gds.user.log.UserLogRegistry;
 import org.neo4j.gds.core.write.NodePropertyExporterBuilder;
 import org.neo4j.gds.core.write.RelationshipExporterBuilder;
 import org.neo4j.gds.domain.services.GloballyScopedDependencies;
@@ -69,6 +68,7 @@ import org.neo4j.gds.model.ModelConfig;
 import org.neo4j.gds.procedures.algorithms.AlgorithmsProcedureFacade;
 import org.neo4j.gds.termination.TerminationFlag;
 import org.neo4j.gds.termination.TerminationMonitor;
+import org.neo4j.gds.user.log.UserLogRegistry;
 
 import java.util.Map;
 import java.util.Optional;
@@ -398,10 +398,10 @@ public class PipelineApplications {
         );
 
         return algorithmEstimationTemplate.estimate(
-            configuration,
+            configuration.toGraphParameters(),
             graphNameOrConfiguration,
             memoryEstimation,
-            dimensionTransformer
+            configuration.concurrency(), dimensionTransformer
         );
     }
 
@@ -519,9 +519,10 @@ public class PipelineApplications {
         var dimensionTransformer = new DimensionTransformerForLinkPredictionTrain(pipelineRepository, configuration);
 
         return algorithmEstimationTemplate.estimate(
-            configuration,
+            configuration.toGraphParameters(),
             graphNameOrConfiguration,
             memoryEstimation,
+            configuration.concurrency(),
             dimensionTransformer
         );
     }

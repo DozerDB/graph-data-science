@@ -88,9 +88,10 @@ public final class GenericStub {
         var configuration = parseConfiguration(configurationLexer, rawConfiguration);
 
         var memoryEstimateResult = algorithmEstimationTemplate.estimate(
-            configuration,
+            configuration.toGraphParameters(),
             graphName,
-            memoryEstimation
+            memoryEstimation,
+            configuration.concurrency()
         );
 
         return Stream.of(memoryEstimateResult);

@@ -19,20 +19,16 @@
  */
 package org.neo4j.gds.applications.algorithms.machinery;
 
-import org.neo4j.gds.NodeLabel;
+import org.neo4j.gds.GraphParameters;
 import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.api.Graph;
-import org.neo4j.gds.api.GraphStore;
-import org.neo4j.gds.config.AlgoBaseConfig;
-import org.neo4j.gds.config.ElementTypeValidator;
 import org.neo4j.gds.core.DimensionsMap;
 import org.neo4j.gds.core.GraphDimensions;
 import org.neo4j.gds.core.ImmutableGraphDimensions;
+import org.neo4j.gds.core.loading.GraphResources;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -41,44 +37,6 @@ import java.util.stream.Stream;
 public final class GraphDimensionsComputer {
 
     private GraphDimensionsComputer() {}
-
-    public static GraphDimensions of(GraphStore graphStore, AlgoBaseConfig config) {
-        Collection<NodeLabel> labelFilter = ElementTypeValidator.resolve(graphStore, config.nodeLabels());
-        Collection<RelationshipType> typeFilter = ElementTypeValidator.resolveTypes(
-            graphStore,
-            config.relationshipTypes()
-        );
-
-        // validate the filters here as well as the other validation happens after the memory estimation
-        config.graphStoreValidation(graphStore, labelFilter, typeFilter);
-
-        Graph filteredGraph = graphStore.getGraph(labelFilter, typeFilter, Optional.empty());
-        long relCount = filteredGraph.relationshipCount();
-
-        var relationshipTypeTokens = new HashMap<String, Integer>();
-        var i = 0;
-        for (String key : graphStore.relationshipPropertyKeys()) {
-            relationshipTypeTokens.put(key, i++);
-        }
-
-        var nodePropertyDimensions = filteredGraph
-            .availableNodeProperties()
-            .stream()
-            .collect(Collectors.toMap(
-                Function.identity(),
-                property -> filteredGraph
-                    .nodeProperties(property)
-                    .dimension()
-            ));
-
-        return ImmutableGraphDimensions.builder()
-            .nodeCount(filteredGraph.nodeCount())
-            .relationshipCounts(filteredGraphRelationshipCounts(typeFilter.stream(), filteredGraph))
-            .relCountUpperBound(relCount)
-            .relationshipPropertyTokens(relationshipTypeTokens)
-            .nodePropertyDimensions(new DimensionsMap(nodePropertyDimensions))
-            .build();
-    }
 
     private static Map<RelationshipType, Long> filteredGraphRelationshipCounts(
         Stream<RelationshipType> typeFilter,
@@ -98,4 +56,35 @@ public final class GraphDimensionsComputer {
             );
     }
 
+
+    public static GraphDimensions of(GraphParameters graphParameters,GraphResources graphResources) {
+
+        var graph = graphResources.graph();
+        var graphStore = graphResources.graphStore();
+        long relCount =  graph.relationshipCount();
+
+        var relationshipTypeTokens = new HashMap<String, Integer>();
+        var i = 0;
+        for (String key : graphStore.relationshipPropertyKeys()) {
+            relationshipTypeTokens.put(key, i++);
+        }
+
+        var nodePropertyDimensions = graph
+            .availableNodeProperties()
+            .stream()
+            .collect(Collectors.toMap(
+                Function.identity(),
+                property -> graph
+                    .nodeProperties(property)
+                    .dimension()
+            ));
+
+        return ImmutableGraphDimensions.builder()
+            .nodeCount(graph.nodeCount())
+            .relationshipCounts(filteredGraphRelationshipCounts(graphParameters.relationshipTypesFilter().stream(), graph))
+            .relCountUpperBound(relCount)
+            .relationshipPropertyTokens(relationshipTypeTokens)
+            .nodePropertyDimensions(new DimensionsMap(nodePropertyDimensions))
+            .build();
+    }
 }
