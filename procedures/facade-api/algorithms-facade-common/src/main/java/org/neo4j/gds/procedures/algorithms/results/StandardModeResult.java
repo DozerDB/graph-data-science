@@ -21,18 +21,9 @@ package org.neo4j.gds.procedures.algorithms.results;
 
 import java.util.Map;
 
-public class StandardModeResult {
-    public final long preProcessingMillis;
-    public final long computeMillis;
-    public final Map<String, Object> configuration;
-
-    public StandardModeResult(
-        long preProcessingMillis,
-        long computeMillis,
-        Map<String, Object> configuration
-    ) {
-        this.preProcessingMillis = preProcessingMillis;
-        this.computeMillis = computeMillis;
-        this.configuration = configuration;
-    }
+public record StandardModeResult(
+    long preProcessingMillis,
+    long computeMillis,
+    Map<String, Object> configuration
+) {
 }

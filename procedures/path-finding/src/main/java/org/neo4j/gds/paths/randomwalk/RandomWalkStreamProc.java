@@ -19,9 +19,9 @@
  */
 package org.neo4j.gds.paths.randomwalk;
 
+import org.neo4j.gds.applications.algorithms.machinery.MemoryEstimateResult;
 import org.neo4j.gds.procedures.GraphDataScienceProcedures;
 import org.neo4j.gds.procedures.algorithms.pathfinding.RandomWalkStreamResult;
-import org.neo4j.gds.applications.algorithms.machinery.MemoryEstimateResult;
 import org.neo4j.procedure.Context;
 import org.neo4j.procedure.Description;
 import org.neo4j.procedure.Name;
@@ -51,7 +51,7 @@ public class RandomWalkStreamProc {
     @Description(MEMORY_ESTIMATION_DESCRIPTION)
     public Stream<MemoryEstimateResult> estimate(
         @Name(value = "graphNameOrConfiguration") Object graphNameOrConfiguration,
-        @Name(value = "algoConfiguration") Map<String, Object> algoConfiguration
+        @Name(value = "algoConfiguration", defaultValue = "{}") Map<String, Object> algoConfiguration
     ) {
         return facade.algorithms().pathFinding().randomWalkStreamEstimate(graphNameOrConfiguration, algoConfiguration);
     }

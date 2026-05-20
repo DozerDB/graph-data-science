@@ -40,9 +40,9 @@ class StandardModeStatsResultTransformerTest {
         var resultStream = transformer.apply(timedResult);
         var result = resultStream.findFirst().orElseThrow();
 
-        assertThat(result.preProcessingMillis).isZero();
-        assertThat(result.computeMillis).isEqualTo(123L);
-        assertThat(result.configuration).isEqualTo(Map.<String, Object>of("foo", "bar"));
+        assertThat(result.preProcessingMillis()).isZero();
+        assertThat(result.computeMillis()).isEqualTo(123L);
+        assertThat(result.configuration()).isEqualTo(Map.<String, Object>of("foo", "bar"));
     }
 
     @Test
@@ -55,9 +55,9 @@ class StandardModeStatsResultTransformerTest {
         var resultStream = transformer.apply(timedResult);
         var result = resultStream.findFirst().orElseThrow();
 
-        assertThat(result.preProcessingMillis).isZero();
-        assertThat(result.computeMillis).isZero();
-        assertThat(result.configuration).isEmpty();
+        assertThat(result.preProcessingMillis()).isZero();
+        assertThat(result.computeMillis()).isZero();
+        assertThat(result.configuration()).isEmpty();
     }
 
     @Test
@@ -70,8 +70,8 @@ class StandardModeStatsResultTransformerTest {
         var resultStream = transformer.apply(timedResult);
         var result = resultStream.findFirst().orElseThrow();
 
-        assertThat(result.preProcessingMillis).isZero();
-        assertThat(result.computeMillis).isEqualTo(42L);
-        assertThat(result.configuration).isNull();
+        assertThat(result.preProcessingMillis()).isZero();
+        assertThat(result.computeMillis()).isEqualTo(42L);
+        assertThat(result.configuration()).isNull();
     }
 }
