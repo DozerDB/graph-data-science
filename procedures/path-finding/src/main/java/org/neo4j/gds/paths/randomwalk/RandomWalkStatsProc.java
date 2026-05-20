@@ -51,7 +51,7 @@ public class RandomWalkStatsProc {
     @Description(MEMORY_ESTIMATION_DESCRIPTION)
     public Stream<MemoryEstimateResult> estimate(
         @Name(value = "graphNameOrConfiguration") Object graphNameOrConfiguration,
-        @Name(value = "algoConfiguration") Map<String, Object> algoConfiguration
+        @Name(value = "algoConfiguration", defaultValue = "{}") Map<String, Object> algoConfiguration
     ) {
         return facade.algorithms().pathFinding().randomWalkStatsEstimate(graphNameOrConfiguration, algoConfiguration);
     }
