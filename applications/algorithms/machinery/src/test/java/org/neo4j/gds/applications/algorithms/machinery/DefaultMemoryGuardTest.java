@@ -59,7 +59,7 @@ class DefaultMemoryGuardTest {
     private static final Concurrency CONCURRENCY = new Concurrency(4);
 
     @Mock
-    private GraphDimensionFactory graphDimensionFactoryMock;
+    private GraphDimensionsFactory graphDimensionFactoryMock;
 
     @Mock
     private Log logMock;
@@ -81,7 +81,7 @@ class DefaultMemoryGuardTest {
 
     @BeforeEach
     void setUp() {
-        when(graphDimensionFactoryMock.create(any(Graph.class), any(GraphStore.class), anyCollection()))
+        when(graphDimensionFactoryMock.graphDimensions(any(GraphStore.class), any(Graph.class),anyCollection()))
             .thenReturn(GraphDimensions.of(23L, 87L));
         when(memoryEstimation.estimate(any(GraphDimensions.class), any(Concurrency.class)))
             .thenReturn(memoryTree);

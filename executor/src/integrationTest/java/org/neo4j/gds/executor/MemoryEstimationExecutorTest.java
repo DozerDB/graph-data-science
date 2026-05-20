@@ -19,6 +19,7 @@
  */
 package org.neo4j.gds.executor;
 
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,7 +39,6 @@ import org.neo4j.gds.core.PlainSimpleRequestCorrelationId;
 import org.neo4j.gds.core.loading.GraphStoreCatalog;
 import org.neo4j.gds.core.model.ModelCatalog;
 import org.neo4j.gds.core.utils.progress.EmptyTaskRegistryFactory;
-import org.neo4j.gds.user.log.UserLogRegistry;
 import org.neo4j.gds.gdl.GdlGraphs;
 import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.metrics.Metrics;
@@ -48,13 +48,13 @@ import org.neo4j.gds.test.TestAlgorithm;
 import org.neo4j.gds.test.TestAlgorithmResult;
 import org.neo4j.gds.test.TestMutateConfig;
 import org.neo4j.gds.transaction.DatabaseTransactionContext;
+import org.neo4j.gds.user.log.UserLogRegistry;
 import org.neo4j.graphdb.Transaction;
 
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -127,6 +127,7 @@ class MemoryEstimationExecutorTest extends BaseTest {
 
     @Test
     void failOnMemoryEstimationWithInvalidRelationshipFilterOnExplicitGraphStore() {
+        SoftAssertions softAssertions = new SoftAssertions();
         var graphName = "memoryEstimateGraph";
         GraphStoreCatalog.set(GraphProjectConfig.emptyWithName("", graphName), GdlGraphs.EMPTY_GRAPH_STORE);
         runQuery(GdsCypher.call(graphName)
@@ -134,12 +135,14 @@ class MemoryEstimationExecutorTest extends BaseTest {
             .loadEverything()
             .yields());
 
-        assertThatThrownBy(() -> memoryEstimationExecutor.computeEstimate(graphName,
+        softAssertions.assertThatThrownBy(() -> memoryEstimationExecutor.computeEstimate(graphName,
             Map.of("mutateProperty", "foo", "relationshipTypes", List.of("INVALID"))
         )).hasMessage(
-            "Could not find the specified `relationshipTypes` of ['INVALID']. Available relationship types are ['__ALL__'].");
+            "No relationships have been loaded for relationship type 'RelationshipType{name='INVALID'}'. Available relationship types are: ['__ALL__']");
 
         GraphStoreCatalog.removeAllLoadedGraphs();
+
+        softAssertions.assertAll();
     }
 
     @Test

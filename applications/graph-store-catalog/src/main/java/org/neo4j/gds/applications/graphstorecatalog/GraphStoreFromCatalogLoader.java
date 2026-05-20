@@ -19,16 +19,17 @@
  */
 package org.neo4j.gds.applications.graphstorecatalog;
 
+import org.neo4j.gds.api.GraphName;
 import org.neo4j.gds.api.GraphStore;
 import org.neo4j.gds.api.ResultStore;
+import org.neo4j.gds.applications.algorithms.machinery.GraphDimensionsFactory;
 import org.neo4j.gds.applications.algorithms.machinery.RequestScopedDependencies;
-import org.neo4j.gds.applications.algorithms.machinery.GraphDimensionFactory;
 import org.neo4j.gds.config.AlgoBaseConfig;
 import org.neo4j.gds.config.BaseConfig;
 import org.neo4j.gds.config.GraphProjectConfig;
 import org.neo4j.gds.core.GraphDimensions;
-import org.neo4j.gds.core.loading.GraphStoreCatalog;
 import org.neo4j.gds.core.loading.GraphStoreCatalogEntry;
+import org.neo4j.gds.core.loading.GraphStoreCatalogService;
 import org.neo4j.gds.core.loading.ImmutableCatalogRequest;
 
 public final class GraphStoreFromCatalogLoader implements GraphStoreLoader {
@@ -36,6 +37,8 @@ public final class GraphStoreFromCatalogLoader implements GraphStoreLoader {
     private final GraphStore graphStore;
     private final ResultStore resultStore;
     private final GraphProjectConfig graphProjectConfig;
+    private final GraphStoreCatalogService graphStoreCatalogService = new GraphStoreCatalogService();
+    private final GraphName graphName;
 
     public GraphStoreFromCatalogLoader(
         RequestScopedDependencies requestScopedDependencies,
@@ -43,7 +46,8 @@ public final class GraphStoreFromCatalogLoader implements GraphStoreLoader {
         AlgoBaseConfig config
     ) {
         this.config = config;
-        var catalogEntry = graphStoreFromCatalog(requestScopedDependencies, graphName, config);
+        this.graphName = GraphName.parse(graphName);
+        var catalogEntry = graphStoreFromCatalog(graphStoreCatalogService,requestScopedDependencies, GraphName.parse(graphName), config);
         this.graphStore = catalogEntry.graphStore();
         this.resultStore = catalogEntry.resultStore();
         this.graphProjectConfig = catalogEntry.config();
@@ -66,12 +70,13 @@ public final class GraphStoreFromCatalogLoader implements GraphStoreLoader {
 
     @Override
     public GraphDimensions graphDimensions() {
-        return new GraphDimensionFactory().create(graphStore(), config);
+        return new GraphDimensionsFactory().graphDimensions(graphStore, config.toGraphParameters());
     }
 
     private static GraphStoreCatalogEntry graphStoreFromCatalog(
+        GraphStoreCatalogService graphStoreCatalogService,
         RequestScopedDependencies requestScopedDependencies,
-        String graphName,
+        GraphName graphName,
         BaseConfig config
     ) {
         var request = ImmutableCatalogRequest.of(
@@ -80,6 +85,7 @@ public final class GraphStoreFromCatalogLoader implements GraphStoreLoader {
             config.usernameOverride(),
             requestScopedDependencies.user().isAdmin()
         );
-        return GraphStoreCatalog.get(request, graphName);
+        return graphStoreCatalogService.get(request, graphName);
+
     }
 }

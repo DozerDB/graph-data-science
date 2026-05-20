@@ -52,6 +52,7 @@ public class AlgorithmEstimationTemplate {
     // request scoped parameters and services
     private final DatabaseGraphStoreEstimationService databaseGraphStoreEstimationService;
     private final RequestScopedDependencies requestScopedDependencies;
+    private final GraphDimensionsFactory graphDimensionsFactory = new GraphDimensionsFactory();
 
     public AlgorithmEstimationTemplate(
         FictitiousGraphStoreEstimationService fictitiousGraphStoreEstimationService,
@@ -163,7 +164,7 @@ public class AlgorithmEstimationTemplate {
             requestScopedDependencies.databaseId()
         );
 
-        return GraphDimensionsComputer.of(graphParameters,graphResources);
+        return graphDimensionsFactory.graphDimensions(graphResources, graphParameters);
     }
 
     private MemoryEstimateResult estimate(

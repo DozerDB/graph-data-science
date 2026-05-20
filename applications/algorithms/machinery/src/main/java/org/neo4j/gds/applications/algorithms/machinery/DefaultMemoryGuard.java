@@ -22,8 +22,8 @@ package org.neo4j.gds.applications.algorithms.machinery;
 import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.api.Graph;
 import org.neo4j.gds.api.GraphStore;
-import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.JobId;
+import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.exceptions.MemoryEstimationNotImplementedException;
 import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.mem.MemoryEstimation;
@@ -36,13 +36,13 @@ import java.util.function.Supplier;
 
 public final class DefaultMemoryGuard implements MemoryGuard {
     private final Log log;
-    private final GraphDimensionFactory graphDimensionFactory;
+    private final GraphDimensionsFactory graphDimensionFactory;
     private final boolean useMaxMemoryEstimation;
     private final MemoryTracker memoryTracker;
 
     DefaultMemoryGuard(
         Log log,
-        GraphDimensionFactory graphDimensionFactory,
+        GraphDimensionsFactory graphDimensionFactory,
         boolean useMaxMemoryEstimation,
         MemoryTracker memoryTracker
     ) {
@@ -57,7 +57,7 @@ public final class DefaultMemoryGuard implements MemoryGuard {
         boolean useMaxMemoryEstimation,
         MemoryTracker memoryTracker
     ) {
-        var graphDimensionFactory = new GraphDimensionFactory();
+        var graphDimensionFactory = new GraphDimensionsFactory();
 
         return new DefaultMemoryGuard(log, graphDimensionFactory, useMaxMemoryEstimation, memoryTracker);
     }
@@ -79,7 +79,7 @@ public final class DefaultMemoryGuard implements MemoryGuard {
         try {
             var memoryRequirement = MemoryRequirement.create(
                 estimationFactory.get(),
-                graphDimensionFactory.create(graph, graphStore, relationshipTypesFilter),
+                graphDimensionFactory.graphDimensions(graphStore,graph, relationshipTypesFilter),
                 dimensionTransformer,
                 concurrency,
                 useMaxMemoryEstimation

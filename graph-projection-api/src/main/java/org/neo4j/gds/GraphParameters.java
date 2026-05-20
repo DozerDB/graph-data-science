@@ -28,4 +28,5 @@ public record GraphParameters(
     boolean loadAllRelationshipTypes,
     Optional<String> usernameOverride
 ) {
+
 }

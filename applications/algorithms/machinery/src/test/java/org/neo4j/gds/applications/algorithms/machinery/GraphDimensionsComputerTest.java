@@ -79,7 +79,7 @@ class GraphDimensionsComputerTest {
 
         GraphResources resources = new GraphResources(graphStore, graph, null);
 
-        GraphDimensions dimensions = GraphDimensionsComputer.of(parameters, resources);
+        GraphDimensions dimensions =  new GraphDimensionsFactory().graphDimensions(resources,parameters);
 
         assertThat(dimensions.nodeCount()).isEqualTo(100L);
         assertThat(dimensions.relCountUpperBound()).isEqualTo(200L);

@@ -130,10 +130,8 @@ public class GraphStoreCatalogService {
 
         postGraphStoreLoadValidationHooks.ifPresent(hooks -> validateGraphStore(graphStore, hooks));
 
-        var nodeLabels = nodeLabelsFilter.isEmpty() ? graphStore.nodeLabels() : nodeLabelsFilter;
-        var relationshipTypes = loadAllRelationships
-            ? graphStore.relationshipTypes()
-            : relationshipTypesFilter;
+        var nodeLabels = resolveNodeLabels(graphStore, nodeLabelsFilter);
+        var relationshipTypes = resolveRelationshipTypes(graphStore, loadAllRelationships, relationshipTypesFilter);
 
         // Validate the graph store before going any further
         graphStoreValidation.validate(graphStore, nodeLabels, relationshipTypes, relationshipProperty);
@@ -163,12 +161,8 @@ public class GraphStoreCatalogService {
 
         var graphStore = graphStoreCatalogEntry.graphStore();
 
-        var nodeLabels = graphParameters.nodeLabelsFilter().isEmpty()
-            ? graphStore.nodeLabels()
-            : graphParameters.nodeLabelsFilter();
-        var relationshipTypes = graphParameters.loadAllRelationshipTypes()
-            ? graphStore.relationshipTypes()
-            : graphParameters.relationshipTypesFilter();
+        var nodeLabels = resolveNodeLabels(graphStore, graphParameters.nodeLabelsFilter());
+        var relationshipTypes = resolveRelationshipTypes(graphStore, graphParameters.loadAllRelationshipTypes(), graphParameters.relationshipTypesFilter());
 
         // Validate the graph store before going any further
         graphStoreValidation.validate(graphStore, nodeLabels, relationshipTypes, relationshipProperty);
@@ -195,12 +189,8 @@ public class GraphStoreCatalogService {
 
         var graphStore = graphStoreCatalogEntry.graphStore();
 
-        var nodeLabels = graphParameters.nodeLabelsFilter().isEmpty()
-            ? graphStore.nodeLabels()
-            : graphParameters.nodeLabelsFilter();
-        var relationshipTypes = graphParameters.loadAllRelationshipTypes()
-            ? graphStore.relationshipTypes()
-            : graphParameters.relationshipTypesFilter();
+        var nodeLabels = resolveNodeLabels(graphStore, graphParameters.nodeLabelsFilter());
+        var relationshipTypes = resolveRelationshipTypes(graphStore, graphParameters.loadAllRelationshipTypes(), graphParameters.relationshipTypesFilter());
 
         // Validate the graph store before going any further
         graphStoreValidation.validate(graphStore, nodeLabels, relationshipTypes, relationshipProperty);
@@ -331,5 +321,17 @@ public class GraphStoreCatalogService {
 
     public void setLog(Log log) {
         GraphStoreCatalog.setLog(log);
+    }
+
+    public static Collection<NodeLabel> resolveNodeLabels(GraphStore graphStore,Collection<NodeLabel>  nodeLabelsFilter) {
+        return  nodeLabelsFilter.isEmpty()
+            ? graphStore.nodeLabels()
+            : nodeLabelsFilter;
+    }
+    public static Collection<RelationshipType> resolveRelationshipTypes(GraphStore graphStore, boolean loadAllRelationshipTypes, Collection<RelationshipType> relationshipTypesFilter) {
+
+        return loadAllRelationshipTypes
+            ? graphStore.relationshipTypes()
+            : relationshipTypesFilter;
     }
 }
