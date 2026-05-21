@@ -53,15 +53,6 @@ public interface IdentifierMapper<T> {
         return new Builder<>(prefix);
     }
 
-    static <T> IdentifierMapper<T> empty() {
-        //noinspection unchecked
-        return (IdentifierMapper<T>) EmptyMapper.INSTANCE;
-    }
-
-    static IdentifierMapper<String> identity() {
-        return biject(Function.identity(), Function.identity());
-    }
-
     static <T> IdentifierMapper<T> biject(Function<T, String> inject, Function<String, T> surject) {
         return new BijectionMapper<>(inject, surject);
     }
@@ -122,10 +113,6 @@ public interface IdentifierMapper<T> {
         }
     }
 
-}
-
-enum EmptyMapper implements IdentifierMapper<Object> {
-    INSTANCE
 }
 
 final class BijectionMapper<T> implements IdentifierMapper<T> {
