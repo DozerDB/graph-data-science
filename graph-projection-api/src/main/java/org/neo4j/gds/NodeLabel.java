@@ -29,7 +29,8 @@ import static org.neo4j.gds.ElementProjection.PROJECT_ALL;
 
 public class NodeLabel extends ElementIdentifier {
 
-    public static final NodeLabel ALL_NODES = NodeLabel.of("__ALL__");
+    public static final String ALL_LABEL = "__ALL__";
+    public static final NodeLabel ALL_NODES = NodeLabel.of(ALL_LABEL);
 
     public NodeLabel(String name) {
         super(name, "Node label");
