@@ -20,12 +20,15 @@
 package org.neo4j.gds.projection;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.TestTaskStore;
 import org.neo4j.gds.api.DatabaseId;
 import org.neo4j.gds.api.DatabaseInfo;
+import org.neo4j.gds.api.GraphName;
 import org.neo4j.gds.api.PropertyState;
+import org.neo4j.gds.api.User;
 import org.neo4j.gds.compat.TestLog;
 import org.neo4j.gds.compat.TestLogImpl;
 import org.neo4j.gds.config.GraphProjectConfig;
@@ -33,7 +36,8 @@ import org.neo4j.gds.core.JobId;
 import org.neo4j.gds.core.PlainSimpleRequestCorrelationId;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.loading.Capabilities;
-import org.neo4j.gds.core.loading.GraphStoreCatalog;
+import org.neo4j.gds.core.loading.CatalogRequest;
+import org.neo4j.gds.core.loading.GraphStoreCatalogService;
 import org.neo4j.gds.core.loading.LazyIdMapBuilderBuilder;
 import org.neo4j.gds.core.loading.construction.NodeLabelTokens;
 import org.neo4j.gds.core.loading.construction.PropertyValues;
@@ -43,8 +47,8 @@ import org.neo4j.gds.core.utils.progress.LocalTaskRegistryFactory;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.core.utils.progress.tasks.Status;
 import org.neo4j.gds.core.utils.progress.tasks.TaskProgressTracker;
-import org.neo4j.gds.user.log.UserLogRegistry;
 import org.neo4j.gds.logging.LogAdapter;
+import org.neo4j.gds.user.log.UserLogRegistry;
 import org.neo4j.gds.values.primitive.PrimitiveValues;
 
 import java.util.List;
@@ -57,9 +61,20 @@ import static org.neo4j.gds.TestSupport.assertGraphEquals;
 
 class GraphImporterTest {
 
+    private static final User EMPTY_USER = new User("", false);
+
+    private static final DatabaseId TEST_DATABASE_ID = DatabaseId.of("GraphImporterTest");
+
+    private GraphStoreCatalogService graphStoreCatalogService;
+
+    @BeforeEach
+    void setUp() {
+        graphStoreCatalogService = new GraphStoreCatalogService();
+    }
+
     @AfterEach
     void tearDown() {
-        GraphStoreCatalog.removeAllLoadedGraphs();
+        graphStoreCatalogService.removeAllLoadedGraphs(TEST_DATABASE_ID);
     }
 
     @Test
@@ -76,6 +91,7 @@ class GraphImporterTest {
                 .build(),
             Capabilities.WriteMode.REMOTE,
             "",
+            graphStoreCatalogService,
             ProgressTracker.NULL_TRACKER
         );
 
@@ -93,14 +109,20 @@ class GraphImporterTest {
         }
 
         var result = importer.result(
-            DatabaseInfo.create(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
+            DatabaseInfo.create(TEST_DATABASE_ID, DatabaseInfo.DatabaseLocation.LOCAL),
             ProgressTimer.start(),
             true
         );
 
         assertThat(result.nodeCount()).isEqualTo(3);
         assertThat(result.relationshipCount()).isEqualTo(2);
-        var graphStore = GraphStoreCatalog.get("", "", "g").graphStore();
+
+        var graphStore = graphStoreCatalogService.get(
+                CatalogRequest.of(EMPTY_USER, TEST_DATABASE_ID),
+                GraphName.parse("g")
+            )
+            .graphStore();
+
         assertGraphEquals(
             fromGdl("()-->()-->()"),
             graphStore.getUnion()
@@ -121,6 +143,7 @@ class GraphImporterTest {
                 .build(),
             Capabilities.WriteMode.REMOTE,
             "",
+            graphStoreCatalogService,
             ProgressTracker.NULL_TRACKER
         );
 
@@ -138,12 +161,17 @@ class GraphImporterTest {
         }
 
         importer.result(
-            DatabaseInfo.create(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
+            DatabaseInfo.create(TEST_DATABASE_ID, DatabaseInfo.DatabaseLocation.LOCAL),
             ProgressTimer.start(),
             true
         );
 
-        var graphStore = GraphStoreCatalog.get("", "", "g").graphStore();
+        var graphStore = graphStoreCatalogService.get(
+                CatalogRequest.of(EMPTY_USER, TEST_DATABASE_ID),
+                GraphName.parse("g")
+            )
+            .graphStore();
+
         assertGraphEquals(
             fromGdl("(:Label0)-->(:Label1)-->(:Label2)"),
             graphStore.getUnion()
@@ -164,6 +192,7 @@ class GraphImporterTest {
                 .build(),
             Capabilities.WriteMode.REMOTE,
             "",
+            graphStoreCatalogService,
             ProgressTracker.NULL_TRACKER
         );
 
@@ -181,12 +210,17 @@ class GraphImporterTest {
         }
 
         importer.result(
-            DatabaseInfo.create(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
+            DatabaseInfo.create(TEST_DATABASE_ID, DatabaseInfo.DatabaseLocation.LOCAL),
             ProgressTimer.start(),
             true
         );
 
-        var graphStore = GraphStoreCatalog.get("", "", "g").graphStore();
+        var graphStore = graphStoreCatalogService.get(
+                CatalogRequest.of(EMPTY_USER, TEST_DATABASE_ID),
+                GraphName.parse("g")
+            )
+            .graphStore();
+
         assertGraphEquals(
             fromGdl("({prop: 0})-->({prop: 1})-->({prop: 2})"),
             graphStore.getUnion()
@@ -208,6 +242,7 @@ class GraphImporterTest {
                 .build(),
             Capabilities.WriteMode.REMOTE,
             "",
+            graphStoreCatalogService,
             ProgressTracker.NULL_TRACKER
         );
 
@@ -227,12 +262,17 @@ class GraphImporterTest {
         }
 
         importer.result(
-            DatabaseInfo.create(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
+            DatabaseInfo.create(TEST_DATABASE_ID, DatabaseInfo.DatabaseLocation.LOCAL),
             ProgressTimer.start(),
             true
         );
 
-        var graphStore = GraphStoreCatalog.get("", "", "g").graphStore();
+        var graphStore = graphStoreCatalogService.get(
+                CatalogRequest.of(EMPTY_USER, TEST_DATABASE_ID),
+                GraphName.parse("g")
+            )
+            .graphStore();
+
         assertGraphEquals(
             fromGdl("(:Label0 {prop0: 0})-->(:Label1 {prop1: 1})-->(:Label2 {prop2: 2})"),
             graphStore.getUnion()
@@ -253,6 +293,7 @@ class GraphImporterTest {
                 .build(),
             Capabilities.WriteMode.REMOTE,
             "",
+            graphStoreCatalogService,
             ProgressTracker.NULL_TRACKER
         );
 
@@ -270,14 +311,20 @@ class GraphImporterTest {
         }
 
         var result = importer.result(
-            DatabaseInfo.create(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
+            DatabaseInfo.create(TEST_DATABASE_ID, DatabaseInfo.DatabaseLocation.LOCAL),
             ProgressTimer.start(),
             true
         );
 
         assertThat(result.nodeCount()).isEqualTo(3);
         assertThat(result.relationshipCount()).isEqualTo(2);
-        var graphStore = GraphStoreCatalog.get("", "", "g").graphStore();
+
+        var graphStore = graphStoreCatalogService.get(
+                CatalogRequest.of(EMPTY_USER, TEST_DATABASE_ID),
+                GraphName.parse("g")
+            )
+            .graphStore();
+
         assertGraphEquals(
             fromGdl("()-[:REL0]->()-[:REL1]->()"),
             graphStore.getUnion()
@@ -298,6 +345,7 @@ class GraphImporterTest {
                 .build(),
             Capabilities.WriteMode.REMOTE,
             "",
+            graphStoreCatalogService,
             ProgressTracker.NULL_TRACKER
         );
 
@@ -315,14 +363,20 @@ class GraphImporterTest {
         }
 
         var result = importer.result(
-            DatabaseInfo.create(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
+            DatabaseInfo.create(TEST_DATABASE_ID, DatabaseInfo.DatabaseLocation.LOCAL),
             ProgressTimer.start(),
             true
         );
 
         assertThat(result.nodeCount()).isEqualTo(3);
         assertThat(result.relationshipCount()).isEqualTo(2);
-        var graphStore = GraphStoreCatalog.get("", "", "g").graphStore();
+
+        var graphStore = graphStoreCatalogService.get(
+                CatalogRequest.of(EMPTY_USER, TEST_DATABASE_ID),
+                GraphName.parse("g")
+            )
+            .graphStore();
+
         assertGraphEquals(
             fromGdl("()-[:REL0 {prop0: 0}]->()-[:REL1 {prop1: 1}]->()"),
             graphStore.getUnion()
@@ -343,6 +397,7 @@ class GraphImporterTest {
                 .build(),
             Capabilities.WriteMode.REMOTE,
             "",
+            graphStoreCatalogService,
             ProgressTracker.NULL_TRACKER
         );
 
@@ -388,6 +443,7 @@ class GraphImporterTest {
                 .build(),
             Capabilities.WriteMode.REMOTE,
             "",
+            graphStoreCatalogService,
             ProgressTracker.NULL_TRACKER
         );
 
@@ -403,7 +459,7 @@ class GraphImporterTest {
         );
 
         assertThatThrownBy(() -> importer.result(
-            DatabaseInfo.create(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
+            DatabaseInfo.create(TEST_DATABASE_ID, DatabaseInfo.DatabaseLocation.LOCAL),
             ProgressTimer.start(),
             true
         )).hasMessage(
@@ -423,6 +479,7 @@ class GraphImporterTest {
                 .build(),
             Capabilities.WriteMode.REMOTE,
             "",
+            graphStoreCatalogService,
             ProgressTracker.NULL_TRACKER
         );
 
@@ -438,7 +495,7 @@ class GraphImporterTest {
         );
 
         assertThatThrownBy(() -> importer.result(
-            DatabaseInfo.create(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
+            DatabaseInfo.create(TEST_DATABASE_ID, DatabaseInfo.DatabaseLocation.LOCAL),
             ProgressTimer.start(),
             true
         )).hasMessage(
@@ -470,6 +527,7 @@ class GraphImporterTest {
                 .build(),
             Capabilities.WriteMode.REMOTE,
             "",
+            graphStoreCatalogService,
             progressTracker
         );
 
@@ -487,7 +545,7 @@ class GraphImporterTest {
         }
 
         importer.result(
-            DatabaseInfo.create(DatabaseId.EMPTY, DatabaseInfo.DatabaseLocation.LOCAL),
+            DatabaseInfo.create(TEST_DATABASE_ID, DatabaseInfo.DatabaseLocation.LOCAL),
             ProgressTimer.start(),
             true
         );

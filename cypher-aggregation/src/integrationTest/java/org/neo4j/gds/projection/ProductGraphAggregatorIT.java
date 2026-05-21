@@ -25,9 +25,12 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.neo4j.gds.TestTaskStore;
 import org.neo4j.gds.api.DatabaseId;
+import org.neo4j.gds.api.GraphName;
+import org.neo4j.gds.api.User;
 import org.neo4j.gds.core.PlainSimpleRequestCorrelationId;
 import org.neo4j.gds.core.loading.Capabilities;
-import org.neo4j.gds.core.loading.GraphStoreCatalog;
+import org.neo4j.gds.core.loading.CatalogRequest;
+import org.neo4j.gds.core.loading.GraphStoreCatalogService;
 import org.neo4j.gds.core.utils.progress.EmptyTaskStore;
 import org.neo4j.gds.core.utils.progress.tasks.Status;
 import org.neo4j.gds.logging.Log;
@@ -46,75 +49,94 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class ProductGraphAggregatorIT {
 
     @Test
-    void shouldImportHighNodeIds() {
+    void shouldImportHighNodeIds() throws Exception {
         var userName = "neo4j";
         var graphName = "graph";
         var databaseId = DatabaseId.random();
 
-        var aggregator = new ProductGraphAggregator(
-            databaseId,
-            userName,
-            Capabilities.WriteMode.LOCAL,
-            QueryEstimator.empty(),
-            ExecutingQueryProvider.empty(),
-            ProjectionMetricsService.DISABLED,
-            EmptyTaskStore.INSTANCE,
-            Log.noOpLog(),
-            PlainSimpleRequestCorrelationId.create()
-        );
+        var graphStoreCatalogService = new GraphStoreCatalogService();
+        try (
+            var aggregator = new ProductGraphAggregator(
+                databaseId,
+                userName,
+                Capabilities.WriteMode.LOCAL,
+                QueryEstimator.empty(),
+                ExecutingQueryProvider.empty(),
+                graphStoreCatalogService,
+                ProjectionMetricsService.DISABLED,
+                EmptyTaskStore.INSTANCE,
+                Log.noOpLog(),
+                PlainSimpleRequestCorrelationId.create()
+            )
+        ) {
 
-        long source = 1L << 50;
-        long target = (1L << 50) + 1;
+            long source = 1L << 50;
+            long target = (1L << 50) + 1;
 
-        aggregator.projectNextRelationship(
-            Values.stringValue(graphName),
-            Values.longValue(source),
-            Values.longValue(target),
-            MapValue.EMPTY,
-            MapValue.EMPTY,
-            NoValue.NO_VALUE
-        );
+            aggregator.projectNextRelationship(
+                Values.stringValue(graphName),
+                Values.longValue(source),
+                Values.longValue(target),
+                MapValue.EMPTY,
+                MapValue.EMPTY,
+                NoValue.NO_VALUE
+            );
 
-        var result = aggregator.buildGraph();
+            var result = aggregator.buildGraph();
 
-        assertThat(result.nodeCount()).isEqualTo(2);
-        assertThat(result.relationshipCount()).isEqualTo(1);
+            assertThat(result)
+                .isNotNull()
+                .as("ProjectionResult should be present ")
+                .satisfies(
+                    projectionResult -> assertThat(projectionResult.nodeCount())
+                        .as("result should have 2 nodes")
+                        .isEqualTo(2),
+                    projectionResult -> assertThat(projectionResult.relationshipCount())
+                        .as("result should have 1 relationship")
+                        .isEqualTo(1)
+                );
 
-        var graphStoreWithConfig = GraphStoreCatalog.get(userName, databaseId, graphName);
-        var graphStore = graphStoreWithConfig.graphStore();
+            var graphStore = graphStoreCatalogService.get(
+                CatalogRequest.of(new User(userName, false), databaseId),
+                GraphName.parse(graphName)
+            ).graphStore();
 
-        assertThat(graphStore.nodes().toOriginalNodeId(0)).isEqualTo(source);
-        assertThat(graphStore.nodes().toOriginalNodeId(1)).isEqualTo(target);
+            assertThat(graphStore.nodes().toOriginalNodeId(0)).isEqualTo(source);
+            assertThat(graphStore.nodes().toOriginalNodeId(1)).isEqualTo(target);
+        }
     }
 
     @ParameterizedTest(name = "graphName=`{1}`")
     @MethodSource("emptyGraphNames")
-    void shouldFailOnEmptyGraphName(String emptyGraphName, String description) {
+    void shouldFailOnEmptyGraphName(String emptyGraphName, String description) throws Exception {
 
         TestTaskStore taskStore = new TestTaskStore();
-        var aggregator = new ProductGraphAggregator(
-            DatabaseId.random(),
-            "neo4j",
-            Capabilities.WriteMode.LOCAL,
-            QueryEstimator.empty(),
-            ExecutingQueryProvider.empty(),
-            ProjectionMetricsService.DISABLED,
-            taskStore,
-            Log.noOpLog(),
-            PlainSimpleRequestCorrelationId.create()
-        );
+        try (
+            var aggregator = new ProductGraphAggregator(
+                DatabaseId.random(),
+                "neo4j",
+                Capabilities.WriteMode.LOCAL,
+                QueryEstimator.empty(),
+                ExecutingQueryProvider.empty(),
+                new GraphStoreCatalogService(),
+                ProjectionMetricsService.DISABLED,
+                taskStore,
+                Log.noOpLog(),
+                PlainSimpleRequestCorrelationId.create()
+            )
+        ) {
+            assertThatIllegalArgumentException().isThrownBy(() ->
+                aggregator.projectNextRelationship(
+                    Values.stringValue(emptyGraphName),
+                    Values.longValue(1L),
+                    Values.longValue(2L),
+                    MapValue.EMPTY,
+                    MapValue.EMPTY,
+                    NoValue.NO_VALUE
+                )).withMessageContaining("`graphName` can not be null or blank");
 
-        assertThatIllegalArgumentException().isThrownBy(() ->
-            aggregator.projectNextRelationship(
-                Values.stringValue(emptyGraphName),
-                Values.longValue(1L),
-                Values.longValue(2L),
-                MapValue.EMPTY,
-                MapValue.EMPTY,
-                NoValue.NO_VALUE
-            )).withMessageContaining("`graphName` can not be null or blank");
-
-        assertThat(taskStore.tasksSeen()).isEmpty();
+            assertThat(taskStore.tasksSeen()).isEmpty();
+        }
     }
 
     private static Stream<Arguments> emptyGraphNames() {
@@ -135,6 +157,7 @@ class ProductGraphAggregatorIT {
             Capabilities.WriteMode.LOCAL,
             QueryEstimator.empty(),
             ExecutingQueryProvider.empty(),
+            new  GraphStoreCatalogService(),
             ProjectionMetricsService.DISABLED,
             taskStore,
             Log.noOpLog(),

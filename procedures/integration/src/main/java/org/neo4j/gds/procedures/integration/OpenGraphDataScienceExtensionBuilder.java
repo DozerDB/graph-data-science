@@ -35,7 +35,6 @@ import org.neo4j.gds.core.utils.mem.GcListenerExtension;
 import org.neo4j.gds.core.utils.progress.TaskRegistryFactory;
 import org.neo4j.gds.core.utils.progress.TaskStore;
 import org.neo4j.gds.core.utils.progress.TaskStoreService;
-import org.neo4j.gds.user.log.UserLogRegistry;
 import org.neo4j.gds.domain.services.GloballyScopedDependencies;
 import org.neo4j.gds.domain.services.GloballyScopedDependenciesBuilder;
 import org.neo4j.gds.legacycypherprojection.CypherProjectionGraphStoreFactorySupplier;
@@ -55,6 +54,7 @@ import org.neo4j.gds.projection.GraphProjectFromStoreConfig;
 import org.neo4j.gds.projection.GraphStoreFactorySuppliers;
 import org.neo4j.gds.projection.NativeProjectionGraphStoreFactorySupplier;
 import org.neo4j.gds.settings.GdsSettings;
+import org.neo4j.gds.user.log.UserLogRegistry;
 import org.neo4j.graphdb.config.Configuration;
 import org.neo4j.internal.kernel.api.exceptions.ProcedureException;
 import org.neo4j.kernel.api.procedure.GlobalProcedures;
@@ -206,6 +206,12 @@ public final class OpenGraphDataScienceExtensionBuilder {
                 var user = userAccessor.getUser(context.securityContext());
                 return new MemoryFacade(user, memoryTracker);
             }
+        );
+
+        componentRegistration.registerComponent(
+            "GDS GraphStoreCatalogService",
+            GraphStoreCatalogService.class,
+            context -> graphStoreCatalogService
         );
 
         registerCypherAggregation(globalProcedures, log);

@@ -25,6 +25,8 @@ import org.neo4j.gds.ElementProjection;
 import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.api.DatabaseInfo;
 import org.neo4j.gds.api.DefaultValue;
+import org.neo4j.gds.api.GraphName;
+import org.neo4j.gds.api.User;
 import org.neo4j.gds.api.schema.ImmutableMutableGraphSchema;
 import org.neo4j.gds.api.schema.MutableGraphSchema;
 import org.neo4j.gds.api.schema.MutableRelationshipSchema;
@@ -33,7 +35,7 @@ import org.neo4j.gds.compression.api.AdjacencyCompressor;
 import org.neo4j.gds.config.GraphProjectConfig;
 import org.neo4j.gds.core.loading.Capabilities;
 import org.neo4j.gds.core.loading.GraphStoreBuilder;
-import org.neo4j.gds.core.loading.GraphStoreCatalog;
+import org.neo4j.gds.core.loading.GraphStoreCatalogService;
 import org.neo4j.gds.core.loading.LazyIdMapBuilder;
 import org.neo4j.gds.core.loading.Nodes;
 import org.neo4j.gds.core.loading.RelationshipImportResult;
@@ -73,6 +75,7 @@ public final class GraphImporter {
     private final Capabilities.WriteMode writeMode;
     private final String query;
 
+    private final GraphStoreCatalogService graphStoreCatalogService;
     private final ProgressTracker progressTracker;
 
     private final Map<RelationshipType, RelationshipsBuilder> relImporters;
@@ -93,6 +96,7 @@ public final class GraphImporter {
         LazyIdMapBuilder idMapBuilder,
         Capabilities.WriteMode writeMode,
         String query,
+        GraphStoreCatalogService graphStoreCatalogService,
         ProgressTracker progressTracker
     ) {
         this.config = config;
@@ -101,6 +105,7 @@ public final class GraphImporter {
         this.idMapBuilder = idMapBuilder;
         this.writeMode = writeMode;
         this.query = query;
+        this.graphStoreCatalogService = graphStoreCatalogService;
         this.progressTracker = progressTracker;
         this.relImporters = new ConcurrentHashMap<>();
         this.graphSchemaBuilder = MutableGraphSchema.builder();
@@ -198,7 +203,11 @@ public final class GraphImporter {
         progressTracker.beginSubTask("Nodes");
         var graphName = config.graphName();
 
-        if (GraphStoreCatalog.exists(config.username(), databaseInfo.databaseId(), graphName)) {
+        if (graphStoreCatalogService.graphExists(
+            new User(config.username(), false),
+            databaseInfo.databaseId(),
+            GraphName.parse(graphName)
+        )) {
             throw new IllegalArgumentException("Graph " + graphName + " already exists");
         }
 
@@ -233,7 +242,7 @@ public final class GraphImporter {
             graphStore.relationshipPropertyKeys().size()
         ));
 
-        GraphStoreCatalog.set(this.config, graphStore);
+        graphStoreCatalogService.set(this.config, graphStore);
 
         var projectMillis = timer.stop().getDuration();
 

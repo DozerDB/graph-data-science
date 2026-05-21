@@ -24,6 +24,7 @@ import org.neo4j.gds.compat.DatabaseIdSupplier;
 import org.neo4j.gds.compat.GraphDatabaseApiProxy;
 import org.neo4j.gds.compat.UserFunctionSignatureBuilder;
 import org.neo4j.gds.core.loading.Capabilities;
+import org.neo4j.gds.core.loading.GraphStoreCatalogService;
 import org.neo4j.gds.core.utils.progress.TaskStore;
 import org.neo4j.gds.integration.Neo4jPoweredRequestCorrelationId;
 import org.neo4j.gds.logging.LogAdapter;
@@ -85,6 +86,7 @@ public class CypherAggregation implements CallableUserAggregationFunction {
     public UserAggregationReducer createReducer(Context ctx) throws ProcedureException {
         try {
             var databaseService = ctx.graphDatabaseAPI();
+            var graphStoreCatalogService = GraphDatabaseApiProxy.lookupComponentProvider(ctx, GraphStoreCatalogService.class, true);
             var metrics = GraphDatabaseApiProxy.lookupComponentProvider(ctx, Metrics.class, true);
             var taskStore = GraphDatabaseApiProxy.lookupComponentProvider(ctx, TaskStore.class, true);
             var log = GraphDatabaseApiProxy.lookupComponentProvider(ctx, Log.class, true);
@@ -113,6 +115,7 @@ public class CypherAggregation implements CallableUserAggregationFunction {
                 writeMode,
                 queryEstimator,
                 queryProvider,
+                graphStoreCatalogService,
                 metrics.projectionMetrics(),
                 taskStore,
                 new LogAdapter(log),
