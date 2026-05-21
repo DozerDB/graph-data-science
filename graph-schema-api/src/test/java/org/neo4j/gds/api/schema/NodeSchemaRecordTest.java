@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -551,6 +552,37 @@ class NodeSchemaRecordTest {
         var schema = NodeSchemaRecord.builder().build();
 
         assertThat(schema.hasProperty("FOO", "BAR")).isFalse();
+    }
+
+    @Test
+    void getPropertyKeysMappedToSchema() {
+        var schema = NodeSchemaRecord.builder()
+            .addProperty("LabelA", "PropertyX", ValueType.LONG)
+            .addProperty("LabelA", "PropertyY", ValueType.LONG)
+            .addProperty("LabelB", "PropertyZ", ValueType.LONG)
+            .build();
+
+        var result = schema.unionProperties();
+
+        var expected = Map.of(
+            "PropertyX", PropertySchema.of("PropertyX", ValueType.LONG),
+            "PropertyY", PropertySchema.of("PropertyY", ValueType.LONG),
+            "PropertyZ", PropertySchema.of("PropertyZ", ValueType.LONG)
+        );
+        assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    void duplicatePropertyKeysWillOnlyMapToOneSchema() {
+        var schema = NodeSchemaRecord.builder()
+            .addProperty("LabelA", "PropertyX", ValueType.LONG)
+            .addProperty("LabelB", "PropertyX", ValueType.LONG)
+            .build();
+
+        var result = schema.unionProperties();
+
+        var expected = Map.of("PropertyX", PropertySchema.of("PropertyX", ValueType.LONG));
+        assertThat(result).isEqualTo(expected);
     }
 
     private static NodeSchemaRecord createSchema(SchemaEntry... entries) {

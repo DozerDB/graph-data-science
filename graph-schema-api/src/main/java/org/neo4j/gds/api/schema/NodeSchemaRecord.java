@@ -112,6 +112,18 @@ public record NodeSchemaRecord(Map<NodeLabel, List<PropertySchema>> entries) {
             .collect(Collectors.toSet());
     }
 
+    public Map<String, PropertySchema> unionProperties() {
+        return entries.values().stream()
+            .flatMap(List::stream)
+            .collect(
+                Collectors.toMap(
+                    PropertySchema::key,
+                    propertySchema -> propertySchema,
+                    (left, right) -> left
+                )
+            );
+    }
+
     /**
      * Builder
      */
