@@ -74,10 +74,10 @@ class GraphStoreToCsvExporterTest extends CsvTest {
 
     @GdlGraph(orientation = UNDIRECTED, propertyState = PropertyState.PERSISTENT)
     private static final String GDL = "CREATE" +
-        "  (a:A:B { prop1: 0, prop2: 42, prop3: [1L, 3L, 3L, 7L]})" +
-        ", (b:A:B { prop1: 1, prop2: 43})" +
-        ", (c:A:C { prop1: 2, prop2: 44, prop3: [1L, 9L, 8L, 4L] })" +
-        ", (d:B { prop1: 3 })" +
+        "  (a:Bar:Baz { prop1: 0, prop2: 42, prop3: [1L, 3L, 3L, 7L]})" +
+        ", (b:Bar:Baz { prop1: 1, prop2: 43})" +
+        ", (c:Bar:Foo { prop1: 2, prop2: 44, prop3: [1L, 9L, 8L, 4L] })" +
+        ", (d:Baz { prop1: 3 })" +
         ", (a)-[:REL1 { averylongnamethatisgreaterthantwentyfour: 0, prop2: 42 }]->(a)" +
         ", (a)-[:REL1 { averylongnamethatisgreaterthantwentyfour: 1, prop2: 43 }]->(b)" +
         ", (b)-[:REL1 { averylongnamethatisgreaterthantwentyfour: 2, prop2: 44 }]->(a)" +
@@ -151,16 +151,16 @@ class GraphStoreToCsvExporterTest extends CsvTest {
         );
         exporter.run();
 
-        var aLabel = NodeLabel.of("A");
-        var bLabel = NodeLabel.of("B");
-        var cLabel = NodeLabel.of("C");
+        var barLabel = NodeLabel.of("Bar");
+        var bazLabel = NodeLabel.of("Baz");
+        var fooLabel = NodeLabel.of("Foo");
         var rel1Type = RelationshipType.of("REL1");
         var rel2Type = RelationshipType.of("REL2");
 
         var nodeSchema = graphStore.schema().nodeSchema();
-        var abSchema = nodeSchema.filter(Set.of(aLabel, bLabel)).unionProperties();
-        var acSchema = nodeSchema.filter(Set.of(aLabel, cLabel)).unionProperties();
-        var bSchema = nodeSchema.filter(Set.of(bLabel)).unionProperties();
+        var abSchema = nodeSchema.filter(Set.of(barLabel, bazLabel)).unionProperties();
+        var acSchema = nodeSchema.filter(Set.of(barLabel, fooLabel)).unionProperties();
+        var bSchema = nodeSchema.filter(Set.of(bazLabel)).unionProperties();
         var rel1Schema = graphStore.schema().relationshipSchema().filter(Set.of(rel1Type)).unionProperties();
         var rel2Schema = graphStore.schema().relationshipSchema().filter(Set.of(rel2Type)).unionProperties();
 
@@ -183,9 +183,9 @@ class GraphStoreToCsvExporterTest extends CsvTest {
         // Assert label mappings
         CsvTestSupport.assertFileContent(tempDir, "label-mappings.csv", """
                 index,label
-                label1,A
-                label2,B
-                label3,C
+                label1,Bar
+                label2,Baz
+                label3,Foo
                 """);
 
         assertHeaderFile("nodes_label1_label2_header.csv", NODE_COLUMNS, abSchema);
@@ -361,63 +361,63 @@ class GraphStoreToCsvExporterTest extends CsvTest {
             List.of(
                 NODE_SCHEMA_COLUMNS,
                 List.of(
-                    "A",
+                    "Bar",
                     "prop1",
                     ValueType.LONG.csvName(),
                     ValueType.LONG.fallbackValue().toString(),
                     PropertyState.PERSISTENT.name()
                 ),
                 List.of(
-                    "A",
+                    "Bar",
                     "prop2",
                     ValueType.LONG.csvName(),
                     ValueType.LONG.fallbackValue().toString(),
                     PropertyState.PERSISTENT.name()
                 ),
                 List.of(
-                    "A",
+                    "Bar",
                     "prop3",
                     ValueType.LONG_ARRAY.csvName(),
                     ValueType.LONG_ARRAY.fallbackValue().toString(),
                     PropertyState.PERSISTENT.name()
                 ),
                 List.of(
-                    "B",
+                    "Baz",
                     "prop1",
                     ValueType.LONG.csvName(),
                     ValueType.LONG.fallbackValue().toString(),
                     PropertyState.PERSISTENT.name()
                 ),
                 List.of(
-                    "B",
+                    "Baz",
                     "prop2",
                     ValueType.LONG.csvName(),
                     ValueType.LONG.fallbackValue().toString(),
                     PropertyState.PERSISTENT.name()
                 ),
                 List.of(
-                    "B",
+                    "Baz",
                     "prop3",
                     ValueType.LONG_ARRAY.csvName(),
                     ValueType.LONG_ARRAY.fallbackValue().toString(),
                     PropertyState.PERSISTENT.name()
                 ),
                 List.of(
-                    "C",
+                    "Foo",
                     "prop1",
                     ValueType.LONG.csvName(),
                     ValueType.LONG.fallbackValue().toString(),
                     PropertyState.PERSISTENT.name()
                 ),
                 List.of(
-                    "C",
+                    "Foo",
                     "prop2",
                     ValueType.LONG.csvName(),
                     ValueType.LONG.fallbackValue().toString(),
                     PropertyState.PERSISTENT.name()
                 ),
                 List.of(
-                    "C",
+                    "Foo",
                     "prop3",
                     ValueType.LONG_ARRAY.csvName(),
                     ValueType.LONG_ARRAY.fallbackValue().toString(),

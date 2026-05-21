@@ -23,17 +23,18 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import static org.neo4j.gds.utils.StringFormatting.formatWithLocale;
 
-public interface IdentifierMapper<T> {
+public interface IdentifierMapper<T extends Comparable<? super T>> {
     default String identifierFor(T name) {
         throw new NoSuchElementException(formatWithLocale("no identifier for the name '%s' exists.", name));
     }
@@ -46,24 +47,27 @@ public interface IdentifierMapper<T> {
         return Collections.emptyList();
     }
 
+    /**
+     * Will iterate in-order based on implementation of Comparable type
+     */
     default void forEach(BiConsumer<? super T, ? super String> action) {
     }
 
-    static <T> Builder<T> builder(String prefix) {
+    static <T extends Comparable<? super T>> Builder<T> builder(String prefix) {
         return new Builder<>(prefix);
     }
 
-    static <T> IdentifierMapper<T> biject(Function<T, String> inject, Function<String, T> surject) {
+    static <T extends Comparable<? super T>> IdentifierMapper<T> biject(Function<T, String> inject, Function<String, T> surject) {
         return new BijectionMapper<>(inject, surject);
     }
 
-    final class Builder<T> {
+    final class Builder<T extends Comparable<? super T>> {
 
         private final String prefix;
-        private final Map<T, String> identifierMapping = new ConcurrentHashMap<>();
+        private final Map<T, String> identifierMapping = new HashMap<>();
         // TODO this might not be needed
-        private final Map<String, T> reverseMapping = new ConcurrentHashMap<>();
-        private final AtomicInteger count = new AtomicInteger(1);
+        private final Map<String, T> reverseMapping = new HashMap<>();
+        private int count = 1;
 
         private Builder(String prefix) {
             this.prefix = prefix;
@@ -72,7 +76,7 @@ public interface IdentifierMapper<T> {
         public String getOrCreateIdentifierFor(T name) {
             var identifier = this.identifierMapping.computeIfAbsent(
                 name,
-                __ -> this.prefix + this.count.getAndIncrement()
+                __ -> this.prefix + this.count++
             );
             this.addReverseMapping(name, identifier);
             return identifier;
@@ -96,7 +100,7 @@ public interface IdentifierMapper<T> {
         }
 
         public IdentifierMapper<T> build() {
-            return new RealMapper<>(this.identifierMapping, this.reverseMapping);
+            return new RealMapper<>(new TreeMap<>(this.identifierMapping), this.reverseMapping);
         }
 
         private void addReverseMapping(T name, String identifier) {
@@ -115,7 +119,7 @@ public interface IdentifierMapper<T> {
 
 }
 
-final class BijectionMapper<T> implements IdentifierMapper<T> {
+final class BijectionMapper<T extends Comparable<? super T>> implements IdentifierMapper<T> {
     private final Function<T, String> inject;
     private final Function<String, T> surject;
 
@@ -136,12 +140,12 @@ final class BijectionMapper<T> implements IdentifierMapper<T> {
     }
 }
 
-final class RealMapper<T> implements IdentifierMapper<T> {
+final class RealMapper<T extends Comparable<? super T>> implements IdentifierMapper<T> {
 
-    private final Map<T, String> identifierMapping;
+    private final SortedMap<T, String> identifierMapping;
     private final Map<String, T> reverseMapping;
 
-    RealMapper(Map<T, String> identifierMapping, Map<String, T> reverseMapping) {
+    RealMapper(SortedMap<T, String> identifierMapping, Map<String, T> reverseMapping) {
         this.identifierMapping = identifierMapping;
         this.reverseMapping = reverseMapping;
     }

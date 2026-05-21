@@ -26,7 +26,7 @@ import java.util.Objects;
 
 import static org.neo4j.gds.utils.StringFormatting.formatWithLocale;
 
-public abstract class ElementIdentifier {
+public abstract class ElementIdentifier implements Comparable<ElementIdentifier> {
 
     public final @NotNull String name;
 
@@ -63,5 +63,10 @@ public abstract class ElementIdentifier {
         return formatWithLocale("%s{" +
                "name='" + name + '\'' +
                '}', this.getClass().getSimpleName());
+    }
+
+    @Override
+    public int compareTo(ElementIdentifier o) {
+        return this.name.compareTo(o.name());
     }
 }

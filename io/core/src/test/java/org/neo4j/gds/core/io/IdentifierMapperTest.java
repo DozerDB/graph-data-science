@@ -21,6 +21,10 @@ package org.neo4j.gds.core.io;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
@@ -28,21 +32,21 @@ class IdentifierMapperTest {
 
     @Test
     void cachesIdentifierForSameInput() {
-        var mapper = IdentifierMapper.builder("foo_");
+        var mapper = IdentifierMapper.<String>builder("foo_");
         assertThat(mapper.getOrCreateIdentifierFor("FOO")).isEqualTo("foo_1");
         assertThat(mapper.getOrCreateIdentifierFor("FOO")).isEqualTo("foo_1");
     }
 
     @Test
     void incrementsCounterStartingAtOneForDifferentInput() {
-        var mapper = IdentifierMapper.builder("foo_");
+        var mapper = IdentifierMapper.<String>builder("foo_");
         assertThat(mapper.getOrCreateIdentifierFor("FOO")).isEqualTo("foo_1");
         assertThat(mapper.getOrCreateIdentifierFor("BAR")).isEqualTo("foo_2");
     }
 
     @Test
     void canSetAMappingFromOutside() {
-        var mapper = IdentifierMapper.builder("foo_");
+        var mapper = IdentifierMapper.<String>builder("foo_");
         mapper.setIdentifierMapping("FOO", "foo_1");
         assertThat(mapper.getOrCreateIdentifierFor("FOO")).isEqualTo("foo_1");
 
@@ -54,9 +58,21 @@ class IdentifierMapperTest {
 
     @Test
     void returnsAllIdentifiers() {
-        var mapper = IdentifierMapper.builder("foo_");
+        var mapper = IdentifierMapper.<String>builder("foo_");
         mapper.getOrCreateIdentifierFor("FOO");
         mapper.getOrCreateIdentifierFor("BAR");
         assertThat(mapper.build().identifiers()).containsExactlyInAnyOrder("foo_1", "foo_2");
+    }
+
+    @Test
+    void iteratesInOrder() {
+        var builder = IdentifierMapper.<String>builder("foo_");
+        Stream.of("Foo", "Bar", "Baz").forEach(builder::getOrCreateIdentifierFor);
+        var mapper = builder.build();
+
+        var result = new ArrayList<String>();
+        mapper.forEach((element, identifier) -> result.add(element));
+
+        assertThat(result).isEqualTo(List.of("Bar", "Baz", "Foo"));
     }
 }

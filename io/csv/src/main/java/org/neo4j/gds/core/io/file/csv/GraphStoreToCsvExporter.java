@@ -71,7 +71,7 @@ public final class GraphStoreToCsvExporter {
             ));
 
         var labelMapperBuilder = IdentifierMapper.<NodeLabel>builder("label");
-        // For testing purposes we sort the node labels to get the rows in predictable order
+        // We sort the node labels to get the rows in predictable order
         var sortedNodeLabels = graphStore.nodeLabels().stream()
             .sorted(Comparator.comparing(NodeLabel::name))
             .toList();
