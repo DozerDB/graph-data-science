@@ -16,13 +16,11 @@ dependencies {
     compileOnly(neo4j.graphdb.api) { transitive = false }
     compileOnly(neo4j.import.api) { transitive = false }
 
-    implementation project(':annotations')
     implementation project(':core')
     implementation project(':graph-schema-api')
     implementation project(':io-core')
     implementation project(':logging')
     implementation project(':memory-usage')
-    implementation project(':neo4j-kernel-adapter-api')
     implementation project(':neo4j-settings')
     implementation project(':progress-tracking')
     implementation project(':string-formatting')
@@ -34,5 +32,6 @@ dependencies {
 
     testImplementation project(':gdl-graph')
     testImplementation project(':gdl-junit-extension')
+    testImplementation project(':neo4j-kernel-adapter-api')
     testImplementation project(':test-utils')
 }
