@@ -22,7 +22,6 @@ dependencies {
     implementation project(':community-algorithms')
     implementation project(':config-api')
     implementation project(':core')
-    implementation project(':defaults-and-limits-configuration')
     implementation project(':machine-learning-algorithms')
     implementation project(':memory-usage')
     implementation project(':miscellaneous-algorithms')
@@ -45,6 +44,7 @@ dependencies {
     testImplementation openGds.mockito.junit.jupiter
     testImplementation openGds.assertj.core
 
+    testImplementation project(':defaults-and-limits-configuration')
     testImplementation project(':test-utils')
 
     testImplementation neo4j.graphdb.api
