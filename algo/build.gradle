@@ -24,7 +24,6 @@ dependencies {
     // Neo4j dependencies
     compileOnly(neo4j.annotations) { transitive = false }
 
-    implementation project(':algorithms-machinery')
     implementation project(':algo-common')
     implementation project(':algo-params-common')
     implementation project(':annotations')
@@ -38,7 +37,6 @@ dependencies {
     implementation project(':core-utils')
     implementation project(':gds-values')
     implementation project(':graph-schema-api')
-    implementation project(':logging')
     implementation project(':memory-usage')
     implementation project(':miscellaneous-params')
     implementation project(':ml-algo')
@@ -54,14 +52,16 @@ dependencies {
     implementation project(':similarity-params')
     implementation project(':string-formatting')
     implementation project(':termination')
-    implementation project(':user-log')
 
     // TEST DEPENDENCIES
     testAnnotationProcessor project(':annotations')
 
+    testImplementation project(':algorithms-machinery')
     testImplementation project(':gdl-graph')
     testImplementation project(':gdl-junit-extension')
-    testImplementation project(':test-utils')
+    testImplementation project(':logging')
     testImplementation project(':ml-test-utils')
+    testImplementation project(':test-utils')
+    testImplementation project(':user-log')
     testImplementation openGds.gdl
 }
