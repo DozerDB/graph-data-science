@@ -26,6 +26,7 @@ import org.neo4j.gds.api.nodeproperties.ValueType;
 import org.neo4j.gds.utils.StringFormatting;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -122,6 +123,10 @@ public record NodeSchemaRecord(Map<NodeLabel, List<PropertySchema>> entries) {
                     (left, right) -> left
                 )
             );
+    }
+
+    public static NodeSchemaRecord empty() {
+        return new NodeSchemaRecord(Collections.emptyMap());
     }
 
     /**

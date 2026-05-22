@@ -190,7 +190,7 @@ class NodeSchemaRecordTest {
     void readDefaultValueFromNonExistingLabel() {
         var label = "LabelA";
         var propertyKey = "PropertyX";
-        var schema = NodeSchemaRecord.builder().build();
+        var schema = NodeSchemaRecord.empty();
 
         var result = schema.getDefaultValueFor(label, propertyKey);
 
@@ -376,7 +376,7 @@ class NodeSchemaRecordTest {
 
     @Test
     void schemaHasNoPropertiesWhenEmpty() {
-        var schema = NodeSchemaRecord.builder().build();
+        var schema = NodeSchemaRecord.empty();
 
         var result = schema.hasProperties();
 
@@ -408,7 +408,7 @@ class NodeSchemaRecordTest {
 
     @Test
     void listAllLabelsWhenEmpty() {
-        var schema = NodeSchemaRecord.builder().build();
+        var schema = NodeSchemaRecord.empty();
 
         var result = schema.availableLabels();
 
@@ -433,7 +433,7 @@ class NodeSchemaRecordTest {
     @Test
     void allLabelsSchema() {
         var schema1 = NodeSchemaRecord.builder().addLabel(NodeLabel.ALL_LABEL).build();
-        var schema2 = NodeSchemaRecord.builder().build();
+        var schema2 = NodeSchemaRecord.empty();
 
         assertThat(schema1.containsOnlyAllNodesLabel()).isTrue();
         assertThat(schema2.containsOnlyAllNodesLabel()).isFalse();
@@ -454,7 +454,7 @@ class NodeSchemaRecordTest {
 
     @Test
     void getAllPropertiesWhenEmpty() {
-        var schema = NodeSchemaRecord.builder().build();
+        var schema = NodeSchemaRecord.empty();
 
         var result = schema.allProperties();
 
@@ -549,7 +549,7 @@ class NodeSchemaRecordTest {
 
     @Test
     void doesNotContainPropertyKeyForLabel() {
-        var schema = NodeSchemaRecord.builder().build();
+        var schema = NodeSchemaRecord.empty();
 
         assertThat(schema.hasProperty("FOO", "BAR")).isFalse();
     }
