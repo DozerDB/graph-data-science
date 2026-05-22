@@ -354,7 +354,7 @@ class HashGNNTest {
         var params = HashGNNConfigTransformer.toParameters(config);
 
         var progressTrackerWithLog = TestProgressTrackerHelper.create(
-            new NodeEmbeddingsAlgorithmTasks().hashGNN(binaryGraph, params, config.relationshipTypes()),
+            NodeEmbeddingsAlgorithmTasks.hashGNN(binaryGraph, params, config.relationshipTypes()),
             new Concurrency(4)
         );
 
@@ -390,7 +390,7 @@ class HashGNNTest {
         var params = HashGNNConfigTransformer.toParameters(config);
 
         var progressTrackerWithLog = TestProgressTrackerHelper.create(
-            new NodeEmbeddingsAlgorithmTasks().hashGNN(doubleGraph, params, config.relationshipTypes()),
+            NodeEmbeddingsAlgorithmTasks.hashGNN(doubleGraph, params, config.relationshipTypes()),
             new Concurrency(4)
         );
 

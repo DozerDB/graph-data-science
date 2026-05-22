@@ -51,10 +51,6 @@ public class NodeEmbeddingComputeFacade {
     // Request scope dependencies
     private final TerminationFlag terminationFlag;
 
-    // Local dependencies
-    private final NodeEmbeddingsAlgorithmTasks tasks = new NodeEmbeddingsAlgorithmTasks();
-
-
     public NodeEmbeddingComputeFacade(
         AsyncAlgorithmCaller algorithmCaller,
         ProgressTrackerFactory progressTrackerFactory,
@@ -64,7 +60,6 @@ public class NodeEmbeddingComputeFacade {
         this.progressTrackerFactory = progressTrackerFactory;
         this.terminationFlag = terminationFlag;
     }
-
 
     public CompletableFuture<TimedAlgorithmResult<FastRPResult>> fastRP(
         Graph graph,
@@ -77,7 +72,7 @@ public class NodeEmbeddingComputeFacade {
         }
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.fastRP(graph, parameters),
+            NodeEmbeddingsAlgorithmTasks.fastRP(graph, parameters),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -112,7 +107,7 @@ public class NodeEmbeddingComputeFacade {
         }
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.hashGNN(graph, parameters, relationshipTypes),
+            NodeEmbeddingsAlgorithmTasks.hashGNN(graph, parameters, relationshipTypes),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -142,7 +137,7 @@ public class NodeEmbeddingComputeFacade {
         }
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.node2Vec(graph, parameters),
+            NodeEmbeddingsAlgorithmTasks.node2Vec(graph, parameters),
             jobId,
             parameters.concurrency(),
             logProgress

@@ -969,7 +969,7 @@ class FastRPTest {
         var params = FastRPConfigTransformer.toParameters(configuration);
 
         var progressTrackerWithLog = TestProgressTrackerHelper.create(
-            new NodeEmbeddingsAlgorithmTasks().fastRP(graph, params),
+            NodeEmbeddingsAlgorithmTasks.fastRP(graph, params),
             new Concurrency(1)
         );
 
