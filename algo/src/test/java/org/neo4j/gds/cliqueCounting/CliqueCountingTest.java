@@ -203,7 +203,7 @@ class CliqueCountingTest {
         var params = new CliqueCountingParameters(CliqueCountingMode.ForEveryNode, List.of(), new Concurrency(4));
 
         var progressTrackerWithLog = TestProgressTrackerHelper.create(
-            new CommunityAlgorithmTasks().cliqueCounting(graph, params),
+            CommunityAlgorithmTasks.cliqueCounting(graph, params),
             new Concurrency(4)
         );
 
@@ -232,7 +232,7 @@ class CliqueCountingTest {
         var params = new CliqueCountingParameters(CliqueCountingMode.ForEveryNode, List.of(new long[] {0L, 1L}, new long[] {3L}), new Concurrency(4));
 
         var progressTrackerWithLog = TestProgressTrackerHelper.create(
-            new CommunityAlgorithmTasks().cliqueCounting(graph, params),
+            CommunityAlgorithmTasks.cliqueCounting(graph, params),
             new Concurrency(4)
         );
 

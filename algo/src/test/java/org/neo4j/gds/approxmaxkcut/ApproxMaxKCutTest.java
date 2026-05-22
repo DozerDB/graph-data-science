@@ -244,7 +244,7 @@ final class ApproxMaxKCutTest {
         var params = config.toParameters();
 
         var progressTrackerWithLog = TestProgressTrackerHelper.create(
-            new CommunityAlgorithmTasks().approximateMaximumKCut(maxGraph,params),
+            CommunityAlgorithmTasks.approximateMaximumKCut(maxGraph,params),
             new Concurrency(1)
         );
 

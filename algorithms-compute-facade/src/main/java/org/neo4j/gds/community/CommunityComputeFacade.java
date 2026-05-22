@@ -105,10 +105,6 @@ public class CommunityComputeFacade {
     // Request scope dependencies
     private final TerminationFlag terminationFlag;
 
-    // Local dependencies
-    private final CommunityAlgorithmTasks tasks = new CommunityAlgorithmTasks();
-
-
     public CommunityComputeFacade(
         Log log,
         AsyncAlgorithmCaller algorithmCaller,
@@ -120,8 +116,7 @@ public class CommunityComputeFacade {
         this.progressTrackerFactory = progressTrackerFactory;
         this.terminationFlag = terminationFlag;
     }
-
-
+    
     public CompletableFuture<TimedAlgorithmResult<ApproxMaxKCutResult>> approxMaxKCut(
         Graph graph,
         ApproxMaxKCutParameters parameters,
@@ -133,7 +128,7 @@ public class CommunityComputeFacade {
         }
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.approximateMaximumKCut(graph, parameters),
+            CommunityAlgorithmTasks.approximateMaximumKCut(graph, parameters),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -165,7 +160,7 @@ public class CommunityComputeFacade {
         }
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.cliqueCounting(graph, parameters),
+            CommunityAlgorithmTasks.cliqueCounting(graph, parameters),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -197,7 +192,7 @@ public class CommunityComputeFacade {
         }
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.conductance(graph),
+            CommunityAlgorithmTasks.conductance(graph),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -231,7 +226,7 @@ public class CommunityComputeFacade {
         }
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.hdbscan(graph),
+            CommunityAlgorithmTasks.hdbscan(graph),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -263,7 +258,7 @@ public class CommunityComputeFacade {
         }
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.k1Coloring(graph, parameters),
+            CommunityAlgorithmTasks.k1Coloring(graph, parameters),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -295,7 +290,7 @@ public class CommunityComputeFacade {
         }
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.kCore(graph),
+            CommunityAlgorithmTasks.kCore(graph),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -326,7 +321,7 @@ public class CommunityComputeFacade {
         }
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.kMeans(graph,parameters),
+            CommunityAlgorithmTasks.kMeans(graph,parameters),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -358,7 +353,7 @@ public class CommunityComputeFacade {
         }
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.labelPropagation(graph,parameters),
+            CommunityAlgorithmTasks.labelPropagation(graph,parameters),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -390,7 +385,7 @@ public class CommunityComputeFacade {
         }
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.lcc(graph,parameters),
+            CommunityAlgorithmTasks.lcc(graph,parameters),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -423,7 +418,7 @@ public class CommunityComputeFacade {
         }
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.leiden(graph,parameters),
+            CommunityAlgorithmTasks.leiden(graph,parameters),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -459,7 +454,7 @@ public class CommunityComputeFacade {
         }
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.louvain(graph,parameters),
+            CommunityAlgorithmTasks.louvain(graph,parameters),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -513,7 +508,7 @@ public class CommunityComputeFacade {
         }
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.modularityOptimization(graph,parameters),
+            CommunityAlgorithmTasks.modularityOptimization(graph,parameters),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -553,7 +548,7 @@ public class CommunityComputeFacade {
         }
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.scc(graph),
+            CommunityAlgorithmTasks.scc(graph),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -584,7 +579,7 @@ public class CommunityComputeFacade {
         }
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.speakerListenerLPA(graph,configuration),
+            CommunityAlgorithmTasks.speakerListenerLPA(graph,configuration),
             jobId,
             configuration.concurrency(),
             logProgress
@@ -617,7 +612,7 @@ public class CommunityComputeFacade {
         }
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.triangleCount(graph),
+            CommunityAlgorithmTasks.triangleCount(graph),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -674,7 +669,7 @@ public class CommunityComputeFacade {
         }
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.wcc(graph),
+            CommunityAlgorithmTasks.wcc(graph),
             jobId,
             parameters.concurrency(),
             logProgress

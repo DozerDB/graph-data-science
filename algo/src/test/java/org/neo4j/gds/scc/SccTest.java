@@ -147,7 +147,7 @@ class SccTest {
     void shouldLogProgress() {
 
         var progressTrackerWithLog = TestProgressTrackerHelper.create(
-            new CommunityAlgorithmTasks().scc(graph),
+            CommunityAlgorithmTasks.scc(graph),
             new Concurrency(2)
         );
 
