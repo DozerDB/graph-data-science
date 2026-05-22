@@ -19,8 +19,9 @@ dependencies {
 
     implementation project(':algo-common')
     implementation project(':annotations')
+    implementation project(':concurrency')
     implementation project(':config-api')
-    implementation project(':core')
+    implementation project(':graph-projection-api')
     implementation project(':memory-usage')
     implementation project(':progress-tracking')
 }
