@@ -31,21 +31,21 @@ import org.neo4j.gds.similarity.nodesim.NodeSimilarityParameters;
 import org.neo4j.gds.similarity.nodesim.NodeSimilarityTask;
 
 public final class SimilarityAlgorithmTasks {
+    private SimilarityAlgorithmTasks() {}
 
-    public Task filteredKnn(Graph graph, FilteredKnnParameters parameters){
+    public static Task filteredKnn(Graph graph, FilteredKnnParameters parameters){
         return FilteredKNNTask.create(graph.nodeCount(), parameters);
     }
 
-    public Task knn(Graph graph, KnnParameters parameters){
+    public static Task knn(Graph graph, KnnParameters parameters){
         return KnnTask.create(graph.nodeCount(), parameters);
     }
 
-    public Task filteredNodeSimilarity(Graph graph, FilteredNodeSimilarityParameters parameters){
+    public static Task filteredNodeSimilarity(Graph graph, FilteredNodeSimilarityParameters parameters){
         return FilteredNodeSimilarityTask.create(graph,parameters.nodeSimilarityParameters());
     }
 
-    public Task nodeSimilarity(Graph graph, NodeSimilarityParameters parameters){
+    public static Task nodeSimilarity(Graph graph, NodeSimilarityParameters parameters){
         return NodeSimilarityTask.create(graph,parameters);
     }
-
 }

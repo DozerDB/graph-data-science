@@ -256,7 +256,7 @@ class FilteredNodeSimilarityTest {
         );
 
         var progressTrackerWithLog = TestProgressTrackerHelper.create(
-            new SimilarityAlgorithmTasks().filteredNodeSimilarity(graph,params),
+            SimilarityAlgorithmTasks.filteredNodeSimilarity(graph,params),
             new Concurrency(2)
         );
 

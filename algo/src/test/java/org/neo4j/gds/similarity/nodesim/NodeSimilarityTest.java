@@ -832,7 +832,7 @@ final class NodeSimilarityTest {
         );
 
         var progressTrackerWithLog = TestProgressTrackerHelper.create(
-            new SimilarityAlgorithmTasks().nodeSimilarity(naturalGraph, params),
+            SimilarityAlgorithmTasks.nodeSimilarity(naturalGraph, params),
             new Concurrency(2)
         );
 
@@ -880,7 +880,7 @@ final class NodeSimilarityTest {
         );
 
         var progressTrackerWithLog = TestProgressTrackerHelper.create(
-            new SimilarityAlgorithmTasks().nodeSimilarity(naturalGraph, params),
+            SimilarityAlgorithmTasks.nodeSimilarity(naturalGraph, params),
             new Concurrency(concurrencyValue)
         );
 
@@ -932,7 +932,7 @@ final class NodeSimilarityTest {
         );
 
         var progressTrackerWithLog = TestProgressTrackerHelper.create(
-            new SimilarityAlgorithmTasks().nodeSimilarity(naturalGraph, params),
+            SimilarityAlgorithmTasks.nodeSimilarity(naturalGraph, params),
             new Concurrency(4)
         );
 

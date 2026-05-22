@@ -36,7 +36,6 @@ public class SimilarityAlgorithmsBusinessFacade {
     private final AlgorithmMachinery algorithmMachinery = new AlgorithmMachinery();
     private final SimilarityAlgorithms similarityAlgorithms;
     private final ProgressTrackerCreator progressTrackerCreator;
-    private final SimilarityAlgorithmTasks tasks = new SimilarityAlgorithmTasks();
 
     public SimilarityAlgorithmsBusinessFacade(
         SimilarityAlgorithms similarityAlgorithms,
@@ -48,7 +47,7 @@ public class SimilarityAlgorithmsBusinessFacade {
 
     FilteredKnnResult filteredKnn(Graph graph, FilteredKnnBaseConfig configuration) {
         var parameters = configuration.toFilteredKnnParameters().finalize(graph.nodeCount());
-        var task = tasks.filteredKnn(graph, parameters);
+        var task = SimilarityAlgorithmTasks.filteredKnn(graph, parameters);
         var progressTracker = progressTrackerCreator.createProgressTracker(task, configuration);
 
         return algorithmMachinery.getResult(
@@ -60,7 +59,7 @@ public class SimilarityAlgorithmsBusinessFacade {
 
     public NodeSimilarityResult filteredNodeSimilarity(Graph graph, FilteredNodeSimilarityBaseConfig configuration) {
         var parameters = configuration.toFilteredParameters();
-        var task = tasks.filteredNodeSimilarity(graph, parameters);
+        var task = SimilarityAlgorithmTasks.filteredNodeSimilarity(graph, parameters);
         var progressTracker = progressTrackerCreator.createProgressTracker(task, configuration);
 
         return algorithmMachinery.getResult(
@@ -73,7 +72,7 @@ public class SimilarityAlgorithmsBusinessFacade {
 
     KnnResult knn(Graph graph, KnnBaseConfig configuration) {
         var parameters = configuration.toParameters().finalize(graph.nodeCount());
-        var task = tasks.knn(graph, parameters);
+        var task = SimilarityAlgorithmTasks.knn(graph, parameters);
         var progressTracker = progressTrackerCreator.createProgressTracker(task, configuration);
 
         return algorithmMachinery.getResult(
@@ -86,7 +85,7 @@ public class SimilarityAlgorithmsBusinessFacade {
 
     public NodeSimilarityResult nodeSimilarity(Graph graph, NodeSimilarityBaseConfig configuration) {
         var parameters = configuration.toParameters();
-        var task = tasks.nodeSimilarity(graph, parameters);
+        var task = SimilarityAlgorithmTasks.nodeSimilarity(graph, parameters);
         var progressTracker = progressTrackerCreator.createProgressTracker(task, configuration);
 
         return algorithmMachinery.getResult(
