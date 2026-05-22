@@ -21,9 +21,8 @@ dependencies {
     implementation project(":pregel")
     implementation project(":progress-tracking")
     implementation project(":termination")
-    implementation project(":user-log")
-
-    testImplementation project(':test-utils')
 
     testImplementation project(':gdl-junit-extension')
+    testImplementation project(':test-utils')
+    testImplementation project(":user-log")
 }
