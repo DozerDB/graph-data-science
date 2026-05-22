@@ -42,7 +42,6 @@ public class MiscellaneousAlgorithmsBusinessFacade {
     private final AlgorithmMachinery algorithmMachinery = new AlgorithmMachinery();
     private final ProgressTrackerCreator progressTrackerCreator;
     private final MiscellaneousAlgorithms miscellaneousAlgorithms;
-    private final MiscellaneousAlgorithmsTasks tasks = new MiscellaneousAlgorithmsTasks();
 
     public MiscellaneousAlgorithmsBusinessFacade(MiscellaneousAlgorithms miscellaneousAlgorithms,ProgressTrackerCreator progressTrackerCreator) {
         this.progressTrackerCreator = progressTrackerCreator;
@@ -61,7 +60,7 @@ public class MiscellaneousAlgorithmsBusinessFacade {
     ) {
 
         var params = InverseRelationshipsParamsTransformer.toParameters(graphStore,configuration);
-        var task = tasks.inverseIndex(idMap.nodeCount(),params);
+        var task = MiscellaneousAlgorithmsTasks.inverseIndex(idMap.nodeCount(),params);
 
         var progressTracker =  progressTrackerCreator.createProgressTracker(task, configuration);
         return algorithmMachinery.getResult(
@@ -73,7 +72,7 @@ public class MiscellaneousAlgorithmsBusinessFacade {
 
     ScalePropertiesResult scaleProperties(Graph graph, ScalePropertiesBaseConfig configuration) {
         var params = configuration.toParameters();
-        var task = tasks.scaleProperties(graph,params);
+        var task = MiscellaneousAlgorithmsTasks.scaleProperties(graph,params);
         var progressTracker =  progressTrackerCreator.createProgressTracker(task, configuration);
 
         return algorithmMachinery.getResult(
@@ -86,7 +85,7 @@ public class MiscellaneousAlgorithmsBusinessFacade {
 
     public SingleTypeRelationships toUndirected(GraphStore graphStore, ToUndirectedConfig configuration) {
         var params = configuration.toParameters();
-        var task  = tasks.toUndirected(graphStore);
+        var task  = MiscellaneousAlgorithmsTasks.toUndirected(graphStore);
         var progressTracker =  progressTrackerCreator.createProgressTracker(task, configuration);
 
         return algorithmMachinery.getResult(
