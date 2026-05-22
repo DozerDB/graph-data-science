@@ -20,7 +20,7 @@
 package org.neo4j.gds.core.loading.construction;
 
 import org.neo4j.gds.NodeLabel;
-import org.neo4j.gds.api.schema.NodeSchema;
+import org.neo4j.gds.api.schema.NodeSchemaRecord;
 import org.neo4j.gds.api.schema.PropertySchema;
 import org.neo4j.gds.utils.StringJoining;
 
@@ -46,7 +46,7 @@ abstract class NodeLabelTokenToPropertyKeys {
      * <p>
      * The property schemas are inferred from given schema.
      */
-    static NodeLabelTokenToPropertyKeys fixed(NodeSchema nodeSchema) {
+    static NodeLabelTokenToPropertyKeys fixed(NodeSchemaRecord nodeSchema) {
         return new Fixed(nodeSchema);
     }
 
@@ -95,9 +95,9 @@ abstract class NodeLabelTokenToPropertyKeys {
 
     private static class Fixed extends NodeLabelTokenToPropertyKeys {
 
-        private final NodeSchema nodeSchema;
+        private final NodeSchemaRecord nodeSchema;
 
-        Fixed(NodeSchema nodeSchema) {
+        Fixed(NodeSchemaRecord nodeSchema) {
             this.nodeSchema = nodeSchema;
         }
 
@@ -116,7 +116,13 @@ abstract class NodeLabelTokenToPropertyKeys {
             NodeLabel nodeLabel,
             Map<String, PropertySchema> importPropertySchemas
         ) {
-            var userDefinedPropertySchemas = nodeSchema.get(nodeLabel).properties();
+            var userDefinedPropertySchemas = nodeSchema.entries().get(nodeLabel).stream()
+                .collect(
+                    Collectors.toMap(
+                        PropertySchema::key,
+                        propertySchema -> propertySchema
+                    )
+                );
 
             // We validate that the property schemas we read during import have
             // at least a matching key and a matching type. We cannot do an

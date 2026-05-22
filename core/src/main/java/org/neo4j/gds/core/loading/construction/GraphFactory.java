@@ -142,7 +142,7 @@ public final class GraphFactory {
                 maxIntermediateId,
                 idMapBuilder,
                 threadCount,
-                NodeSchemaUtils.fromRecordType(nodeSchema.get()),
+                nodeSchema.get(),
                 labelInformation,
                 deduplicate,
                 usePooled
@@ -166,7 +166,7 @@ public final class GraphFactory {
         long maxIntermediateId,
         IdMapBuilder idMapBuilder,
         Concurrency concurrency,
-        NodeSchema nodeSchema,
+        NodeSchemaRecord nodeSchema,
         boolean hasLabelInformation,
         boolean deduplicateIds,
         boolean usePooledBuilderProvider
