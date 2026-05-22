@@ -76,18 +76,18 @@ public final class GraphFactory {
     }
 
     public static NodesBuilderBuilder initNodesBuilder(NodeSchema nodeSchema) {
-        return new NodesBuilderBuilder().nodeSchema(nodeSchema);
+        return new NodesBuilderBuilder().nodeSchema(NodeSchemaUtils.toRecordType(nodeSchema));
     }
 
     public static NodesBuilderBuilder initNodesBuilder(NodeSchemaRecord nodeSchemaRecord) {
-        return initNodesBuilder(NodeSchemaUtils.fromRecordType(nodeSchemaRecord));
+        return new NodesBuilderBuilder().nodeSchema(nodeSchemaRecord);
     }
 
     @Builder.Factory
     static NodesBuilder nodesBuilder(
         Optional<Long> maxOriginalId,
         Optional<Long> nodeCount,
-        Optional<NodeSchema> nodeSchema,
+        Optional<NodeSchemaRecord> nodeSchema,
         Optional<Boolean> hasLabelInformation,
         Optional<Boolean> hasProperties,
         Optional<Boolean> deduplicateIds,
@@ -142,7 +142,7 @@ public final class GraphFactory {
                 maxIntermediateId,
                 idMapBuilder,
                 threadCount,
-                nodeSchema.get(),
+                NodeSchemaUtils.fromRecordType(nodeSchema.get()),
                 labelInformation,
                 deduplicate,
                 usePooled
