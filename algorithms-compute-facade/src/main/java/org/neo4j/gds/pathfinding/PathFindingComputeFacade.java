@@ -96,8 +96,6 @@ public class PathFindingComputeFacade {
     // Request scope dependencies -- can we move these as method parameters?! 🤔
     private final TerminationFlag terminationFlag;
 
-    private final PathFindingAlgorithmTasks  tasks = new PathFindingAlgorithmTasks();
-
     public PathFindingComputeFacade(
         AsyncAlgorithmCaller algorithmCaller,
         ExecutorService executorService,
@@ -153,7 +151,7 @@ public class PathFindingComputeFacade {
 
         // Create ProgressTracker
         var progressTracker = progressTrackerFactory.create(
-            tasks.bellmanFord(),
+            PathFindingAlgorithmTasks.bellmanFord(),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -191,7 +189,7 @@ public class PathFindingComputeFacade {
 
         // Create ProgressTracker
         var progressTracker = progressTrackerFactory.create(
-            tasks.bfs(),
+            PathFindingAlgorithmTasks.bfs(),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -233,7 +231,7 @@ public class PathFindingComputeFacade {
 
         // Create ProgressTracker
         var progressTracker = progressTrackerFactory.create(
-            tasks.deltaStepping(),
+            PathFindingAlgorithmTasks.deltaStepping(),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -263,7 +261,7 @@ public class PathFindingComputeFacade {
 
         // Create ProgressTracker
         var progressTracker = progressTrackerFactory.create(
-            tasks.dfs(),
+            PathFindingAlgorithmTasks.dfs(),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -303,7 +301,7 @@ public class PathFindingComputeFacade {
 
         // Create ProgressTracker
         var progressTracker = progressTrackerFactory.create(
-            tasks.kSpanningTree(graph),
+            PathFindingAlgorithmTasks.kSpanningTree(graph),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -339,7 +337,7 @@ public class PathFindingComputeFacade {
 
         // Create ProgressTracker
         var progressTracker = progressTrackerFactory.create(
-            tasks.longestPath(graph),
+            PathFindingAlgorithmTasks.longestPath(graph),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -373,7 +371,7 @@ public class PathFindingComputeFacade {
 
         // Create ProgressTracker
         var progressTracker = progressTrackerFactory.create(
-            tasks.maxFlow(),
+            PathFindingAlgorithmTasks.maxFlow(),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -408,7 +406,7 @@ public class PathFindingComputeFacade {
 
         // Create ProgressTracker
         var progressTracker = progressTrackerFactory.create(
-            tasks.minCostMaxFlow(),
+            PathFindingAlgorithmTasks.minCostMaxFlow(),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -443,7 +441,7 @@ public class PathFindingComputeFacade {
 
         // Create ProgressTracker
         var progressTracker = progressTrackerFactory.create(
-            tasks.randomWalk(graph),
+            PathFindingAlgorithmTasks.randomWalk(graph),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -482,7 +480,7 @@ public class PathFindingComputeFacade {
 
         // Create ProgressTracker
         var progressTracker = progressTrackerFactory.create(
-            tasks.randomWalkCountingVisits(graph),
+            PathFindingAlgorithmTasks.randomWalkCountingVisits(graph),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -517,7 +515,7 @@ public class PathFindingComputeFacade {
 
         // Create ProgressTracker
         var progressTracker = progressTrackerFactory.create(
-            tasks.pcst(graph),
+            PathFindingAlgorithmTasks.pcst(graph),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -552,7 +550,7 @@ public class PathFindingComputeFacade {
 
         // Create ProgressTracker
         var progressTracker = progressTrackerFactory.create(
-            tasks.aStar(graph),
+            PathFindingAlgorithmTasks.aStar(graph),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -586,7 +584,7 @@ public class PathFindingComputeFacade {
 
         // Create ProgressTracker
         var progressTracker = progressTrackerFactory.create(
-            tasks.dijkstra(graph),
+            PathFindingAlgorithmTasks.dijkstra(graph),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -623,7 +621,7 @@ public class PathFindingComputeFacade {
 
         // Create ProgressTracker
         var progressTracker = progressTrackerFactory.create(
-            tasks.yens(graph,parameters.k()),
+            PathFindingAlgorithmTasks.yens(graph,parameters.k()),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -658,7 +656,7 @@ public class PathFindingComputeFacade {
 
         // Create ProgressTracker
         var progressTracker = progressTrackerFactory.create(
-            tasks.singleSourceDijkstra(graph),
+            PathFindingAlgorithmTasks.singleSourceDijkstra(graph),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -694,7 +692,7 @@ public class PathFindingComputeFacade {
 
         // Create ProgressTracker
         var progressTracker = progressTrackerFactory.create(
-            tasks.spanningTree(graph),
+            PathFindingAlgorithmTasks.spanningTree(graph),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -729,7 +727,7 @@ public class PathFindingComputeFacade {
 
         // Create ProgressTracker
         var progressTracker = progressTrackerFactory.create(
-            tasks.steinerTree(parameters,graph),
+            PathFindingAlgorithmTasks.steinerTree(parameters,graph),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -774,7 +772,7 @@ public class PathFindingComputeFacade {
 
         // Create ProgressTracker
         var progressTracker = progressTrackerFactory.create(
-            tasks.topologicalSort(graph),
+            PathFindingAlgorithmTasks.topologicalSort(graph),
             jobId,
             parameters.concurrency(),
             logProgress
