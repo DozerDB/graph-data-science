@@ -181,7 +181,7 @@ public final class GraphFactory {
             nodeSchema.hasProperties(),
             deduplicateIds,
             usePooledBuilderProvider,
-            propertyKey -> nodeSchema.unionProperties().get(propertyKey).state()
+            propertyKey -> nodeSchema.properties().get(propertyKey).state()
         );
     }
 

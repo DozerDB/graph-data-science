@@ -68,7 +68,7 @@ abstract class NodesBuilderContext {
      * Used if a node schema is available upfront.
      */
     static NodesBuilderContext fixed(NodeSchemaRecord nodeSchema, Concurrency concurrency) {
-        var propertyBuildersByPropertyKey = nodeSchema.unionProperties().entrySet().stream().collect(toMap(
+        var propertyBuildersByPropertyKey = nodeSchema.properties().entrySet().stream().collect(toMap(
             Map.Entry::getKey,
             e -> NodePropertiesFromStoreBuilder.of(e.getValue().defaultValue(), concurrency)
         ));

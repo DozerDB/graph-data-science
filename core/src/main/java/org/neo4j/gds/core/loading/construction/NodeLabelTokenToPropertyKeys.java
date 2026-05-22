@@ -116,13 +116,7 @@ abstract class NodeLabelTokenToPropertyKeys {
             NodeLabel nodeLabel,
             Map<String, PropertySchema> importPropertySchemas
         ) {
-            var userDefinedPropertySchemas = nodeSchema.entries().get(nodeLabel).stream()
-                .collect(
-                    Collectors.toMap(
-                        PropertySchema::key,
-                        propertySchema -> propertySchema
-                    )
-                );
+            var userDefinedPropertySchemas = nodeSchema.propertiesForLabel(nodeLabel);
 
             // We validate that the property schemas we read during import have
             // at least a matching key and a matching type. We cannot do an
