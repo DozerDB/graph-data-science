@@ -33,7 +33,7 @@ public final class RandomWalkProgressTask {
     public static Task create(Graph graph) {
         var tasks = new ArrayList<Task>();
         if (graph.hasRelationshipProperty()) {
-            tasks.add(new CentralityAlgorithmTasks().degreeCentrality(graph));
+            tasks.add(CentralityAlgorithmTasks.degreeCentrality(graph));
         }
         tasks.add(Tasks.leaf("create walks", graph.nodeCount()));
         return Tasks.task(AlgorithmLabel.RandomWalk.asString(), tasks);

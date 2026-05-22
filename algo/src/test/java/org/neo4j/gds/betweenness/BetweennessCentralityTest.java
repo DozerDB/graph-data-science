@@ -201,7 +201,7 @@ class BetweennessCentralityTest {
             false
         );
 
-        var task = new CentralityAlgorithmTasks().betweennessCentrality(testGraph,parameters);
+        var task = CentralityAlgorithmTasks.betweennessCentrality(testGraph,parameters);
         var progressTrackerWithLog = TestProgressTrackerHelper.create(
             task,
             new Concurrency(4)
@@ -239,7 +239,7 @@ class BetweennessCentralityTest {
             false
         );
 
-        var task = new CentralityAlgorithmTasks().betweennessCentrality(testGraph,parameters);
+        var task = CentralityAlgorithmTasks.betweennessCentrality(testGraph,parameters);
 
         var progressTrackerWithLog = TestProgressTrackerHelper.create(
             task,

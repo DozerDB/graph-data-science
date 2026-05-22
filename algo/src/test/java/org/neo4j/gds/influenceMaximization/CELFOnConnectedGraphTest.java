@@ -157,7 +157,7 @@ class CELFOnConnectedGraphTest {
         );
 
         var progressTrackerWithLog = TestProgressTrackerHelper.create(
-            new CentralityAlgorithmTasks().CELF(graph, params),
+            CentralityAlgorithmTasks.CELF(graph, params),
             new Concurrency(params.concurrency().value())
         );
 
