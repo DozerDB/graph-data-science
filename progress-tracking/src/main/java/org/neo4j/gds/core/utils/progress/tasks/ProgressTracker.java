@@ -97,10 +97,6 @@ public interface ProgressTracker {
         }
 
         @Override
-        public void logDebug(Supplier<String> messageSupplier) {
-        }
-
-        @Override
         public void release() {
         }
 
@@ -148,8 +144,6 @@ public interface ProgressTracker {
     // prefer setting volume via factory method for leaves
     // to make root progress available from the start
     void setVolume(long volume);
-
-    void logDebug(Supplier<String> messageSupplier);
 
     default void logDebug(String message) {
         logMessage(LogLevel.DEBUG, message);

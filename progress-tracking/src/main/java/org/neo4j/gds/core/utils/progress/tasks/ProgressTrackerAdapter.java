@@ -104,11 +104,6 @@ public abstract class ProgressTrackerAdapter implements ProgressTracker {
     }
 
     @Override
-    public void logDebug(Supplier<String> messageSupplier) {
-        delegate.logDebug(messageSupplier);
-    }
-
-    @Override
     public void logMessage(LogLevel level, String message) {
         delegate.logMessage(level, message);
     }

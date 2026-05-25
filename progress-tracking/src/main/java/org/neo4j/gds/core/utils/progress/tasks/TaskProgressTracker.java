@@ -257,11 +257,6 @@ public final class TaskProgressTracker implements ProgressTracker {
     }
 
     @Override
-    public void logDebug(Supplier<String> messageSupplier) {
-        taskProgressLogger.logDebug(messageSupplier);
-    }
-
-    @Override
     public void release() {
         validateTaskNotRunning();
         taskRegistry.markCompleted();
