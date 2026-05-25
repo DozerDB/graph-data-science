@@ -25,7 +25,6 @@ import org.neo4j.gds.beta.pregel.NodeValue;
 import org.neo4j.gds.beta.pregel.PregelConfig;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 
-import java.util.OptionalLong;
 import java.util.function.LongConsumer;
 
 public abstract class NodeCentricContext<CONFIG extends PregelConfig> extends PregelContext<CONFIG> {
@@ -34,13 +33,11 @@ public abstract class NodeCentricContext<CONFIG extends PregelConfig> extends Pr
 
     protected final Graph graph;
 
-    private OptionalLong sender = OptionalLong.empty();
-
     long nodeId;
 
 
     NodeCentricContext(Graph graph, CONFIG config, NodeValue nodeValue, ProgressTracker progressTracker) {
-        super(config, progressTracker);
+        super(config);
         this.graph = graph;
         this.nodeValue = nodeValue;
     }
@@ -242,5 +239,3 @@ public abstract class NodeCentricContext<CONFIG extends PregelConfig> extends Pr
 
     }
 }
-
-

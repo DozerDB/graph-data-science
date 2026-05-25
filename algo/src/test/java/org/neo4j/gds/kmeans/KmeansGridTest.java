@@ -29,6 +29,7 @@ import org.neo4j.gds.core.utils.partition.Partition;
 import org.neo4j.gds.extension.GdlExtension;
 import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.termination.TerminationFlag;
 
 import java.util.List;
@@ -148,7 +149,7 @@ class KmeansGridTest {
             .build();
         var kmeansContext = KmeansContext.defaults();
 
-        var kmeans = Kmeans.createKmeans(graph, kmeansConfig.toParameters(), kmeansContext, TerminationFlag.RUNNING_TRUE);
+        var kmeans = Kmeans.createKmeans(Log.noOpLog(), graph, kmeansConfig.toParameters(), kmeansContext, TerminationFlag.RUNNING_TRUE);
         var result = kmeans.compute();
 
         var centroids = result.centers();

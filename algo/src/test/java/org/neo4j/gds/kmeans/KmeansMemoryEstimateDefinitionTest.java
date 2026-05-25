@@ -44,7 +44,7 @@ class KmeansMemoryEstimateDefinitionTest {
 
         MemoryEstimationAssert.assertThat(memoryEstimation).
             memoryRange(graphDimensions, new Concurrency(4))
-            .hasRange(33928,54920);
+            .hasRange(33936,54928);
 
     }
 
@@ -64,7 +64,7 @@ class KmeansMemoryEstimateDefinitionTest {
                             + 6 * 24; // eight doubles
         MemoryEstimationAssert.assertThat(memoryEstimation).
             memoryRange(graphDimensions, new Concurrency(4))
-            .hasRange(33928L + sizeOfCentroids,54920L + sizeOfCentroids);
+            .hasRange(33936L + sizeOfCentroids,54928L + sizeOfCentroids);
     }
 
     @Test
@@ -79,9 +79,7 @@ class KmeansMemoryEstimateDefinitionTest {
 
         MemoryEstimationAssert.assertThat(memoryEstimation).
             memoryRange(graphDimensions, new Concurrency(4))
-            .hasMin(34304)
-            .hasMax(55296);
-
+            .hasMin(34312)
+            .hasMax(55304);
     }
-
 }

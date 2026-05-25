@@ -60,12 +60,11 @@ class CommunityAlgorithmsBusinessFacadeTest {
                 )
         );
 
-        var businessFacade = new CommunityAlgorithmsBusinessFacade(algorithms,progressCreator);
+        var businessFacade = new CommunityAlgorithmsBusinessFacade(log, algorithms,progressCreator);
         businessFacade.wcc(graph,config);
 
         Assertions.assertThat(log.getMessages(WARN))
             .extracting(removingThreadId())
-            .containsExactly("foo :: Specifying a `relationshipWeightProperty` has no effect unless `threshold` is also set.");
+            .containsExactly("Specifying a `relationshipWeightProperty` has no effect unless `threshold` is also set.");
     }
-
 }

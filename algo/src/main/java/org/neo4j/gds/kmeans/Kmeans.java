@@ -31,6 +31,7 @@ import org.neo4j.gds.core.concurrency.ParallelUtil;
 import org.neo4j.gds.core.concurrency.RunWithConcurrency;
 import org.neo4j.gds.core.utils.partition.PartitionUtils;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.termination.TerminationFlag;
 
 import java.util.List;
@@ -41,6 +42,7 @@ import java.util.concurrent.ExecutorService;
 public final class Kmeans extends Algorithm<KmeansResult> {
     private static final int UNASSIGNED = -1;
 
+    private final Log log;
     private HugeIntArray bestCommunities;
     private final Graph graph;
     private final KmeansParameters parameters;
@@ -61,6 +63,7 @@ public final class Kmeans extends Algorithm<KmeansResult> {
 
 
     public static Kmeans createKmeans(
+        Log log,
         Graph graph,
         KmeansParameters parameters,
         KmeansContext context,
@@ -72,6 +75,7 @@ public final class Kmeans extends Algorithm<KmeansResult> {
             throw new IllegalArgumentException("Property '" + nodeWeightProperty + "' does not exist for all nodes");
         }
         return new Kmeans(
+            log,
             context.progressTracker(),
             context.executor(),
             graph,
@@ -83,6 +87,7 @@ public final class Kmeans extends Algorithm<KmeansResult> {
     }
 
     private Kmeans(
+        Log log,
         ProgressTracker progressTracker,
         ExecutorService executorService,
         Graph graph,
@@ -92,6 +97,7 @@ public final class Kmeans extends Algorithm<KmeansResult> {
         TerminationFlag terminationFlag
     ) {
         super(progressTracker);
+        this.log = log;
         this.executorService = executorService;
         this.graph = graph;
 
@@ -119,7 +125,7 @@ public final class Kmeans extends Algorithm<KmeansResult> {
 
         if (parameters.k() > graph.nodeCount()) {
             // Every node in its own community. Warn and return early.
-            progressTracker.logWarning("Number of requested clusters is larger than the number of nodes.");
+            log.warn("Number of requested clusters is larger than the number of nodes.");
             bestCommunities.setAll(v -> (int) v);
             distanceFromCentroid.setAll(v -> 0d);
             progressTracker.endSubTask(); // KMeans end --> conditional!!!

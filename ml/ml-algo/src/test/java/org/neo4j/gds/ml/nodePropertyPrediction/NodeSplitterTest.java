@@ -30,6 +30,7 @@ import org.neo4j.gds.core.utils.progress.PerDatabaseTaskStore;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.core.utils.progress.tasks.Tasks;
 import org.neo4j.gds.logging.GdsTestLog;
+import org.neo4j.gds.logging.Log;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ class NodeSplitterTest {
     void testSplitter() {
         int numberOfExamples = 12;
         var splitter = new NodeSplitter(
+            Log.noOpLog(),
             new Concurrency(4),
             numberOfExamples,
             ProgressTracker.NULL_TRACKER,
@@ -97,6 +99,7 @@ class NodeSplitterTest {
         );
         int numberOfExamples = 12;
         var splitter = new NodeSplitter(
+            log,
             new Concurrency(4),
             numberOfExamples,
             progressTracker,
@@ -111,9 +114,9 @@ class NodeSplitterTest {
         assertThat(log.getMessages(TestLog.WARN))
             .extracting(removingThreadId())
             .containsExactly(
-                "DUMMY :: The specified `testFraction` leads to a very small test set with only 3 node(s). " +
+                "The specified `testFraction` leads to a very small test set with only 3 node(s). " +
                 "Proceeding with such a small set might lead to unreliable results.",
-                "DUMMY :: The specified `validationFolds` leads to very small validation sets with only 3 node(s). " +
+                "The specified `validationFolds` leads to very small validation sets with only 3 node(s). " +
                 "Proceeding with such small sets might lead to unreliable results."
             );
 
@@ -133,6 +136,7 @@ class NodeSplitterTest {
             toMappedIds[Math.toIntExact(originalIds.get(i))] = i;
         }
         var splitter = new NodeSplitter(
+            Log.noOpLog(),
             new Concurrency(4),
             numberOfExamples,
             ProgressTracker.NULL_TRACKER,

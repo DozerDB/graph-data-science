@@ -40,6 +40,7 @@ import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.IdFunction;
 import org.neo4j.gds.extension.Inject;
 import org.neo4j.gds.logging.GdsTestLog;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.mem.MemoryRange;
 import org.neo4j.gds.ml.pipeline.linkPipeline.LinkPredictionSplitConfigImpl;
 import org.neo4j.gds.termination.TerminationFlag;
@@ -148,6 +149,7 @@ class LinkPredictionRelationshipSamplerTest {
         var trainConfig = createTrainConfig("REL", "N", "N", 42L);
 
         LinkPredictionRelationshipSampler linkPredictionRelationshipSampler = new LinkPredictionRelationshipSampler(
+            Log.noOpLog(),
             graphStore,
             splitConfig,
             trainConfig,
@@ -219,6 +221,7 @@ class LinkPredictionRelationshipSamplerTest {
         );
 
         var relationshipSplitter = new LinkPredictionRelationshipSampler(
+            log,
             graphStore,
             splitConfig,
             trainConfig,
@@ -230,7 +233,7 @@ class LinkPredictionRelationshipSamplerTest {
 
         assertThat(log.getMessages(TestLog.WARN))
             .extracting(Extractors.removingThreadId())
-            .contains("Split relationships :: Using * for the `sourceNodeLabel` or `targetNodeLabel` results in not ideal negative link sampling.");
+            .contains("Using * for the `sourceNodeLabel` or `targetNodeLabel` results in not ideal negative link sampling.");
     }
 
     @Test
@@ -352,6 +355,7 @@ class LinkPredictionRelationshipSamplerTest {
         var trainConfig = createTrainConfig("T", "N", "M", 42L);
 
         LinkPredictionRelationshipSampler linkPredictionRelationshipSampler = new LinkPredictionRelationshipSampler(
+            Log.noOpLog(),
             multiGraphStore,
             splitConfig,
             trainConfig,
@@ -391,6 +395,7 @@ class LinkPredictionRelationshipSamplerTest {
         var trainConfig = createTrainConfig("REL", "N", "N", -1337L);
 
         var relationshipSplitter = new LinkPredictionRelationshipSampler(
+            Log.noOpLog(),
             graphStore,
             splitConfig,
             trainConfig,

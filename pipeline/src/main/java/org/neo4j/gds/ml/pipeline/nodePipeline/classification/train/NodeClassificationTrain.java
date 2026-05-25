@@ -182,6 +182,7 @@ public final class NodeClassificationTrain implements PipelineTrainer<NodeClassi
         progressTracker.beginSubTask();
         var splitConfig = pipeline.splitConfig();
         var nodeSplits = new NodeSplitter(
+            log,
             trainConfig.concurrency(),
             nodeIdMap.nodeCount(),
             progressTracker,

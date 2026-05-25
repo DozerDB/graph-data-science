@@ -20,6 +20,7 @@
 package org.neo4j.gds.ml.util;
 
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
+import org.neo4j.gds.logging.Log;
 
 import static org.neo4j.gds.utils.StringFormatting.formatWithLocale;
 
@@ -29,20 +30,20 @@ public final class TrainingSetWarnings {
 
     private TrainingSetWarnings() {}
 
-    public static void warnForSmallNodeSets(long trainSetSize, long testSetSize, long validationFolds, ProgressTracker progressTracker) {
-        warnForSmallSets(trainSetSize, testSetSize, validationFolds, "node", progressTracker);
+    public static void warnForSmallNodeSets(Log log, long trainSetSize, long testSetSize, long validationFolds, ProgressTracker progressTracker) {
+        warnForSmallSets(log, trainSetSize, testSetSize, validationFolds, "node", progressTracker);
     }
 
-    public static void warnForSmallRelationshipSets(long trainSetSize, long testSetSize, long validationFolds, ProgressTracker progressTracker) {
-        warnForSmallSets(trainSetSize, testSetSize, validationFolds, "relationship", progressTracker);
+    public static void warnForSmallRelationshipSets(Log log, long trainSetSize, long testSetSize, long validationFolds, ProgressTracker progressTracker) {
+        warnForSmallSets(log, trainSetSize, testSetSize, validationFolds, "relationship", progressTracker);
     }
 
-    private static void warnForSmallSets(long trainSetSize, long testSetSize, long validationFolds, String elementType, ProgressTracker progressTracker) {
+    private static void warnForSmallSets(Log log, long trainSetSize, long testSetSize, long validationFolds, String elementType, ProgressTracker progressTracker) {
         progressTracker.logInfo("Train set size is " + trainSetSize);
         progressTracker.logInfo("Test set size is " + testSetSize);
 
         if (testSetSize < RECOMMENDED_MIN_ELEMENTS_PER_SET) {
-            progressTracker.logWarning(formatWithLocale(
+            log.warn(formatWithLocale(
                 "The specified `testFraction` leads to a very small test set " +
                 "with only %d %s(s). Proceeding with such a small set might lead to unreliable results.",
                 testSetSize, elementType
@@ -52,7 +53,7 @@ public final class TrainingSetWarnings {
         long validationSetSize = trainSetSize / validationFolds;
         //No need to check train set as it is always larger or equal to validation set.
         if (validationSetSize < RECOMMENDED_MIN_ELEMENTS_PER_SET) {
-            progressTracker.logWarning(formatWithLocale(
+            log.warn(formatWithLocale(
                 "The specified `validationFolds` leads to very small validation sets " +
                 "with only %d %s(s). Proceeding with such small sets might lead to unreliable results.",
                 validationSetSize, elementType

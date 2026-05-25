@@ -28,6 +28,7 @@ import org.neo4j.gds.api.GraphStore;
 import org.neo4j.gds.api.IdMap;
 import org.neo4j.gds.config.ElementTypeValidator;
 import org.neo4j.gds.core.GraphDimensions;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.termination.TerminationFlag;
 import org.neo4j.gds.mem.MemoryEstimation;
 import org.neo4j.gds.mem.MemoryEstimations;
@@ -52,6 +53,7 @@ import static org.neo4j.gds.ml.pipeline.NonEmptySetValidation.validateRelSetSize
 import static org.neo4j.gds.utils.StringFormatting.formatWithLocale;
 
 public class LinkPredictionRelationshipSampler {
+    private final Log log;
 
     private final LinkPredictionSplitConfig splitConfig;
     private final LinkPredictionTrainConfig trainConfig;
@@ -61,13 +63,15 @@ public class LinkPredictionRelationshipSampler {
 
     private final GraphStore graphStore;
 
-     public LinkPredictionRelationshipSampler(
-         GraphStore graphStore,
-         LinkPredictionSplitConfig splitConfig,
-         LinkPredictionTrainConfig trainConfig,
-         ProgressTracker progressTracker,
-         TerminationFlag terminationFlag
-     ) {
+    public LinkPredictionRelationshipSampler(
+        Log log,
+        GraphStore graphStore,
+        LinkPredictionSplitConfig splitConfig,
+        LinkPredictionTrainConfig trainConfig,
+        ProgressTracker progressTracker,
+        TerminationFlag terminationFlag
+    ) {
+        this.log = log;
         this.graphStore = graphStore;
         this.splitConfig = splitConfig;
         this.trainConfig = trainConfig;
@@ -91,7 +95,7 @@ public class LinkPredictionRelationshipSampler {
         splitConfig.validateAgainstGraphStore(graphStore, trainConfig.internalTargetRelationshipType());
 
         if (trainConfig.sourceNodeLabel().equals(ElementProjection.PROJECT_ALL) || trainConfig.targetNodeLabel().equals(ElementProjection.PROJECT_ALL)) {
-            progressTracker.logWarning(formatWithLocale(
+            log.warn(formatWithLocale(
                 "Using %s for the `sourceNodeLabel` or `targetNodeLabel` results in not ideal negative link sampling.",
                 ElementProjection.PROJECT_ALL
             ));

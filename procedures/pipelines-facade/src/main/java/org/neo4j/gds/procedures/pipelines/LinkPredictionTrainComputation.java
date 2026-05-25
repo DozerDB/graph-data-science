@@ -208,6 +208,7 @@ final class LinkPredictionTrainComputation implements Computation<LinkPrediction
         );
 
         var pipelineExecutor = new LinkPredictionTrainPipelineExecutor(
+            log,
             pipeline,
             configuration,
             executionContext,

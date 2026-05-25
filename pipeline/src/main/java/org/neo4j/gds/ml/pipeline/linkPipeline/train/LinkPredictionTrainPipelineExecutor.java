@@ -29,6 +29,7 @@ import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.core.utils.progress.tasks.Task;
 import org.neo4j.gds.core.utils.progress.tasks.Tasks;
 import org.neo4j.gds.executor.ExecutionContext;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.mem.MemoryEstimation;
 import org.neo4j.gds.mem.MemoryEstimations;
 import org.neo4j.gds.ml.models.Classifier;
@@ -55,12 +56,14 @@ import static org.neo4j.gds.ml.util.TrainingSetWarnings.warnForSmallRelationship
 
 public class LinkPredictionTrainPipelineExecutor extends PipelineExecutor
     <LinkPredictionTrainConfig, LinkPredictionTrainingPipeline, LinkPredictionTrainPipelineResult> {
+    private final Log log;
 
     private final LinkPredictionRelationshipSampler linkPredictionRelationshipSampler;
 
     private final Set<RelationshipType> availableRelationshipTypesForNodeProperty;
 
     public LinkPredictionTrainPipelineExecutor(
+        Log log,
         LinkPredictionTrainingPipeline pipeline,
         LinkPredictionTrainConfig config,
         ExecutionContext executionContext,
@@ -74,6 +77,7 @@ public class LinkPredictionTrainPipelineExecutor extends PipelineExecutor
             graphStore,
             progressTracker
         );
+        this.log = log;
 
         this.availableRelationshipTypesForNodeProperty = graphStore.relationshipTypes()
             .stream()
@@ -81,6 +85,7 @@ public class LinkPredictionTrainPipelineExecutor extends PipelineExecutor
             .collect(Collectors.toSet());
 
         this.linkPredictionRelationshipSampler = new LinkPredictionRelationshipSampler(
+            log,
             graphStore,
             pipeline.splitConfig(),
             config,
@@ -174,6 +179,7 @@ public class LinkPredictionTrainPipelineExecutor extends PipelineExecutor
         );
 
         warnForSmallRelationshipSets(
+            log,
             trainGraph.relationshipCount(),
             testGraph.relationshipCount(),
             pipeline.splitConfig().validationFolds(),

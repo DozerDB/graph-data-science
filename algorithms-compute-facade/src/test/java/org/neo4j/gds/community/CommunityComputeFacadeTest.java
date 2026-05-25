@@ -101,6 +101,7 @@ class CommunityComputeFacadeTest {
             .thenReturn(progressTrackerMock);
 
         facade = new CommunityComputeFacade(
+            Log.noOpLog(),
             new AsyncAlgorithmCaller(Executors.newSingleThreadExecutor(), logMock),
             progressTrackerFactoryMock,
             TerminationFlag.RUNNING_TRUE
