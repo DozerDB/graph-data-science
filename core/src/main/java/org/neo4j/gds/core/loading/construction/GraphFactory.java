@@ -37,9 +37,7 @@ import org.neo4j.gds.api.schema.GraphSchema;
 import org.neo4j.gds.api.schema.MutableGraphSchema;
 import org.neo4j.gds.api.schema.MutableNodeSchema;
 import org.neo4j.gds.api.schema.MutableRelationshipSchema;
-import org.neo4j.gds.api.schema.NodeSchema;
 import org.neo4j.gds.api.schema.NodeSchemaRecord;
-import org.neo4j.gds.api.schema.NodeSchemaUtils;
 import org.neo4j.gds.core.IdMapBehaviorServiceProvider;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.DefaultPool;
@@ -73,14 +71,6 @@ public final class GraphFactory {
 
     public static NodesBuilderBuilder initNodesBuilder() {
         return new NodesBuilderBuilder();
-    }
-
-    public static NodesBuilderBuilder initNodesBuilder(NodeSchema nodeSchema) {
-        return new NodesBuilderBuilder().nodeSchema(NodeSchemaUtils.toRecordType(nodeSchema));
-    }
-
-    public static NodesBuilderBuilder initNodesBuilder(NodeSchemaRecord nodeSchemaRecord) {
-        return new NodesBuilderBuilder().nodeSchema(nodeSchemaRecord);
     }
 
     @Builder.Factory
