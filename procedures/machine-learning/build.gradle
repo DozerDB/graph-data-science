@@ -20,7 +20,6 @@ dependencies {
     // Neo4j dependencies
     compileOnly(neo4j.procedure.api) { transitive = false }
 
-    implementation project(':ml-configs')
     implementation project(':ml-facade-api')
 
     // TODO: remove this fella
@@ -28,28 +27,14 @@ dependencies {
 
     implementation project(':algorithms-machinery')
     implementation project(':annotations')
-    implementation project(':applications-facade')
-    implementation project(':collections')
     implementation project(':config-api')
-    implementation project(':defaults-and-limits-configuration')
-    implementation project(':domain-services')
-    implementation project(':executor')
-    implementation project(':graph-schema-api')
-    implementation project(':graph-store-catalog-applications')
     implementation project(':memory-usage')
     implementation project(':ml-algo')
     implementation project(':ml-api')
-    implementation project(':ml-core')
-    implementation project(':model-catalog-applications')
-    implementation project(':neo4j-api')
     implementation project(':procedures-facade-api')
-    implementation project(':operations-applications')
     implementation project(':pipeline')
     implementation project(':pipelines-facade-api')
     implementation project(':proc-common')
-    implementation project(':progress-tracking')
-    implementation project(':string-formatting')
-    implementation project(':termination')
 
     // TODO: This is needed for some specifications - remove!!!
     implementation project(':pipelines-procedure-facade')
@@ -64,17 +49,32 @@ dependencies {
 
     testImplementation project(':algo-common')
     testImplementation project(':algorithms-procedure-facade')
+    testImplementation project(':applications-facade')
+    testImplementation project(':collections')
+    testImplementation project(':defaults-and-limits-configuration')
+    testImplementation project(':domain-services')
+    testImplementation project(':executor')
     testImplementation project(':gdl-graph')
     testImplementation project(':gdl-junit-extension')
+    testImplementation project(':graph-schema-api')
+    testImplementation project(':graph-store-catalog-applications')
     testImplementation project(':logging')
+    testImplementation project(':ml-configs')
+    testImplementation project(':ml-core')
+    testImplementation project(':model-catalog-applications')
+    testImplementation project(':neo4j-api')
     testImplementation project(':opengds-procedure-facade')
     testImplementation project(':open-model-catalog')
+    testImplementation project(':operations-applications')
     testImplementation project(':proc-test-utilities')
     testImplementation project(':proc-common')
     testImplementation project(':proc-community')
     testImplementation project(':proc-centrality')
     testImplementation project(':proc-embeddings')
+    testImplementation project(':progress-tracking')
     testImplementation project(':projection')
+    testImplementation project(':string-formatting')
+    testImplementation project(':termination')
 
     testImplementation project(':opengds-extension')
 }
