@@ -25,6 +25,7 @@ import org.neo4j.gds.api.GraphStore;
 import org.neo4j.gds.api.IdMap;
 import org.neo4j.gds.api.schema.ImmutableMutableGraphSchema;
 import org.neo4j.gds.api.schema.MutableNodeSchema;
+import org.neo4j.gds.api.schema.NodeSchemaUtils;
 import org.neo4j.gds.core.JobId;
 import org.neo4j.gds.core.RequestCorrelationId;
 import org.neo4j.gds.core.concurrency.Concurrency;
@@ -179,7 +180,8 @@ public abstract class FileToGraphStoreImporter {
             log.info("Label mapping file was not found, continuing import without label mapping");
         }
 
-        NodesBuilder nodesBuilder = GraphFactory.initNodesBuilder(nodeSchema)
+        NodesBuilder nodesBuilder = GraphFactory.initNodesBuilder()
+            .nodeSchema(NodeSchemaUtils.toRecordType(nodeSchema))
             .maxOriginalId(fileInput.graphInfo().maxOriginalId())
             .concurrency(concurrency)
             .nodeCount(fileInput.graphInfo().nodeCount())

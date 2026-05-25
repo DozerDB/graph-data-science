@@ -24,7 +24,7 @@ import org.neo4j.gds.NodeLabel;
 import org.neo4j.gds.api.DefaultValue;
 import org.neo4j.gds.api.PropertyState;
 import org.neo4j.gds.api.nodeproperties.ValueType;
-import org.neo4j.gds.api.schema.MutableNodeSchema;
+import org.neo4j.gds.api.schema.NodeSchemaRecord;
 import org.neo4j.gds.api.schema.PropertySchema;
 
 import java.util.List;
@@ -65,17 +65,14 @@ class NodeLabelTokenToPropertyKeysTest {
 
     @Test
     void testPropertySchemasFixed() {
-        var nodeSchema = MutableNodeSchema.empty()
-            .addLabel(NodeLabel.of("A"), Map.of(
-                "foo", PropertySchema.of("foo", ValueType.LONG),
-                "bar", PropertySchema.of("bar", ValueType.DOUBLE),
-                "baz", PropertySchema.of("baz", ValueType.LONG)
-            ))
-            .addLabel(NodeLabel.of("B"), Map.of(
-                "baz", PropertySchema.of("baz", ValueType.LONG),
-                "bob", PropertySchema.of("bob", ValueType.LONG)
-            ))
-            .addLabel(NodeLabel.of("C"));
+        var nodeSchema = NodeSchemaRecord.builder()
+            .addProperty("A", "foo", ValueType.LONG)
+            .addProperty("A", "bar", ValueType.DOUBLE)
+            .addProperty("A", "baz", ValueType.LONG)
+            .addProperty("B", "baz", ValueType.LONG)
+            .addProperty("B", "bob", ValueType.LONG)
+            .addLabel("C")
+            .build();
 
         var importPropertySchemas = Map.of(
             "foo", PropertySchema.of("foo", ValueType.LONG, DefaultValue.forLong(), PropertyState.TRANSIENT),
@@ -100,11 +97,10 @@ class NodeLabelTokenToPropertyKeysTest {
 
     @Test
     void shouldFailForMissingProperties() {
-        var nodeSchema = MutableNodeSchema.empty()
-            .addLabel(NodeLabel.of("A"), Map.of(
-                "foo", PropertySchema.of("foo", ValueType.LONG),
-                "baz", PropertySchema.of("baz", ValueType.LONG)
-            ));
+        var nodeSchema = NodeSchemaRecord.builder()
+            .addProperty("A", "foo", ValueType.LONG)
+            .addProperty("A", "baz", ValueType.LONG)
+            .build();
 
         var fixed = NodeLabelTokenToPropertyKeys.fixed(nodeSchema);
 
@@ -121,11 +117,10 @@ class NodeLabelTokenToPropertyKeysTest {
 
     @Test
     void shouldFailForIncompatibleTypes() {
-        var nodeSchema = MutableNodeSchema.empty()
-            .addLabel(NodeLabel.of("A"), Map.of(
-                "foo", PropertySchema.of("foo", ValueType.LONG),
-                "baz", PropertySchema.of("baz", ValueType.LONG)
-            ));
+        var nodeSchema = NodeSchemaRecord.builder()
+            .addProperty("A", "foo", ValueType.LONG)
+            .addProperty("A", "baz", ValueType.LONG)
+            .build();
 
         var fixed = NodeLabelTokenToPropertyKeys.fixed(nodeSchema);
 
@@ -195,11 +190,12 @@ class NodeLabelTokenToPropertyKeysTest {
 
     @Test
     void testNodeLabelsFixed() {
-        var mapping = NodeLabelTokenToPropertyKeys.fixed(MutableNodeSchema.empty()
-            .addLabel(NodeLabel.ALL_NODES)
-            .addLabel(NodeLabel.of("A"))
-            .addLabel(NodeLabel.of("B"))
-            .addLabel(NodeLabel.of("C"))
+        var mapping = NodeLabelTokenToPropertyKeys.fixed(NodeSchemaRecord.builder()
+            .addLabel(NodeLabel.ALL_LABEL)
+            .addLabel("A")
+            .addLabel("B")
+            .addLabel("C")
+            .build()
         );
 
         assertThat(mapping.nodeLabels()).containsExactlyInAnyOrder(

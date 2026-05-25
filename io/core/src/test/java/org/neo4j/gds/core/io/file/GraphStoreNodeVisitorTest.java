@@ -28,6 +28,7 @@ import org.neo4j.gds.api.schema.Direction;
 import org.neo4j.gds.api.schema.MutableGraphSchema;
 import org.neo4j.gds.api.schema.MutableNodeSchema;
 import org.neo4j.gds.api.schema.MutableRelationshipSchema;
+import org.neo4j.gds.api.schema.NodeSchemaUtils;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.huge.HugeGraph;
 import org.neo4j.gds.core.loading.SingleTypeRelationships;
@@ -56,7 +57,8 @@ class GraphStoreNodeVisitorTest {
     @Test
     void shouldAddNodesToNodesBuilder() {
         MutableNodeSchema nodeSchema = MutableNodeSchema.from(graphStore.schema().nodeSchema());
-        NodesBuilder nodesBuilder = GraphFactory.initNodesBuilder(nodeSchema)
+        NodesBuilder nodesBuilder = GraphFactory.initNodesBuilder()
+            .nodeSchema(NodeSchemaUtils.toRecordType(nodeSchema))
             .concurrency(new Concurrency(1))
             .maxOriginalId(graphStore.nodeCount())
             .nodeCount(graph.nodeCount())

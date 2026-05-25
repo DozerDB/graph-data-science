@@ -29,6 +29,7 @@ import org.neo4j.gds.api.nodeproperties.ValueType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -562,7 +563,7 @@ class NodeSchemaRecordTest {
             .addProperty("LabelB", "PropertyZ", ValueType.LONG)
             .build();
 
-        var result = schema.unionProperties();
+        var result = schema.properties();
 
         var expected = Map.of(
             "PropertyX", PropertySchema.of("PropertyX", ValueType.LONG),
@@ -579,10 +580,40 @@ class NodeSchemaRecordTest {
             .addProperty("LabelB", "PropertyX", ValueType.LONG)
             .build();
 
-        var result = schema.unionProperties();
+        var result = schema.properties();
 
         var expected = Map.of("PropertyX", PropertySchema.of("PropertyX", ValueType.LONG));
         assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    void getPropertyKeysMappedToSchemaForLabel() {
+        var schema = NodeSchemaRecord.builder()
+            .addProperty("LabelA", "PropertyX", ValueType.LONG)
+            .addProperty("LabelA", "PropertyY", ValueType.LONG)
+            .addProperty("LabelB", "PropertyZ", ValueType.LONG)
+            .build();
+
+        var result = schema.propertiesForLabel(NodeLabel.of("LabelA"));
+
+        var expected = Map.of(
+            "PropertyX", PropertySchema.of("PropertyX", ValueType.LONG),
+            "PropertyY", PropertySchema.of("PropertyY", ValueType.LONG)
+        );
+        assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    void getPropertyKeysMappedToSchemaForLabelNotInSchema() {
+        var schema = NodeSchemaRecord.builder()
+            .addProperty("LabelA", "PropertyX", ValueType.LONG)
+            .addProperty("LabelA", "PropertyY", ValueType.LONG)
+            .addProperty("LabelB", "PropertyZ", ValueType.LONG)
+            .build();
+
+        var result = schema.propertiesForLabel(NodeLabel.of("Foo"));
+
+        assertThat(result).isEqualTo(Collections.emptyMap());
     }
 
     private static NodeSchemaRecord createSchema(SchemaEntry... entries) {
