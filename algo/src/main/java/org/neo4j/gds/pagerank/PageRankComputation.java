@@ -20,6 +20,7 @@
 package org.neo4j.gds.pagerank;
 
 import org.neo4j.gds.beta.pregel.Element;
+import org.neo4j.gds.beta.pregel.PregelConfig;
 import org.neo4j.gds.mem.MemoryEstimateDefinition;
 import org.neo4j.gds.api.nodeproperties.ValueType;
 import org.neo4j.gds.beta.pregel.Messages;
@@ -32,7 +33,7 @@ import org.neo4j.gds.beta.pregel.context.InitContext;
 import java.util.Optional;
 import java.util.function.LongToDoubleFunction;
 
-public final class PageRankComputation<C extends PageRankConfig> implements PregelComputation<C> {
+public final class PageRankComputation implements PregelComputation<PregelConfig> {
 
     static final String PAGE_RANK = "pagerank";
 
@@ -43,7 +44,7 @@ public final class PageRankComputation<C extends PageRankConfig> implements Preg
     private final double tolerance;
 
     public PageRankComputation(
-        C config,
+        PageRankConfig config,
         InitialProbabilityProvider initialProbability,
         LongToDoubleFunction degreeFunction
     ) {
@@ -54,21 +55,21 @@ public final class PageRankComputation<C extends PageRankConfig> implements Preg
     }
 
     @Override
-    public PregelSchema schema(C config) {
+    public PregelSchema schema(PregelConfig config) {
         return PregelSchema.from(new Element(PAGE_RANK, ValueType.DOUBLE));
     }
 
     @Override
-    public void init(InitContext<C> context) {
+    public void init(InitContext<PregelConfig> context) {
         context.setNodeValue(PAGE_RANK, initialValue(context));
     }
 
-    private double initialValue(InitContext<C> context) {
+    private double initialValue(InitContext<PregelConfig> context) {
         return initialProbability.provideInitialValue(context.nodeId());
     }
 
     @Override
-    public void compute(ComputeContext<C> context, Messages messages) {
+    public void compute(ComputeContext<PregelConfig> context, Messages messages) {
         double rank = context.doubleNodeValue(PAGE_RANK);
         double delta = rank;
 
