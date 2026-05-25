@@ -24,6 +24,7 @@ import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.api.GraphStore;
 import org.neo4j.gds.api.nodeproperties.ValueType;
 import org.neo4j.gds.api.schema.MutableNodeSchema;
+import org.neo4j.gds.api.schema.NodeSchemaUtils;
 import org.neo4j.gds.core.JobId;
 import org.neo4j.gds.core.RequestCorrelationId;
 import org.neo4j.gds.core.io.IdentifierMapper;
@@ -100,7 +101,7 @@ public final class GraphStoreToCsvExporter {
             () -> new CsvGraphCapabilitiesWriter(exportPath),
             (index) -> new CsvNodeVisitor(
                 exportPath,
-                nodeSchema.union(neoNodeSchema),
+                NodeSchemaUtils.toRecordType(nodeSchema.union(neoNodeSchema)),
                 headerFiles,
                 index,
                 labelMapper

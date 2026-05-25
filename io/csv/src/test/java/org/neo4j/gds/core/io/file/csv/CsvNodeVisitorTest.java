@@ -22,7 +22,7 @@ package org.neo4j.gds.core.io.file.csv;
 import org.junit.jupiter.api.Test;
 import org.neo4j.gds.NodeLabel;
 import org.neo4j.gds.api.nodeproperties.ValueType;
-import org.neo4j.gds.api.schema.MutableNodeSchema;
+import org.neo4j.gds.api.schema.NodeSchemaRecord;
 import org.neo4j.gds.core.io.IdentifierMapper;
 
 import java.util.Collections;
@@ -39,7 +39,7 @@ class CsvNodeVisitorTest extends CsvVisitorTest {
 
     @Test
     void visitNodesWithoutLabelsAndProperties() {
-        var nodeVisitor = new CsvNodeVisitor(tempDir, MutableNodeSchema.empty(), mapper());
+        var nodeVisitor = new CsvNodeVisitor(tempDir, NodeSchemaRecord.empty(), mapper());
 
         nodeVisitor.id(0L);
         nodeVisitor.endOfEntity();
@@ -60,7 +60,7 @@ class CsvNodeVisitorTest extends CsvVisitorTest {
 
     @Test
     void visitNodesWithLabels() {
-        var nodeVisitor = new CsvNodeVisitor(tempDir, MutableNodeSchema.empty(), mapper());
+        var nodeVisitor = new CsvNodeVisitor(tempDir, NodeSchemaRecord.empty(), mapper());
 
         nodeVisitor.id(0L);
         nodeVisitor.labels(new String[]{"Foo", "Bar"});
@@ -97,10 +97,10 @@ class CsvNodeVisitorTest extends CsvVisitorTest {
 
     @Test
     void visitNodesWithProperties() {
-        var nodeSchema = MutableNodeSchema.empty();
-        nodeSchema.getOrCreateLabel(NodeLabel.ALL_NODES)
-            .addProperty("foo", ValueType.DOUBLE)
-            .addProperty("bar", ValueType.DOUBLE);
+        var nodeSchema = NodeSchemaRecord.builder()
+            .addProperty(NodeLabel.ALL_LABEL, "foo", ValueType.DOUBLE)
+            .addProperty(NodeLabel.ALL_LABEL, "bar", ValueType.DOUBLE)
+            .build();
         var nodeVisitor = new CsvNodeVisitor(tempDir, nodeSchema, mapper());
 
         nodeVisitor.id(0L);
@@ -119,7 +119,7 @@ class CsvNodeVisitorTest extends CsvVisitorTest {
         nodeVisitor.close();
 
         assertCsvFiles(List.of("nodes_0.csv", "nodes_header.csv"));
-        assertHeaderFile("nodes_header.csv", nodeSchema.unionProperties());
+        assertHeaderFile("nodes_header.csv", nodeSchema.properties());
         assertDataContent(
             "nodes_0.csv",
             List.of(
@@ -136,18 +136,14 @@ class CsvNodeVisitorTest extends CsvVisitorTest {
         var bLabel = NodeLabel.of("B");
         var cLabel = NodeLabel.of("C");
 
-        var nodeSchema = MutableNodeSchema.empty();
-        nodeSchema.getOrCreateLabel(aLabel)
-            .addProperty("foo", ValueType.LONG)
-            .addProperty("bar", ValueType.LONG);
-
-        nodeSchema.getOrCreateLabel(bLabel)
-            .addProperty("bar", ValueType.LONG)
-            .addProperty("baz", ValueType.DOUBLE);
-
-        nodeSchema.getOrCreateLabel(cLabel)
-            .addProperty("isolated", ValueType.DOUBLE)
-            .addProperty("isolated_array", ValueType.LONG_ARRAY);
+        var nodeSchema = NodeSchemaRecord.builder()
+            .addProperty(aLabel.name(), "foo", ValueType.LONG)
+            .addProperty(aLabel.name(), "bar", ValueType.LONG)
+            .addProperty(bLabel.name(), "bar", ValueType.LONG)
+            .addProperty(bLabel.name(), "baz", ValueType.DOUBLE)
+            .addProperty(cLabel.name(), "isolated", ValueType.DOUBLE)
+            .addProperty(cLabel.name(), "isolated_array", ValueType.LONG_ARRAY)
+            .build();
 
         var nodeVisitor = new CsvNodeVisitor(tempDir, nodeSchema, mapper());
 
@@ -196,7 +192,7 @@ class CsvNodeVisitorTest extends CsvVisitorTest {
             "nodes_C_0.csv", "nodes_C_header.csv"
         ));
 
-        assertHeaderFile("nodes_A_B_header.csv", nodeSchema.filter(Set.of(aLabel, bLabel)).unionProperties());
+        assertHeaderFile("nodes_A_B_header.csv", nodeSchema.filter(Set.of(aLabel, bLabel)).properties());
         assertDataContent(
             "nodes_A_B_0.csv",
             List.of(  //id   bar   baz     foo
@@ -205,7 +201,7 @@ class CsvNodeVisitorTest extends CsvVisitorTest {
             )
         );
 
-        assertHeaderFile("nodes_A_header.csv", nodeSchema.filter(Set.of(aLabel)).unionProperties());
+        assertHeaderFile("nodes_A_header.csv", nodeSchema.filter(Set.of(aLabel)).properties());
         assertDataContent(
             "nodes_A_0.csv",
             List.of(  //id   bar    foo
@@ -213,7 +209,7 @@ class CsvNodeVisitorTest extends CsvVisitorTest {
             )
         );
 
-        assertHeaderFile("nodes_B_header.csv", nodeSchema.filter(Set.of(bLabel)).unionProperties());
+        assertHeaderFile("nodes_B_header.csv", nodeSchema.filter(Set.of(bLabel)).properties());
         assertDataContent(
             "nodes_B_0.csv",
             List.of(  //id   bar    baz
@@ -221,7 +217,7 @@ class CsvNodeVisitorTest extends CsvVisitorTest {
             )
         );
 
-        assertHeaderFile("nodes_C_header.csv", nodeSchema.filter(Set.of(cLabel)).unionProperties());
+        assertHeaderFile("nodes_C_header.csv", nodeSchema.filter(Set.of(cLabel)).properties());
         assertDataContent(
             "nodes_C_0.csv",
             List.of(  //id   isolated

@@ -24,7 +24,6 @@ import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.api.GraphStore;
 import org.neo4j.gds.api.IdMap;
 import org.neo4j.gds.api.schema.ImmutableMutableGraphSchema;
-import org.neo4j.gds.api.schema.MutableNodeSchema;
 import org.neo4j.gds.api.schema.NodeSchemaUtils;
 import org.neo4j.gds.core.JobId;
 import org.neo4j.gds.core.RequestCorrelationId;
@@ -169,9 +168,10 @@ public abstract class FileToGraphStoreImporter {
 
     private Nodes importNodes(FileInput fileInput) {
         progressTracker.beginSubTask();
-        MutableNodeSchema nodeSchema = fileInput.nodeSchema();
-        graphSchemaBuilder.nodeSchema(nodeSchema);
-        nodeSchema.entries().forEach(entry -> log.info("Imported node label schema: %s", entry.identifier()));
+        var nodeSchema = NodeSchemaUtils.toRecordType(fileInput.nodeSchema());
+        nodeSchema.entries().keySet()
+            .forEach(nodeLabel -> log.info("Imported node label schema: %s", nodeLabel.name()));
+        graphSchemaBuilder.nodeSchema(NodeSchemaUtils.fromRecordType(nodeSchema));
         var labelMapping = fileInput.labelMapping();
         if (labelMapping.isPresent()) {
             labelMapping.get()
@@ -181,7 +181,7 @@ public abstract class FileToGraphStoreImporter {
         }
 
         NodesBuilder nodesBuilder = GraphFactory.initNodesBuilder()
-            .nodeSchema(NodeSchemaUtils.toRecordType(nodeSchema))
+            .nodeSchema(nodeSchema)
             .maxOriginalId(fileInput.graphInfo().maxOriginalId())
             .concurrency(concurrency)
             .nodeCount(fileInput.graphInfo().nodeCount())

@@ -21,11 +21,10 @@ package org.neo4j.gds.core.io.file;
 
 import org.neo4j.batchimport.api.input.Group;
 import org.neo4j.gds.NodeLabel;
-import org.neo4j.gds.api.schema.NodeSchema;
+import org.neo4j.gds.api.schema.NodeSchemaRecord;
 import org.neo4j.gds.api.schema.PropertySchema;
 import org.neo4j.internal.id.IdSequence;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -37,14 +36,14 @@ public abstract class NodeVisitor extends ElementVisitor<PropertySchema> {
     private static final List<String> EMPTY_LABELS = Collections.emptyList();
     protected static final Set<NodeLabel> EMPTY_LABELS_LABEL = Set.of(NodeLabel.ALL_NODES);
 
-    protected final NodeSchema nodeSchema;
+    protected final NodeSchemaRecord nodeSchemaRecord;
     private long currentId;
     protected List<String> currentLabels;
     private String labelIdentifier;
 
-    protected NodeVisitor(NodeSchema nodeSchema) {
-        super(nodeSchema.allProperties());
-        this.nodeSchema = nodeSchema;
+    protected NodeVisitor(NodeSchemaRecord nodeSchema) {
+        super(nodeSchema.allProperties().stream().map(PropertySchema::key).toList());
+        this.nodeSchemaRecord = nodeSchema;
         reset();
     }
 
@@ -101,8 +100,7 @@ public abstract class NodeVisitor extends ElementVisitor<PropertySchema> {
         var nodeLabelList = currentLabels.isEmpty()
             ? EMPTY_LABELS_LABEL
             : currentLabels.stream().map(NodeLabel::of).collect(Collectors.toSet());
-        var propertySchemaForLabels = nodeSchema.filter(nodeLabelList);
-        return new ArrayList<>(propertySchemaForLabels.unionProperties().values());
+        return nodeSchemaRecord.filter(nodeLabelList).allProperties();
     }
 
     @Override
@@ -113,9 +111,9 @@ public abstract class NodeVisitor extends ElementVisitor<PropertySchema> {
     }
 
     abstract static class Builder<SELF extends Builder<SELF, VISITOR>, VISITOR extends NodeVisitor> {
-        NodeSchema nodeSchema;
+        NodeSchemaRecord nodeSchema;
 
-        SELF withNodeSchema(NodeSchema nodeSchema) {
+        SELF withNodeSchema(NodeSchemaRecord nodeSchema) {
             this.nodeSchema = nodeSchema;
             return me();
         }
