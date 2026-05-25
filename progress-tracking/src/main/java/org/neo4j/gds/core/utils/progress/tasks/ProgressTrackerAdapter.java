@@ -23,7 +23,6 @@ import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.mem.MemoryRange;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public abstract class ProgressTrackerAdapter implements ProgressTracker {
 

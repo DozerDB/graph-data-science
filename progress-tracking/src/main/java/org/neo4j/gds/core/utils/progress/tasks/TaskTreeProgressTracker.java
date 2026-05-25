@@ -27,7 +27,6 @@ import org.neo4j.gds.user.log.UserLogRegistry;
 import org.neo4j.gds.mem.MemoryRange;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public final class TaskTreeProgressTracker implements ProgressTracker {
     private final TaskProgressTracker delegate;

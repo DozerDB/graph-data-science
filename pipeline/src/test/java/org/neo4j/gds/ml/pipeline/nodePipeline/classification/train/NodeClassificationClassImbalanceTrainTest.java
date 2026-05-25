@@ -26,6 +26,7 @@ import org.neo4j.gds.executor.ExecutionContext;
 import org.neo4j.gds.extension.GdlExtension;
 import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.ml.metrics.classification.ClassificationMetricSpecification;
 import org.neo4j.gds.ml.models.Classifier;
 import org.neo4j.gds.ml.models.logisticregression.LogisticRegressionTrainConfig;
@@ -166,6 +167,7 @@ class NodeClassificationClassImbalanceTrainTest {
             .build();
 
         var result = NodeClassificationTrain.create(
+            Log.noOpLog(),
             graphStore,
             pipeline,
             trainConfig,

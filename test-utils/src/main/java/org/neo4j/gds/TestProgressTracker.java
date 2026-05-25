@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public final class TestProgressTracker implements ProgressTracker {
     private final List<AtomicLong> progresses = new ArrayList<>();

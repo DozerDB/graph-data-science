@@ -181,6 +181,7 @@ public class LinkPredictionTrainPipelineExecutor extends PipelineExecutor
         );
 
         var trainResult = new LinkPredictionTrain(
+            executionContext.log(),
             trainGraph,
             testGraph,
             pipeline,

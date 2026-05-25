@@ -199,6 +199,7 @@ final class NodeClassificationTrainComputation implements Computation<NodeClassi
         nodeFeatureProducer.validateNodePropertyStepsContextConfigs(pipeline.nodePropertySteps());
 
         var pipelineTrainer = NodeClassificationTrain.create(
+            log,
             graphStore,
             pipeline,
             configuration,

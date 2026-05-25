@@ -22,6 +22,7 @@ package org.neo4j.gds.ml.pipeline.linkPipeline.train;
 import org.junit.jupiter.api.Test;
 import org.neo4j.gds.Orientation;
 import org.neo4j.gds.api.Graph;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.termination.TerminationFlag;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.extension.GdlExtension;
@@ -122,6 +123,7 @@ class LinkPredictionClassImbalanceTrainTest {
         pipeline.addFeatureStep(new HadamardFeatureStep(List.of("array")));
 
         return new LinkPredictionTrain(
+            Log.noOpLog(),
             trainGraph,
             trainGraph,
             pipeline,
@@ -154,6 +156,7 @@ class LinkPredictionClassImbalanceTrainTest {
         pipeline.addFeatureStep(new HadamardFeatureStep(List.of("array")));
 
         return new LinkPredictionTrain(
+            Log.noOpLog(),
             trainGraph,
             trainGraph,
             pipeline,

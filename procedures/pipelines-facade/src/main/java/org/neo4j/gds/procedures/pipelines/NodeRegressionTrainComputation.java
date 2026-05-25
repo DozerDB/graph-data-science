@@ -199,6 +199,7 @@ final class NodeRegressionTrainComputation implements Computation<NodeRegression
         nodeFeatureProducer.validateNodePropertyStepsContextConfigs(pipeline.nodePropertySteps());
 
         var pipelineTrainer = NodeRegressionTrain.create(
+            log,
             graphStore,
             pipeline,
             configuration,

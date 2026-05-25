@@ -24,6 +24,7 @@ import org.neo4j.gds.api.IdMap;
 import org.neo4j.gds.collections.LongMultiSet;
 import org.neo4j.gds.collections.ha.HugeIntArray;
 import org.neo4j.gds.core.model.ModelCatalog;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.mem.MemoryEstimation;
 import org.neo4j.gds.core.utils.paged.ReadOnlyHugeLongArray;
 import org.neo4j.gds.core.utils.progress.tasks.LogLevel;
@@ -65,7 +66,7 @@ import static org.neo4j.gds.ml.pipeline.nodePipeline.classification.train.NodeCl
 import static org.neo4j.gds.utils.StringFormatting.formatWithLocale;
 
 public final class NodeClassificationTrain implements PipelineTrainer<NodeClassificationTrainResult> {
-
+    private final Log log;
     private final NodeClassificationTrainingPipeline pipeline;
     private final NodeClassificationPipelineTrainConfig trainConfig;
     private final HugeIntArray targets;
@@ -114,6 +115,7 @@ public final class NodeClassificationTrain implements PipelineTrainer<NodeClassi
     }
 
     public static NodeClassificationTrain create(
+        Log log,
         GraphStore graphStore,
         NodeClassificationTrainingPipeline pipeline,
         NodeClassificationPipelineTrainConfig config,
@@ -132,6 +134,7 @@ public final class NodeClassificationTrain implements PipelineTrainer<NodeClassi
 
         var metrics = config.metrics(classIdMap, classCounts);
         return new NodeClassificationTrain(
+            log,
             pipeline,
             config,
             labelsAndClassCounts.labels(),
@@ -147,6 +150,7 @@ public final class NodeClassificationTrain implements PipelineTrainer<NodeClassi
     }
 
     private NodeClassificationTrain(
+        Log log,
         NodeClassificationTrainingPipeline pipeline,
         NodeClassificationPipelineTrainConfig config,
         HugeIntArray labels,
@@ -159,6 +163,7 @@ public final class NodeClassificationTrain implements PipelineTrainer<NodeClassi
         ProgressTracker progressTracker,
         TerminationFlag terminationFlag
     ) {
+        this.log = log;
         this.pipeline = pipeline;
         this.nodeIdMap = nodeIdMap;
         this.classificationMetrics = classificationMetrics;
@@ -209,6 +214,7 @@ public final class NodeClassificationTrain implements PipelineTrainer<NodeClassi
 
     private void findBestModelCandidate(ReadOnlyHugeLongArray trainNodeIds, Features features, TrainingStatistics trainingStatistics) {
         var crossValidation = new CrossValidation<>(
+            log,
             progressTracker,
             terminationFlag,
             metrics,

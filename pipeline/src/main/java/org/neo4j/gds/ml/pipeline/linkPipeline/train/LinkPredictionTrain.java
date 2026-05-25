@@ -21,6 +21,7 @@ package org.neo4j.gds.ml.pipeline.linkPipeline.train;
 
 import org.jetbrains.annotations.NotNull;
 import org.neo4j.gds.api.Graph;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.mem.Estimate;
 import org.neo4j.gds.ml.metrics.EvaluationScores;
 import org.neo4j.gds.termination.TerminationFlag;
@@ -63,7 +64,7 @@ import static org.neo4j.gds.ml.splitting.EdgeSplitter.POSITIVE;
 import static org.neo4j.gds.utils.StringFormatting.formatWithLocale;
 
 public final class LinkPredictionTrain {
-
+    private final Log log;
     private final Graph trainGraph;
     private final Graph validationGraph;
     private final LinkPredictionTrainingPipeline pipeline;
@@ -78,6 +79,7 @@ public final class LinkPredictionTrain {
     }
 
     public LinkPredictionTrain(
+        Log log,
         Graph trainGraph,
         Graph validationGraph,
         LinkPredictionTrainingPipeline pipeline,
@@ -85,6 +87,7 @@ public final class LinkPredictionTrain {
         ProgressTracker progressTracker,
         TerminationFlag terminationFlag
     ) {
+        this.log = log;
         this.trainGraph = trainGraph;
         this.validationGraph = validationGraph;
         this.pipeline = pipeline;
@@ -183,6 +186,7 @@ public final class LinkPredictionTrain {
         );
 
         var crossValidation = new CrossValidation<>(
+            log,
             progressTracker,
             terminationFlag,
             config.metrics(),

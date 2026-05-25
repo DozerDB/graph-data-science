@@ -41,6 +41,7 @@ import org.neo4j.gds.extension.GdlExtension;
 import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
 import org.neo4j.gds.logging.GdsTestLog;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.ml.api.TrainingMethod;
 import org.neo4j.gds.ml.metrics.classification.ClassificationMetricSpecification;
 import org.neo4j.gds.ml.metrics.classification.F1Weighted;
@@ -671,7 +672,7 @@ class NodeClassificationTrainTest {
         var nodeFeatureProducer = NodeFeatureProducer.create(nodeGraphStore, config, ExecutionContext.EMPTY, ProgressTracker.NULL_TRACKER);
 
         // we are mostly interested in the fact that the validation method is called
-        assertThatThrownBy(() -> NodeClassificationTrain.create(nodeGraphStore, pipeline, config, nodeFeatureProducer, ProgressTracker.NULL_TRACKER, TerminationFlag.RUNNING_TRUE))
+        assertThatThrownBy(() -> NodeClassificationTrain.create(Log.noOpLog(), nodeGraphStore, pipeline, config, nodeFeatureProducer, ProgressTracker.NULL_TRACKER, TerminationFlag.RUNNING_TRUE))
             .hasMessage("The specified `testFraction` is too low for the current graph. The test set would have 0 node(s) but it must have at least 1.");
     }
 
@@ -713,6 +714,7 @@ class NodeClassificationTrainTest {
     ) {
         var nodeFeatureProducer = NodeFeatureProducer.create(graphStore, config, ExecutionContext.EMPTY, progressTracker);
         return NodeClassificationTrain.create(
+            Log.noOpLog(),
             graphStore,
             pipeline,
             config,

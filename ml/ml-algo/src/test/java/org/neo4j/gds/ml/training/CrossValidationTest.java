@@ -43,9 +43,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.neo4j.gds.assertj.Extractors.removingThreadId;
 
 class CrossValidationTest {
-
-    public static final double SCORE = 13.37;
-
     @Test
     void shouldLogProgress() {
         var log = new GdsTestLog();
@@ -61,13 +58,14 @@ class CrossValidationTest {
         var trainingStatistics = new TrainingStatistics(metrics);
 
         var crossValidation = new CrossValidation<>(
+            log,
             progressTracker,
             TerminationFlag.RUNNING_TRUE,
             metrics,
             3,
             Optional.empty(),
             (trainSet, modelParameters, metricsHandler, messageLogLevel) -> 0L,
-            (evaluationSet, model, scoreConsumer) -> { scoreConsumer.consume(metrics.get(0), 0); }
+            (evaluationSet, model, scoreConsumer) -> scoreConsumer.consume(metrics.getFirst(), 0)
         );
 
         progressTracker.beginSubTask("test");

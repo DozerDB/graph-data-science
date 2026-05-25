@@ -26,6 +26,7 @@ import org.neo4j.gds.executor.ExecutionContext;
 import org.neo4j.gds.extension.GdlExtension;
 import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.ml.metrics.classification.Accuracy;
 import org.neo4j.gds.ml.metrics.classification.ClassificationMetricSpecification;
 import org.neo4j.gds.ml.metrics.classification.GlobalAccuracy;
@@ -110,8 +111,7 @@ public class NodeClassificationTrainClassValueInvarianceTest {
         var ncTrain01 = createWithExecutionContext(
             nodes1GraphStore,
             pipeline,
-            config01,
-            ProgressTracker.NULL_TRACKER
+            config01
         );
         var result01 = ncTrain01.run();
         assertThat(result01.classifier().data().featureDimension()).isEqualTo(2);
@@ -121,8 +121,7 @@ public class NodeClassificationTrainClassValueInvarianceTest {
         var ncTrain02 = createWithExecutionContext(
             nodes2GraphStore,
             pipeline,
-            config02,
-            ProgressTracker.NULL_TRACKER
+            config02
         );
         var result02 = ncTrain02.run();
         assertThat(result01.classifier().data().featureDimension()).isEqualTo(2);
@@ -174,16 +173,17 @@ public class NodeClassificationTrainClassValueInvarianceTest {
     static NodeClassificationTrain createWithExecutionContext(
         GraphStore graphStore,
         NodeClassificationTrainingPipeline pipeline,
-        NodeClassificationPipelineTrainConfig config,
-        ProgressTracker progressTracker
+        NodeClassificationPipelineTrainConfig config
     ) {
-        var nodeFeatureProducer = NodeFeatureProducer.create(graphStore, config, ExecutionContext.EMPTY, progressTracker);
+        var nodeFeatureProducer = NodeFeatureProducer.create(graphStore, config, ExecutionContext.EMPTY, ProgressTracker.NULL_TRACKER);
+
         return NodeClassificationTrain.create(
+            Log.noOpLog(),
             graphStore,
             pipeline,
             config,
             nodeFeatureProducer,
-            progressTracker,
+            ProgressTracker.NULL_TRACKER,
             TerminationFlag.RUNNING_TRUE
         );
     }

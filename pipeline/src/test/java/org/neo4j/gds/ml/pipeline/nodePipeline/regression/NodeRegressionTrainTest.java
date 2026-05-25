@@ -41,6 +41,7 @@ import org.neo4j.gds.extension.GdlExtension;
 import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
 import org.neo4j.gds.logging.GdsTestLog;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.ml.api.TrainingMethod;
 import org.neo4j.gds.ml.metrics.regression.RegressionMetrics;
 import org.neo4j.gds.ml.models.automl.TunableTrainerConfig;
@@ -347,6 +348,7 @@ class NodeRegressionTrainTest {
 
         // we are mostly interested in the fact that the validation method is called
         assertThatThrownBy(() -> NodeRegressionTrain.create(
+            Log.noOpLog(),
             graphStore,
             pipeline,
             config,
@@ -381,6 +383,7 @@ class NodeRegressionTrainTest {
 
         // we are mostly interested in the fact that the validation method is called
         assertThatThrownBy(() -> NodeRegressionTrain.create(
+            Log.noOpLog(),
             nanGraphStore,
             pipeline,
             config,
@@ -431,6 +434,7 @@ class NodeRegressionTrainTest {
 
         // we are mostly interested in the fact that the validation method is called
         assertThatThrownBy(() -> NodeRegressionTrain.create(
+            Log.noOpLog(),
             infinityGraphStore,
             pipeline,
             config,
@@ -447,6 +451,7 @@ class NodeRegressionTrainTest {
         var pipeline = mock(NodeRegressionTrainingPipeline.class);
         var configuration = mock(NodeRegressionPipelineTrainConfig.class);
         var nodeRegressionTrain = new NodeRegressionTrain(
+            Log.noOpLog(),
             null,
             pipeline,
             configuration,
@@ -479,6 +484,7 @@ class NodeRegressionTrainTest {
             progressTracker
         );
         return NodeRegressionTrain.create(
+            Log.noOpLog(),
             graphStore,
             pipeline,
             config,

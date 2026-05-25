@@ -24,6 +24,7 @@ import org.neo4j.gds.api.GraphStore;
 import org.neo4j.gds.api.IdMap;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.ParallelUtil;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.termination.TerminationFlag;
 import org.neo4j.gds.collections.ha.HugeDoubleArray;
 import org.neo4j.gds.core.utils.paged.ReadOnlyHugeLongArray;
@@ -55,6 +56,7 @@ import java.util.TreeSet;
 import static org.neo4j.gds.utils.StringFormatting.formatWithLocale;
 
 public final class NodeRegressionTrain implements PipelineTrainer<NodeRegressionTrainResult> {
+    private final Log log;
 
     private final HugeDoubleArray targets;
     private final IdMap nodeIdMap;
@@ -117,6 +119,7 @@ public final class NodeRegressionTrain implements PipelineTrainer<NodeRegression
     }
 
     public static NodeRegressionTrain create(
+        Log log,
         GraphStore graphStore,
         NodeRegressionTrainingPipeline pipeline,
         NodeRegressionPipelineTrainConfig config,
@@ -124,11 +127,11 @@ public final class NodeRegressionTrain implements PipelineTrainer<NodeRegression
         ProgressTracker progressTracker,
         TerminationFlag terminationFlag
     ) {
-
         var nodesGraph = graphStore.getGraph(config.targetNodeLabelIdentifiers(graphStore));
         pipeline.splitConfig().validateMinNumNodesInSplitSets(nodesGraph);
 
         return new NodeRegressionTrain(
+            log,
             config.concurrency(),
             pipeline,
             config,
@@ -142,6 +145,7 @@ public final class NodeRegressionTrain implements PipelineTrainer<NodeRegression
     }
 
     NodeRegressionTrain(
+        Log log,
         Concurrency concurrency,
         NodeRegressionTrainingPipeline pipeline,
         NodeRegressionPipelineTrainConfig trainConfig,
@@ -152,6 +156,7 @@ public final class NodeRegressionTrain implements PipelineTrainer<NodeRegression
         ProgressTracker progressTracker,
         TerminationFlag terminationFlag
     ) {
+        this.log = log;
         this.concurrency = concurrency;
         this.pipeline = pipeline;
         this.trainConfig = trainConfig;
@@ -206,6 +211,7 @@ public final class NodeRegressionTrain implements PipelineTrainer<NodeRegression
         TrainingStatistics trainingStatistics
     ) {
         var crossValidation = new CrossValidation<>(
+            log,
             progressTracker,
             terminationFlag,
             metrics,

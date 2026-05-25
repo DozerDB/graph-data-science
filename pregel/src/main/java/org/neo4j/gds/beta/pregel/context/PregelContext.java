@@ -40,13 +40,6 @@ public abstract class PregelContext<CONFIG extends PregelConfig> {
     }
 
     /**
-     * Log a debug message to the Neo4j log.
-     */
-    public void logDebug(String message) {
-        progressTracker.logDebug(message);
-    }
-
-    /**
      * Log a warning message to the Neo4j log.
      */
     public void logWarning(String message) {

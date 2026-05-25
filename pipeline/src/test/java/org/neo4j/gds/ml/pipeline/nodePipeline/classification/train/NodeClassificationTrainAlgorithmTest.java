@@ -26,6 +26,7 @@ import org.neo4j.gds.executor.ExecutionContext;
 import org.neo4j.gds.extension.GdlExtension;
 import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.ml.metrics.classification.ClassificationMetricSpecification;
 import org.neo4j.gds.ml.models.logisticregression.LogisticRegressionTrainConfig;
 import org.neo4j.gds.ml.pipeline.ExecutableNodePropertyStep;
@@ -131,6 +132,7 @@ class NodeClassificationTrainAlgorithmTest {
         var nodeFeatureProducer = NodeFeatureProducer
             .create(graphStore, config, ExecutionContext.EMPTY, ProgressTracker.NULL_TRACKER);
         var pipelineTrainer = NodeClassificationTrain.create(
+            Log.noOpLog(),
             graphStore,
             pipeline,
             config,

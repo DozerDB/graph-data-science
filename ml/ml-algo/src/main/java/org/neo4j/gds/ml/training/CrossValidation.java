@@ -20,6 +20,7 @@
 package org.neo4j.gds.ml.training;
 
 import org.eclipse.collections.api.block.function.primitive.LongToLongFunction;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.termination.TerminationFlag;
 import org.neo4j.gds.core.utils.paged.ReadOnlyHugeLongArray;
 import org.neo4j.gds.core.utils.progress.tasks.LogLevel;
@@ -43,6 +44,7 @@ import java.util.SortedSet;
 import static org.neo4j.gds.utils.StringFormatting.formatWithLocale;
 
 public class CrossValidation<MODEL_TYPE> {
+    private Log log;
 
     private final ProgressTracker progressTracker;
 
@@ -65,6 +67,7 @@ public class CrossValidation<MODEL_TYPE> {
     }
 
     public CrossValidation(
+        Log log,
         ProgressTracker progressTracker,
         TerminationFlag terminationFlag,
         List<? extends Metric> metrics,
@@ -73,6 +76,7 @@ public class CrossValidation<MODEL_TYPE> {
         ModelTrainer<MODEL_TYPE> modelTrainer,
         ModelEvaluator<MODEL_TYPE> modelEvaluator
     ) {
+        this.log = log;
         this.progressTracker = progressTracker;
         this.terminationFlag = terminationFlag;
         this.metrics = metrics;
@@ -123,9 +127,9 @@ public class CrossValidation<MODEL_TYPE> {
                 var trainSet = split.trainSet();
                 var validationSet = split.testSet();
 
-                progressTracker.logDebug("Starting fold " + fold + " training");
+                log.debug("Starting fold " + fold + " training");
                 var trainedModel = modelTrainer.train(trainSet, modelParams, metricsHandler, LogLevel.DEBUG);
-                progressTracker.logDebug("Finished fold " + fold + " training");
+                log.debug("Finished fold " + fold + " training");
 
                 modelEvaluator.evaluate(validationSet, trainedModel, validationStatsBuilder::update);
                 modelEvaluator.evaluate(trainSet, trainedModel, trainStatsBuilder::update);

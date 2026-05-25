@@ -40,6 +40,7 @@ import org.neo4j.gds.extension.GdlExtension;
 import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
 import org.neo4j.gds.logging.GdsTestLog;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.mem.MemoryRange;
 import org.neo4j.gds.mem.MemoryTree;
 import org.neo4j.gds.ml.api.TrainingMethod;
@@ -306,6 +307,7 @@ class LinkPredictionTrainTest {
         pipeline.addFeatureStep(new L2FeatureStep(List.of("scalar", "array")));
 
         var linkPredictionTrain = new LinkPredictionTrain(
+            Log.noOpLog(),
             trainGraph,
             trainGraph,
             pipeline,
@@ -489,6 +491,7 @@ class LinkPredictionTrainTest {
 
         progressTracker.beginSubTask();
         new LinkPredictionTrain(
+            log,
             trainGraph,
             trainGraph,
             pipeline,
@@ -587,6 +590,7 @@ class LinkPredictionTrainTest {
 
         progressTracker.beginSubTask();
         new LinkPredictionTrain(
+            log,
             trainGraph,
             trainGraph,
             pipeline,
@@ -653,6 +657,7 @@ class LinkPredictionTrainTest {
 
         progressTracker.beginSubTask();
         new LinkPredictionTrain(
+            log,
             trainGraph,
             trainGraph,
             pipeline,
@@ -904,6 +909,7 @@ class LinkPredictionTrainTest {
         LinkPredictionTrainConfig trainConfig
     ) {
         var linkPredictionTrain = new LinkPredictionTrain(
+            Log.noOpLog(),
             trainGraph,
             trainGraph,
             linkPredictionPipeline(),

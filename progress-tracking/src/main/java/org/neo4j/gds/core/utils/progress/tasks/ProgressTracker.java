@@ -23,7 +23,6 @@ import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.mem.MemoryRange;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public interface ProgressTracker {
     ProgressTracker NULL_TRACKER = new ProgressTracker() {
@@ -144,10 +143,6 @@ public interface ProgressTracker {
     // prefer setting volume via factory method for leaves
     // to make root progress available from the start
     void setVolume(long volume);
-
-    default void logDebug(String message) {
-        logMessage(LogLevel.DEBUG, message);
-    }
 
     default void logWarning(String message) {
         logMessage(LogLevel.WARNING, message);
