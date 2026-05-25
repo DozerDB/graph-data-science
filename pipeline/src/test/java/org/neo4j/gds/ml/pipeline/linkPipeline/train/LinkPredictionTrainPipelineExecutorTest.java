@@ -406,7 +406,7 @@ final class LinkPredictionTrainPipelineExecutorTest {
 
             TestProcedureRunner.applyOnProcedure(db, TestProc.class, caller -> {
                 new LinkPredictionTrainPipelineExecutor(
-                    Log.noOpLog(),
+                    log,
                     pipeline,
                     config,
                     caller.executionContext(),
@@ -417,9 +417,9 @@ final class LinkPredictionTrainPipelineExecutorTest {
                 assertThat(log.getMessages(TestLog.WARN))
                     .extracting(removingThreadId())
                     .containsExactly(
-                        "Link Prediction Train Pipeline :: The specified `testFraction` leads to a very small test set with only 3 relationship(s). " +
+                        "The specified `testFraction` leads to a very small test set with only 3 relationship(s). " +
                         "Proceeding with such a small set might lead to unreliable results.",
-                        "Link Prediction Train Pipeline :: The specified `validationFolds` leads to very small validation sets with only 4 relationship(s). " +
+                        "The specified `validationFolds` leads to very small validation sets with only 4 relationship(s). " +
                         "Proceeding with such small sets might lead to unreliable results."
                     );
 

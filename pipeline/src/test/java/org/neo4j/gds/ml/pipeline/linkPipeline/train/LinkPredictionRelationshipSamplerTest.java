@@ -221,7 +221,7 @@ class LinkPredictionRelationshipSamplerTest {
         );
 
         var relationshipSplitter = new LinkPredictionRelationshipSampler(
-            Log.noOpLog(),
+            log,
             graphStore,
             splitConfig,
             trainConfig,
@@ -233,7 +233,7 @@ class LinkPredictionRelationshipSamplerTest {
 
         assertThat(log.getMessages(TestLog.WARN))
             .extracting(Extractors.removingThreadId())
-            .contains("Split relationships :: Using * for the `sourceNodeLabel` or `targetNodeLabel` results in not ideal negative link sampling.");
+            .contains("Using * for the `sourceNodeLabel` or `targetNodeLabel` results in not ideal negative link sampling.");
     }
 
     @Test

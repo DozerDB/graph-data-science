@@ -65,7 +65,6 @@ class CommunityAlgorithmsBusinessFacadeTest {
 
         Assertions.assertThat(log.getMessages(WARN))
             .extracting(removingThreadId())
-            .containsExactly("foo :: Specifying a `relationshipWeightProperty` has no effect unless `threshold` is also set.");
+            .containsExactly("Specifying a `relationshipWeightProperty` has no effect unless `threshold` is also set.");
     }
-
 }

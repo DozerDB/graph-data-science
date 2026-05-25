@@ -99,7 +99,7 @@ class NodeSplitterTest {
         );
         int numberOfExamples = 12;
         var splitter = new NodeSplitter(
-            Log.noOpLog(),
+            log,
             new Concurrency(4),
             numberOfExamples,
             progressTracker,
@@ -114,9 +114,9 @@ class NodeSplitterTest {
         assertThat(log.getMessages(TestLog.WARN))
             .extracting(removingThreadId())
             .containsExactly(
-                "DUMMY :: The specified `testFraction` leads to a very small test set with only 3 node(s). " +
+                "The specified `testFraction` leads to a very small test set with only 3 node(s). " +
                 "Proceeding with such a small set might lead to unreliable results.",
-                "DUMMY :: The specified `validationFolds` leads to very small validation sets with only 3 node(s). " +
+                "The specified `validationFolds` leads to very small validation sets with only 3 node(s). " +
                 "Proceeding with such small sets might lead to unreliable results."
             );
 
