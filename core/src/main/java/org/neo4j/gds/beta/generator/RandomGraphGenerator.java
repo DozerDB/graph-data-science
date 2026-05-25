@@ -377,13 +377,17 @@ public final class RandomGraphGenerator {
                         ? idMap.availableNodeLabels().stream()
                         : Stream.of(nodeLabel));
 
-        var nodeSchemaBuilder = NodeSchemaRecord.builder();
-        generatedProperties.entrySet().stream()
+        var nodeSchema = generatedProperties.entrySet().stream()
             .flatMap(entry -> getLabelsFunc.apply(entry.getKey())
                 .map(nodeLabel -> new PropertyRow(nodeLabel.name(), entry.getKey(), entry.getValue().valueType()))
             )
-            .forEach(row -> nodeSchemaBuilder.addProperty(row.label, row.propertyKey, row.valueType));
-        return new NodePropertiesAndSchema(nodeSchemaBuilder.build(), generatedProperties);
+            .collect(
+                NodeSchemaRecord::builder,
+                (builder, row) -> builder.addProperty(row.label, row.propertyKey, row.valueType),
+                (leftBuilder, rightBuilder) -> leftBuilder.addBuilder(rightBuilder)
+            )
+            .build();
+        return new NodePropertiesAndSchema(nodeSchema, generatedProperties);
     }
 
     @SuppressWarnings("unchecked")

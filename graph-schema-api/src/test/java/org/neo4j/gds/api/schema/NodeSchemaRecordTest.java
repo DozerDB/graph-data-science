@@ -172,6 +172,40 @@ class NodeSchemaRecordTest {
     }
 
     @Test
+    void buildingWithAnotherBuilder() {
+        var builder1 = NodeSchemaRecord.builder()
+            .addProperty("LabelA", "PropertyX", ValueType.LONG)
+            .addProperty("LabelB", "PropertyY", ValueType.DOUBLE);
+        var builder2 = NodeSchemaRecord.builder()
+            .addProperty("LabelB", "PropertyY", ValueType.DOUBLE)
+            .addProperty("LabelC", "PropertyZ", ValueType.LONG);
+
+        var result = builder1.addBuilder(builder2).build();
+
+        var expected = createSchema(
+            SchemaEntry.of("LabelA", "PropertyX", ValueType.LONG),
+            SchemaEntry.of("LabelB", "PropertyY", ValueType.DOUBLE),
+            SchemaEntry.of("LabelC", "PropertyZ", ValueType.LONG)
+        );
+        assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    void buildingWithSelf() {
+        var builder1 = NodeSchemaRecord.builder()
+            .addProperty("LabelA", "PropertyX", ValueType.LONG)
+            .addProperty("LabelB", "PropertyY", ValueType.DOUBLE);
+
+        var result = builder1.addBuilder(builder1).build();
+
+        var expected = createSchema(
+            SchemaEntry.of("LabelA", "PropertyX", ValueType.LONG),
+            SchemaEntry.of("LabelB", "PropertyY", ValueType.DOUBLE)
+        );
+        assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
     void readDefaultValue() {
         var label = "LabelA";
         var propertyKey = "PropertyX";
