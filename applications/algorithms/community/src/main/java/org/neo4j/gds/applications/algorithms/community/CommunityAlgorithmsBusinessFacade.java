@@ -45,6 +45,7 @@ import org.neo4j.gds.labelpropagation.LabelPropagationBaseConfig;
 import org.neo4j.gds.labelpropagation.LabelPropagationResult;
 import org.neo4j.gds.leiden.LeidenBaseConfig;
 import org.neo4j.gds.leiden.LeidenResult;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.louvain.LouvainBaseConfig;
 import org.neo4j.gds.louvain.LouvainResult;
 import org.neo4j.gds.modularity.ModularityBaseConfig;
@@ -64,14 +65,18 @@ import java.util.stream.Stream;
 
 public class CommunityAlgorithmsBusinessFacade {
     private final AlgorithmMachinery algorithmMachinery = new AlgorithmMachinery();
-    private final CommunityAlgorithms algorithms;
-    private final ProgressTrackerCreator progressTrackerCreator;
     private final CommunityAlgorithmTasks tasks = new CommunityAlgorithmTasks();
 
+    private final Log log;
+    private final CommunityAlgorithms algorithms;
+    private final ProgressTrackerCreator progressTrackerCreator;
+
     public CommunityAlgorithmsBusinessFacade(
+        Log log,
         CommunityAlgorithms algorithms,
         ProgressTrackerCreator progressTrackerCreator
     ) {
+        this.log = log;
         this.algorithms = algorithms;
         this.progressTrackerCreator = progressTrackerCreator;
     }
@@ -255,9 +260,7 @@ public class CommunityAlgorithmsBusinessFacade {
         var progressTracker = progressTrackerCreator.createProgressTracker(task, configuration);
 
         if (configuration.hasRelationshipWeightProperty() && configuration.threshold() == 0) {
-            progressTracker.logWarning(
-                "Specifying a `relationshipWeightProperty` has no effect unless `threshold` is also set."
-            );
+            log.warn("Specifying a `relationshipWeightProperty` has no effect unless `threshold` is also set.");
         }
         var params = configuration.toParameters();
         return algorithmMachinery.getResult(

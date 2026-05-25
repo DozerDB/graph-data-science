@@ -60,7 +60,7 @@ class CommunityAlgorithmsBusinessFacadeTest {
                 )
         );
 
-        var businessFacade = new CommunityAlgorithmsBusinessFacade(algorithms,progressCreator);
+        var businessFacade = new CommunityAlgorithmsBusinessFacade(log, algorithms,progressCreator);
         businessFacade.wcc(graph,config);
 
         Assertions.assertThat(log.getMessages(WARN))

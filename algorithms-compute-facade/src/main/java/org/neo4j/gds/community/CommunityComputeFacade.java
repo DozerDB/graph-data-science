@@ -62,6 +62,7 @@ import org.neo4j.gds.labelpropagation.LabelPropagationResult;
 import org.neo4j.gds.leiden.Leiden;
 import org.neo4j.gds.leiden.LeidenParameters;
 import org.neo4j.gds.leiden.LeidenResult;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.louvain.Louvain;
 import org.neo4j.gds.louvain.LouvainParameters;
 import org.neo4j.gds.louvain.LouvainResult;
@@ -93,6 +94,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 public class CommunityComputeFacade {
+    private final Log log;
 
     // Global dependencies
     // This is created with its own ExecutorService workerPool,
@@ -108,10 +110,12 @@ public class CommunityComputeFacade {
 
 
     public CommunityComputeFacade(
+        Log log,
         AsyncAlgorithmCaller algorithmCaller,
         ProgressTrackerFactory progressTrackerFactory,
         TerminationFlag terminationFlag
     ) {
+        this.log = log;
         this.algorithmCaller = algorithmCaller;
         this.progressTrackerFactory = progressTrackerFactory;
         this.terminationFlag = terminationFlag;
@@ -329,6 +333,7 @@ public class CommunityComputeFacade {
         );
 
         var algorithm = Kmeans.createKmeans(
+            log,
             graph,
             parameters,
             new KmeansContext(DefaultPool.INSTANCE, progressTracker),

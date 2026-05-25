@@ -24,6 +24,7 @@ import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.utils.paged.HugeMergeSort;
 import org.neo4j.gds.core.utils.paged.ReadOnlyHugeLongArray;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.ml.splitting.FractionSplitter;
 import org.neo4j.gds.ml.splitting.TrainingExamplesSplit;
 import org.neo4j.gds.core.utils.shuffle.ShuffleUtil;
@@ -35,7 +36,7 @@ import static org.neo4j.gds.core.utils.shuffle.ShuffleUtil.createRandomDataGener
 import static org.neo4j.gds.ml.util.TrainingSetWarnings.warnForSmallNodeSets;
 
 public final class NodeSplitter {
-
+    private final Log log;
     private final Concurrency concurrency;
     private final long numberOfExamples;
     private final ProgressTracker progressTracker;
@@ -43,12 +44,14 @@ public final class NodeSplitter {
     private final LongUnaryOperator toMappedId;
 
     public NodeSplitter(
+        Log log,
         Concurrency concurrency,
         long numberOfExamples,
         ProgressTracker progressTracker,
         LongUnaryOperator toOriginalId,
         LongUnaryOperator toMappedId
     ) {
+        this.log = log;
         this.concurrency = concurrency;
         this.numberOfExamples = numberOfExamples;
         this.progressTracker = progressTracker;
@@ -68,6 +71,7 @@ public final class NodeSplitter {
         var outerSplit = new FractionSplitter().split(ReadOnlyHugeLongArray.of(allTrainingExamples), 1 - testFraction);
 
         warnForSmallNodeSets(
+            log,
             outerSplit.trainSet().size(),
             outerSplit.testSet().size(),
             validationFolds,

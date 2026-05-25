@@ -43,7 +43,7 @@ public class MasterComputeContext<CONFIG extends PregelConfig> extends PregelCon
         ExecutorService executorService,
         ProgressTracker progressTracker
     ) {
-        super(config, progressTracker);
+        super(config);
         this.graph = graph;
         this.iteration = iteration;
         this.nodeValue = nodeValue;

@@ -30,6 +30,7 @@ import org.neo4j.gds.core.utils.progress.PerDatabaseTaskStore;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.core.utils.progress.tasks.Tasks;
 import org.neo4j.gds.logging.GdsTestLog;
+import org.neo4j.gds.logging.Log;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ class NodeSplitterTest {
     void testSplitter() {
         int numberOfExamples = 12;
         var splitter = new NodeSplitter(
+            Log.noOpLog(),
             new Concurrency(4),
             numberOfExamples,
             ProgressTracker.NULL_TRACKER,
@@ -97,6 +99,7 @@ class NodeSplitterTest {
         );
         int numberOfExamples = 12;
         var splitter = new NodeSplitter(
+            Log.noOpLog(),
             new Concurrency(4),
             numberOfExamples,
             progressTracker,
@@ -133,6 +136,7 @@ class NodeSplitterTest {
             toMappedIds[Math.toIntExact(originalIds.get(i))] = i;
         }
         var splitter = new NodeSplitter(
+            Log.noOpLog(),
             new Concurrency(4),
             numberOfExamples,
             ProgressTracker.NULL_TRACKER,

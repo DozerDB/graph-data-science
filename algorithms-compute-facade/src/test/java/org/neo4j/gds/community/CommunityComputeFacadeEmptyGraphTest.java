@@ -43,6 +43,7 @@ import org.neo4j.gds.kcore.KCoreDecompositionResult;
 import org.neo4j.gds.kmeans.KmeansParameters;
 import org.neo4j.gds.labelpropagation.LabelPropagationResult;
 import org.neo4j.gds.leiden.LeidenResult;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.louvain.LouvainParameters;
 import org.neo4j.gds.louvain.LouvainResult;
 import org.neo4j.gds.modularity.ModularityParameters;
@@ -83,6 +84,7 @@ class CommunityComputeFacadeEmptyGraphTest {
     void setUp() {
         when(graph.isEmpty()).thenReturn(true);
         facade = new CommunityComputeFacade(
+            Log.noOpLog(),
             algorithmCallerMock,
             progressTrackerFactoryMock,
             TerminationFlag.RUNNING_TRUE

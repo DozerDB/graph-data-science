@@ -173,6 +173,7 @@ public final class NodeRegressionTrain implements PipelineTrainer<NodeRegression
         progressTracker.beginSubTask();
         var splitConfig = pipeline.splitConfig();
         var splits = new NodeSplitter(
+            log,
             trainConfig.concurrency(),
             nodeIdMap.nodeCount(),
             progressTracker,

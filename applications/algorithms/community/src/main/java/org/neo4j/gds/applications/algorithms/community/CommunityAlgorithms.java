@@ -53,6 +53,7 @@ import org.neo4j.gds.labelpropagation.LabelPropagationResult;
 import org.neo4j.gds.leiden.Leiden;
 import org.neo4j.gds.leiden.LeidenParameters;
 import org.neo4j.gds.leiden.LeidenResult;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.louvain.Louvain;
 import org.neo4j.gds.louvain.LouvainParameters;
 import org.neo4j.gds.louvain.LouvainResult;
@@ -82,9 +83,11 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 public class CommunityAlgorithms {
+    private final Log log;
     private final TerminationFlag terminationFlag;
 
-    public CommunityAlgorithms(TerminationFlag terminationFlag) {
+    public CommunityAlgorithms(Log log, TerminationFlag terminationFlag) {
+        this.log = log;
         this.terminationFlag = terminationFlag;
     }
 
@@ -159,6 +162,7 @@ public class CommunityAlgorithms {
 
     public KmeansResult kMeans(Graph graph, KmeansParameters parameters, ProgressTracker progressTracker) {
         return Kmeans.createKmeans(
+            log,
             graph,
             parameters,
             new KmeansContext(DefaultPool.INSTANCE, progressTracker),

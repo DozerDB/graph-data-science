@@ -34,6 +34,7 @@ import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.extension.GdlExtension;
 import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.termination.TerminationFlag;
 
 import java.util.List;
@@ -71,6 +72,7 @@ class KmeansTest {
             var kmeansContext = KmeansContext.defaults();
 
             var kmeans = Kmeans.createKmeans(
+                Log.noOpLog(),
                 graph,
                 kmeansConfig.toParameters(),
                 kmeansContext,
@@ -113,6 +115,7 @@ class KmeansTest {
             var kmeansContext = KmeansContext.defaults();
 
             var kmeans = Kmeans.createKmeans(
+                Log.noOpLog(),
                 graph,
                 kmeansConfig.toParameters(),
                 kmeansContext,
@@ -160,6 +163,7 @@ class KmeansTest {
 
             assertThatThrownBy(
                 () -> Kmeans.createKmeans(
+                    Log.noOpLog(),
                     graph,
                     kmeansConfig.toParameters(),
                     kmeansContext,
@@ -197,6 +201,7 @@ class KmeansTest {
             var kmeansContext = KmeansContext.defaults();
 
             var kmeans = Kmeans.createKmeans(
+                Log.noOpLog(),
                 graph,
                 kmeansConfig.toParameters(),
                 kmeansContext,
@@ -246,6 +251,7 @@ class KmeansTest {
             var kmeansContext = KmeansContext.defaults();
 
             var kmeans = Kmeans.createKmeans(
+                Log.noOpLog(),
                 graph,
                 kmeansConfig.toParameters(),
                 kmeansContext,
@@ -271,6 +277,7 @@ class KmeansTest {
             var kmeansContext = KmeansContext.defaults();
 
             var kmeans = Kmeans.createKmeans(
+                Log.noOpLog(),
                 graph,
                 kmeansConfig.toParameters(),
                 kmeansContext,
@@ -298,6 +305,7 @@ class KmeansTest {
 
             var kmeansContext = KmeansContext.defaults();
             var kmeans = Kmeans.createKmeans(
+                Log.noOpLog(),
                 graph,
                 kmeansConfig.toParameters(),
                 kmeansContext,
@@ -321,6 +329,7 @@ class KmeansTest {
 
             var kmeansContext = KmeansContext.defaults();
             var kmeans = Kmeans.createKmeans(
+                Log.noOpLog(),
                 graph,
                 kmeansConfig.toParameters(),
                 kmeansContext,
@@ -368,6 +377,7 @@ class KmeansTest {
                 .build();
             var kmeansContext = KmeansContext.defaults();
             var kmeans = Kmeans.createKmeans(
+                Log.noOpLog(),
                 nanGraph,
                 kmeansConfig.toParameters(),
                 kmeansContext,
@@ -388,6 +398,7 @@ class KmeansTest {
                 .build();
             var kmeansContext = KmeansContext.defaults();
             var kmeans = Kmeans.createKmeans(
+                Log.noOpLog(),
                 missGraph,
                 kmeansConfig.toParameters(),
                 kmeansContext,
@@ -440,6 +451,7 @@ class KmeansTest {
 
             var kmeansContext = KmeansContext.defaults();
             var kmeans = Kmeans.createKmeans(
+                Log.noOpLog(),
                 missGraph,
                 kmeansConfig.toParameters(),
                 kmeansContext,
@@ -460,6 +472,7 @@ class KmeansTest {
 
             var kmeansContext = KmeansContext.defaults();
             var kmeans = Kmeans.createKmeans(
+                Log.noOpLog(),
                 missGraph,
                 kmeansConfig.toParameters(),
                 kmeansContext,
@@ -510,7 +523,7 @@ class KmeansTest {
 
             var progressTracker = progressTrackerWithLog.progressTracker();
             var kmeans = Kmeans.createKmeans(
-                graph,
+                Log.noOpLog(),graph,
                 parameters,
                 KmeansContext.progressTrackerWithDefaultExecutor(progressTracker),
                 TerminationFlag.RUNNING_TRUE
@@ -566,6 +579,7 @@ class KmeansTest {
 
             var progressTracker = progressTrackerWithLog.progressTracker();
             var kmeans = Kmeans.createKmeans(
+                Log.noOpLog(),
                 graph,
                 parameters,
                 KmeansContext.progressTrackerWithDefaultExecutor(progressTracker),
@@ -638,6 +652,7 @@ class KmeansTest {
             var progressTracker = progressTrackerWithLog.progressTracker();
 
             var kmeans = Kmeans.createKmeans(
+                Log.noOpLog(),
                 graph,
                 parameters,
                 KmeansContext.progressTrackerWithDefaultExecutor(progressTracker),

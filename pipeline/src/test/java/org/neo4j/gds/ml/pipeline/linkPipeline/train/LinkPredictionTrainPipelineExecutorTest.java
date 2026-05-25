@@ -52,6 +52,7 @@ import org.neo4j.gds.extension.Inject;
 import org.neo4j.gds.extension.Neo4jGraph;
 import org.neo4j.gds.gdl.ImmutableGraphProjectFromGdlConfig;
 import org.neo4j.gds.logging.GdsTestLog;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.mem.MemoryEstimation;
 import org.neo4j.gds.mem.MemoryEstimations;
 import org.neo4j.gds.mem.MemoryRange;
@@ -218,6 +219,7 @@ final class LinkPredictionTrainPipelineExecutorTest {
 
             TestProcedureRunner.applyOnProcedure(db, TestProc.class, caller -> {
                 var result = new LinkPredictionTrainPipelineExecutor(
+                    Log.noOpLog(),
                     pipeline,
                     config,
                     caller.executionContext(),
@@ -263,6 +265,7 @@ final class LinkPredictionTrainPipelineExecutorTest {
 
             TestProcedureRunner.applyOnProcedure(db, TestProc.class, caller -> {
                 var executor = new LinkPredictionTrainPipelineExecutor(
+                    Log.noOpLog(),
                     pipeline,
                     trainConfig,
                     caller.executionContext(),
@@ -296,6 +299,7 @@ final class LinkPredictionTrainPipelineExecutorTest {
 
             TestProcedureRunner.applyOnProcedure(db, TestMutateProc.class, caller -> {
                 var executor = new LinkPredictionTrainPipelineExecutor(
+                    Log.noOpLog(),
                     pipeline,
                     linkPredictionTrainConfig,
                     caller.executionContext(),
@@ -339,6 +343,7 @@ final class LinkPredictionTrainPipelineExecutorTest {
 
             TestProcedureRunner.applyOnProcedure(db, TestMutateProc.class, caller -> {
                 var executor = new LinkPredictionTrainPipelineExecutor(
+                    Log.noOpLog(),
                     pipeline,
                     linkPredictionTrainConfig,
                     caller.executionContext(),
@@ -401,6 +406,7 @@ final class LinkPredictionTrainPipelineExecutorTest {
 
             TestProcedureRunner.applyOnProcedure(db, TestProc.class, caller -> {
                 new LinkPredictionTrainPipelineExecutor(
+                    Log.noOpLog(),
                     pipeline,
                     config,
                     caller.executionContext(),
@@ -577,6 +583,7 @@ final class LinkPredictionTrainPipelineExecutorTest {
 
             assertThatThrownBy(() -> TestProcedureRunner.applyOnProcedure(db, TestProc.class, caller -> {
                 new LinkPredictionTrainPipelineExecutor(
+                    Log.noOpLog(),
                     pipeline,
                     config,
                     caller.executionContext(),
@@ -590,6 +597,7 @@ final class LinkPredictionTrainPipelineExecutorTest {
 
             assertThatThrownBy(() -> TestProcedureRunner.applyOnProcedure(db, TestProc.class, caller -> {
                 new LinkPredictionTrainPipelineExecutor(
+                    Log.noOpLog(),
                     pipeline2,
                     config,
                     caller.executionContext(),
@@ -702,6 +710,7 @@ final class LinkPredictionTrainPipelineExecutorTest {
                 .build();
 
             var result = new LinkPredictionTrainPipelineExecutor(
+                Log.noOpLog(),
                 pipeline,
                 config,
                 ExecutionContext.EMPTY,
@@ -743,6 +752,7 @@ final class LinkPredictionTrainPipelineExecutorTest {
                 .build();
 
             var splits = new LinkPredictionTrainPipelineExecutor(
+                Log.noOpLog(),
                 pipeline,
                 config,
                 ExecutionContext.EMPTY,
@@ -796,6 +806,7 @@ final class LinkPredictionTrainPipelineExecutorTest {
             pipeline.addFeatureStep(new L2FeatureStep(List.of("height")));
 
             var executor = new LinkPredictionTrainPipelineExecutor(
+                Log.noOpLog(),
                 pipeline,
                 trainConfig,
                 ExecutionContext.EMPTY,
