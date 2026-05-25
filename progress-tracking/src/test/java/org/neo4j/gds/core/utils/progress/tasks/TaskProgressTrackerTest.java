@@ -294,7 +294,7 @@ class TaskProgressTrackerTest {
         assertThat(log.getMessages(TestLog.INFO).size()).isEqualTo(2);
         assertThat(log.getMessages(TestLog.INFO).get(0)).contains("INFO MESSAGE 0");
         assertThat(log.getMessages(TestLog.INFO).get(1)).contains("INFO MESSAGE 1");
-        assertThat(log.getMessages(TestLog.DEBUG).size()).isEqualTo(2);
+        assertThat(log.getMessages(TestLog.DEBUG).size()).isEqualTo(1);
         assertThat(log.getMessages(TestLog.DEBUG).get(0)).contains("DEBUG MESSAGE 0");
     }
 

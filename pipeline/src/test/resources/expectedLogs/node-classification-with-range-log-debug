@@ -1,4 +1,3 @@
-Node Classification Train Pipeline :: Select best model :: Trial 1 of 2 :: Starting fold 1 training
 Node Classification Train Pipeline :: Select best model :: Trial 1 of 2 :: Initial loss 0.6931
 Node Classification Train Pipeline :: Select best model :: Trial 1 of 2 :: Epoch 1 with loss 0.6376
 Node Classification Train Pipeline :: Select best model :: Trial 1 of 2 :: Epoch 2 with loss 0.5922
@@ -9,15 +8,11 @@ Node Classification Train Pipeline :: Select best model :: Trial 1 of 2 :: Epoch
 Node Classification Train Pipeline :: Select best model :: Trial 1 of 2 :: Epoch 7 with loss 0.5004
 Node Classification Train Pipeline :: Select best model :: Trial 1 of 2 :: Epoch 8 with loss 0.5031
 Node Classification Train Pipeline :: Select best model :: Trial 1 of 2 :: converged after 8 out of 100 epochs. Initial loss: 0.6931, Last loss: 0.5031.
-Node Classification Train Pipeline :: Select best model :: Trial 1 of 2 :: Finished fold 1 training
-Node Classification Train Pipeline :: Select best model :: Trial 1 of 2 :: Starting fold 2 training
 Node Classification Train Pipeline :: Select best model :: Trial 1 of 2 :: Initial loss 0.6931
 Node Classification Train Pipeline :: Select best model :: Trial 1 of 2 :: Epoch 1 with loss 0.6780
 Node Classification Train Pipeline :: Select best model :: Trial 1 of 2 :: Epoch 2 with loss 0.6730
 Node Classification Train Pipeline :: Select best model :: Trial 1 of 2 :: Epoch 3 with loss 0.6758
 Node Classification Train Pipeline :: Select best model :: Trial 1 of 2 :: converged after 3 out of 100 epochs. Initial loss: 0.6931, Last loss: 0.6758.
-Node Classification Train Pipeline :: Select best model :: Trial 1 of 2 :: Finished fold 2 training
-Node Classification Train Pipeline :: Select best model :: Trial 2 of 2 :: Starting fold 1 training
 Node Classification Train Pipeline :: Select best model :: Trial 2 of 2 :: Initial loss 0.6931
 Node Classification Train Pipeline :: Select best model :: Trial 2 of 2 :: Epoch 1 with loss 0.6376
 Node Classification Train Pipeline :: Select best model :: Trial 2 of 2 :: Epoch 2 with loss 0.5922
@@ -28,11 +23,8 @@ Node Classification Train Pipeline :: Select best model :: Trial 2 of 2 :: Epoch
 Node Classification Train Pipeline :: Select best model :: Trial 2 of 2 :: Epoch 7 with loss 0.5004
 Node Classification Train Pipeline :: Select best model :: Trial 2 of 2 :: Epoch 8 with loss 0.5031
 Node Classification Train Pipeline :: Select best model :: Trial 2 of 2 :: converged after 8 out of 100 epochs. Initial loss: 0.6931, Last loss: 0.5031.
-Node Classification Train Pipeline :: Select best model :: Trial 2 of 2 :: Finished fold 1 training
-Node Classification Train Pipeline :: Select best model :: Trial 2 of 2 :: Starting fold 2 training
 Node Classification Train Pipeline :: Select best model :: Trial 2 of 2 :: Initial loss 0.6931
 Node Classification Train Pipeline :: Select best model :: Trial 2 of 2 :: Epoch 1 with loss 0.6780
 Node Classification Train Pipeline :: Select best model :: Trial 2 of 2 :: Epoch 2 with loss 0.6730
 Node Classification Train Pipeline :: Select best model :: Trial 2 of 2 :: Epoch 3 with loss 0.6758
 Node Classification Train Pipeline :: Select best model :: Trial 2 of 2 :: converged after 3 out of 100 epochs. Initial loss: 0.6931, Last loss: 0.6758.
-Node Classification Train Pipeline :: Select best model :: Trial 2 of 2 :: Finished fold 2 training
