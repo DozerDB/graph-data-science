@@ -21,18 +21,11 @@ package org.neo4j.gds.ml.nodePropertyPrediction;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
-import org.neo4j.gds.InspectableTestProgressTracker;
 import org.neo4j.gds.compat.TestLog;
 import org.neo4j.gds.core.concurrency.Concurrency;
-import org.neo4j.gds.core.utils.logging.LoggerForProgressTrackingAdapter;
-import org.neo4j.gds.core.JobId;
-import org.neo4j.gds.core.utils.progress.PerDatabaseTaskStore;
-import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
-import org.neo4j.gds.core.utils.progress.tasks.Tasks;
 import org.neo4j.gds.logging.GdsTestLog;
 import org.neo4j.gds.logging.Log;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -50,7 +43,6 @@ class NodeSplitterTest {
             Log.noOpLog(),
             new Concurrency(4),
             numberOfExamples,
-            ProgressTracker.NULL_TRACKER,
             i -> i,
             i -> i
         );
@@ -90,19 +82,11 @@ class NodeSplitterTest {
     @Test
     void shouldLogWarnings() {
         var log = new GdsTestLog();
-        var progressTracker = InspectableTestProgressTracker.create(
-            Tasks.leaf("DUMMY"),
-            "",
-            new JobId(),
-            new PerDatabaseTaskStore(Duration.ofMinutes(1)),
-            new LoggerForProgressTrackingAdapter(log)
-        );
         int numberOfExamples = 12;
         var splitter = new NodeSplitter(
             log,
             new Concurrency(4),
             numberOfExamples,
-            progressTracker,
             i -> i,
             i -> i
         );
@@ -123,8 +107,8 @@ class NodeSplitterTest {
         assertThat(log.getMessages(TestLog.INFO))
             .extracting(removingThreadId())
             .contains(
-                "DUMMY :: Train set size is 9",
-                "DUMMY :: Test set size is 3"
+                "Train set size is 9",
+                "Test set size is 3"
             );
     }
 
@@ -139,7 +123,6 @@ class NodeSplitterTest {
             Log.noOpLog(),
             new Concurrency(4),
             numberOfExamples,
-            ProgressTracker.NULL_TRACKER,
             i -> originalIds.get((int) i),
             i -> toMappedIds[(int) i]
         );

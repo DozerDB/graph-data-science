@@ -185,7 +185,6 @@ public final class NodeClassificationTrain implements PipelineTrainer<NodeClassi
             log,
             trainConfig.concurrency(),
             nodeIdMap.nodeCount(),
-            progressTracker,
             nodeIdMap::toOriginalNodeId,
             nodeIdMap::toMappedNodeId
         ).split(

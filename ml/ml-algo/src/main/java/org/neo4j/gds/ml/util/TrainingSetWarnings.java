@@ -38,6 +38,9 @@ public final class TrainingSetWarnings {
     }
 
     private static void warnForSmallSets(Log log, long trainSetSize, long testSetSize, long validationFolds, String elementType) {
+        log.info("Train set size is " + trainSetSize);
+        log.info("Test set size is " + testSetSize);
+
         if (testSetSize < RECOMMENDED_MIN_ELEMENTS_PER_SET) {
             log.warn(formatWithLocale(
                 "The specified `testFraction` leads to a very small test set " +

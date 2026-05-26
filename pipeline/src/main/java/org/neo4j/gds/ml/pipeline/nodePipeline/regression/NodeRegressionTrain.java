@@ -176,7 +176,6 @@ public final class NodeRegressionTrain implements PipelineTrainer<NodeRegression
             log,
             trainConfig.concurrency(),
             nodeIdMap.nodeCount(),
-            progressTracker,
             nodeIdMap::toOriginalNodeId,
             nodeIdMap::toMappedNodeId
         ).split(
