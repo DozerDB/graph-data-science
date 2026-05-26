@@ -190,6 +190,11 @@ public record NodeSchemaRecord(Map<NodeLabel, List<PropertySchema>> entries) {
             return this;
         }
 
+        public NodeSchemaBuilder addBuilder(NodeSchemaBuilder builder) {
+            rows.addAll(builder.rows);
+            return this;
+        }
+
         private void addProperty(NodeLabel nodeLabel, PropertySchema propertySchema) {
             addProperty(
                 nodeLabel.name(),

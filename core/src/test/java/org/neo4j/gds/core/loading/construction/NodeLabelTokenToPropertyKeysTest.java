@@ -96,6 +96,31 @@ class NodeLabelTokenToPropertyKeysTest {
     }
 
     @Test
+    void testMissingNodeLabelFixed() {
+        var nodeSchema = NodeSchemaRecord.empty();
+        var fixed = NodeLabelTokenToPropertyKeys.fixed(nodeSchema);
+
+        var mapping = fixed.propertySchemas(
+            NodeLabel.of("A"),
+            Map.of("foo", PropertySchema.of("foo", ValueType.LONG))
+        );
+
+        assertThat(mapping).isEmpty();
+    }
+
+    @Test
+    void testMissingNodeLabelLazy() {
+        var lazy = NodeLabelTokenToPropertyKeys.lazy();
+
+        var mapping = lazy.propertySchemas(
+            NodeLabel.of("A"),
+            Map.of("foo", PropertySchema.of("foo", ValueType.LONG))
+        );
+
+        assertThat(mapping).isEmpty();
+    }
+
+    @Test
     void shouldFailForMissingProperties() {
         var nodeSchema = NodeSchemaRecord.builder()
             .addProperty("A", "foo", ValueType.LONG)

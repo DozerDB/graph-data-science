@@ -26,12 +26,14 @@ import org.neo4j.gds.api.DatabaseId;
 import org.neo4j.gds.api.DefaultValue;
 import org.neo4j.gds.api.GraphStore;
 import org.neo4j.gds.api.IdMap;
+import org.neo4j.gds.api.nodeproperties.ValueType;
 import org.neo4j.gds.api.properties.nodes.NodePropertyValues;
 import org.neo4j.gds.api.properties.nodes.NodePropertyValuesAdapter;
 import org.neo4j.gds.api.schema.Direction;
 import org.neo4j.gds.api.schema.MutableGraphSchema;
-import org.neo4j.gds.api.schema.MutableNodeSchema;
 import org.neo4j.gds.api.schema.MutableRelationshipSchema;
+import org.neo4j.gds.api.schema.NodeSchemaRecord;
+import org.neo4j.gds.api.schema.NodeSchemaUtils;
 import org.neo4j.gds.collections.cursor.HugeCursor;
 import org.neo4j.gds.collections.ha.HugeArray;
 import org.neo4j.gds.collections.ha.HugeDoubleArray;
@@ -60,6 +62,7 @@ import java.util.Set;
 import java.util.SplittableRandom;
 import java.util.function.Function;
 import java.util.function.LongUnaryOperator;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toMap;
 import static org.neo4j.gds.utils.StringFormatting.formatWithLocale;
@@ -192,7 +195,7 @@ public final class RandomGraphGenerator {
         relationshipSchema.set(relationships.relationshipSchemaEntry());
 
         var graphSchema = MutableGraphSchema.of(
-            nodePropertiesAndSchema.nodeSchema(),
+            NodeSchemaUtils.fromRecordType(nodePropertiesAndSchema.nodeSchema()),
             relationshipSchema
         );
 
@@ -316,13 +319,13 @@ public final class RandomGraphGenerator {
         }
     }
 
-    record NodePropertiesAndSchema(MutableNodeSchema nodeSchema, Map<String, NodePropertyValues> nodeProperties) {}
+    record NodePropertiesAndSchema(NodeSchemaRecord nodeSchema, Map<String, NodePropertyValues> nodeProperties) {}
 
     private NodePropertiesAndSchema generateNodeProperties(IdMap idMap) {
         if (this.nodePropertyProducers.isEmpty()) {
-            var nodeSchema = MutableNodeSchema.empty();
-            idMap.availableNodeLabels().forEach(nodeSchema::getOrCreateLabel);
-            return new NodePropertiesAndSchema(nodeSchema, Map.of());
+            var nodeSchemaBuilder = NodeSchemaRecord.builder();
+            idMap.availableNodeLabels().forEach(nodeLabel -> nodeSchemaBuilder.addLabel(nodeLabel.name()));
+            return new NodePropertiesAndSchema(nodeSchemaBuilder.build(), Map.of());
         }
 
         var propertyNameToLabels = new HashMap<String, List<NodeLabel>>();
@@ -367,26 +370,23 @@ public final class RandomGraphGenerator {
             }
         ));
 
-        // Create a corresponding node schema
-        var nodeSchema = MutableNodeSchema.empty();
-        generatedProperties.forEach((propertyKey, property) -> propertyNameToLabels
-            .get(propertyKey)
-            .forEach(nodeLabel -> {
-                if (nodeLabel == NodeLabel.ALL_NODES) {
-                    idMap
-                        .availableNodeLabels()
-                        .forEach(actualNodeLabel -> nodeSchema
-                            .getOrCreateLabel(actualNodeLabel)
-                            .addProperty(
-                                propertyKey,
-                                property.valueType()
-                            )
-                        );
-                } else {
-                    nodeSchema.getOrCreateLabel(nodeLabel).addProperty(propertyKey, property.valueType());
-                }
-            }));
+        record PropertyRow(String label, String propertyKey, ValueType valueType) {}
+        Function<String, Stream<NodeLabel>> getLabelsFunc =
+            propertyKey -> propertyNameToLabels.get(propertyKey).stream()
+                    .flatMap(nodeLabel -> nodeLabel == NodeLabel.ALL_NODES
+                        ? idMap.availableNodeLabels().stream()
+                        : Stream.of(nodeLabel));
 
+        var nodeSchema = generatedProperties.entrySet().stream()
+            .flatMap(entry -> getLabelsFunc.apply(entry.getKey())
+                .map(nodeLabel -> new PropertyRow(nodeLabel.name(), entry.getKey(), entry.getValue().valueType()))
+            )
+            .collect(
+                NodeSchemaRecord::builder,
+                (builder, row) -> builder.addProperty(row.label, row.propertyKey, row.valueType),
+                (leftBuilder, rightBuilder) -> leftBuilder.addBuilder(rightBuilder)
+            )
+            .build();
         return new NodePropertiesAndSchema(nodeSchema, generatedProperties);
     }
 

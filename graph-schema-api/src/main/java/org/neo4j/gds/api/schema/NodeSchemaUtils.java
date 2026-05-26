@@ -48,7 +48,7 @@ public final class NodeSchemaUtils {
         return result.build();
     }
 
-    public static NodeSchema fromRecordType(NodeSchemaRecord nodeSchema) {
+    public static MutableNodeSchema fromRecordType(NodeSchemaRecord nodeSchema) {
         var result = MutableNodeSchema.empty();
 
         for (var labelEntry : nodeSchema.entries().entrySet()) {
