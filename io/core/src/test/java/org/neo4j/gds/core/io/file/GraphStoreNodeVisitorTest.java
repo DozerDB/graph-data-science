@@ -56,9 +56,9 @@ class GraphStoreNodeVisitorTest {
 
     @Test
     void shouldAddNodesToNodesBuilder() {
-        MutableNodeSchema nodeSchema = MutableNodeSchema.from(graphStore.schema().nodeSchema());
+        var nodeSchema = NodeSchemaUtils.toRecordType(graphStore.schema().nodeSchema());
         NodesBuilder nodesBuilder = GraphFactory.initNodesBuilder()
-            .nodeSchema(NodeSchemaUtils.toRecordType(nodeSchema))
+            .nodeSchema(nodeSchema)
             .concurrency(new Concurrency(1))
             .maxOriginalId(graphStore.nodeCount())
             .nodeCount(graph.nodeCount())
@@ -84,7 +84,7 @@ class GraphStoreNodeVisitorTest {
         relationshipSchema.getOrCreateRelationshipType(RelationshipType.ALL_RELATIONSHIPS, Direction.UNDIRECTED);
 
         var graphSchema = MutableGraphSchema.of(
-            nodeSchema,
+            MutableNodeSchema.from(graphStore.schema().nodeSchema()),
             relationshipSchema
         );
 
