@@ -33,7 +33,7 @@ import org.neo4j.gds.api.properties.relationships.Properties;
 import org.neo4j.gds.api.properties.relationships.RelationshipProperty;
 import org.neo4j.gds.api.properties.relationships.RelationshipPropertyStore;
 import org.neo4j.gds.api.schema.MutableGraphSchema;
-import org.neo4j.gds.api.schema.NodeSchema;
+import org.neo4j.gds.api.schema.NodeSchemaRecord;
 import org.neo4j.gds.api.schema.NodeSchemaUtils;
 import org.neo4j.gds.api.schema.RelationshipPropertySchema;
 import org.neo4j.gds.api.schema.RelationshipSchema;
@@ -102,8 +102,9 @@ public final class CSRGraphStoreUtil {
         Concurrency concurrency
     ) {
 
+        var nodeSchema = NodeSchemaUtils.toRecordType(mutableGraphSchema.nodeSchema());
         var nodeProperties = constructNodePropertiesFromSchemaAndProperties(
-            mutableGraphSchema.nodeSchema(),
+            nodeSchema,
             valuesFunction
         );
         var relationshipSchema = mutableGraphSchema.relationshipSchema();
@@ -119,7 +120,6 @@ public final class CSRGraphStoreUtil {
                 .build();
         }
 
-        var nodeSchema = NodeSchemaUtils.toRecordType(mutableGraphSchema.nodeSchema());
         var databaseInfo = DatabaseInfo.create(databaseId, DatabaseInfo.DatabaseLocation.LOCAL);
         return new GraphStoreBuilder()
             .databaseInfo(databaseInfo)
@@ -133,46 +133,45 @@ public final class CSRGraphStoreUtil {
 
     }
 
-        private static SingleTypeRelationships singleTypeRelationshipsFromGraph(
-            HugeGraph graph,
-            RelationshipSchema relationshipSchema,
-            RelationshipType relationshipType,
-            Optional<String> relationshipPropertyKey
-        ){
-            var relationshipProperties = constructRelationshipPropertiesFromGraph(
-                graph,
-                relationshipType,
-                relationshipPropertyKey,
-                graph.relationshipProperties()
-            );
+    private static SingleTypeRelationships singleTypeRelationshipsFromGraph(
+        HugeGraph graph,
+        RelationshipSchema relationshipSchema,
+        RelationshipType relationshipType,
+        Optional<String> relationshipPropertyKey
+    ){
+        var relationshipProperties = constructRelationshipPropertiesFromGraph(
+            graph,
+            relationshipType,
+            relationshipPropertyKey,
+            graph.relationshipProperties()
+        );
 
-           return SingleTypeRelationships.builder()
-                        .relationshipSchemaEntry(relationshipSchema.get(relationshipType))
-                        .topology(graph.relationshipTopology())
-                        .properties(relationshipProperties)
-                        .build();
-        }
-    private static  NodePropertyStore constructNodePropertiesFromSchemaAndProperties(
-        NodeSchema nodeSchema,
+       return SingleTypeRelationships.builder()
+                    .relationshipSchemaEntry(relationshipSchema.get(relationshipType))
+                    .topology(graph.relationshipTopology())
+                    .properties(relationshipProperties)
+                    .build();
+    }
+
+    private static NodePropertyStore constructNodePropertiesFromSchemaAndProperties(
+        NodeSchemaRecord nodeSchema,
         Function<String, NodePropertyValues> valuesFunction
     ){
-        var nodePropertyStoreBuilder = NodePropertyStore.builder();
-
-        nodeSchema
-            .unionProperties()
-            .forEach(
-                (propertyKey, propertySchema) -> nodePropertyStoreBuilder.putIfAbsent(
-                    propertyKey,
+        return nodeSchema.allProperties().stream()
+            .collect(
+                NodePropertyStore::builder,
+                (builder, propertySchema) -> builder.putIfAbsent(
+                    propertySchema.key(),
                     NodeProperty.of(
-                        propertyKey,
+                        propertySchema.key(),
                         propertySchema.state(),
-                        valuesFunction.apply(propertyKey),
+                        valuesFunction.apply(propertySchema.key()),
                         propertySchema.defaultValue()
                     )
-                )
-            );
-        return nodePropertyStoreBuilder.build();
-
+                ),
+                NodePropertyStore.Builder::addAll
+            )
+            .build();
     }
 
     @NotNull

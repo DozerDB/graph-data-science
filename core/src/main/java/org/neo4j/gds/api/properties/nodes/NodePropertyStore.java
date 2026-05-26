@@ -49,5 +49,10 @@ public interface NodePropertyStore extends PropertyStore<NodePropertyValues, Nod
             properties.remove(propertyKey);
             return this;
         }
+
+        public Builder addAll(Builder other) {
+            properties.putAll(other.properties);
+            return this;
+        }
     }
 }
