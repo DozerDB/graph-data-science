@@ -89,6 +89,7 @@ class ScanningRelationshipsImporterTest extends BaseTest {
         var graphLoaderContext = graphLoaderContext();
         var graphDimensions = graphDimensions(graphProjectConfig, graphLoaderContext, dependencyResolver);
         var importer = new ScanningRelationshipsImporterBuilder()
+            .log(Log.noOpLog())
             .idMap(new DirectIdMap(graphDimensions.nodeCount()))
             .loadingContext(graphLoaderContext)
             .progressTracker(ProgressTracker.NULL_TRACKER)

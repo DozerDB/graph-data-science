@@ -179,6 +179,7 @@ public final class NativeFactory extends CSRGraphStoreFactory<GraphProjectFromSt
 
     private Nodes loadNodes(Concurrency concurrency) {
         var scanningNodesImporter = new ScanningNodesImporterBuilder()
+            .log(loadingContext.log())
             .concurrency(concurrency)
             .graphProjectConfig(graphProjectConfig)
             .dimensions(dimensions)
@@ -200,6 +201,7 @@ public final class NativeFactory extends CSRGraphStoreFactory<GraphProjectFromSt
 
     private RelationshipImportResult loadRelationships(IdMap idMap, Concurrency concurrency) {
         var scanningRelationshipsImporter = new ScanningRelationshipsImporterBuilder()
+            .log(loadingContext.log())
             .idMap(idMap)
             .graphProjectConfig(graphProjectConfig)
             .loadingContext(loadingContext)
