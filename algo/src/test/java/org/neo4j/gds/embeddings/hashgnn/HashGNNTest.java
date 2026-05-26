@@ -371,7 +371,7 @@ class HashGNNTest {
         var progressTracker = progressTrackerWithLog.progressTracker();
         var log = progressTrackerWithLog.log();
 
-        var hashGNN = new HashGNN(Log.noOpLog(), binaryGraph, params, progressTracker, TerminationFlag.RUNNING_TRUE);
+        var hashGNN = new HashGNN(log, binaryGraph, params, progressTracker, TerminationFlag.RUNNING_TRUE);
         hashGNN.compute();
 
         Assertions.assertThat(log.getMessages(TestLog.INFO))
@@ -407,7 +407,7 @@ class HashGNNTest {
         var progressTracker = progressTrackerWithLog.progressTracker();
         var log = progressTrackerWithLog.log();
 
-        var hashGNN = new HashGNN(Log.noOpLog(), doubleGraph, params, progressTracker, TerminationFlag.RUNNING_TRUE);
+        var hashGNN = new HashGNN(log, doubleGraph, params, progressTracker, TerminationFlag.RUNNING_TRUE);
         hashGNN.compute();
 
         Assertions.assertThat(log.getMessages(TestLog.INFO))

@@ -47,6 +47,7 @@ import org.neo4j.gds.core.utils.progress.LocalTaskRegistryFactory;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.core.utils.progress.tasks.Status;
 import org.neo4j.gds.core.utils.progress.tasks.TaskProgressTracker;
+import org.neo4j.gds.logging.GdsTestLog;
 import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.user.log.UserLogRegistry;
 import org.neo4j.gds.logging.LogAdapter;
@@ -525,8 +526,9 @@ class GraphImporterTest {
             new LocalTaskRegistryFactory("", taskStore),
             UserLogRegistry.EMPTY
         );
+        var gdsLog = new GdsTestLog();
         var importer = new GraphImporter(
-            Log.noOpLog(),
+            gdsLog,
             GraphProjectConfig.emptyWithName("", "g"),
             List.of(),
             List.of(),
@@ -562,7 +564,6 @@ class GraphImporterTest {
         );
 
         assertThat(taskStore.tasksSeen()).containsExactly("Graph aggregation");
-        log.printMessages();
         log.assertContainsMessage(TestLog.INFO, "Graph aggregation :: Start");
         log.assertContainsMessage(TestLog.INFO, "Graph aggregation :: Update aggregation :: Start");
         log.assertContainsMessage(TestLog.INFO, "Graph aggregation :: Update aggregation 50%");
@@ -576,11 +577,9 @@ class GraphImporterTest {
         log.assertContainsMessage(TestLog.INFO, "Graph aggregation :: Build graph store :: Relationships 100%");
         log.assertContainsMessage(TestLog.INFO, "Graph aggregation :: Build graph store :: Relationships :: Finished");
         log.assertContainsMessage(TestLog.INFO, "Graph aggregation :: Build graph store :: Finished");
-        log.assertContainsMessage(
-            TestLog.INFO,
-            "Graph aggregation :: Build graph store :: Imported Graph: {nodes: {count: 3, propertyCount: 0, labelCount: 1}, relationships: {count: 2, typeCount: 1, propertyCount: 0}}"
-        );
         log.assertContainsMessage(TestLog.INFO, "Graph aggregation :: Finished");
+
+        gdsLog.assertContainsMessage(TestLog.INFO, "Imported Graph: {nodes: {count: 3, propertyCount: 0, labelCount: 1}, relationships: {count: 2, typeCount: 1, propertyCount: 0}}");
 
         assertThat(taskStore.query()).map(i -> i.task().status()).containsExactly(Status.FINISHED);
     }

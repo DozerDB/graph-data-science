@@ -1,9 +1,9 @@
 HashGNN :: Start
 HashGNN :: Binarize node property features :: Start
 HashGNN :: Binarize node property features 100%
-HashGNN :: Binarize node property features :: Hyperplane scalar products have mean 0.0972 and standard deviation 2.0489. A threshold for binarization may be set to the mean plus a few standard deviations.
+Hyperplane scalar products have mean 0.0972 and standard deviation 2.0489. A threshold for binarization may be set to the mean plus a few standard deviations.
 HashGNN :: Binarize node property features :: Finished
-HashGNN :: Density (number of active features) of binary input features is 8.3333.
+Density (number of active features) of binary input features is 8.3333.
 HashGNN :: Propagate embeddings :: Start
 HashGNN :: Propagate embeddings :: Precompute hashes 1 of 2 :: Start
 HashGNN :: Propagate embeddings :: Precompute hashes 1 of 2 0%
@@ -211,7 +211,7 @@ HashGNN :: Propagate embeddings :: Perform min-hashing 1 of 2 98%
 HashGNN :: Propagate embeddings :: Perform min-hashing 1 of 2 99%
 HashGNN :: Propagate embeddings :: Perform min-hashing 1 of 2 100%
 HashGNN :: Propagate embeddings :: Perform min-hashing 1 of 2 :: Finished
-HashGNN :: Propagate embeddings :: After iteration 0 average node embedding density (number of active features) is 8.3333.
+After iteration 0 average node embedding density (number of active features) is 8.3333.
 HashGNN :: Propagate embeddings :: Precompute hashes 2 of 2 :: Start
 HashGNN :: Propagate embeddings :: Precompute hashes 2 of 2 0%
 HashGNN :: Propagate embeddings :: Precompute hashes 2 of 2 1%
@@ -418,7 +418,7 @@ HashGNN :: Propagate embeddings :: Perform min-hashing 2 of 2 98%
 HashGNN :: Propagate embeddings :: Perform min-hashing 2 of 2 99%
 HashGNN :: Propagate embeddings :: Perform min-hashing 2 of 2 100%
 HashGNN :: Propagate embeddings :: Perform min-hashing 2 of 2 :: Finished
-HashGNN :: Propagate embeddings :: After iteration 1 average node embedding density (number of active features) is 8.3333.
+After iteration 1 average node embedding density (number of active features) is 8.3333.
 HashGNN :: Propagate embeddings :: Finished
 HashGNN :: Densify output embeddings :: Start
 HashGNN :: Densify output embeddings 100%
