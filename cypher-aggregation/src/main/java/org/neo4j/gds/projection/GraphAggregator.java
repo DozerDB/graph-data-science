@@ -33,6 +33,7 @@ import org.neo4j.gds.core.RequestCorrelationId;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.loading.Capabilities;
 import org.neo4j.gds.core.loading.GraphStoreCatalog;
+import org.neo4j.gds.core.loading.GraphStoreCatalogService;
 import org.neo4j.gds.core.loading.LazyIdMapBuilder;
 import org.neo4j.gds.core.loading.LazyIdMapBuilderBuilder;
 import org.neo4j.gds.core.loading.construction.NodeLabelToken;
@@ -45,9 +46,9 @@ import org.neo4j.gds.core.utils.progress.TaskRegistryFactory;
 import org.neo4j.gds.core.utils.progress.TaskStore;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.core.utils.progress.tasks.TaskProgressTracker;
-import org.neo4j.gds.user.log.UserLogRegistry;
 import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.metrics.projections.ProjectionMetricsService;
+import org.neo4j.gds.user.log.UserLogRegistry;
 import org.neo4j.internal.kernel.api.exceptions.ProcedureException;
 import org.neo4j.internal.kernel.api.procs.UserAggregationReducer;
 import org.neo4j.internal.kernel.api.procs.UserAggregationUpdater;
@@ -86,6 +87,7 @@ abstract class GraphAggregator implements UserAggregationReducer, UserAggregatio
     private final Capabilities.WriteMode writeMode;
     private final QueryEstimator queryEstimator;
     private final ExecutingQueryProvider queryProvider;
+    private final GraphStoreCatalogService graphStoreCatalogService;
     private final ProjectionMetricsService projectionMetricsService;
     private final TaskStore taskStore;
     private final Log log;
@@ -111,6 +113,7 @@ abstract class GraphAggregator implements UserAggregationReducer, UserAggregatio
         Capabilities.WriteMode writeMode,
         QueryEstimator queryEstimator,
         ExecutingQueryProvider queryProvider,
+        GraphStoreCatalogService graphStoreCatalogService,
         ProjectionMetricsService projectionMetricsService,
         TaskStore taskStore,
         Log log,
@@ -121,6 +124,7 @@ abstract class GraphAggregator implements UserAggregationReducer, UserAggregatio
         this.writeMode = writeMode;
         this.queryEstimator = queryEstimator;
         this.queryProvider = queryProvider;
+        this.graphStoreCatalogService = graphStoreCatalogService;
         this.projectionMetricsService = projectionMetricsService;
         this.taskStore = taskStore;
         this.log = log;
@@ -235,6 +239,7 @@ abstract class GraphAggregator implements UserAggregationReducer, UserAggregatio
             idMapBuilder,
             this.writeMode,
             query,
+            graphStoreCatalogService,
             progressTracker
         );
     }

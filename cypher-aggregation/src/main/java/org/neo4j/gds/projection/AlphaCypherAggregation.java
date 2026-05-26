@@ -24,6 +24,7 @@ import org.neo4j.gds.compat.DatabaseIdSupplier;
 import org.neo4j.gds.compat.GraphDatabaseApiProxy;
 import org.neo4j.gds.compat.UserFunctionSignatureBuilder;
 import org.neo4j.gds.core.loading.Capabilities;
+import org.neo4j.gds.core.loading.GraphStoreCatalogService;
 import org.neo4j.gds.integration.Neo4jPoweredRequestCorrelationId;
 import org.neo4j.gds.metrics.Metrics;
 import org.neo4j.internal.kernel.api.exceptions.ProcedureException;
@@ -87,6 +88,7 @@ public class AlphaCypherAggregation implements CallableUserAggregationFunction {
     @Override
     public UserAggregationReducer createReducer(Context ctx) throws ProcedureException {
         var databaseService = ctx.graphDatabaseAPI();
+        var graphStoreCatalogService = GraphDatabaseApiProxy.lookupComponentProvider(ctx, GraphStoreCatalogService.class, true);
         var metrics = GraphDatabaseApiProxy.lookupComponentProvider(ctx, Metrics.class, true);
         var username = ctx.kernelTransaction().securityContext().subject().executingUser();
         var transaction = ctx.transaction();
@@ -113,6 +115,7 @@ public class AlphaCypherAggregation implements CallableUserAggregationFunction {
             writeMode,
             queryProvider,
             QueryEstimator.empty(),
+            graphStoreCatalogService,
             metrics.projectionMetrics(),
             requestCorrelationId
         );
