@@ -28,6 +28,7 @@ import org.neo4j.gds.api.schema.GraphSchema;
 import org.neo4j.gds.api.schema.MutableGraphSchema;
 import org.neo4j.gds.api.schema.MutableNodeSchema;
 import org.neo4j.gds.api.schema.MutableRelationshipSchema;
+import org.neo4j.gds.api.schema.NodeSchemaUtils;
 import org.neo4j.gds.beta.filter.expression.Expression;
 import org.neo4j.gds.beta.filter.expression.ExpressionParser;
 import org.neo4j.gds.beta.filter.expression.SemanticErrors;
@@ -166,7 +167,7 @@ public final class GraphStoreFilter {
                 .databaseInfo(graphStore.databaseInfo())
                 .capabilities(graphStore.capabilities())
                 .schema(filteredSchema)
-                .nodes(new Nodes(filteredSchema.nodeSchema(), filteredNodes.idMap(), filteredNodes.propertyStores()))
+                .nodes(new Nodes(NodeSchemaUtils.toRecordType(filteredSchema.nodeSchema()), filteredNodes.idMap(), filteredNodes.propertyStores()))
                 .relationshipImportResult(RelationshipImportResult.of(filteredRelationships))
                 .concurrency(config.readConcurrency())
                 .build();

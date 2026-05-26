@@ -34,6 +34,7 @@ import org.neo4j.gds.api.properties.relationships.RelationshipProperty;
 import org.neo4j.gds.api.properties.relationships.RelationshipPropertyStore;
 import org.neo4j.gds.api.schema.MutableGraphSchema;
 import org.neo4j.gds.api.schema.NodeSchema;
+import org.neo4j.gds.api.schema.NodeSchemaUtils;
 import org.neo4j.gds.api.schema.RelationshipPropertySchema;
 import org.neo4j.gds.api.schema.RelationshipSchema;
 import org.neo4j.gds.core.concurrency.Concurrency;
@@ -118,16 +119,16 @@ public final class CSRGraphStoreUtil {
                 .build();
         }
 
-            var databaseInfo = DatabaseInfo.create(databaseId, DatabaseInfo.DatabaseLocation.LOCAL);
-            return new GraphStoreBuilder()
-                .databaseInfo(databaseInfo)
-                // TODO: is it correct that we only use this for generated graphs?
-                .capabilities(new Capabilities(Capabilities.WriteMode.NONE))
-                .schema(mutableGraphSchema)
-                .nodes(new Nodes(mutableGraphSchema.nodeSchema(), idMap, nodeProperties))
-                .relationshipImportResult(relationshipImportResult)
-                .concurrency(concurrency)
-                .build();
+        var nodeSchema = NodeSchemaUtils.toRecordType(mutableGraphSchema.nodeSchema());
+        var databaseInfo = DatabaseInfo.create(databaseId, DatabaseInfo.DatabaseLocation.LOCAL);
+        return new GraphStoreBuilder()
+            .databaseInfo(databaseInfo)
+            .capabilities(new Capabilities(Capabilities.WriteMode.NONE))
+            .schema(mutableGraphSchema)
+            .nodes(new Nodes(nodeSchema, idMap, nodeProperties))
+            .relationshipImportResult(relationshipImportResult)
+            .concurrency(concurrency)
+            .build();
 
 
     }

@@ -30,6 +30,7 @@ import org.neo4j.gds.api.User;
 import org.neo4j.gds.api.schema.ImmutableMutableGraphSchema;
 import org.neo4j.gds.api.schema.MutableGraphSchema;
 import org.neo4j.gds.api.schema.MutableRelationshipSchema;
+import org.neo4j.gds.api.schema.NodeSchemaUtils;
 import org.neo4j.gds.api.schema.RelationshipSchema;
 import org.neo4j.gds.compression.api.AdjacencyCompressor;
 import org.neo4j.gds.config.GraphProjectConfig;
@@ -359,7 +360,7 @@ public final class GraphImporter {
 
         this.graphSchemaBuilder.nodeSchema(nodeSchema);
 
-        var nodes = new Nodes(nodeSchema, idMap, idMapAndProperties.propertyStore());
+        var nodes = new Nodes(NodeSchemaUtils.toRecordType(nodeSchema), idMap, idMapAndProperties.propertyStore());
 
         graphStoreBuilder.nodes(nodes);
 

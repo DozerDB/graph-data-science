@@ -25,7 +25,7 @@ import org.neo4j.gds.api.PropertyState;
 import org.neo4j.gds.api.properties.nodes.ImmutableNodeProperty;
 import org.neo4j.gds.api.properties.nodes.NodeProperty;
 import org.neo4j.gds.api.properties.nodes.NodePropertyStore;
-import org.neo4j.gds.api.schema.MutableNodeSchema;
+import org.neo4j.gds.api.schema.NodeSchemaRecord;
 import org.neo4j.gds.api.schema.PropertySchema;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.loading.IdMapBuilder;
@@ -190,7 +190,7 @@ public final class NodesBuilder {
         return new Nodes(nodeSchema, idMap, nodePropertyStore);
     }
 
-    private MutableNodeSchema buildNodeSchema(
+    private NodeSchemaRecord buildNodeSchema(
         IdMap idMap,
         Map<String, NodeProperty> nodeProperties
     ) {
@@ -217,14 +217,29 @@ public final class NodesBuilder {
         // Use all labels and the global label to property
         // key mapping to construct the final node schema.
         return nodeLabels.stream()
-            .reduce(
-                MutableNodeSchema.empty(),
-                (unionSchema, nodeLabel) -> unionSchema.addLabel(
-                    nodeLabel,
-                    globalLabelTokenToPropertyKeys.propertySchemas(nodeLabel, propertyKeysToSchema)
-                ),
-                (lhs, rhs) -> lhs
-            );
+            .collect(
+                NodeSchemaRecord::builder,
+                (builder, nodeLabel) -> {
+                    var propertySchemas = globalLabelTokenToPropertyKeys.propertySchemas(nodeLabel, propertyKeysToSchema).values();
+
+                    if (propertySchemas.isEmpty()) {
+                        builder.addLabel(nodeLabel.name());
+
+                    } else {
+                        for (var propertySchema : propertySchemas) {
+                            builder.addProperty(
+                                nodeLabel.name(),
+                                propertySchema.key(),
+                                propertySchema.valueType(),
+                                propertySchema.defaultValue(),
+                                propertySchema.state()
+                            );
+                        }
+                    }
+                },
+                NodeSchemaRecord.NodeSchemaBuilder::addBuilder
+            )
+            .build();
     }
 
     private Map<String, NodeProperty> buildProperties(IdMap idMap) {
