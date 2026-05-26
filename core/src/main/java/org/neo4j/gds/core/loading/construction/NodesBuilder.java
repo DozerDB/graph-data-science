@@ -26,7 +26,6 @@ import org.neo4j.gds.api.properties.nodes.ImmutableNodeProperty;
 import org.neo4j.gds.api.properties.nodes.NodeProperty;
 import org.neo4j.gds.api.properties.nodes.NodePropertyStore;
 import org.neo4j.gds.api.schema.NodeSchemaRecord;
-import org.neo4j.gds.api.schema.NodeSchemaUtils;
 import org.neo4j.gds.api.schema.PropertySchema;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.loading.IdMapBuilder;
@@ -185,7 +184,7 @@ public final class NodesBuilder {
 
         var idMap = this.idMapBuilder.build(labelInformationBuilder, highestNeoId, concurrency);
         var nodeProperties = buildProperties(idMap);
-        var nodeSchema = NodeSchemaUtils.fromRecordType(buildNodeSchema(idMap, nodeProperties));
+        var nodeSchema = buildNodeSchema(idMap, nodeProperties);
         var nodePropertyStore = NodePropertyStore.builder().properties(nodeProperties).build();
 
         return new Nodes(nodeSchema, idMap, nodePropertyStore);
