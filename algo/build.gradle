@@ -42,6 +42,7 @@ dependencies {
     implementation project(':ml-algo')
     implementation project(':ml-core')
     implementation project(':ml-params')
+    implementation project(':logging')
     implementation project(':model-catalog-api')
     implementation project(':node-embeddings-configs')
     implementation project(':node-embeddings-params')
