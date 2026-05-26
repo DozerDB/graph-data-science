@@ -24,6 +24,7 @@ import org.neo4j.gds.api.Graph;
 import org.neo4j.gds.api.properties.nodes.NodePropertyValuesAdapter;
 import org.neo4j.gds.beta.pregel.Pregel;
 import org.neo4j.gds.beta.pregel.PregelComputation;
+import org.neo4j.gds.beta.pregel.PregelConfig;
 import org.neo4j.gds.collections.ha.HugeDoubleArray;
 import org.neo4j.gds.core.concurrency.RunWithConcurrency;
 import org.neo4j.gds.core.utils.partition.PartitionUtils;
@@ -34,18 +35,18 @@ import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
 
-public class PageRankAlgorithm<C extends RankConfig> extends Algorithm<PageRankResult> {
+public class PageRankAlgorithm extends Algorithm<PageRankResult> {
 
-    private final Pregel<C> pregelJob;
+    private final Pregel<PregelConfig> pregelJob;
     private final Graph graph;
     private final PageRankVariant mode;
-    private final C config;
+    private final RankConfig config;
     private final ExecutorService executorService;
 
     public PageRankAlgorithm(
         Graph graph,
-        C config,
-        PregelComputation<C> pregelComputation,
+        RankConfig config,
+        PregelComputation<PregelConfig> pregelComputation,
         PageRankVariant mode,
         ExecutorService executorService,
         ProgressTracker progressTracker,

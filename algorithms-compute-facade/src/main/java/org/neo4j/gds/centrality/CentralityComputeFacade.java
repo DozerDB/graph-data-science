@@ -122,7 +122,7 @@ public class CentralityComputeFacade {
             logProgress
         );
 
-        var articleRank = new PageRankAlgorithm<>(
+        var articleRank = new PageRankAlgorithm(
             graph,
             configuration,
             articleRankComputation,
@@ -138,7 +138,7 @@ public class CentralityComputeFacade {
         );
     }
 
-    private ArticleRankComputation<ArticleRankConfig> articleRankComputation(
+    private ArticleRankComputation articleRankComputation(
         Graph graph,
         ArticleRankConfig configuration
     ) {
@@ -157,7 +157,7 @@ public class CentralityComputeFacade {
         );
 
         double avgDegree = DegreeFunctions.averageDegree(graph, configuration.concurrency());
-        return new ArticleRankComputation<>(
+        return new ArticleRankComputation(
             configuration,
             probabilityProvider,
             degreeFunction,
@@ -357,7 +357,7 @@ public class CentralityComputeFacade {
             logProgress
         );
 
-        var eigenvector = new PageRankAlgorithm<>(
+        var eigenvector = new PageRankAlgorithm(
             graph,
             configuration,
             eigenvectorComputation,
@@ -373,7 +373,7 @@ public class CentralityComputeFacade {
         );
     }
 
-    private EigenvectorComputation<EigenvectorConfig> eigenvectorComputation(
+    private EigenvectorComputation eigenvectorComputation(
         Graph graph,
         EigenvectorConfig configuration
     ) {
@@ -391,7 +391,7 @@ public class CentralityComputeFacade {
             terminationFlag
         );
 
-        return new EigenvectorComputation<>(
+        return new EigenvectorComputation(
             graph.nodeCount(),
             configuration,
             mappedSourceNodes,
@@ -522,7 +522,7 @@ public class CentralityComputeFacade {
             logProgress
         );
 
-        var pageRank = new PageRankAlgorithm<>(
+        var pageRank = new PageRankAlgorithm(
             graph,
             configuration,
             pageRankComputation,
@@ -538,7 +538,7 @@ public class CentralityComputeFacade {
         );
     }
 
-    private PageRankComputation<PageRankConfig> pagerankComputation(
+    private PageRankComputation pagerankComputation(
         Graph graph,
         PageRankConfig configuration
     ) {
@@ -555,7 +555,7 @@ public class CentralityComputeFacade {
             alpha,
             configuration.sourceNodes()
         );
-        return new PageRankComputation<>(configuration, probabilityProvider, degreeFunction);
+        return new PageRankComputation(configuration, probabilityProvider, degreeFunction);
     }
 
 

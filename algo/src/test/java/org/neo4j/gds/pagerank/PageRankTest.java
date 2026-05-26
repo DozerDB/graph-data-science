@@ -774,7 +774,7 @@ class PageRankTest {
         }
     }
 
-    private PageRankAlgorithm<PageRankConfig> pageRank(
+    private PageRankAlgorithm pageRank(
         Graph graph,
         PageRankConfig config,
         ProgressTracker progressTracker,
@@ -793,8 +793,8 @@ class PageRankTest {
             alpha,
             config.sourceNodes()
         );
-        var pageRankComputation = new PageRankComputation<>(config, probabilityProvider, degreeFunction);
-        return new PageRankAlgorithm<>(
+        var pageRankComputation = new PageRankComputation(config, probabilityProvider, degreeFunction);
+        return new PageRankAlgorithm(
             graph,
             config,
             pageRankComputation,
@@ -806,7 +806,7 @@ class PageRankTest {
 
     }
 
-    private PageRankAlgorithm<ArticleRankConfig> articleRank(
+    private PageRankAlgorithm articleRank(
         Graph graph,
         ArticleRankConfig config
     ) {
@@ -824,8 +824,8 @@ class PageRankTest {
             config.sourceNodes()
         );
         double avgDegree = DegreeFunctions.averageDegree(graph, config.concurrency());
-        var pageRankComputation = new ArticleRankComputation<>(config, probabilityProvider, degreeFunction, avgDegree);
-        return new PageRankAlgorithm<>(
+        var pageRankComputation = new ArticleRankComputation(config, probabilityProvider, degreeFunction, avgDegree);
+        return new PageRankAlgorithm(
             graph,
             config,
             pageRankComputation,
@@ -836,7 +836,7 @@ class PageRankTest {
         );
     }
 
-    private PageRankAlgorithm<EigenvectorConfig> eigenvector(
+    private PageRankAlgorithm eigenvector(
         Graph graph,
         EigenvectorConfig config
     ) {
@@ -853,13 +853,13 @@ class PageRankTest {
             TerminationFlag.RUNNING_TRUE
         );
 
-        var computation = new EigenvectorComputation<>(
+        var computation = new EigenvectorComputation(
             graph.nodeCount(),
             config,
             mappedSourceNodes,
             degreeFunction
         );
-        return new PageRankAlgorithm<>(
+        return new PageRankAlgorithm(
             graph,
             config,
             computation,

@@ -79,7 +79,7 @@ public class CentralityAlgorithms {
     public PageRankResult articleRank(Graph graph, ArticleRankConfig configuration, ProgressTracker progressTracker) {
         var articleRankComputation = articleRankComputation(graph, configuration);
 
-        var articleRank = new PageRankAlgorithm<>(
+        var articleRank = new PageRankAlgorithm(
             graph,
             configuration,
             articleRankComputation,
@@ -168,7 +168,7 @@ public class CentralityAlgorithms {
     ) {
         var eigenvectorComputation = eigenvectorComputation(graph, configuration);
 
-        var eigenvector = new PageRankAlgorithm<>(
+        var eigenvector = new PageRankAlgorithm(
             graph,
             configuration,
             eigenvectorComputation,
@@ -232,7 +232,7 @@ public class CentralityAlgorithms {
     public PageRankResult pageRank(Graph graph, PageRankConfig configuration, ProgressTracker progressTracker) {
         var pageRankComputation = pageRankComputation(graph, configuration);
 
-        var pageRank = new PageRankAlgorithm<>(
+        var pageRank = new PageRankAlgorithm(
             graph,
             configuration,
             pageRankComputation,
@@ -245,7 +245,7 @@ public class CentralityAlgorithms {
         return pageRank.compute();
     }
 
-    private ArticleRankComputation<ArticleRankConfig> articleRankComputation(
+    private ArticleRankComputation articleRankComputation(
         Graph graph,
         ArticleRankConfig configuration
     ) {
@@ -264,10 +264,10 @@ public class CentralityAlgorithms {
         );
 
         double avgDegree = DegreeFunctions.averageDegree(graph, configuration.concurrency());
-        return new ArticleRankComputation<>(configuration, probabilityProvider, degreeFunction, avgDegree);
+        return new ArticleRankComputation(configuration, probabilityProvider, degreeFunction, avgDegree);
     }
 
-    private EigenvectorComputation<EigenvectorConfig> eigenvectorComputation(
+    private EigenvectorComputation eigenvectorComputation(
         Graph graph,
         EigenvectorConfig configuration
     ) {
@@ -285,7 +285,7 @@ public class CentralityAlgorithms {
             terminationFlag
         );
 
-        return new EigenvectorComputation<>(
+        return new EigenvectorComputation(
             graph.nodeCount(),
             configuration,
             mappedSourceNodes,
@@ -293,7 +293,7 @@ public class CentralityAlgorithms {
         );
     }
 
-    private PageRankComputation<PageRankConfig> pageRankComputation(Graph graph, PageRankConfig configuration) {
+    private PageRankComputation pageRankComputation(Graph graph, PageRankConfig configuration) {
         var degreeFunction = DegreeFunctions.pageRankDegreeFunction(
             graph,
             configuration.hasRelationshipWeightProperty(),
@@ -307,7 +307,7 @@ public class CentralityAlgorithms {
             alpha,
             configuration.sourceNodes()
         );
-        return new PageRankComputation<>(configuration, probabilityProvider, degreeFunction);
+        return new PageRankComputation(configuration, probabilityProvider, degreeFunction);
     }
 
 }

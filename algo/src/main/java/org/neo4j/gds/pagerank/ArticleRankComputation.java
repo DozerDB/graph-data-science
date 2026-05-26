@@ -19,20 +19,21 @@
  */
 package org.neo4j.gds.pagerank;
 
-import org.neo4j.gds.beta.pregel.Element;
-import org.neo4j.gds.mem.MemoryEstimateDefinition;
 import org.neo4j.gds.api.nodeproperties.ValueType;
+import org.neo4j.gds.beta.pregel.Element;
 import org.neo4j.gds.beta.pregel.Messages;
 import org.neo4j.gds.beta.pregel.PregelComputation;
+import org.neo4j.gds.beta.pregel.PregelConfig;
 import org.neo4j.gds.beta.pregel.PregelSchema;
 import org.neo4j.gds.beta.pregel.Reducer;
 import org.neo4j.gds.beta.pregel.context.ComputeContext;
 import org.neo4j.gds.beta.pregel.context.InitContext;
+import org.neo4j.gds.mem.MemoryEstimateDefinition;
 
 import java.util.Optional;
 import java.util.function.LongToDoubleFunction;
 
-public final class ArticleRankComputation<C extends ArticleRankConfig> implements PregelComputation<C> {
+public final class ArticleRankComputation implements PregelComputation<PregelConfig> {
 
     private static final String PAGE_RANK = "pagerank";
 
@@ -44,7 +45,7 @@ public final class ArticleRankComputation<C extends ArticleRankConfig> implement
     private final double averageDegree;
 
     public ArticleRankComputation(
-        C config,
+        ArticleRankConfig config,
         InitialProbabilityProvider initialProbabilityProvider,
         LongToDoubleFunction degreeFunction,
         double averageDegree
@@ -57,21 +58,21 @@ public final class ArticleRankComputation<C extends ArticleRankConfig> implement
     }
 
     @Override
-    public PregelSchema schema(C config) {
+    public PregelSchema schema(PregelConfig config) {
         return PregelSchema.from(new Element(PAGE_RANK, ValueType.DOUBLE));
     }
 
     @Override
-    public void init(InitContext<C> context) {
+    public void init(InitContext<PregelConfig> context) {
         context.setNodeValue(PAGE_RANK, initialValue(context));
     }
 
-    private double initialValue(InitContext<C> context) {
+    private double initialValue(InitContext<PregelConfig> context) {
         return initialProbability.provideInitialValue(context.nodeId());
     }
 
     @Override
-    public void compute(ComputeContext<C> context, Messages messages) {
+    public void compute(ComputeContext<PregelConfig> context, Messages messages) {
         double rank = context.doubleNodeValue(PAGE_RANK);
         double delta = rank;
 

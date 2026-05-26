@@ -26,6 +26,7 @@ import org.neo4j.gds.api.properties.nodes.DoubleNodePropertyValues;
 import org.neo4j.gds.beta.pregel.Element;
 import org.neo4j.gds.beta.pregel.Messages;
 import org.neo4j.gds.beta.pregel.PregelComputation;
+import org.neo4j.gds.beta.pregel.PregelConfig;
 import org.neo4j.gds.beta.pregel.PregelSchema;
 import org.neo4j.gds.beta.pregel.Reducer;
 import org.neo4j.gds.beta.pregel.context.ComputeContext;
@@ -40,7 +41,7 @@ import org.neo4j.gds.scaling.compute.L2NormComputer;
 import java.util.Optional;
 import java.util.function.LongToDoubleFunction;
 
-public final class EigenvectorComputation<C extends EigenvectorConfig> implements PregelComputation<C> {
+public final class EigenvectorComputation implements PregelComputation<PregelConfig> {
 
     private static final String RANK = PageRankComputation.PAGE_RANK;
     private static final String NEXT_RANK = "next_rank";
@@ -54,7 +55,7 @@ public final class EigenvectorComputation<C extends EigenvectorConfig> implement
 
     public EigenvectorComputation(
         long nodeCount,
-        C config,
+        EigenvectorConfig config,
         LongSet sourceNodes,
         LongToDoubleFunction weightDenominator
     ) {
@@ -73,7 +74,7 @@ public final class EigenvectorComputation<C extends EigenvectorConfig> implement
     }
 
     @Override
-    public PregelSchema schema(C config) {
+    public PregelSchema schema(PregelConfig config) {
         return PregelSchema.from(
             new Element(RANK, ValueType.DOUBLE),
             new Element(NEXT_RANK, ValueType.DOUBLE)
@@ -81,11 +82,11 @@ public final class EigenvectorComputation<C extends EigenvectorConfig> implement
     }
 
     @Override
-    public void init(InitContext<C> context) {
+    public void init(InitContext<PregelConfig> context) {
         context.setNodeValue(RANK, initialValue(context));
     }
 
-    private double initialValue(InitContext<C> context) {
+    private double initialValue(InitContext<PregelConfig> context) {
         if (!hasSourceNodes || sourceNodes.contains(context.nodeId())) {
             return initialValue;
         }
@@ -93,7 +94,7 @@ public final class EigenvectorComputation<C extends EigenvectorConfig> implement
     }
 
     @Override
-    public void compute(ComputeContext<C> context, Messages messages) {
+    public void compute(ComputeContext<PregelConfig> context, Messages messages) {
         // Instead of just using the adjacency matrix A, we add
         // the centrality score from the previous iteration (A + I).
         // This makes the difference between dominant eigenvalues
@@ -113,7 +114,7 @@ public final class EigenvectorComputation<C extends EigenvectorConfig> implement
     }
 
     @Override
-    public boolean masterCompute(MasterComputeContext<C> context) {
+    public boolean masterCompute(MasterComputeContext<PregelConfig> context) {
         var concurrency = context.config().concurrency();
 
         var properties = new DoubleNodePropertyValues() {
