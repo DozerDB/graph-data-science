@@ -1,6 +1,6 @@
 Node Regression Train Pipeline :: Start
-Node Regression Train Pipeline :: Train set size is 6
-Node Regression Train Pipeline :: Test set size is 7
+Train set size is 6
+Test set size is 7
 Node Regression Train Pipeline :: Execute node property steps :: Start
 Node Regression Train Pipeline :: Execute node property steps :: Finished
 Node Regression Train Pipeline :: Create validation folds :: Start
@@ -8,22 +8,22 @@ Node Regression Train Pipeline :: Create validation folds 100%
 Node Regression Train Pipeline :: Create validation folds :: Finished
 Node Regression Train Pipeline :: Select best model :: Start
 Node Regression Train Pipeline :: Select best model :: Trial 1 of 2 :: Start
-Node Regression Train Pipeline :: Select best model :: Trial 1 of 2 :: Method: RandomForest, Parameters: {numberOfSamplesRatio=1.0, numberOfDecisionTrees=5, maxDepth=3, minSplitSize=2, minLeafSize=1}
+Method: RandomForest, Parameters: {numberOfSamplesRatio=1.0, numberOfDecisionTrees=5, maxDepth=3, minSplitSize=2, minLeafSize=1}
 Node Regression Train Pipeline :: Select best model :: Trial 1 of 2 50%
 Node Regression Train Pipeline :: Select best model :: Trial 1 of 2 100%
-Node Regression Train Pipeline :: Select best model :: Trial 1 of 2 :: Main validation metric (MEAN_SQUARED_ERROR): 1698.1867
-Node Regression Train Pipeline :: Select best model :: Trial 1 of 2 :: Validation metrics: {MEAN_SQUARED_ERROR=1698.1866}
-Node Regression Train Pipeline :: Select best model :: Trial 1 of 2 :: Training metrics: {MEAN_SQUARED_ERROR=783.76}
+Main validation metric (MEAN_SQUARED_ERROR): 1698.1867
+Validation metrics: {MEAN_SQUARED_ERROR=1698.1866}
+Training metrics: {MEAN_SQUARED_ERROR=783.76}
 Node Regression Train Pipeline :: Select best model :: Trial 1 of 2 :: Finished
 Node Regression Train Pipeline :: Select best model :: Trial 2 of 2 :: Start
-Node Regression Train Pipeline :: Select best model :: Trial 2 of 2 :: Method: RandomForest, Parameters: {numberOfSamplesRatio=1.0, numberOfDecisionTrees=5, maxDepth=2, minSplitSize=2, minLeafSize=1}
+Method: RandomForest, Parameters: {numberOfSamplesRatio=1.0, numberOfDecisionTrees=5, maxDepth=2, minSplitSize=2, minLeafSize=1}
 Node Regression Train Pipeline :: Select best model :: Trial 2 of 2 50%
 Node Regression Train Pipeline :: Select best model :: Trial 2 of 2 100%
-Node Regression Train Pipeline :: Select best model :: Trial 2 of 2 :: Main validation metric (MEAN_SQUARED_ERROR): 1698.1867
-Node Regression Train Pipeline :: Select best model :: Trial 2 of 2 :: Validation metrics: {MEAN_SQUARED_ERROR=1698.1866}
-Node Regression Train Pipeline :: Select best model :: Trial 2 of 2 :: Training metrics: {MEAN_SQUARED_ERROR=783.76}
+Main validation metric (MEAN_SQUARED_ERROR): 1698.1867
+Validation metrics: {MEAN_SQUARED_ERROR=1698.1866}
+Training metrics: {MEAN_SQUARED_ERROR=783.76}
 Node Regression Train Pipeline :: Select best model :: Trial 2 of 2 :: Finished
-Node Regression Train Pipeline :: Select best model :: Best trial was Trial 1 with main validation metric 1698.1867
+Best trial was Trial 1 with main validation metric 1698.1867
 Node Regression Train Pipeline :: Select best model :: Finished
 Node Regression Train Pipeline :: Train best model :: Start
 Node Regression Train Pipeline :: Train best model :: trained decision tree 1 out of 5
@@ -34,8 +34,8 @@ Node Regression Train Pipeline :: Train best model :: trained decision tree 5 ou
 Node Regression Train Pipeline :: Train best model 100%
 Node Regression Train Pipeline :: Train best model :: Finished
 Node Regression Train Pipeline :: Evaluate on test data :: Start
-Node Regression Train Pipeline :: Evaluate on test data :: Final model metrics on full train set: {MEAN_SQUARED_ERROR=881.1199}
-Node Regression Train Pipeline :: Evaluate on test data :: Final model metrics on test set: {MEAN_SQUARED_ERROR=1598.4457}
+Final model metrics on full train set: {MEAN_SQUARED_ERROR=881.1199}
+Final model metrics on test set: {MEAN_SQUARED_ERROR=1598.4457}
 Node Regression Train Pipeline :: Evaluate on test data 100%
 Node Regression Train Pipeline :: Evaluate on test data :: Finished
 Node Regression Train Pipeline :: Retrain best model :: Start

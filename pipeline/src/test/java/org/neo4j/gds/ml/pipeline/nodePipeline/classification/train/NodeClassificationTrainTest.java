@@ -160,6 +160,7 @@ class NodeClassificationTrainTest {
         );
 
         var ncTrain = createWithExecutionContext(
+            Log.noOpLog(),
             relGraphStore,
             pipeline,
             config,
@@ -233,6 +234,7 @@ class NodeClassificationTrainTest {
         var config = createConfig("model", GRAPH_NAME, metricSpecification, 1L);
 
         var ncTrain = createWithExecutionContext(
+            Log.noOpLog(),
             nodeGraphStore,
             pipeline,
             config,
@@ -279,6 +281,7 @@ class NodeClassificationTrainTest {
         var config = createConfig("model", GRAPH_NAME, metricSpecification, 1L);
 
         var ncTrain = createWithExecutionContext(
+            Log.noOpLog(),
             nodeGraphStore,
             pipeline,
             config,
@@ -369,6 +372,7 @@ class NodeClassificationTrainTest {
             .build();
 
         var ncTrain = createWithExecutionContext(
+            Log.noOpLog(),
             nodeGraphStore,
             pipeline,
             config,
@@ -429,6 +433,7 @@ class NodeClassificationTrainTest {
             .build();
 
         var ncTrain = createWithExecutionContext(
+            Log.noOpLog(),
             nodeGraphStore,
             pipeline,
             config,
@@ -472,6 +477,7 @@ class NodeClassificationTrainTest {
         var bananasConfig = createConfig("bananasModel", GRAPH_NAME, metricSpecification, 1337L);
 
         var bananasTrain = createWithExecutionContext(
+            Log.noOpLog(),
             nodeGraphStore,
             bananasPipeline,
             bananasConfig,
@@ -496,6 +502,7 @@ class NodeClassificationTrainTest {
             44L
         );
         var arrayPropertyTrain = createWithExecutionContext(
+            Log.noOpLog(),
             nodeGraphStore,
             arrayPipeline,
             arrayPropertyConfig,
@@ -560,12 +567,12 @@ class NodeClassificationTrainTest {
             Duration.ofMinutes(1)), new LoggerForProgressTrackingAdapter(log));
 
         createWithExecutionContext(
-                nodeGraphStore,
-                pipeline,
-                config,
+            log,
+            nodeGraphStore,
+            pipeline,
+            config,
             progressTracker
-            )
-            .run();
+        ).run();
 
         assertThat(log.getMessages(INFO))
             .extracting(removingThreadId())
@@ -598,12 +605,12 @@ class NodeClassificationTrainTest {
         var progressTracker = TestProgressTracker.create(progressTask, new LoggerForProgressTrackingAdapter(testLog), new Concurrency(1), EmptyTaskRegistryFactory.INSTANCE);
 
         createWithExecutionContext(
-                nodeGraphStore,
-                pipeline,
-                config,
+            testLog,
+            nodeGraphStore,
+            pipeline,
+            config,
             progressTracker
-            )
-            .run();
+        ).run();
 
         assertThat(testLog.getMessages(INFO))
             .extracting(removingThreadId())
@@ -639,6 +646,7 @@ class NodeClassificationTrainTest {
             .build();
 
         Supplier<NodeClassificationTrain> algoSupplier = () -> createWithExecutionContext(
+            Log.noOpLog(),
             nodeGraphStore,
             pipeline,
             config,
@@ -707,14 +715,16 @@ class NodeClassificationTrainTest {
     }
 
     static NodeClassificationTrain createWithExecutionContext(
+        Log log,
         GraphStore graphStore,
         NodeClassificationTrainingPipeline pipeline,
         NodeClassificationPipelineTrainConfig config,
         ProgressTracker progressTracker
     ) {
         var nodeFeatureProducer = NodeFeatureProducer.create(graphStore, config, ExecutionContext.EMPTY, progressTracker);
+
         return NodeClassificationTrain.create(
-            Log.noOpLog(),
+            log,
             graphStore,
             pipeline,
             config,

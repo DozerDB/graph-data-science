@@ -132,7 +132,7 @@ class NodeRegressionTrainTest {
             .metrics(List.of(RegressionMetrics.MEAN_SQUARED_ERROR.name()))
             .build();
 
-        var nrTrain = createWithExecutionContext(graphStore, pipeline, trainConfig, ProgressTracker.NULL_TRACKER);
+        var nrTrain = createWithExecutionContext(Log.noOpLog(), graphStore, pipeline, trainConfig, ProgressTracker.NULL_TRACKER);
 
         NodeRegressionTrainResult result = nrTrain.run();
         var trainingStatistics = result.trainingStatistics();
@@ -170,7 +170,7 @@ class NodeRegressionTrainTest {
             .metrics(List.of(RegressionMetrics.MEAN_SQUARED_ERROR.name()))
             .build();
 
-        var nrTrain = createWithExecutionContext(graphStore, pipeline, trainConfig, ProgressTracker.NULL_TRACKER);
+        var nrTrain = createWithExecutionContext(Log.noOpLog(), graphStore, pipeline, trainConfig, ProgressTracker.NULL_TRACKER);
 
         NodeRegressionTrainResult result = nrTrain.run();
         var trainingStatistics = result.trainingStatistics();
@@ -215,6 +215,7 @@ class NodeRegressionTrainTest {
             .build();
 
         NodeRegressionTrainResult result = createWithExecutionContext(
+            Log.noOpLog(),
             graphStore,
             pipeline,
             trainConfig,
@@ -269,11 +270,14 @@ class NodeRegressionTrainTest {
 
         var log = new GdsTestLog();
         var progressTracker = InspectableTestProgressTracker.create(
-            progressTask, config.username(), config.jobId(), new PerDatabaseTaskStore(
-            Duration.ofMinutes(1)), new LoggerForProgressTrackingAdapter(log)
+            progressTask,
+            config.username(),
+            config.jobId(),
+            new PerDatabaseTaskStore(Duration.ofMinutes(1)),
+            new LoggerForProgressTrackingAdapter(log)
         );
 
-        createWithExecutionContext(graphStore, pipeline, config, progressTracker).run();
+        createWithExecutionContext(log, graphStore, pipeline, config, progressTracker).run();
 
         assertThat(log.getMessages(INFO))
             .extracting(removingThreadId())
@@ -308,6 +312,7 @@ class NodeRegressionTrainTest {
             .build();
 
         Supplier<NodeRegressionTrain> algoSupplier = () -> createWithExecutionContext(
+            Log.noOpLog(),
             graphStore,
             pipeline,
             config,
@@ -472,6 +477,7 @@ class NodeRegressionTrainTest {
     }
 
     static NodeRegressionTrain createWithExecutionContext(
+        Log log,
         GraphStore graphStore,
         NodeRegressionTrainingPipeline pipeline,
         NodeRegressionPipelineTrainConfig config,
@@ -483,8 +489,9 @@ class NodeRegressionTrainTest {
             ExecutionContext.EMPTY,
             progressTracker
         );
+
         return NodeRegressionTrain.create(
-            Log.noOpLog(),
+            log,
             graphStore,
             pipeline,
             config,
