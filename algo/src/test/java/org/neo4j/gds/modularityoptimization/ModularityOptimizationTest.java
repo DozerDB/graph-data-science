@@ -251,7 +251,7 @@ class ModularityOptimizationTest {
                 Optional.empty()
             );
             var progressTrackerWithLog = TestProgressTrackerHelper.create(
-                new CommunityAlgorithmTasks().modularityOptimization(graph, parameters),
+                CommunityAlgorithmTasks.modularityOptimization(graph, parameters),
                 new Concurrency(2)
             );
 

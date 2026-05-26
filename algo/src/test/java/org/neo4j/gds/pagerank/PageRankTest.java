@@ -210,14 +210,13 @@ class PageRankTest {
         @Test
         void shouldLogProgress() {
             var log = new GdsTestLog();
-            var tasks = new CentralityAlgorithmTasks();
 
             var maxIterations = 10;
             var config = PageRankConfigImpl.builder().maxIterations(maxIterations).build();
 
             var progressTracker = TaskProgressTracker.create(
                 new LoggerForProgressTrackingAdapter(log),
-                tasks.pageRank(graph, config),
+                CentralityAlgorithmTasks.pageRank(graph, config),
                 config.concurrency(),
                 config.jobId(),
                 PlainSimpleRequestCorrelationId.create(),

@@ -369,7 +369,7 @@ class LeidenTest {
                 Optional.of(19L)
             );
             var progressTrackerWithLog = TestProgressTrackerHelper.create(
-                new CommunityAlgorithmTasks().leiden(graph, parameters),
+                CommunityAlgorithmTasks.leiden(graph, parameters),
                 new Concurrency(1)
             );
 

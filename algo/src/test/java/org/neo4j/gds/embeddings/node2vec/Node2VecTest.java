@@ -511,7 +511,7 @@ class Node2VecTest {
         );
 
         var progressTrackerWithLog = TestProgressTrackerHelper.create(
-            new NodeEmbeddingsAlgorithmTasks().node2Vec(unweighted, params),
+            NodeEmbeddingsAlgorithmTasks.node2Vec(unweighted, params),
             new Concurrency(params.concurrency().value())
         );
 
@@ -571,7 +571,7 @@ class Node2VecTest {
         );
 
         var progressTrackerWithLog = TestProgressTrackerHelper.create(
-            new NodeEmbeddingsAlgorithmTasks().node2Vec(graph, params),
+            NodeEmbeddingsAlgorithmTasks.node2Vec(graph, params),
             new Concurrency(params.concurrency().value())
         );
 

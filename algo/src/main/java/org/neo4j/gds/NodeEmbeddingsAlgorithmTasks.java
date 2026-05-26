@@ -34,24 +34,25 @@ import org.neo4j.gds.embeddings.node2vec.Node2VecTask;
 import java.util.List;
 
 public final class NodeEmbeddingsAlgorithmTasks {
+    private NodeEmbeddingsAlgorithmTasks() {}
 
-    public Task fastRP(Graph graph, FastRPParameters fastRPParameters){
+    public static Task fastRP(Graph graph, FastRPParameters fastRPParameters){
         return FastRPTask.create(graph.nodeCount(),graph.relationshipCount(),fastRPParameters);
     }
 
-    public Task node2Vec(Graph graph, Node2VecParameters parameters){
+    public static Task node2Vec(Graph graph, Node2VecParameters parameters){
         return Node2VecTask.create(graph,parameters);
     }
 
-    public Task hashGNN(Graph graph, HashGNNParameters parameters, List<String> relationshipTypes){
+    public static Task hashGNN(Graph graph, HashGNNParameters parameters, List<String> relationshipTypes){
         return HashGNNTask.create(graph, parameters, relationshipTypes);
     }
 
-    public Task graphSageTrain(Graph graph, GraphSageTrainParameters parameters){
+    public static Task graphSageTrain(Graph graph, GraphSageTrainParameters parameters){
         return GraphSageTrainTask.create(graph, parameters);
     }
 
-    public Task graphSage(Graph graph){
+    public static Task graphSage(Graph graph){
         return GraphSageTask.create(graph);
     }
 }

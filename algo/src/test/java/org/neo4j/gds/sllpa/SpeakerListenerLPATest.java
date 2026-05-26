@@ -165,7 +165,7 @@ class SpeakerListenerLPATest {
         var config = SpeakerListenerLPAConfigImpl.builder().concurrency(1).maxIterations(5).build();
 
         var progressTrackerWithLog = TestProgressTrackerHelper.create(
-            new CommunityAlgorithmTasks().speakerListenerLPA(graph, config),
+            CommunityAlgorithmTasks.speakerListenerLPA(graph, config),
             new Concurrency(1)
         );
 

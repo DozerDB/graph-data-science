@@ -143,7 +143,7 @@ class InverseRelationshipsTest {
         );
 
         var progressTrackerWithLog = TestProgressTrackerHelper.create(
-            new MiscellaneousAlgorithmsTasks().inverseIndex(graphStore.nodeCount(),parameters),
+            MiscellaneousAlgorithmsTasks.inverseIndex(graphStore.nodeCount(),parameters),
             new Concurrency(4)
         );
 

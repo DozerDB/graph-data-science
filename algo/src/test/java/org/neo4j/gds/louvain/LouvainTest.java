@@ -463,7 +463,7 @@ class LouvainTest {
             var parameters =  LouvainParameters.createWithDefaults(concurrency,null);
 
             var progressTrackerWithLog = TestProgressTrackerHelper.create(
-                new CommunityAlgorithmTasks().louvain(
+                CommunityAlgorithmTasks.louvain(
                     graph,
                     parameters
                 ),

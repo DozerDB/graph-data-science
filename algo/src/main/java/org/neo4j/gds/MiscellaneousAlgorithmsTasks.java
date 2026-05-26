@@ -29,16 +29,17 @@ import org.neo4j.gds.scaleproperties.ScalePropertiesTask;
 import org.neo4j.gds.undirected.ToUndirectedTask;
 
 public final class MiscellaneousAlgorithmsTasks {
+    private MiscellaneousAlgorithmsTasks() {}
 
-    public Task scaleProperties(Graph graph, ScalePropertiesParameters parameters){
+    public static Task scaleProperties(Graph graph, ScalePropertiesParameters parameters){
         return ScalePropertiesTask.create(graph, parameters);
     }
 
-    public Task inverseIndex(long nodecount, InverseRelationshipsParameters parameters){
+    public static Task inverseIndex(long nodecount, InverseRelationshipsParameters parameters){
         return InverseRelationshipsTask.progressTask(nodecount, parameters);
     }
 
-    public Task toUndirected(GraphStore graphStore){
+    public static Task toUndirected(GraphStore graphStore){
         return  ToUndirectedTask.create(graphStore.nodeCount());
     }
 }

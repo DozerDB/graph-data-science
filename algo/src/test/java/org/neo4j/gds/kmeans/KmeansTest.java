@@ -515,7 +515,7 @@ class KmeansTest {
             );
 
             var progressTrackerWithLog = TestProgressTrackerHelper.create(
-                new CommunityAlgorithmTasks().kMeans(
+                CommunityAlgorithmTasks.kMeans(
                     graph,
                     parameters
                 ), concurrency
@@ -571,7 +571,7 @@ class KmeansTest {
             );
 
             var progressTrackerWithLog = TestProgressTrackerHelper.create(
-                new CommunityAlgorithmTasks().kMeans(
+                CommunityAlgorithmTasks.kMeans(
                     graph,
                     parameters
                 ), concurrency
@@ -643,7 +643,7 @@ class KmeansTest {
             );
 
             var progressTrackerWithLog = TestProgressTrackerHelper.create(
-                new CommunityAlgorithmTasks().kMeans(
+                CommunityAlgorithmTasks.kMeans(
                     graph,
                     parameters
                 ), concurrency

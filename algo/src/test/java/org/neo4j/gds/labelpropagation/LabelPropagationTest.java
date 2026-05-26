@@ -251,7 +251,7 @@ class LabelPropagationTest {
 
             var parameters = new LabelPropagationParameters(new Concurrency(4), 10, null, null);
             var progressTrackerWithLog = TestProgressTrackerHelper.create(
-                new CommunityAlgorithmTasks().labelPropagation(graph, parameters),
+                CommunityAlgorithmTasks.labelPropagation(graph, parameters),
                 new Concurrency(1)
             );
 

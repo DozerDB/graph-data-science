@@ -55,9 +55,6 @@ public class SimilarityComputeFacade {
     // Request scope dependencies
     private final TerminationFlag terminationFlag;
 
-    // Local dependencies
-    private final SimilarityAlgorithmTasks tasks = new SimilarityAlgorithmTasks();
-
     public SimilarityComputeFacade(
         AsyncAlgorithmCaller algorithmCaller,
         ProgressTrackerFactory progressTrackerFactory,
@@ -81,7 +78,7 @@ public class SimilarityComputeFacade {
 
         // Create ProgressTracker
         var progressTracker = progressTrackerFactory.create(
-            tasks.knn(graph,parameters),
+            SimilarityAlgorithmTasks.knn(graph,parameters),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -118,7 +115,7 @@ public class SimilarityComputeFacade {
 
         // Create ProgressTracker
         var progressTracker = progressTrackerFactory.create(
-            tasks.filteredKnn(graph,parameters),
+            SimilarityAlgorithmTasks.filteredKnn(graph,parameters),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -148,7 +145,7 @@ public class SimilarityComputeFacade {
 
         // Create ProgressTracker
         var progressTracker = progressTrackerFactory.create(
-            tasks.nodeSimilarity(graph,parameters),
+            SimilarityAlgorithmTasks.nodeSimilarity(graph,parameters),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -184,7 +181,7 @@ public class SimilarityComputeFacade {
 
         // Create ProgressTracker
         var progressTracker = progressTrackerFactory.create(
-            tasks.filteredNodeSimilarity(graph,parameters),
+            SimilarityAlgorithmTasks.filteredNodeSimilarity(graph,parameters),
             jobId,
             parameters.concurrency(),
             logProgress

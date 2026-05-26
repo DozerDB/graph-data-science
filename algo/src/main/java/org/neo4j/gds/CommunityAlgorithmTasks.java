@@ -48,16 +48,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class CommunityAlgorithmTasks {
+    private CommunityAlgorithmTasks() {}
 
-    public Task approximateMaximumKCut(Graph graph, ApproxMaxKCutParameters parameters) {
+    public static Task approximateMaximumKCut(Graph graph, ApproxMaxKCutParameters parameters) {
         return ApproximateKCutTaskFactory.createTask(graph, parameters);
     }
 
-    public Task cliqueCounting(Graph graph, CliqueCountingParameters parameters) {
+    public static Task cliqueCounting(Graph graph, CliqueCountingParameters parameters) {
         return CliqueCountingTaskFactory.createTask(graph, parameters);
     }
 
-    public Task conductance(Graph graph) {
+    public static Task conductance(Graph graph) {
         return Tasks.task(
             AlgorithmLabel.Conductance.asString(),
             Tasks.leaf("count relationships", graph.nodeCount()),
@@ -66,26 +67,26 @@ public final class CommunityAlgorithmTasks {
         );
     }
 
-    public Task hdbscan(Graph graph) {
+    public static Task hdbscan(Graph graph) {
         return HDBScanProgressTrackerCreator.hdbscanTask(AlgorithmLabel.HDBScan.asString(), graph.nodeCount());
     }
 
-    public Task k1Coloring(Graph graph, K1ColoringParameters parameters) {
+    public static Task k1Coloring(Graph graph, K1ColoringParameters parameters) {
         return K1ColoringProgressTrackerTaskCreator.progressTask(
             graph.nodeCount(),
             parameters.maxIterations()
         );
     }
 
-    public Task kCore(Graph graph) {
+    public static Task kCore(Graph graph) {
         return Tasks.leaf(AlgorithmLabel.KCore.asString(), graph.nodeCount());
     }
 
-    public Task kMeans(Graph graph, KmeansParameters parameters) {
+    public static Task kMeans(Graph graph, KmeansParameters parameters) {
         return KMeansTaskFactory.createTask(graph, parameters);
     }
 
-    public Task labelPropagation(Graph graph, LabelPropagationParameters parameters) {
+    public static Task labelPropagation(Graph graph, LabelPropagationParameters parameters) {
         return Tasks.task(
             AlgorithmLabel.LabelPropagation.asString(),
             Tasks.leaf("Initialization", graph.relationshipCount()),
@@ -97,7 +98,7 @@ public final class CommunityAlgorithmTasks {
         );
     }
 
-    public Task lcc(Graph graph, LocalClusteringCoefficientParameters parameters) {
+    public static Task lcc(Graph graph, LocalClusteringCoefficientParameters parameters) {
         var tasks = new ArrayList<Task>();
         if (parameters.seedProperty() == null) {
             tasks.add(TriangleCountTask.create(graph.nodeCount()));
@@ -106,11 +107,11 @@ public final class CommunityAlgorithmTasks {
         return Tasks.task(AlgorithmLabel.LCC.asString(), tasks);
     }
 
-    public Task leiden(Graph graph, LeidenParameters parameters) {
+    public static Task leiden(Graph graph, LeidenParameters parameters) {
         return LeidenTask.create(graph, parameters);
     }
 
-    public Task louvain(Graph graph, LouvainParameters parameters) {
+    public static Task louvain(Graph graph, LouvainParameters parameters) {
         return LouvainProgressTrackerTaskCreator.createTask(
             graph.nodeCount(),
             graph.relationshipCount(),
@@ -119,7 +120,7 @@ public final class CommunityAlgorithmTasks {
         );
     }
 
-    public Task modularityOptimization(Graph graph, ModularityOptimizationParameters parameters) {
+    public static Task modularityOptimization(Graph graph, ModularityOptimizationParameters parameters) {
         return ModularityOptimizationProgressTrackerTaskCreator.progressTask(
             graph.nodeCount(),
             graph.relationshipCount(),
@@ -127,19 +128,19 @@ public final class CommunityAlgorithmTasks {
         );
     }
 
-    public Task scc(Graph graph) {
+    public static Task scc(Graph graph) {
         return Tasks.leaf(AlgorithmLabel.SCC.asString(), graph.nodeCount());
     }
 
-    public Task triangleCount(Graph graph) {
+    public static Task triangleCount(Graph graph) {
         return Tasks.leaf(AlgorithmLabel.TriangleCount.asString(), graph.nodeCount());
     }
 
-    public Task wcc(Graph graph) {
+    public static Task wcc(Graph graph) {
         return Tasks.leaf(AlgorithmLabel.WCC.asString(), graph.relationshipCount());
     }
 
-    public Task speakerListenerLPA(Graph graph, SpeakerListenerLPAConfig configuration) {
+    public static Task speakerListenerLPA(Graph graph, SpeakerListenerLPAConfig configuration) {
         return SpeakerListenerLPAProgressTrackerCreator.progressTask(
             graph.nodeCount(),
             configuration.maxIterations(),

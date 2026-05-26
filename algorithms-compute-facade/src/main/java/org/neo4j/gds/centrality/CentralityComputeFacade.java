@@ -89,9 +89,6 @@ public class CentralityComputeFacade {
     // Request scope dependencies
     private final TerminationFlag terminationFlag;
 
-    // Local dependencies
-    private final CentralityAlgorithmTasks tasks = new CentralityAlgorithmTasks();
-
     public CentralityComputeFacade(
         AsyncAlgorithmCaller algorithmCaller,
         ProgressTrackerFactory progressTrackerFactory,
@@ -116,7 +113,7 @@ public class CentralityComputeFacade {
         var articleRankComputation = articleRankComputation(graph, configuration);
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.articleRank(graph,configuration),
+            CentralityAlgorithmTasks.articleRank(graph,configuration),
             jobId,
             configuration.concurrency(),
             logProgress
@@ -176,7 +173,7 @@ public class CentralityComputeFacade {
         }
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.articulationPoints(graph),
+            CentralityAlgorithmTasks.articulationPoints(graph),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -200,7 +197,7 @@ public class CentralityComputeFacade {
         }
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.betweennessCentrality(graph,parameters),
+            CentralityAlgorithmTasks.betweennessCentrality(graph,parameters),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -226,7 +223,7 @@ public class CentralityComputeFacade {
         }
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.bridges(graph),
+            CentralityAlgorithmTasks.bridges(graph),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -252,7 +249,7 @@ public class CentralityComputeFacade {
         }
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.CELF(graph,parameters),
+            CentralityAlgorithmTasks.CELF(graph,parameters),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -283,7 +280,7 @@ public class CentralityComputeFacade {
         }
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.closenessCentrality(graph),
+            CentralityAlgorithmTasks.closenessCentrality(graph),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -314,7 +311,7 @@ public class CentralityComputeFacade {
         }
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.degreeCentrality(graph),
+            CentralityAlgorithmTasks.degreeCentrality(graph),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -351,7 +348,7 @@ public class CentralityComputeFacade {
         var eigenvectorComputation = eigenvectorComputation(graph, configuration);
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.eigenVector(graph,configuration),
+            CentralityAlgorithmTasks.eigenVector(graph,configuration),
             jobId,
             configuration.concurrency(),
             logProgress
@@ -410,7 +407,7 @@ public class CentralityComputeFacade {
         }
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.harmonicCentrality(),
+            CentralityAlgorithmTasks.harmonicCentrality(),
             jobId,
             parameters.concurrency(),
             logProgress
@@ -444,7 +441,7 @@ public class CentralityComputeFacade {
         );
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.hits(graphStore,configuration,inverseRelationshipsParameters),
+            CentralityAlgorithmTasks.hits(graphStore,configuration,inverseRelationshipsParameters),
             jobId,
             configuration.concurrency(),
             logProgress
@@ -482,7 +479,7 @@ public class CentralityComputeFacade {
         }
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.indirectExposure(graph,configuration),
+            CentralityAlgorithmTasks.indirectExposure(graph,configuration),
             jobId,
             configuration.concurrency(),
             logProgress
@@ -516,7 +513,7 @@ public class CentralityComputeFacade {
         var pageRankComputation = pagerankComputation(graph, configuration);
 
         var progressTracker = progressTrackerFactory.create(
-            tasks.pageRank(graph,configuration),
+            CentralityAlgorithmTasks.pageRank(graph,configuration),
             jobId,
             configuration.concurrency(),
             logProgress

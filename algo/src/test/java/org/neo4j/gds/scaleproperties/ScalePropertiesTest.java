@@ -353,7 +353,7 @@ class ScalePropertiesTest {
 
 
         var progressTrackerWithLog = TestProgressTrackerHelper.create(
-            new MiscellaneousAlgorithmsTasks().scaleProperties(graph, params),
+            MiscellaneousAlgorithmsTasks.scaleProperties(graph, params),
             new Concurrency(1)
         );
 

@@ -258,7 +258,7 @@ class GraphSageTest {
         modelCatalog.set(resultModel);
 
         var progressTrackerWithLog = TestProgressTrackerHelper.create(
-            new NodeEmbeddingsAlgorithmTasks().graphSage(graph),
+            NodeEmbeddingsAlgorithmTasks.graphSage(graph),
             new Concurrency(4)
         );
 

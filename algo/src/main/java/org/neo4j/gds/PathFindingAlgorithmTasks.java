@@ -40,73 +40,73 @@ import org.neo4j.gds.traversal.RandomWalkCountingNodeVisitsProgressTaskFactory;
 import org.neo4j.gds.traversal.RandomWalkProgressTask;
 
 public final class PathFindingAlgorithmTasks {
+    private PathFindingAlgorithmTasks() {}
 
-
-    public Task bellmanFord(){
+    public static Task bellmanFord(){
         return BellmanFordProgressTask.create();
     }
 
-    public Task bfs(){
+    public static Task bfs(){
         return BFSProgressTask.create();
     }
 
-    public Task deltaStepping(){
+    public static Task deltaStepping(){
         return DeltaSteppingProgressTask.create();
     }
 
-    public Task dfs(){
+    public static Task dfs(){
         return DFSProgressTask.create();
     }
 
-    public Task kSpanningTree(Graph graph){
+    public static Task kSpanningTree(Graph graph){
         return KSpanningTreeTask.create(graph.relationshipCount());
     }
 
-    public Task longestPath(Graph graph){
+    public static Task longestPath(Graph graph){
         return LongestPathTask.create(graph.nodeCount());
     }
 
-    public Task maxFlow(){
+    public static Task maxFlow(){
         return MaxFlowTask.create();
     }
 
-    public Task minCostMaxFlow(){
+    public static Task minCostMaxFlow(){
         return MinCostMaxFlowTask.create();
     }
 
-    public Task randomWalk(Graph graph){
+    public static Task randomWalk(Graph graph){
         return RandomWalkProgressTask.create(graph);
     }
 
-    public Task randomWalkCountingVisits(Graph graph){
+    public static Task randomWalkCountingVisits(Graph graph){
         return RandomWalkCountingNodeVisitsProgressTaskFactory.create(graph);
     }
 
-    public Task pcst(Graph graph){
+    public static Task pcst(Graph graph){
         return PCSTProgressTrackerTaskCreator.progressTask(graph.nodeCount(), graph.relationshipCount());
     }
 
-    private Task dijkstraVariant(AlgorithmLabel algorithmLabel,Graph graph){
+    private static Task dijkstraVariant(AlgorithmLabel algorithmLabel,Graph graph){
         return RelationshipCountProgressTaskFactory.create(algorithmLabel, graph.relationshipCount());
 
     }
-    public Task aStar(Graph graph){
+    public static Task aStar(Graph graph){
         return dijkstraVariant(AlgorithmLabel.AStar,graph);
     }
 
-    public Task dijkstra(Graph graph){
+    public static Task dijkstra(Graph graph){
         return dijkstraVariant(AlgorithmLabel.Dijkstra, graph);
     }
 
-    public Task singleSourceDijkstra(Graph graph){
+    public static Task singleSourceDijkstra(Graph graph){
         return dijkstraVariant(AlgorithmLabel.SingleSourceDijkstra, graph);
     }
 
-    public Task spanningTree(Graph graph){
+    public static Task spanningTree(Graph graph){
         return RelationshipCountProgressTaskFactory.create(AlgorithmLabel.SpanningTree, graph.relationshipCount());
     }
 
-    public Task yens(Graph graph,int k){
+    public static Task yens(Graph graph,int k){
        return YensProgressTask.create(
             graph.characteristics(),
             graph.nodeCount(),
@@ -115,11 +115,11 @@ public final class PathFindingAlgorithmTasks {
         );
     }
 
-    public Task steinerTree(SteinerTreeParameters parameters, Graph graph){
+    public static Task steinerTree(SteinerTreeParameters parameters, Graph graph){
        return SteinerTreeProgressTask.create(parameters, graph.nodeCount());
     }
 
-    public Task topologicalSort(Graph graph){
+    public static Task topologicalSort(Graph graph){
         return TopologicalSortTask.create(graph);
     }
 }

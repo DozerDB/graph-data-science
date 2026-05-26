@@ -554,7 +554,7 @@ class KnnTest {
         );
 
         var progressTrackerWithLog = TestProgressTrackerHelper.create(
-            new SimilarityAlgorithmTasks().knn(graph, knnParameters),
+            SimilarityAlgorithmTasks.knn(graph, knnParameters),
             new Concurrency(1)
         );
 
