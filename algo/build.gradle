@@ -60,7 +60,6 @@ dependencies {
     testImplementation project(':algorithms-machinery')
     testImplementation project(':gdl-graph')
     testImplementation project(':gdl-junit-extension')
-    testImplementation project(':logging')
     testImplementation project(':ml-test-utils')
     testImplementation project(':test-utils')
     testImplementation project(':user-log')
