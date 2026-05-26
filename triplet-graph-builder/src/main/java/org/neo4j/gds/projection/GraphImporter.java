@@ -358,9 +358,9 @@ public final class GraphImporter {
         var idMap = idMapAndProperties.idMap();
         var nodeSchema = idMapAndProperties.schema();
 
-        this.graphSchemaBuilder.nodeSchema(nodeSchema);
+        this.graphSchemaBuilder.nodeSchema(NodeSchemaUtils.fromRecordType(nodeSchema));
 
-        var nodes = new Nodes(NodeSchemaUtils.toRecordType(nodeSchema), idMap, idMapAndProperties.propertyStore());
+        var nodes = new Nodes(nodeSchema, idMap, idMapAndProperties.propertyStore());
 
         graphStoreBuilder.nodes(nodes);
 
