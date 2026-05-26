@@ -47,8 +47,9 @@ import org.neo4j.gds.core.utils.progress.LocalTaskRegistryFactory;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.core.utils.progress.tasks.Status;
 import org.neo4j.gds.core.utils.progress.tasks.TaskProgressTracker;
-import org.neo4j.gds.logging.LogAdapter;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.user.log.UserLogRegistry;
+import org.neo4j.gds.logging.LogAdapter;
 import org.neo4j.gds.values.primitive.PrimitiveValues;
 
 import java.util.List;
@@ -80,6 +81,7 @@ class GraphImporterTest {
     @Test
     void shouldImportStructure() {
         var importer = new GraphImporter(
+            Log.noOpLog(),
             GraphProjectConfig.emptyWithName("", "g"),
             List.of(),
             List.of(),
@@ -132,6 +134,7 @@ class GraphImporterTest {
     @Test
     void shouldImportNodesWithLabels() {
         var importer = new GraphImporter(
+            Log.noOpLog(),
             GraphProjectConfig.emptyWithName("", "g"),
             List.of(),
             List.of(),
@@ -181,6 +184,7 @@ class GraphImporterTest {
     @Test
     void shouldImportNodesWithProperties() {
         var importer = new GraphImporter(
+            Log.noOpLog(),
             GraphProjectConfig.emptyWithName("", "g"),
             List.of(),
             List.of(),
@@ -231,6 +235,7 @@ class GraphImporterTest {
     @Test
     void shouldImportNodesWithPropertiesWithDifferentSchemas() {
         var importer = new GraphImporter(
+            Log.noOpLog(),
             GraphProjectConfig.emptyWithName("", "g"),
             List.of(),
             List.of(),
@@ -282,6 +287,7 @@ class GraphImporterTest {
     @Test
     void shouldImportRelationshipsWithType() {
         var importer = new GraphImporter(
+            Log.noOpLog(),
             GraphProjectConfig.emptyWithName("", "g"),
             List.of(),
             List.of(),
@@ -334,6 +340,7 @@ class GraphImporterTest {
     @Test
     void shouldImportRelationshipsWithProperties() {
         var importer = new GraphImporter(
+            Log.noOpLog(),
             GraphProjectConfig.emptyWithName("", "g"),
             List.of(),
             List.of(),
@@ -386,6 +393,7 @@ class GraphImporterTest {
     @Test
     void shouldFailImportRelationshipsWithDifferentProperties() {
         var importer = new GraphImporter(
+            Log.noOpLog(),
             GraphProjectConfig.emptyWithName("", "g"),
             List.of(),
             List.of(),
@@ -433,6 +441,7 @@ class GraphImporterTest {
     @Test
     void shouldFailImportWithUnusedUndirectedRelationshipType() {
         var importer = new GraphImporter(
+            Log.noOpLog(),
             GraphProjectConfig.emptyWithName("", "g"),
             List.of("UNUSED_REL"),
             List.of(),
@@ -469,6 +478,7 @@ class GraphImporterTest {
     @Test
     void shouldFailImportWithUnusedInverseRelationshipType() {
         var importer = new GraphImporter(
+            Log.noOpLog(),
             GraphProjectConfig.emptyWithName("", "g"),
             List.of(),
             List.of("UNUSED_REL"),
@@ -516,6 +526,7 @@ class GraphImporterTest {
             UserLogRegistry.EMPTY
         );
         var importer = new GraphImporter(
+            Log.noOpLog(),
             GraphProjectConfig.emptyWithName("", "g"),
             List.of(),
             List.of(),

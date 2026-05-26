@@ -19,7 +19,6 @@
  */
 package org.neo4j.gds.ml.util;
 
-import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.logging.Log;
 
 import static org.neo4j.gds.utils.StringFormatting.formatWithLocale;
@@ -30,18 +29,15 @@ public final class TrainingSetWarnings {
 
     private TrainingSetWarnings() {}
 
-    public static void warnForSmallNodeSets(Log log, long trainSetSize, long testSetSize, long validationFolds, ProgressTracker progressTracker) {
-        warnForSmallSets(log, trainSetSize, testSetSize, validationFolds, "node", progressTracker);
+    public static void warnForSmallNodeSets(Log log, long trainSetSize, long testSetSize, long validationFolds) {
+        warnForSmallSets(log, trainSetSize, testSetSize, validationFolds, "node");
     }
 
-    public static void warnForSmallRelationshipSets(Log log, long trainSetSize, long testSetSize, long validationFolds, ProgressTracker progressTracker) {
-        warnForSmallSets(log, trainSetSize, testSetSize, validationFolds, "relationship", progressTracker);
+    public static void warnForSmallRelationshipSets(Log log, long trainSetSize, long testSetSize, long validationFolds) {
+        warnForSmallSets(log, trainSetSize, testSetSize, validationFolds, "relationship");
     }
 
-    private static void warnForSmallSets(Log log, long trainSetSize, long testSetSize, long validationFolds, String elementType, ProgressTracker progressTracker) {
-        progressTracker.logInfo("Train set size is " + trainSetSize);
-        progressTracker.logInfo("Test set size is " + testSetSize);
-
+    private static void warnForSmallSets(Log log, long trainSetSize, long testSetSize, long validationFolds, String elementType) {
         if (testSetSize < RECOMMENDED_MIN_ELEMENTS_PER_SET) {
             log.warn(formatWithLocale(
                 "The specified `testFraction` leads to a very small test set " +

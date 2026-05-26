@@ -33,6 +33,7 @@ import org.neo4j.gds.embeddings.graphsage.TrainConfigTransformer;
 import org.neo4j.gds.extension.GdlExtension;
 import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.termination.TerminatedException;
 import org.neo4j.gds.termination.TerminationFlag;
 
@@ -113,6 +114,7 @@ class SingleLabelGraphSageTrainTest {
             .build();
 
         var SingleLabelGraphSageTrain = new SingleLabelGraphSageTrain(
+            Log.noOpLog(),
             weightedGraph,
             TrainConfigTransformer.toParameters(config),
             DefaultPool.INSTANCE,
@@ -145,6 +147,7 @@ class SingleLabelGraphSageTrainTest {
             .build();
 
         var graphSageTrain = new SingleLabelGraphSageTrain(
+            Log.noOpLog(),
             weightedGraph,
             TrainConfigTransformer.toParameters(graphSageTrainConfig),
             DefaultPool.INSTANCE,
@@ -190,6 +193,7 @@ class SingleLabelGraphSageTrainTest {
             .build();
 
         var SingleLabelGraphSageTrain = new SingleLabelGraphSageTrain(
+            Log.noOpLog(),
             unequalGraph,
             TrainConfigTransformer.toParameters(config),
             DefaultPool.INSTANCE,
@@ -216,6 +220,7 @@ class SingleLabelGraphSageTrainTest {
             .build();
 
         var SingleLabelGraphSageTrain = new SingleLabelGraphSageTrain(
+            Log.noOpLog(),
             graph,
             TrainConfigTransformer.toParameters(config),
             DefaultPool.INSTANCE,
@@ -268,6 +273,7 @@ class SingleLabelGraphSageTrainTest {
             .build();
 
         var graphSageTrain = new SingleLabelGraphSageTrain(
+            Log.noOpLog(),
             weightedGraph,
             TrainConfigTransformer.toParameters(graphSageTrainConfig),
             DefaultPool.INSTANCE,

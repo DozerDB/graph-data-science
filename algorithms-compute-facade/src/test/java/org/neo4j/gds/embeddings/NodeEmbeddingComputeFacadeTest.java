@@ -78,6 +78,7 @@ class NodeEmbeddingComputeFacadeTest {
             .thenReturn(progressTrackerMock);
 
         facade = new NodeEmbeddingComputeFacade(
+            Log.noOpLog(),
             new AsyncAlgorithmCaller(Executors.newSingleThreadExecutor(), logMock),
             progressTrackerFactoryMock,
             TerminationFlag.RUNNING_TRUE

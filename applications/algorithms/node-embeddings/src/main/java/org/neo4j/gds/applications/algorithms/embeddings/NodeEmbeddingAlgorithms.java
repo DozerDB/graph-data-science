@@ -39,20 +39,25 @@ import org.neo4j.gds.embeddings.hashgnn.HashGNNResult;
 import org.neo4j.gds.embeddings.node2vec.Node2Vec;
 import org.neo4j.gds.embeddings.node2vec.Node2VecParameters;
 import org.neo4j.gds.embeddings.node2vec.Node2VecResult;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.ml.core.features.FeatureExtraction;
 import org.neo4j.gds.termination.TerminationFlag;
 
 public class NodeEmbeddingAlgorithms {
-
-    private static final GraphSageTrainAlgorithmFactory graphSageTrainAlgorithmFactory = new GraphSageTrainAlgorithmFactory();
+    private final Log log;
     private final GraphSageModelCatalog graphSageModelCatalog;
+    private final GraphSageTrainAlgorithmFactory graphSageTrainAlgorithmFactory;
     private final TerminationFlag terminationFlag;
 
     public NodeEmbeddingAlgorithms(
+        Log log,
         GraphSageModelCatalog graphSageModelCatalog,
+        GraphSageTrainAlgorithmFactory graphSageTrainAlgorithmFactory,
         TerminationFlag terminationFlag
     ) {
+        this.log = log;
         this.graphSageModelCatalog = graphSageModelCatalog;
+        this.graphSageTrainAlgorithmFactory = graphSageTrainAlgorithmFactory;
         this.terminationFlag = terminationFlag;
     }
 
@@ -69,12 +74,12 @@ public class NodeEmbeddingAlgorithms {
             terminationFlag
         );
 
-        return  algorithm.compute();
+        return algorithm.compute();
     }
 
 
-    public GraphSageResult graphSage(Graph graph, GraphSageParameters  parameters, ProgressTracker progressTracker) {
-        var modeParameters  = parameters.modeParameters();
+    public GraphSageResult graphSage(Graph graph, GraphSageParameters parameters, ProgressTracker progressTracker) {
+        var modeParameters = parameters.modeParameters();
         var model = graphSageModelCatalog.get(
             modeParameters.username(),
             modeParameters.modelName()
@@ -111,16 +116,15 @@ public class NodeEmbeddingAlgorithms {
         return algorithm.compute();
     }
 
-    public HashGNNResult hashGnn(Graph graph, HashGNNParameters  parameters, ProgressTracker progressTracker) {
-
-        var algorithm = new HashGNN(graph, parameters, progressTracker, terminationFlag);
+    public HashGNNResult hashGnn(Graph graph, HashGNNParameters parameters, ProgressTracker progressTracker) {
+        var algorithm = new HashGNN(log, graph, parameters, progressTracker, terminationFlag);
 
         return algorithm.compute();
     }
 
     Node2VecResult node2Vec(Graph graph, Node2VecParameters parameters, ProgressTracker progressTracker) {
-
-        var algorithm =  Node2Vec.create(
+        var algorithm = Node2Vec.create(
+            log,
             graph,
             parameters,
             progressTracker,
@@ -129,5 +133,4 @@ public class NodeEmbeddingAlgorithms {
 
         return algorithm.compute();
     }
-
 }

@@ -35,18 +35,19 @@ import org.neo4j.gds.core.utils.progress.tasks.TaskProgressTracker;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-public class SubGraphProjectApplication {
-    private final GraphStoreFilterService graphStoreFilterService = new GraphStoreFilterService();
-
+class SubGraphProjectApplication {
     private final GdsLoggers loggers;
     private final GraphStoreCatalogService graphStoreCatalogService;
+    private final GraphStoreFilterService graphStoreFilterService;
 
     SubGraphProjectApplication(
         GdsLoggers loggers,
-        GraphStoreCatalogService graphStoreCatalogService
+        GraphStoreCatalogService graphStoreCatalogService,
+        GraphStoreFilterService graphStoreFilterService
     ) {
         this.loggers = loggers;
         this.graphStoreCatalogService = graphStoreCatalogService;
+        this.graphStoreFilterService = graphStoreFilterService;
     }
 
     public GraphFilterResult project(

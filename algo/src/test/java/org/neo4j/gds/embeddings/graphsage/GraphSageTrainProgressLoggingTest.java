@@ -37,6 +37,7 @@ import org.neo4j.gds.embeddings.graphsage.algo.SingleLabelGraphSageTrain;
 import org.neo4j.gds.extension.GdlExtension;
 import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.termination.TerminationFlag;
 
 import java.util.List;
@@ -155,6 +156,7 @@ class GraphSageTrainProgressLoggingTest {
         var gdsVersion = GdsVersionInfoProvider.GDS_VERSION_INFO.gdsVersion();
 
         if (configuration.isMultiLabel()) return new MultiLabelGraphSageTrain(
+            Log.noOpLog(),
             graph,
             parameters,
             configuration.projectedFeatureDimension().orElseThrow(),
@@ -166,6 +168,7 @@ class GraphSageTrainProgressLoggingTest {
         );
 
         return new SingleLabelGraphSageTrain(
+            Log.noOpLog(),
             graph,
             parameters,
             DefaultPool.INSTANCE,

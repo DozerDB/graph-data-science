@@ -36,6 +36,7 @@ import org.neo4j.gds.extension.GdlExtension;
 import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
 import org.neo4j.gds.gdl.GdlFactory;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.ml.core.features.FeatureExtraction;
 import org.neo4j.gds.termination.TerminationFlag;
 
@@ -79,7 +80,14 @@ class GraphSageEmbeddingsGeneratorTest {
 
         var features = GraphSageHelper.initializeSingleLabelFeatures(weightedGraph, parameters.featureProperties());
         var featureDimension = FeatureExtraction.featureCount(weightedGraph, parameters.featureProperties());
-        var trainModel = new GraphSageModelTrainer(parameters, featureDimension, DefaultPool.INSTANCE, ProgressTracker.NULL_TRACKER, TerminationFlag.RUNNING_TRUE);
+        var trainModel = new GraphSageModelTrainer(
+            Log.noOpLog(),
+            parameters,
+            featureDimension,
+            DefaultPool.INSTANCE,
+            ProgressTracker.NULL_TRACKER,
+            TerminationFlag.RUNNING_TRUE
+        );
 
         GraphSageModelTrainer.ModelTrainResult result = trainModel.train(weightedGraph, features);
 
@@ -118,6 +126,7 @@ class GraphSageEmbeddingsGeneratorTest {
             .build();
 
         var trainer = new MultiLabelGraphSageTrain(
+            Log.noOpLog(),
             weightedGraph,
             TrainConfigTransformer.toParameters(config),
             5,
@@ -177,6 +186,7 @@ class GraphSageEmbeddingsGeneratorTest {
             .build();
 
         var trainer = new SingleLabelGraphSageTrain(
+            Log.noOpLog(),
             filteredGraph,
             TrainConfigTransformer.toParameters(config),
             DefaultPool.INSTANCE,

@@ -39,6 +39,7 @@ import org.neo4j.gds.dag.topologicalsort.TopologicalSortParameters;
 import org.neo4j.gds.dag.topologicalsort.TopologicalSortResult;
 import org.neo4j.gds.kspanningtree.KSpanningTree;
 import org.neo4j.gds.kspanningtree.KSpanningTreeParameters;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.maxflow.FlowResult;
 import org.neo4j.gds.maxflow.MaxFlow;
 import org.neo4j.gds.maxflow.MaxFlowParameters;
@@ -84,6 +85,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.stream.Stream;
 
 public class PathFindingComputeFacade {
+    private Log log;
 
     // Global dependencies
     // This is created with its own ExecutorService workerPool,
@@ -97,11 +99,13 @@ public class PathFindingComputeFacade {
     private final TerminationFlag terminationFlag;
 
     public PathFindingComputeFacade(
+        Log log,
         AsyncAlgorithmCaller algorithmCaller,
         ExecutorService executorService,
         TerminationFlag terminationFlag,
         ProgressTrackerFactory progressTrackerFactory
     ) {
+        this.log = log;
         this.algorithmCaller = algorithmCaller;
         this.executorService = executorService;
         this.terminationFlag = terminationFlag;
@@ -448,6 +452,7 @@ public class PathFindingComputeFacade {
         );
         // Create the algorithm
         var randomWalk = RandomWalk.create(
+            log,
             graph,
             parameters,
             progressTracker,

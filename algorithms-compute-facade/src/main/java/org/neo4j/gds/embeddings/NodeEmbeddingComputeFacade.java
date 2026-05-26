@@ -33,6 +33,7 @@ import org.neo4j.gds.embeddings.hashgnn.HashGNNResult;
 import org.neo4j.gds.embeddings.node2vec.Node2Vec;
 import org.neo4j.gds.embeddings.node2vec.Node2VecParameters;
 import org.neo4j.gds.embeddings.node2vec.Node2VecResult;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.ml.core.features.FeatureExtraction;
 import org.neo4j.gds.result.TimedAlgorithmResult;
 import org.neo4j.gds.termination.TerminationFlag;
@@ -41,6 +42,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class NodeEmbeddingComputeFacade {
+    private final Log log;
 
     // Global dependencies
     // This is created with its own ExecutorService workerPool,
@@ -52,10 +54,12 @@ public class NodeEmbeddingComputeFacade {
     private final TerminationFlag terminationFlag;
 
     public NodeEmbeddingComputeFacade(
+        Log log,
         AsyncAlgorithmCaller algorithmCaller,
         ProgressTrackerFactory progressTrackerFactory,
         TerminationFlag terminationFlag
     ) {
+        this.log = log;
         this.algorithmCaller = algorithmCaller;
         this.progressTrackerFactory = progressTrackerFactory;
         this.terminationFlag = terminationFlag;
@@ -114,6 +118,7 @@ public class NodeEmbeddingComputeFacade {
         );
 
         var hashGNN = new HashGNN(
+            log,
             graph,
             parameters,
             progressTracker,
@@ -144,6 +149,7 @@ public class NodeEmbeddingComputeFacade {
         );
 
         var node2Vec = Node2Vec.create(
+            log,
             graph,
             parameters,
             progressTracker,

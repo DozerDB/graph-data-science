@@ -74,8 +74,7 @@ public final class NodeSplitter {
             log,
             outerSplit.trainSet().size(),
             outerSplit.testSet().size(),
-            validationFolds,
-            progressTracker
+            validationFolds
         );
 
         return new NodeSplits(ReadOnlyHugeLongArray.of(allTrainingExamples), outerSplit);

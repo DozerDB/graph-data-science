@@ -48,6 +48,7 @@ import org.neo4j.gds.core.utils.ProgressTimer;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.core.utils.progress.tasks.Task;
 import org.neo4j.gds.core.utils.progress.tasks.Tasks;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.utils.StringFormatting;
 import org.neo4j.gds.utils.StringJoining;
 
@@ -65,20 +66,18 @@ import static org.neo4j.gds.Orientation.NATURAL;
 import static org.neo4j.gds.Orientation.UNDIRECTED;
 
 public final class GraphImporter {
-
     public static final int NO_TARGET_NODE = -1;
 
+    private final Log log;
     private final GraphProjectConfig config;
     private final List<String> undirectedRelationshipTypes;
     private final List<String> inverseIndexedRelationshipTypes;
     private final LazyIdMapBuilder idMapBuilder;
-
     private final Capabilities.WriteMode writeMode;
     private final String query;
 
     private final GraphStoreCatalogService graphStoreCatalogService;
     private final ProgressTracker progressTracker;
-
     private final Map<RelationshipType, RelationshipsBuilder> relImporters;
     private final ImmutableMutableGraphSchema.Builder graphSchemaBuilder;
 
@@ -91,6 +90,7 @@ public final class GraphImporter {
     }
 
     public GraphImporter(
+        Log log,
         GraphProjectConfig config,
         List<String> undirectedRelationshipTypes,
         List<String> inverseIndexedRelationshipTypes,
@@ -100,6 +100,7 @@ public final class GraphImporter {
         GraphStoreCatalogService graphStoreCatalogService,
         ProgressTracker progressTracker
     ) {
+        this.log = log;
         this.config = config;
         this.undirectedRelationshipTypes = undirectedRelationshipTypes;
         this.inverseIndexedRelationshipTypes = inverseIndexedRelationshipTypes;
@@ -233,7 +234,7 @@ public final class GraphImporter {
         validateRelTypes(graphStore.schema().relationshipSchema());
         progressTracker.endSubTask("Relationships");
 
-        progressTracker.logInfo(StringFormatting.formatWithLocale(
+        log.info(StringFormatting.formatWithLocale(
             "Imported Graph: {nodes: {count: %d, propertyCount: %d, labelCount: %d}, relationships: {count: %d, typeCount: %d, propertyCount: %d}}'",
             graphStore.nodeCount(),
             graphStore.nodePropertyKeys().size(),

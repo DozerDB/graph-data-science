@@ -284,14 +284,12 @@ class TaskProgressTrackerTest {
 
         progressTracker.logMessage(LogLevel.WARNING, "WARNING MESSAGE 0");
         progressTracker.logMessage(LogLevel.INFO, "INFO MESSAGE 0");
-        progressTracker.logInfo("INFO MESSAGE 1");
         progressTracker.logMessage(LogLevel.DEBUG, "DEBUG MESSAGE 0");
 
         assertThat(log.getMessages(TestLog.WARN).size()).isEqualTo(1);
         assertThat(log.getMessages(TestLog.WARN).get(0)).contains("WARNING MESSAGE 0");
-        assertThat(log.getMessages(TestLog.INFO).size()).isEqualTo(2);
+        assertThat(log.getMessages(TestLog.INFO).size()).isEqualTo(1);
         assertThat(log.getMessages(TestLog.INFO).get(0)).contains("INFO MESSAGE 0");
-        assertThat(log.getMessages(TestLog.INFO).get(1)).contains("INFO MESSAGE 1");
         assertThat(log.getMessages(TestLog.DEBUG).size()).isEqualTo(1);
         assertThat(log.getMessages(TestLog.DEBUG).get(0)).contains("DEBUG MESSAGE 0");
     }

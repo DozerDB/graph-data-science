@@ -25,6 +25,7 @@ import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.concurrency.DefaultPool;
 import org.neo4j.gds.core.concurrency.RunWithConcurrency;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.ml.core.EmbeddingUtils;
 import org.neo4j.gds.termination.TerminationFlag;
 import org.neo4j.gds.traversal.RandomWalkCompanion;
@@ -37,20 +38,22 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicLong;
 
 public final class Node2Vec extends Algorithm<Node2VecResult> {
-
+    private final Log log;
     private final Graph graph;
     private final Concurrency concurrency;
     private final SamplingWalkParameters samplingWalkParameters;
     private final Optional<Long> maybeRandomSeed;
     private final TrainParameters trainParameters;
 
-    public  static Node2Vec create(
+    public static Node2Vec create(
+        Log log,
         Graph graph,
         Node2VecParameters node2VecParameters,
         ProgressTracker progressTracker,
         TerminationFlag terminationFlag
     ) {
-        return  new Node2Vec(
+        return new Node2Vec(
+            log,
             graph,
             node2VecParameters.samplingWalkParameters(),
             node2VecParameters.trainParameters(),
@@ -62,6 +65,7 @@ public final class Node2Vec extends Algorithm<Node2VecResult> {
 
     }
     private Node2Vec(
+        Log log,
         Graph graph,
         SamplingWalkParameters samplingWalkParameters,
         TrainParameters trainParameters,
@@ -71,6 +75,7 @@ public final class Node2Vec extends Algorithm<Node2VecResult> {
         TerminationFlag terminationFlag
     ) {
         super(progressTracker);
+        this.log = log;
         this.graph = graph;
         this.concurrency = concurrency;
         this.samplingWalkParameters = samplingWalkParameters;
@@ -103,6 +108,7 @@ public final class Node2Vec extends Algorithm<Node2VecResult> {
         var walks = createWalks(probabilitiesBuilder);
 
         var node2VecModel = new Node2VecModel(
+            log,
             graph::toOriginalNodeId,
             graph.nodeCount(),
             trainParameters,

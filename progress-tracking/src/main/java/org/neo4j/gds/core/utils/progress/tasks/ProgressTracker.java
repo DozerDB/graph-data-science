@@ -144,10 +144,6 @@ public interface ProgressTracker {
     // to make root progress available from the start
     void setVolume(long volume);
 
-    default void logInfo(String message) {
-        logMessage(LogLevel.INFO, message);
-    }
-
     void logMessage(LogLevel level, String message);
 
     void release();

@@ -46,6 +46,7 @@ import org.neo4j.gds.extension.GdlExtension;
 import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.IdFunction;
 import org.neo4j.gds.extension.Inject;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.termination.TerminationFlag;
 
 import java.util.List;
@@ -106,6 +107,7 @@ class HashGNNTest {
             Optional.of(42L)
         );
         var result = new HashGNN(
+            Log.noOpLog(),
             binaryGraph,
             parameters,
             ProgressTracker.NULL_TRACKER,
@@ -144,6 +146,7 @@ class HashGNNTest {
             Optional.of(42L)
         );
         var result = new HashGNN(
+            Log.noOpLog(),
             binaryGraph,
             parameters,
             ProgressTracker.NULL_TRACKER,
@@ -187,12 +190,14 @@ class HashGNNTest {
         );
 
         var result1 = new HashGNN(
+            Log.noOpLog(),
             binaryGraph,
             parameters,
             ProgressTracker.NULL_TRACKER,
             TerminationFlag.RUNNING_TRUE
         ).compute().embeddings();
         var result2 = new HashGNN(
+            Log.noOpLog(),
             binaryGraph,
             parameters,
             ProgressTracker.NULL_TRACKER,
@@ -226,6 +231,7 @@ class HashGNNTest {
         );
         var parametersBefore = parametersMaker.apply(0.0);
         var resultBefore = new HashGNN(
+            Log.noOpLog(),
             doubleGraph,
             parametersBefore,
             ProgressTracker.NULL_TRACKER,
@@ -234,6 +240,7 @@ class HashGNNTest {
 
         var parameters = parametersMaker.apply(1.0);
         var result = new HashGNN(
+            Log.noOpLog(),
             doubleGraph,
             parameters,
             ProgressTracker.NULL_TRACKER,
@@ -280,6 +287,7 @@ class HashGNNTest {
         );
         var parametersBefore = parametersMaker.apply(0.0);
         var resultBefore = new HashGNN(
+            Log.noOpLog(),
             doubleGraph,
             parametersBefore,
             ProgressTracker.NULL_TRACKER,
@@ -288,6 +296,7 @@ class HashGNNTest {
 
         var parameters = parametersMaker.apply(1000.0);
         var result = new HashGNN(
+            Log.noOpLog(),
             doubleGraph,
             parameters,
             ProgressTracker.NULL_TRACKER,
@@ -323,6 +332,7 @@ class HashGNNTest {
             .outputDimension(42)
             .build();
         var result = new HashGNN(
+            Log.noOpLog(),
             binaryGraph,
             HashGNNConfigTransformer.toParameters(config),
             ProgressTracker.NULL_TRACKER,
@@ -361,7 +371,7 @@ class HashGNNTest {
         var progressTracker = progressTrackerWithLog.progressTracker();
         var log = progressTrackerWithLog.log();
 
-        var hashGNN = new HashGNN(binaryGraph, params, progressTracker, TerminationFlag.RUNNING_TRUE);
+        var hashGNN = new HashGNN(Log.noOpLog(), binaryGraph, params, progressTracker, TerminationFlag.RUNNING_TRUE);
         hashGNN.compute();
 
         Assertions.assertThat(log.getMessages(TestLog.INFO))
@@ -397,7 +407,7 @@ class HashGNNTest {
         var progressTracker = progressTrackerWithLog.progressTracker();
         var log = progressTrackerWithLog.log();
 
-        var hashGNN = new HashGNN(doubleGraph, params, progressTracker, TerminationFlag.RUNNING_TRUE);
+        var hashGNN = new HashGNN(Log.noOpLog(), doubleGraph, params, progressTracker, TerminationFlag.RUNNING_TRUE);
         hashGNN.compute();
 
         Assertions.assertThat(log.getMessages(TestLog.INFO))
@@ -480,12 +490,14 @@ class HashGNNTest {
 
         var parameters = HashGNNConfigTransformer.toParameters(config);
         var firstEmbeddings = new HashGNN(
+            Log.noOpLog(),
             firstGraph,
             parameters,
             ProgressTracker.NULL_TRACKER,
             TerminationFlag.RUNNING_TRUE
         ).compute().embeddings();
         var secondEmbeddings = new HashGNN(
+            Log.noOpLog(),
             secondGraph,
             parameters,
             ProgressTracker.NULL_TRACKER,

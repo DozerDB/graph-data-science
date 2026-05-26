@@ -105,6 +105,7 @@ class PathFindingComputeFacadeTest {
             .thenReturn(progressTrackerMock);
 
         facade = new PathFindingComputeFacade(
+            Log.noOpLog(),
             new AsyncAlgorithmCaller(Executors.newSingleThreadExecutor(), logMock),
             DefaultPool.INSTANCE,
             TerminationFlag.RUNNING_TRUE,

@@ -47,6 +47,7 @@ import org.neo4j.gds.extension.GdlExtension;
 import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
 import org.neo4j.gds.logging.GdsTestLog;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.termination.TerminationFlag;
 import org.neo4j.gds.user.log.UserLogRegistry;
 
@@ -92,6 +93,7 @@ class RandomWalkTest {
     void testWithDefaultConfig() {
         var walkParameters = new WalkParameters(10, 80, 1.0, 1.0);
         var randomWalk = RandomWalk.create(
+            Log.noOpLog(),
             graph,
             new Concurrency(4),
             walkParameters,
@@ -126,6 +128,7 @@ class RandomWalkTest {
         var walkBufferSize = 1000;
 
         var firstResult = RandomWalk.create(
+            Log.noOpLog(),
             graph,
             new Concurrency(concurrency),
             walkParameters,
@@ -138,6 +141,7 @@ class RandomWalkTest {
         ).compute().toList();
 
         var secondResult = RandomWalk.create(
+            Log.noOpLog(),
             graph,
             new Concurrency(concurrency),
             walkParameters,
@@ -164,6 +168,7 @@ class RandomWalkTest {
     void testSampleFromMultipleRelationshipTypes() {
         WalkParameters walkParameters = new WalkParameters(10, 80, 1.0, 1.0);
         RandomWalk randomWalk = RandomWalk.create(
+            Log.noOpLog(),
             graph,
             new Concurrency(4),
             walkParameters,
@@ -202,6 +207,7 @@ class RandomWalkTest {
         var walkParameters = new WalkParameters(100, 10, 0.01, 1.0);
 
         RandomWalk randomWalk = RandomWalk.create(
+            Log.noOpLog(),
             graph,
             new Concurrency(4),
             walkParameters,
@@ -259,6 +265,7 @@ class RandomWalkTest {
         var walkParameters = new WalkParameters(1000, 10, 0.1, 100_000.0);
 
         RandomWalk randomWalk = RandomWalk.create(
+            Log.noOpLog(),
             graph,
             new Concurrency(4),
             walkParameters,
@@ -305,6 +312,7 @@ class RandomWalkTest {
         var walkParameters = new WalkParameters(1, 1000, 1.0, 1.0);
 
         RandomWalk randomWalk = RandomWalk.create(
+            Log.noOpLog(),
             graph,
             new Concurrency(1),
             walkParameters,
@@ -339,6 +347,7 @@ class RandomWalkTest {
 
         assertThatThrownBy(
             () -> RandomWalk.create(
+                Log.noOpLog(),
                 graph,
                 new Concurrency(1),
                 walkParameters,
@@ -373,6 +382,7 @@ class RandomWalkTest {
         var walkParameters = new WalkParameters(walksPerNode, walkLength, 1.0, 1.0);
 
         var randomWalk = RandomWalk.create(
+            Log.noOpLog(),
             graph,
             new Concurrency(4),
             walkParameters,
@@ -404,6 +414,7 @@ class RandomWalkTest {
         var walkParameters = new WalkParameters(1, 3, 1.0, 1.0);
 
         var randomWalk = RandomWalk.create(
+            Log.noOpLog(),
             graph,
             new Concurrency(4),
             walkParameters,
@@ -430,14 +441,15 @@ class RandomWalkTest {
         for (int i = 0; i < 3; i++) {
 
             var randomWalk = RandomWalk.create(
-                    graph,
-                    new Concurrency(4),
-                    new WalkParameters(10, 80, 1.0, 1.0),
-                    List.of(),
-                    1,
-                    Optional.empty(),
-                    ProgressTracker.NULL_TRACKER,
-                    DefaultPool.INSTANCE,
+                Log.noOpLog(),
+                graph,
+                new Concurrency(4),
+                new WalkParameters(10, 80, 1.0, 1.0),
+                List.of(),
+                1,
+                Optional.empty(),
+                ProgressTracker.NULL_TRACKER,
+                DefaultPool.INSTANCE,
                 TerminationFlag.RUNNING_TRUE
             );
 
@@ -516,6 +528,7 @@ class RandomWalkTest {
                 );
 
                 var randomWalksStream = RandomWalk.create(
+                    Log.noOpLog(),
                     graph,
                     new Concurrency(4),
                     new WalkParameters(1000, 10, 0.1, 100_000),
@@ -567,6 +580,7 @@ class RandomWalkTest {
                 );
 
                 var randomWalksStream = RandomWalk.create(
+                    Log.noOpLog(),
                     weightedGraph,
                     new Concurrency(4),
                     new WalkParameters(1000, 10, 0.1, 100_000),
@@ -622,6 +636,7 @@ class RandomWalkTest {
 
             // run the algorithm and consume the result stream
             var result = RandomWalk.create(
+                Log.noOpLog(),
                 graph,
                 new Concurrency(4),
                 new WalkParameters(10, 80, 1.0, 1.0),

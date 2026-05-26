@@ -54,6 +54,7 @@ import org.neo4j.gds.extension.GdlExtension;
 import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
 import org.neo4j.gds.gdl.GdlFactory;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.ml.core.tensor.FloatVector;
 import org.neo4j.gds.termination.TerminationFlag;
 
@@ -128,6 +129,7 @@ class Node2VecTest {
         );
 
         var node2Vec = Node2Vec.create(
+            Log.noOpLog(),
             currentGraph,
             new Node2VecParameters(
                 samplingWalkParameters,
@@ -172,6 +174,7 @@ class Node2VecTest {
         );
 
         var node2Vec = Node2Vec.create(
+            Log.noOpLog(),
             negativeGraph,
             new Node2VecParameters(walkParameters, trainParameters, new Concurrency(4), NO_RANDOM_SEED),
             ProgressTracker.NULL_TRACKER,
@@ -214,6 +217,7 @@ class Node2VecTest {
         );
 
         var firstRunEmbeddings = Node2Vec.create(
+            Log.noOpLog(),
             graph,
             new Node2VecParameters(walkParameters, trainParameters, concurrency, Optional.of(1337L)),
             ProgressTracker.NULL_TRACKER,
@@ -221,6 +225,7 @@ class Node2VecTest {
         ).compute().embeddings();
 
         var secondRunEmbedding = Node2Vec.create(
+            Log.noOpLog(),
             graph,
             new Node2VecParameters(walkParameters, trainParameters, concurrency, Optional.of(1337L)),
             ProgressTracker.NULL_TRACKER,
@@ -262,6 +267,7 @@ class Node2VecTest {
         );
 
         var firstRunEmbeddings = Node2Vec.create(
+            Log.noOpLog(),
             graph,
             new Node2VecParameters(walkParameters, trainParameters, new Concurrency(concurrency), Optional.of(1337L)),
             ProgressTracker.NULL_TRACKER,
@@ -269,6 +275,7 @@ class Node2VecTest {
         ).compute().embeddings();
 
         var secondRunEmbedding = Node2Vec.create(
+            Log.noOpLog(),
             graph,
             new Node2VecParameters(walkParameters, trainParameters, new Concurrency(concurrency), Optional.of(1337L)),
             ProgressTracker.NULL_TRACKER,
@@ -322,6 +329,7 @@ class Node2VecTest {
         );
 
         var firstRunEmbeddings = Node2Vec.create(
+            Log.noOpLog(),
             graph,
             new Node2VecParameters(walkParameters, trainParameters, new Concurrency(4), Optional.of(1337L)),
             ProgressTracker.NULL_TRACKER,
@@ -329,6 +337,7 @@ class Node2VecTest {
         ).compute().embeddings();
 
         var secondRunEmbedding = Node2Vec.create(
+            Log.noOpLog(),
             graph,
             new Node2VecParameters(walkParameters, trainParameters, new Concurrency(8), Optional.of(1337L)),
             ProgressTracker.NULL_TRACKER,
@@ -452,6 +461,7 @@ class Node2VecTest {
         );
 
         var firstEmbeddings = Node2Vec.create(
+            Log.noOpLog(),
             firstGraph,
             new Node2VecParameters(walkParameters, trainParameters, new Concurrency(4), Optional.of(1337L)),
             ProgressTracker.NULL_TRACKER,
@@ -459,6 +469,7 @@ class Node2VecTest {
         ).compute().embeddings();
 
         var secondEmbeddings = Node2Vec.create(
+            Log.noOpLog(),
             secondGraph,
             new Node2VecParameters(walkParameters, trainParameters, new Concurrency(4), Optional.of(1337L)),
             ProgressTracker.NULL_TRACKER,
@@ -518,7 +529,7 @@ class Node2VecTest {
         var progressTracker = progressTrackerWithLog.progressTracker();
         var log = progressTrackerWithLog.log();
 
-        var node2Vec = Node2Vec.create(unweighted, params, progressTracker, TerminationFlag.RUNNING_TRUE);
+        var node2Vec = Node2Vec.create(log, unweighted, params, progressTracker, TerminationFlag.RUNNING_TRUE);
         node2Vec.compute();
 
         assertThat(log.getMessages(TestLog.INFO))
@@ -578,7 +589,7 @@ class Node2VecTest {
         var progressTracker = progressTrackerWithLog.progressTracker();
         var log = progressTrackerWithLog.log();
 
-        var node2Vec = Node2Vec.create(graph, params, progressTracker, TerminationFlag.RUNNING_TRUE);
+        var node2Vec = Node2Vec.create(log, graph, params, progressTracker, TerminationFlag.RUNNING_TRUE);
         node2Vec.compute();
 
         assertThat(log.getMessages(TestLog.INFO))
@@ -639,6 +650,7 @@ class Node2VecTest {
         );
 
         var node2Vec = Node2Vec.create(
+            Log.noOpLog(),
             graph,
             params,
             ProgressTracker.NULL_TRACKER,
@@ -698,6 +710,7 @@ class Node2VecTest {
         );
 
         var node2Vec1 = Node2Vec.create(
+            Log.noOpLog(),
             graph,
             params1,
             ProgressTracker.NULL_TRACKER,
@@ -705,6 +718,7 @@ class Node2VecTest {
         );
 
         var node2Vec2 = Node2Vec.create(
+            Log.noOpLog(),
             graph,
             params2,
             ProgressTracker.NULL_TRACKER,

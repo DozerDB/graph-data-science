@@ -28,6 +28,7 @@ import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.extension.GdlExtension;
 import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.modularity.TestGraphs;
 import org.neo4j.gds.termination.TerminationFlag;
 
@@ -72,6 +73,7 @@ class Node2VecKarateClubTest {
         );
 
         var embeddings = Node2Vec.create(
+            Log.noOpLog(),
             graph,
             new Node2VecParameters(
                 samplingWalkParameters,

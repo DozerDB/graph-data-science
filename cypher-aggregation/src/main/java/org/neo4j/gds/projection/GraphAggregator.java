@@ -73,6 +73,7 @@ import static org.neo4j.gds.projection.GraphImporter.NO_TARGET_NODE;
 import static org.neo4j.gds.utils.StringFormatting.formatWithLocale;
 
 abstract class GraphAggregator implements UserAggregationReducer, UserAggregationUpdater, AutoCloseable {
+    private static final String RELATIONSHIP_TYPE = "relationshipType";
 
     static final String SOURCE_NODE_PROPERTIES = "sourceNodeProperties";
     static final String SOURCE_NODE_LABELS = "sourceNodeLabels";
@@ -80,8 +81,16 @@ abstract class GraphAggregator implements UserAggregationReducer, UserAggregatio
     static final String TARGET_NODE_LABELS = "targetNodeLabels";
     static final String ALPHA_RELATIONSHIP_PROPERTIES = "properties";
     static final String RELATIONSHIP_PROPERTIES = "relationshipProperties";
-    private static final String RELATIONSHIP_TYPE = "relationshipType";
 
+    private final ConfigValidator configValidator = new ConfigValidator();
+    private final ProgressTimer progressTimer = ProgressTimer.start();
+
+    // Used for initializing the data and rel importers
+    private final Lock lock = new ReentrantLock();
+    private final ExtractNodeId extractNodeId = new ExtractNodeId();
+    private final AtomicBoolean completedSuccessfully = new AtomicBoolean(false);
+
+    private final Log log;
     private final DatabaseId databaseId;
     private final String username;
     private final Capabilities.WriteMode writeMode;
@@ -90,17 +99,8 @@ abstract class GraphAggregator implements UserAggregationReducer, UserAggregatio
     private final GraphStoreCatalogService graphStoreCatalogService;
     private final ProjectionMetricsService projectionMetricsService;
     private final TaskStore taskStore;
-    private final Log log;
-
-    private final ProgressTimer progressTimer;
-    private final ConfigValidator configValidator;
-
     private final RequestCorrelationId requestCorrelationId;
 
-    // Used for initializing the data and rel importers
-    private final Lock lock;
-    private final ExtractNodeId extractNodeId;
-    private final AtomicBoolean completedSuccessfully;
     private volatile @Nullable GraphImporter importer;
 
     // #result() may be called twice, we cache the result of the first call to return it again in the second invocation
@@ -108,6 +108,7 @@ abstract class GraphAggregator implements UserAggregationReducer, UserAggregatio
     private ProgressTracker progressTracker;
 
     GraphAggregator(
+        Log log,
         DatabaseId databaseId,
         String username,
         Capabilities.WriteMode writeMode,
@@ -116,9 +117,9 @@ abstract class GraphAggregator implements UserAggregationReducer, UserAggregatio
         GraphStoreCatalogService graphStoreCatalogService,
         ProjectionMetricsService projectionMetricsService,
         TaskStore taskStore,
-        Log log,
         RequestCorrelationId requestCorrelationId
     ) {
+        this.log = log;
         this.databaseId = databaseId;
         this.username = username;
         this.writeMode = writeMode;
@@ -127,13 +128,7 @@ abstract class GraphAggregator implements UserAggregationReducer, UserAggregatio
         this.graphStoreCatalogService = graphStoreCatalogService;
         this.projectionMetricsService = projectionMetricsService;
         this.taskStore = taskStore;
-        this.log = log;
         this.requestCorrelationId = requestCorrelationId;
-        this.progressTimer = ProgressTimer.start();
-        this.lock = new ReentrantLock();
-        this.configValidator = new ConfigValidator();
-        this.extractNodeId = new ExtractNodeId();
-        this.completedSuccessfully = new AtomicBoolean(false);
     }
 
     void projectNextRelationship(
@@ -233,6 +228,7 @@ abstract class GraphAggregator implements UserAggregationReducer, UserAggregatio
         this.progressTracker = new BatchingTaskProgressTrackerFactory().create(internalProgressTracker, taskVolume, config.readConcurrency());
 
         return new GraphImporter(
+            log,
             config,
             config.undirectedRelationshipTypes(),
             config.inverseIndexedRelationshipTypes(),

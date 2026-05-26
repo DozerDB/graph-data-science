@@ -24,6 +24,7 @@ import org.neo4j.gds.core.GraphDimensions;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.loading.ImportSizing;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.transaction.TransactionContext;
 
 import java.math.BigDecimal;
@@ -35,11 +36,10 @@ import static org.neo4j.gds.mem.Estimate.humanReadable;
 import static org.neo4j.gds.utils.StringFormatting.formatWithLocale;
 
 abstract class ScanningRecordsImporter<Record, T> {
-
     private static final BigInteger A_BILLION = BigInteger.valueOf(1_000_000_000L);
 
+    private final Log log;
     private final StoreScanner.Factory<Record> storeScannerFactory;
-
     protected final ExecutorService executorService;
     protected final TransactionContext transaction;
     protected final GraphDimensions dimensions;
@@ -47,12 +47,14 @@ abstract class ScanningRecordsImporter<Record, T> {
     protected final Concurrency concurrency;
 
     ScanningRecordsImporter(
+        Log log,
         StoreScanner.Factory<Record> storeScannerFactory,
         GraphLoaderContext loadingContext,
         GraphDimensions dimensions,
         ProgressTracker progressTracker,
         Concurrency concurrency
     ) {
+        this.log = log;
         this.storeScannerFactory = storeScannerFactory;
         this.transaction = loadingContext.transactionContext();
         this.dimensions = dimensions;
@@ -72,7 +74,7 @@ abstract class ScanningRecordsImporter<Record, T> {
         )) {
             progressTracker.beginSubTask("Store Scan");
 
-            progressTracker.logInfo(formatWithLocale("Start using %s", storeScanner.getClass().getSimpleName()));
+            log.info(formatWithLocale("Start using %s", storeScanner.getClass().getSimpleName()));
 
             var taskFactory = recordScannerTaskFactory(nodeCount, sizing, storeScanner);
             var taskRunner = new RecordScannerTaskRunner(threadCount, taskFactory);
@@ -91,7 +93,7 @@ abstract class ScanningRecordsImporter<Record, T> {
                 .divide(bigNanos)
                 .longValueExact();
 
-            progressTracker.logInfo(
+            log.info(
                 formatWithLocale(
                     "Imported %,d records and %,d properties from %s (%,d bytes);" +
                     " took %.3f s, %,.2f %1$ss/s, %s/s (%,d bytes/s) (per thread: %,.2f %1$ss/s, %s/s (%,d bytes/s))",

@@ -28,9 +28,14 @@ import org.neo4j.gds.embeddings.graphsage.algo.GraphSageTrainConfig;
 import org.neo4j.gds.embeddings.graphsage.algo.GraphSageTrainParameters;
 import org.neo4j.gds.embeddings.graphsage.algo.MultiLabelGraphSageTrain;
 import org.neo4j.gds.embeddings.graphsage.algo.SingleLabelGraphSageTrain;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.termination.TerminationFlag;
 
-class GraphSageTrainAlgorithmFactory {
+public class GraphSageTrainAlgorithmFactory {
+    private final Log log;
+
+    public GraphSageTrainAlgorithmFactory(Log log) {this.log = log;}
+
     GraphSageTrain create(
         Graph graph,
         GraphSageTrainConfig configuration,
@@ -41,6 +46,7 @@ class GraphSageTrainAlgorithmFactory {
         var gdsVersion = GdsVersionInfoProvider.GDS_VERSION_INFO.gdsVersion();
 
         if (configuration.isMultiLabel()) return new MultiLabelGraphSageTrain(
+            log,
             graph,
             parameters,
             configuration.projectedFeatureDimension().orElseThrow(),
@@ -52,6 +58,7 @@ class GraphSageTrainAlgorithmFactory {
         );
 
         return new SingleLabelGraphSageTrain(
+            log,
             graph,
             parameters,
             DefaultPool.INSTANCE,

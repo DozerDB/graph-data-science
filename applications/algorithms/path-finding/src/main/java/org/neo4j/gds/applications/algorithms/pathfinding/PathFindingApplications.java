@@ -69,7 +69,7 @@ public final class PathFindingApplications {
         MutateRelationshipService mutateRelationshipService
     ) {
 
-        var algorithms = new PathFindingAlgorithms();
+        var algorithms = new PathFindingAlgorithms(log);
         var pathFindingAlgorithms = new PathFindingAlgorithmsBusinessFacade(algorithms, requestScopedDependencies, progressTrackerCreator);
 
         var estimationModeFacade = new PathFindingAlgorithmsEstimationModeBusinessFacade(algorithmEstimationTemplate);

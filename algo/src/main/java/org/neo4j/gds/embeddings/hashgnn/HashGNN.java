@@ -30,6 +30,7 @@ import org.neo4j.gds.core.utils.paged.HugeAtomicBitSet;
 import org.neo4j.gds.core.utils.partition.Partition;
 import org.neo4j.gds.core.utils.partition.PartitionUtils;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.termination.TerminationFlag;
 
 import java.util.List;
@@ -46,6 +47,8 @@ import static org.neo4j.gds.utils.StringFormatting.formatWithLocale;
  */
 public class HashGNN extends Algorithm<HashGNNResult> {
     private static final long DEGREE_PARTITIONS_PER_THREAD = 4;
+
+    private final Log log;
     private final long randomSeed;
     private final Graph graph;
     private final SplittableRandom rng;
@@ -53,8 +56,9 @@ public class HashGNN extends Algorithm<HashGNNResult> {
     private final Concurrency concurrency;
     private final MutableLong currentTotalFeatureCount = new MutableLong();
 
-    public HashGNN(Graph graph, HashGNNParameters parameters, ProgressTracker progressTracker, TerminationFlag terminationFlag) {
+    public HashGNN(Log log, Graph graph, HashGNNParameters parameters, ProgressTracker progressTracker, TerminationFlag terminationFlag) {
         super(progressTracker);
+        this.log = log;
         this.graph = graph;
         this.parameters = parameters;
         this.concurrency = parameters.concurrency();
@@ -99,7 +103,7 @@ public class HashGNN extends Algorithm<HashGNNResult> {
         int embeddingDimension = (int) embeddingsB.get(0).size();
 
         double avgInputActiveFeatures = currentTotalFeatureCount.doubleValue() / graph.nodeCount();
-        progressTracker.logInfo(formatWithLocale(
+        log.info(formatWithLocale(
             "Density (number of active features) of binary input features is %.4f.",
             avgInputActiveFeatures
         ));
@@ -155,7 +159,7 @@ public class HashGNN extends Algorithm<HashGNNResult> {
             );
 
             double avgActiveFeatures = currentTotalFeatureCount.doubleValue() / graph.nodeCount();
-            progressTracker.logInfo(formatWithLocale(
+            log.info(formatWithLocale(
                 "After iteration %d average node embedding density (number of active features) is %.4f.",
                 iteration,
                 avgActiveFeatures
@@ -202,6 +206,7 @@ public class HashGNN extends Algorithm<HashGNNResult> {
         }
         return parameters.binarizeFeatures().map(it ->
             BinarizeTask.compute(
+                log,
                 graph,
                 partition,
                 concurrency,

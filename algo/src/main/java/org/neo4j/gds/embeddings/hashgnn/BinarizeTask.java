@@ -27,6 +27,7 @@ import org.neo4j.gds.core.concurrency.RunWithConcurrency;
 import org.neo4j.gds.core.utils.paged.HugeAtomicBitSet;
 import org.neo4j.gds.core.utils.partition.Partition;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.ml.core.features.FeatureConsumer;
 import org.neo4j.gds.ml.core.features.FeatureExtraction;
 import org.neo4j.gds.ml.core.features.FeatureExtractor;
@@ -71,6 +72,7 @@ class BinarizeTask implements Runnable {
     }
 
     static HugeObjectArray<HugeAtomicBitSet> compute(
+        Log log,
         Graph graph,
         List<Partition> partition,
         Concurrency concurrency,
@@ -116,7 +118,7 @@ class BinarizeTask implements Runnable {
         var variance = (squaredSum - exampleCount * avg * avg) / exampleCount;
         var std = Math.sqrt(variance);
 
-        progressTracker.logInfo(formatWithLocale(
+        log.info(formatWithLocale(
             "Hyperplane scalar products have mean %.4f and standard deviation %.4f. A threshold for binarization may be set to the mean plus a few standard deviations.",
             avg,
             std

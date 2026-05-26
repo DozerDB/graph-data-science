@@ -182,8 +182,7 @@ public class LinkPredictionTrainPipelineExecutor extends PipelineExecutor
             log,
             trainGraph.relationshipCount(),
             testGraph.relationshipCount(),
-            pipeline.splitConfig().validationFolds(),
-            progressTracker
+            pipeline.splitConfig().validationFolds()
         );
 
         var trainResult = new LinkPredictionTrain(

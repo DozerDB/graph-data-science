@@ -67,7 +67,9 @@ public final class NodeEmbeddingApplications {
         var graphSageModelCatalog = new GraphSageModelCatalog(globallyScopedDependencies.modelCatalog());
 
         var algorithms = new NodeEmbeddingAlgorithms(
+            log,
             graphSageModelCatalog,
+            new GraphSageTrainAlgorithmFactory(log),
             requestScopedDependencies.terminationFlag()
         );
 

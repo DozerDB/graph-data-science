@@ -30,18 +30,22 @@ import org.neo4j.gds.core.utils.progress.tasks.LoggerForProgressTracking;
 import org.neo4j.gds.core.utils.progress.tasks.TaskProgressTracker;
 import org.neo4j.gds.graphsampling.GraphSampleConstructor;
 import org.neo4j.gds.graphsampling.RandomWalkSamplerType;
+import org.neo4j.gds.logging.Log;
 
 import java.util.Map;
 
 public final class GraphSamplingApplication {
-    private final LoggerForProgressTracking log;
+    private final Log log;
+    private final LoggerForProgressTracking loggerForProgressTracking;
     private final GraphStoreCatalogService graphStoreCatalogService;
 
     public GraphSamplingApplication(
-        LoggerForProgressTracking log,
+        Log log,
+        LoggerForProgressTracking loggerForProgressTracking,
         GraphStoreCatalogService graphStoreCatalogService
     ) {
         this.log = log;
+        this.loggerForProgressTracking = loggerForProgressTracking;
         this.graphStoreCatalogService = graphStoreCatalogService;
     }
 
@@ -61,7 +65,7 @@ public final class GraphSamplingApplication {
 
             var samplerAlgorithm = samplerProvider.algorithm();
             var progressTracker = TaskProgressTracker.create(
-                log,
+                loggerForProgressTracking,
                 GraphSampleConstructor.progressTask(graphStore, samplerAlgorithm),
                 samplerConfig.concurrency(),
                 samplerConfig.jobId(),
@@ -70,6 +74,7 @@ public final class GraphSamplingApplication {
                 requestScopedDependencies.userLogRegistry()
             );
             var graphSampleConstructor = new GraphSampleConstructor(
+                log,
                 samplerConfig,
                 graphStore,
                 samplerAlgorithm,

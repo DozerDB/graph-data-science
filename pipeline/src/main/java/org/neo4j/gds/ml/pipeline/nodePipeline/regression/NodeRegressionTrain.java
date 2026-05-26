@@ -293,11 +293,11 @@ public final class NodeRegressionTrain implements PipelineTrainer<NodeRegression
 
         registerMetricScores(outerSplit.trainSet(), bestRegressor, features, trainingStatistics::addOuterTrainScore);
         var outerTrainMetrics = trainingStatistics.winningModelOuterTrainMetrics();
-        progressTracker.logInfo(formatWithLocale("Final model metrics on full train set: %s", outerTrainMetrics));
+        log.info(formatWithLocale("Final model metrics on full train set: %s", outerTrainMetrics));
 
         registerMetricScores(outerSplit.testSet(), bestRegressor, features, trainingStatistics::addTestScore);
         var testMetrics = trainingStatistics.winningModelTestMetrics();
-        progressTracker.logInfo(formatWithLocale("Final model metrics on test set: %s", testMetrics));
+        log.info(formatWithLocale("Final model metrics on test set: %s", testMetrics));
 
         progressTracker.endSubTask("Evaluate on test data");
     }

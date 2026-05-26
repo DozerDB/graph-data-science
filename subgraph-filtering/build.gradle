@@ -15,6 +15,7 @@ dependencies {
     implementation project(':annotations')
     implementation project(':config-api')
     implementation project(':core')
+    implementation project(':logging')
     implementation project(':graph-schema-api')
     implementation project(':progress-tracking')
     implementation project(':string-formatting')

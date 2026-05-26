@@ -111,8 +111,9 @@ class Node2VecProgressTrackingTest {
             EmptyTaskRegistryFactory.INSTANCE
         );
 
-        try(var ignored = Executors.newFixedThreadPool(concurrency)) {
-             Node2Vec.create(
+        try (var ignored = Executors.newFixedThreadPool(concurrency)) {
+            Node2Vec.create(
+                Log.noOpLog(),
                 graph,
                 parameters,
                 progressTracker,

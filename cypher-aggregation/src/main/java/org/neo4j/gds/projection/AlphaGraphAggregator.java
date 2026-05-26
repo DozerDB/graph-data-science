@@ -47,6 +47,7 @@ public class AlphaGraphAggregator extends GraphAggregator {
         RequestCorrelationId requestCorrelationId
     ) {
         super(
+            Log.noOpLog(),
             databaseId,
             username,
             writeMode,
@@ -55,7 +56,6 @@ public class AlphaGraphAggregator extends GraphAggregator {
             graphStoreCatalogService,
             projectionMetricsService,
             EmptyTaskStore.INSTANCE,
-            Log.noOpLog(),
             requestCorrelationId
         );
     }

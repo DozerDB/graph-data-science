@@ -34,6 +34,7 @@ import org.neo4j.gds.dag.longestPath.DagLongestPathParameters;
 import org.neo4j.gds.dag.topologicalsort.TopologicalSortParameters;
 import org.neo4j.gds.dag.topologicalsort.TopologicalSortResult;
 import org.neo4j.gds.kspanningtree.KSpanningTreeParameters;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.paths.astar.AStarParameters;
 import org.neo4j.gds.paths.bellmanford.BellmanFordParameters;
 import org.neo4j.gds.paths.delta.DeltaSteppingParameters;
@@ -77,6 +78,7 @@ class PathFindingComputeFacadeEmptyGraphTest {
     void setUp() {
         when(graph.isEmpty()).thenReturn(true);
         facade = new PathFindingComputeFacade(
+            Log.noOpLog(),
             algorithmCallerMock,
             DefaultPool.INSTANCE,
             TerminationFlag.RUNNING_TRUE,

@@ -31,6 +31,7 @@ import org.neo4j.gds.core.JobId;
 import org.neo4j.gds.embeddings.fastrp.FastRPParameters;
 import org.neo4j.gds.embeddings.hashgnn.HashGNNParameters;
 import org.neo4j.gds.embeddings.node2vec.Node2VecParameters;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.termination.TerminationFlag;
 
 import java.util.List;
@@ -60,6 +61,7 @@ class NodeEmbeddingComputeFacadeEmptyGraphTest {
     void setUp() {
         when(graph.isEmpty()).thenReturn(true);
         facade = new NodeEmbeddingComputeFacade(
+            Log.noOpLog(),
             algorithmCallerMock,
             progressTrackerFactoryMock,
             TerminationFlag.RUNNING_TRUE

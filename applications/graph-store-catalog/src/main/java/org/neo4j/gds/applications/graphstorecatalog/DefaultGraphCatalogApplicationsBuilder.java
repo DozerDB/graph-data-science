@@ -203,7 +203,6 @@ class DefaultGraphCatalogApplicationsBuilder {
 
     DefaultGraphCatalogApplications build() {
         return new DefaultGraphCatalogApplications(
-            log,
             globallyScopedDependencies,
             projectionMetricsService,
             graphNameValidationService,

@@ -31,6 +31,7 @@ import org.neo4j.gds.collections.ha.HugeLongArray;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.utils.Intersections;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.termination.TerminatedException;
 import org.neo4j.gds.termination.TerminationFlag;
 
@@ -88,6 +89,7 @@ class Node2VecModelTest {
         int nodeCount = numberOfClusters * clusterSize;
 
         var node2VecModel = new Node2VecModel(
+            Log.noOpLog(),
             nodeId -> nodeId,
             nodeCount,
             trainParameters,
@@ -191,6 +193,7 @@ class Node2VecModelTest {
         int nodeCount = numberOfClusters * clusterSize;
 
         var firstRunEmbeddings = new Node2VecModel(
+            Log.noOpLog(),
             nodeId -> nodeId,
             nodeCount,
             trainParameters,
@@ -203,6 +206,7 @@ class Node2VecModelTest {
         ).train().embeddings();
 
         var secondRunEmbedding = new Node2VecModel(
+            Log.noOpLog(),
             nodeId -> nodeId,
             nodeCount,
             trainParameters,
@@ -238,6 +242,7 @@ class Node2VecModelTest {
 
         var node2VecModel = spy(
             new Node2VecModel(
+            Log.noOpLog(),
                 LongUnaryOperator.identity(),
                 1000,
                 trainParametersMock,
@@ -311,6 +316,7 @@ class Node2VecModelTest {
         when(trainParams.embeddingInitializer()).thenReturn(EmbeddingInitializer.UNIFORM);
 
         var node2VecModel = new Node2VecModel(
+            Log.noOpLog(),
             nodeId -> nodeId,
             10,
             trainParams,
@@ -367,6 +373,7 @@ class Node2VecModelTest {
         };
 
         var node2VecModel = new Node2VecModel(
+            Log.noOpLog(),
             nodeId -> nodeId,
             1000,
             trainParameters,

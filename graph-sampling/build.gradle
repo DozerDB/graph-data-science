@@ -16,6 +16,7 @@ dependencies {
     implementation project(':compression')
     implementation project(':config-api')
     implementation project(':core')
+    implementation project(':logging')
     implementation project(':graph-schema-api')
     implementation project(':progress-tracking')
     implementation project(':subgraph-filtering')

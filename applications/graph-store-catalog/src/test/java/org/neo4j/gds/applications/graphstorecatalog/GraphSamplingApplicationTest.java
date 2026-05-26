@@ -35,6 +35,7 @@ import org.neo4j.gds.core.loading.GraphStoreCatalog;
 import org.neo4j.gds.core.loading.GraphStoreCatalogService;
 import org.neo4j.gds.core.utils.progress.EmptyTaskRegistryFactory;
 import org.neo4j.gds.core.utils.progress.tasks.LoggerForProgressTracking;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.user.log.UserLogRegistry;
 import org.neo4j.gds.extension.GdlExtension;
 import org.neo4j.gds.extension.GdlGraph;
@@ -110,6 +111,7 @@ class GraphSamplingApplicationTest {
     @MethodSource("samplingParameters")
     void shouldSampleRWR(Map<String, Object> mapConfiguration, long expectedNodeCount) {
         var graphSamplingApplication = new GraphSamplingApplication(
+            Log.noOpLog(),
             LoggerForProgressTracking.noOpLog(),
             new GraphStoreCatalogService()
         );
@@ -153,6 +155,7 @@ class GraphSamplingApplicationTest {
     @MethodSource("samplingParameters")
     void shouldSampleCNARW(Map<String, Object> mapConfiguration, long expectedNodeCount) {
         var graphSamplingApplication = new GraphSamplingApplication(
+            Log.noOpLog(),
             LoggerForProgressTracking.noOpLog(),
             new GraphStoreCatalogService()
         );
@@ -195,6 +198,7 @@ class GraphSamplingApplicationTest {
     @CsvSource(value = {"0.28,1", "0.35,2"})
     void shouldUseSingleStartNodeRWR(double samplingRatio, long expectedStartNodeCount) {
         var graphSamplingApplication = new GraphSamplingApplication(
+            Log.noOpLog(),
             LoggerForProgressTracking.noOpLog(),
             new GraphStoreCatalogService()
         );
@@ -242,6 +246,7 @@ class GraphSamplingApplicationTest {
     @CsvSource(value = {"0.28,1", "0.35,2"})
     void shouldUseSingleStartNodeCNARW(double samplingRatio, long expectedStartNodeCount) {
         var graphSamplingApplication = new GraphSamplingApplication(
+            Log.noOpLog(),
             LoggerForProgressTracking.noOpLog(),
             new GraphStoreCatalogService()
         );

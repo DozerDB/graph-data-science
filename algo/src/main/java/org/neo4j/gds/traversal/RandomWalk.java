@@ -26,6 +26,7 @@ import org.neo4j.gds.core.concurrency.ExecutorServiceUtil;
 import org.neo4j.gds.core.concurrency.RunWithConcurrency;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.core.utils.queue.QueueBasedSpliterator;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.ml.core.EmbeddingUtils;
 import org.neo4j.gds.ml.core.samplers.RandomWalkSampler;
 import org.neo4j.gds.termination.TerminationFlag;
@@ -44,9 +45,9 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public final class RandomWalk extends Algorithm<Stream<long[]>> {
-
     private static final long[] TOMBSTONE = new long[0];
 
+    private final Log log;
     private final Concurrency concurrency;
     private final ExecutorService executorService;
     private final Graph graph;
@@ -57,6 +58,7 @@ public final class RandomWalk extends Algorithm<Stream<long[]>> {
     private final BlockingQueue<long[]> walks;
 
     public static RandomWalk create(
+        Log log,
         Graph graph,
         Concurrency concurrency,
         WalkParameters walkParameters,
@@ -78,6 +80,7 @@ public final class RandomWalk extends Algorithm<Stream<long[]>> {
         }
 
         return new RandomWalk(
+            log,
             graph,
             concurrency,
             executorService,
@@ -91,6 +94,7 @@ public final class RandomWalk extends Algorithm<Stream<long[]>> {
     }
 
     public static RandomWalk create(
+        Log log,
         Graph graph,
         RandomWalkParameters parameters,
         ProgressTracker progressTracker,
@@ -98,6 +102,7 @@ public final class RandomWalk extends Algorithm<Stream<long[]>> {
         TerminationFlag terminationFlag
     ) {
         return new RandomWalk(
+            log,
             graph,
             parameters.concurrency(),
             executorService,
@@ -111,6 +116,7 @@ public final class RandomWalk extends Algorithm<Stream<long[]>> {
     }
 
     private RandomWalk(
+        Log log,
         Graph graph,
         Concurrency concurrency,
         ExecutorService executorService,
@@ -122,6 +128,7 @@ public final class RandomWalk extends Algorithm<Stream<long[]>> {
         TerminationFlag terminationFlag
     ) {
         super(progressTracker);
+        this.log = log;
         this.concurrency = concurrency;
         this.executorService = executorService;
         this.walks = new ArrayBlockingQueue<>(walkBufferSize);
@@ -146,7 +153,7 @@ public final class RandomWalk extends Algorithm<Stream<long[]>> {
         return streamWalks(walks);
     }
 
-    RandomWalkTaskSupplier createRandomWalkTaskSupplier() {
+    private RandomWalkTaskSupplier createRandomWalkTaskSupplier() {
         var nextNodeSupplier = RandomWalkCompanion.nextNodeSupplier(graph, sourceNodes);
         RandomWalkSampler.CumulativeWeightSupplier cumulativeWeightSupplier = RandomWalkCompanion.cumulativeWeights(
             graph,
@@ -179,7 +186,7 @@ public final class RandomWalk extends Algorithm<Stream<long[]>> {
             )
             .whenComplete((__, throwable) -> {
                     if (throwable != null) {
-                        progressTracker.logInfo("Failed to create walks: " + throwable.getMessage());
+                        log.info("Failed to create walks: " + throwable.getMessage());
                         onException.run();
                     } else {
                         onComplete.run();

@@ -45,6 +45,7 @@ import org.neo4j.gds.core.utils.partition.PartitionUtils;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.core.utils.progress.tasks.Task;
 import org.neo4j.gds.core.utils.progress.tasks.Tasks;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.termination.TerminationFlag;
 import org.neo4j.gds.utils.StringFormatting;
 
@@ -54,6 +55,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class GraphSampleConstructor {
+    private final Log log;
     private final GraphSampleAlgoConfig config;
     private final Concurrency concurrency;
     private final GraphStore inputGraphStore;
@@ -62,12 +64,14 @@ public class GraphSampleConstructor {
     private final TerminationFlag terminationFlag;
 
     public GraphSampleConstructor(
+        Log log,
         GraphSampleAlgoConfig config,
         GraphStore inputGraphStore,
         NodesSampler nodesSampler,
         ProgressTracker progressTracker,
         TerminationFlag terminationFlag
     ) {
+        this.log = log;
         this.config = config;
         this.concurrency = config.concurrency();
         this.inputGraphStore = inputGraphStore;
@@ -139,7 +143,7 @@ public class GraphSampleConstructor {
             .concurrency(concurrency)
             .build();
 
-        progressTracker.logInfo(StringFormatting.formatWithLocale(
+        log.info(StringFormatting.formatWithLocale(
             "Sampled Graph: {nodes: {count: %d, propertyCount: %d, labelCount: %d}, relationships: {count: %d, typeCount: %d, propertyCount: %d}}",
             outputGraphStore.nodeCount(),
             outputGraphStore.nodePropertyKeys().size(),

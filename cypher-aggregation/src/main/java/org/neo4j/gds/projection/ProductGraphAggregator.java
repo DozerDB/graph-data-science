@@ -49,6 +49,7 @@ public class ProductGraphAggregator extends GraphAggregator {
         RequestCorrelationId requestCorrelationId
     ) {
         super(
+            log,
             databaseId,
             username,
             writeMode,
@@ -57,7 +58,6 @@ public class ProductGraphAggregator extends GraphAggregator {
             graphStoreCatalogService,
             projectionMetricsService,
             taskStore,
-            log,
             requestCorrelationId
         );
     }

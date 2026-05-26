@@ -46,16 +46,15 @@ import java.util.Map;
 import java.util.Optional;
 
 final class ScanningNodesImporter extends ScanningRecordsImporter<NodeReference, Nodes> {
-
-    private final LoadablePropertyMappings propertyMappings;
     private final Map<NodeLabel, PropertyMappings> propertyMappingsByLabel;
     private final TerminationFlag terminationFlag;
     private final IdMapBuilder idMapBuilder;
     private final LabelInformation.Builder labelInformationBuilder;
-    private final @Nullable NativeNodePropertyImporter nodePropertyImporter;
+    private final NativeNodePropertyImporter nodePropertyImporter;
 
     @Builder.Factory
     public static ScanningNodesImporter scanningNodesImporter(
+        Log log,
         GraphProjectFromStoreConfig graphProjectConfig,
         GraphLoaderContext loadingContext,
         GraphDimensions dimensions,
@@ -97,13 +96,13 @@ final class ScanningNodesImporter extends ScanningRecordsImporter<NodeReference,
         );
 
         return new ScanningNodesImporter(
+            log,
             scannerFactory,
             loadingContext,
             dimensions,
             progressTracker,
             concurrency,
             propertyMappings,
-            loadablePropertyMappings,
             nodePropertyImporter,
             idMapBuilder,
             labelInformationBuilder
@@ -111,18 +110,19 @@ final class ScanningNodesImporter extends ScanningRecordsImporter<NodeReference,
     }
 
     private ScanningNodesImporter(
+        Log log,
         StoreScanner.Factory<NodeReference> scannerFactory,
         GraphLoaderContext loadingContext,
         GraphDimensions dimensions,
         ProgressTracker progressTracker,
         Concurrency concurrency,
         Map<NodeLabel, PropertyMappings> propertyMappingsByLabel,
-        LoadablePropertyMappings propertyMappings,
-        @Nullable NativeNodePropertyImporter nodePropertyImporter,
+        NativeNodePropertyImporter nodePropertyImporter,
         IdMapBuilder idMapBuilder,
         LabelInformation.Builder labelInformationBuilder
     ) {
         super(
+            log,
             scannerFactory,
             loadingContext,
             dimensions,
@@ -131,7 +131,6 @@ final class ScanningNodesImporter extends ScanningRecordsImporter<NodeReference,
         );
 
         this.terminationFlag = loadingContext.terminationFlag();
-        this.propertyMappings = propertyMappings;
         this.propertyMappingsByLabel = propertyMappingsByLabel;
         this.nodePropertyImporter = nodePropertyImporter;
         this.idMapBuilder = idMapBuilder;

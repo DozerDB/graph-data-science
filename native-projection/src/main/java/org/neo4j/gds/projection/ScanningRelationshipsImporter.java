@@ -33,6 +33,7 @@ import org.neo4j.gds.core.loading.SingleTypeRelationshipImporter;
 import org.neo4j.gds.core.loading.SingleTypeRelationshipImporter.SingleTypeRelationshipImportContext;
 import org.neo4j.gds.core.loading.SingleTypeRelationshipImporterBuilder;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
+import org.neo4j.gds.logging.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +50,7 @@ final class ScanningRelationshipsImporter extends ScanningRecordsImporter<Relati
 
     @Builder.Factory
     static ScanningRelationshipsImporter scanningRelationshipsImporter(
+        Log log,
         GraphProjectFromStoreConfig graphProjectConfig,
         GraphLoaderContext loadingContext,
         GraphDimensions dimensions,
@@ -57,6 +59,7 @@ final class ScanningRelationshipsImporter extends ScanningRecordsImporter<Relati
         Concurrency concurrency
     ) {
         return new ScanningRelationshipsImporter(
+            log,
             graphProjectConfig,
             loadingContext,
             dimensions,
@@ -67,6 +70,7 @@ final class ScanningRelationshipsImporter extends ScanningRecordsImporter<Relati
     }
 
     private ScanningRelationshipsImporter(
+        Log log,
         GraphProjectFromStoreConfig graphProjectConfig,
         GraphLoaderContext loadingContext,
         GraphDimensions dimensions,
@@ -75,6 +79,7 @@ final class ScanningRelationshipsImporter extends ScanningRecordsImporter<Relati
         Concurrency concurrency
     ) {
         super(
+            log,
             RelationshipScanCursorBasedScanner.factory(Math.max(dimensions.relationshipCounts()
                 .values()
                 .stream()

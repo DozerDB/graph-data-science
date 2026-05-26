@@ -25,6 +25,7 @@ import org.neo4j.gds.core.concurrency.RunWithConcurrency;
 import org.neo4j.gds.core.utils.partition.DegreePartition;
 import org.neo4j.gds.core.utils.partition.PartitionUtils;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.mem.BitUtil;
 import org.neo4j.gds.ml.core.tensor.FloatVector;
 import org.neo4j.gds.termination.TerminationFlag;
@@ -40,7 +41,7 @@ import java.util.function.LongUnaryOperator;
 import static org.neo4j.gds.utils.StringFormatting.formatWithLocale;
 
 public class Node2VecModel {
-
+    private final Log log;
     private final HugeObjectArray<FloatVector> centerEmbeddings;
     private final HugeObjectArray<FloatVector> contextEmbeddings;
     private final double initialLearningRate;
@@ -60,6 +61,7 @@ public class Node2VecModel {
     static final double EPSILON = 1e-10;
 
     Node2VecModel(
+        Log log,
         LongUnaryOperator toOriginalId,
         long nodeCount,
         TrainParameters trainParameters,
@@ -71,6 +73,7 @@ public class Node2VecModel {
         TerminationFlag terminationFlag
     ) {
         this(
+            log,
             toOriginalId,
             nodeCount,
             trainParameters.initialLearningRate(),
@@ -89,7 +92,8 @@ public class Node2VecModel {
         );
     }
 
-    Node2VecModel(
+    private Node2VecModel(
+        Log log,
         LongUnaryOperator toOriginalId,
         long nodeCount,
         double initialLearningRate,
@@ -106,6 +110,7 @@ public class Node2VecModel {
         ProgressTracker progressTracker,
         TerminationFlag terminationFlag
     ) {
+        this.log = log;
         this.initialLearningRate = initialLearningRate;
         this.minLearningRate = minLearningRate;
         this.iterations = iterations;
@@ -147,7 +152,7 @@ public class Node2VecModel {
                 .run();
 
             double loss = tasks.stream().mapToDouble(TrainingTask::lossSum).sum();
-            progressTracker.logInfo(formatWithLocale("Loss %.4f", loss));
+            log.info(formatWithLocale("Loss %.4f", loss));
             lossPerIteration.add(loss);
 
             progressTracker.endSubTask();

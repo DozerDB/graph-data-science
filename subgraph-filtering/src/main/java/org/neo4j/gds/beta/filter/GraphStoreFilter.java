@@ -40,6 +40,7 @@ import org.neo4j.gds.core.loading.RelationshipImportResult;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.core.utils.progress.tasks.Task;
 import org.neo4j.gds.core.utils.progress.tasks.Tasks;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.utils.StringFormatting;
 import org.opencypher.v9_0.parser.javacc.ParseException;
 
@@ -130,6 +131,7 @@ public final class GraphStoreFilter {
 
     @NotNull
     public static GraphStore filter(
+        Log log,
         GraphStore graphStore,
         GraphProjectFromGraphConfig config,
         ExecutorService executorService,
@@ -172,7 +174,7 @@ public final class GraphStoreFilter {
                 .concurrency(config.readConcurrency())
                 .build();
 
-            progressTracker.logInfo(StringFormatting.formatWithLocale(
+            log.info(StringFormatting.formatWithLocale(
                 "Filtered Graph: {nodes: {count: %d, propertyCount: %d, labelCount: %d}, relationships: {count: %d, typeCount: %d, propertyCount: %d}}",
                 graphStore.nodeCount(),
                 graphStore.nodePropertyKeys().size(),

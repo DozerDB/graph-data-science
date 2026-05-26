@@ -33,6 +33,7 @@ import org.neo4j.gds.embeddings.graphsage.TrainConfigTransformer;
 import org.neo4j.gds.extension.GdlExtension;
 import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.termination.TerminatedException;
 import org.neo4j.gds.termination.TerminationFlag;
 
@@ -98,6 +99,7 @@ class MultiLabelGraphSageTrainTest {
     @MethodSource("featureSizes")
     void shouldRunWithDifferentProjectedFeatureSizes(String name, GraphSageTrainConfig config) {
         var multiLabelGraphSageTrain = new MultiLabelGraphSageTrain(
+            Log.noOpLog(),
             weightedGraph,
             TrainConfigTransformer.toParameters(config),
             config.projectedFeatureDimension().get(),
@@ -122,6 +124,7 @@ class MultiLabelGraphSageTrainTest {
             .build();
 
         var multiLabelGraphSageTrain = new MultiLabelGraphSageTrain(
+            Log.noOpLog(),
             weightedGraph,
             TrainConfigTransformer.toParameters(config),
             PROJECTED_FEATURE_SIZE,
@@ -155,6 +158,7 @@ class MultiLabelGraphSageTrainTest {
             .build();
 
         var graphSageTrain = new MultiLabelGraphSageTrain(
+            Log.noOpLog(),
             weightedGraph,
             TrainConfigTransformer.toParameters(graphSageTrainConfig),
             featureDimension,
@@ -202,6 +206,7 @@ class MultiLabelGraphSageTrainTest {
             .build();
 
         var multiLabelGraphSageTrain = new MultiLabelGraphSageTrain(
+            Log.noOpLog(),
             unequalGraph,
             TrainConfigTransformer.toParameters(config),
             featureDimension,
@@ -230,6 +235,7 @@ class MultiLabelGraphSageTrainTest {
             .build();
 
         var multiLabelGraphSageTrain = new MultiLabelGraphSageTrain(
+            Log.noOpLog(),
             graph,
             TrainConfigTransformer.toParameters(config),
             PROJECTED_FEATURE_SIZE,
@@ -283,6 +289,7 @@ class MultiLabelGraphSageTrainTest {
             .build();
 
         var graphSageTrain = new MultiLabelGraphSageTrain(
+            Log.noOpLog(),
             weightedGraph,
             TrainConfigTransformer.toParameters(graphSageTrainConfig),
             PROJECTED_FEATURE_SIZE,

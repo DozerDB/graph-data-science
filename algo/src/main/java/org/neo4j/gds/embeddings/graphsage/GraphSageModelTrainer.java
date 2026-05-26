@@ -27,6 +27,7 @@ import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.core.utils.progress.tasks.Task;
 import org.neo4j.gds.core.utils.progress.tasks.Tasks;
 import org.neo4j.gds.embeddings.graphsage.algo.GraphSageTrainParameters;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.ml.core.ComputationContext;
 import org.neo4j.gds.ml.core.Variable;
 import org.neo4j.gds.ml.core.functions.ConstantScale;
@@ -58,6 +59,7 @@ import static org.neo4j.gds.ml.core.tensor.TensorFunctions.averageTensors;
 import static org.neo4j.gds.utils.StringFormatting.formatWithLocale;
 
 public class GraphSageModelTrainer {
+    private final Log log;
     private final long randomSeed;
     private final GraphSageTrainParameters parameters;
     private final FeatureFunction featureFunction;
@@ -67,11 +69,12 @@ public class GraphSageModelTrainer {
     private final Layer[] layers;
     private final TerminationFlag terminationFlag;
 
-    public GraphSageModelTrainer(GraphSageTrainParameters parameters, int featureDimension, ExecutorService executor, ProgressTracker progressTracker, TerminationFlag terminationFlag) {
-        this(parameters, executor, progressTracker, terminationFlag, new SingleLabelFeatureFunction(), Collections.emptyList(), featureDimension);
+    public GraphSageModelTrainer(Log log, GraphSageTrainParameters parameters, int featureDimension, ExecutorService executor, ProgressTracker progressTracker, TerminationFlag terminationFlag) {
+        this(log, parameters, executor, progressTracker, terminationFlag, new SingleLabelFeatureFunction(), Collections.emptyList(), featureDimension);
     }
 
     public GraphSageModelTrainer(
+        Log log,
         GraphSageTrainParameters parameters,
         ExecutorService executor,
         ProgressTracker progressTracker,
@@ -80,6 +83,7 @@ public class GraphSageModelTrainer {
         Collection<Weights<Matrix>> labelProjectionWeights,
         int featureDimension
     ) {
+        this.log = log;
         this.parameters = parameters;
         this.featureFunction = featureFunction;
         this.labelProjectionWeights = labelProjectionWeights;
@@ -268,7 +272,7 @@ public class GraphSageModelTrainer {
                 .run();
             var avgLossPerNode = sampledBatchTasks.stream().mapToDouble(BatchTask::loss).sum() / sampledBatchTasks.size();
             iterationLosses.add(avgLossPerNode);
-            progressTracker.logInfo(formatWithLocale("Average loss per node: %.10f", avgLossPerNode));
+            log.info(formatWithLocale("Average loss per node: %.10f", avgLossPerNode));
 
             if (Math.abs(prevLoss - avgLossPerNode) < parameters.tolerance()) {
                 converged = true;

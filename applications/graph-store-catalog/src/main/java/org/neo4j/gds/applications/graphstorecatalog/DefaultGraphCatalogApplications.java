@@ -26,6 +26,7 @@ import org.neo4j.gds.api.User;
 import org.neo4j.gds.applications.algorithms.machinery.MemoryEstimateResult;
 import org.neo4j.gds.applications.algorithms.machinery.RequestScopedDependencies;
 import org.neo4j.gds.beta.filter.GraphFilterResult;
+import org.neo4j.gds.beta.filter.GraphStoreFilterService;
 import org.neo4j.gds.config.BaseConfig;
 import org.neo4j.gds.core.io.GraphStoreExporterBaseConfig;
 import org.neo4j.gds.core.loading.CatalogRequest;
@@ -40,7 +41,6 @@ import org.neo4j.gds.core.write.RelationshipPropertiesExporterBuilder;
 import org.neo4j.gds.domain.services.GloballyScopedDependencies;
 import org.neo4j.gds.graphsampling.RandomWalkSamplerType;
 import org.neo4j.gds.legacycypherprojection.GraphProjectCypherResult;
-import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.metrics.projections.ProjectionMetricsService;
 import org.neo4j.gds.projection.GraphProjectNativeResult;
 import org.neo4j.gds.projection.GraphStoreFactorySuppliers;
@@ -80,7 +80,6 @@ public class DefaultGraphCatalogApplications implements GraphCatalogApplications
     private final GraphStoreValidationService graphStoreValidationService = new GraphStoreValidationService();
 
     // global dependencies
-    private final Log log;
     private final GloballyScopedDependencies globallyScopedDependencies;
     private final ProjectionMetricsService projectionMetricsService;
 
@@ -112,7 +111,6 @@ public class DefaultGraphCatalogApplications implements GraphCatalogApplications
     private final ExportToDatabaseApplication exportToDatabaseApplication;
 
     DefaultGraphCatalogApplications(
-        Log log,
         GloballyScopedDependencies globallyScopedDependencies,
         ProjectionMetricsService projectionMetricsService,
         GraphNameValidationService graphNameValidationService,
@@ -139,7 +137,6 @@ public class DefaultGraphCatalogApplications implements GraphCatalogApplications
         ExportToCsvEstimateApplication exportToCsvEstimateApplication,
         ExportToDatabaseApplication exportToDatabaseApplication
     ) {
-        this.log = log;
         this.globallyScopedDependencies = globallyScopedDependencies;
         this.projectionMetricsService = projectionMetricsService;
 
@@ -207,6 +204,7 @@ public class DefaultGraphCatalogApplications implements GraphCatalogApplications
         var generateGraphApplication = new GenerateGraphApplication(loggers.log(), globallyScopedDependencies.graphStoreCatalogService());
         var graphMemoryUsageApplication = new GraphSizeOfApplication(globallyScopedDependencies.graphStoreCatalogService());
         var graphSamplingApplication = new GraphSamplingApplication(
+            loggers.log(),
             loggers.loggerForProgressTracking(),
             globallyScopedDependencies.graphStoreCatalogService()
         );
@@ -225,7 +223,8 @@ public class DefaultGraphCatalogApplications implements GraphCatalogApplications
         var streamRelationshipsApplication = new StreamRelationshipsApplication();
         var subGraphProjectApplication = new SubGraphProjectApplication(
             loggers,
-            globallyScopedDependencies.graphStoreCatalogService()
+            globallyScopedDependencies.graphStoreCatalogService(),
+            new GraphStoreFilterService(loggers.log())
         );
         var writeNodeLabelApplication = new WriteNodeLabelApplication(loggers.log());
         var writeNodePropertiesApplication = new WriteNodePropertiesApplication(loggers);

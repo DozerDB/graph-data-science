@@ -27,6 +27,7 @@ import org.neo4j.gds.embeddings.graphsage.GraphSageHelper;
 import org.neo4j.gds.embeddings.graphsage.GraphSageModelTrainer;
 import org.neo4j.gds.embeddings.graphsage.ModelData;
 import org.neo4j.gds.embeddings.graphsage.MultiLabelFeatureFunction;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.ml.core.functions.Weights;
 import org.neo4j.gds.ml.core.tensor.Matrix;
 import org.neo4j.gds.termination.TerminationFlag;
@@ -41,18 +42,18 @@ import static org.neo4j.gds.embeddings.graphsage.GraphSageHelper.initializeMulti
 import static org.neo4j.gds.embeddings.graphsage.LayerFactory.generateWeights;
 
 public class MultiLabelGraphSageTrain extends GraphSageTrain {
-
     private static final double WEIGHT_BOUND = 1.0D;
 
+    private final Log log;
     private final Graph graph;
     private final GraphSageTrainParameters parameters;
     private final int featureDimension;
     private final ExecutorService executor;
-
     private final String gdsVersion;
     @Deprecated private final GraphSageTrainConfig config;
 
     public MultiLabelGraphSageTrain(
+        Log log,
         Graph graph,
         GraphSageTrainParameters parameters,
         int projectedFeatureDimension,
@@ -63,6 +64,7 @@ public class MultiLabelGraphSageTrain extends GraphSageTrain {
         GraphSageTrainConfig config // TODO: Last trace of UI config in here--Once we attach Parameters to Models we can lose this too
     ) {
         super(progressTracker, terminationFlag);
+        this.log = log;
         this.graph = graph;
         this.featureDimension = projectedFeatureDimension;
         this.parameters = parameters;
@@ -82,6 +84,7 @@ public class MultiLabelGraphSageTrain extends GraphSageTrain {
         var weightsByLabel = makeWeightsByLabel(parameters.randomSeed(), featureDimension, multiLabelFeatureExtractors);
         var multiLabelFeatureFunction = new MultiLabelFeatureFunction(weightsByLabel, featureDimension);
         var trainer = new GraphSageModelTrainer(
+            log,
             parameters,
             executor,
             progressTracker,

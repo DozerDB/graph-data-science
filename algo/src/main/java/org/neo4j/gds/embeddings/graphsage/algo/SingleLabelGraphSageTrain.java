@@ -25,6 +25,7 @@ import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.embeddings.graphsage.GraphSageModelTrainer;
 import org.neo4j.gds.embeddings.graphsage.ModelData;
 import org.neo4j.gds.embeddings.graphsage.SingleLabelFeatureFunction;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.ml.core.features.FeatureExtraction;
 import org.neo4j.gds.termination.TerminationFlag;
 
@@ -33,15 +34,15 @@ import java.util.concurrent.ExecutorService;
 import static org.neo4j.gds.embeddings.graphsage.GraphSageHelper.initializeSingleLabelFeatures;
 
 public class SingleLabelGraphSageTrain extends GraphSageTrain {
-
+    private final Log log;
     private final Graph graph;
     private final ExecutorService executor;
-
     private final String gdsVersion;
     private final GraphSageTrainParameters parameters;
     @Deprecated  private final GraphSageTrainConfig config;
 
     public SingleLabelGraphSageTrain(
+        Log log,
         Graph graph,
         GraphSageTrainParameters parameters,
         ExecutorService executor,
@@ -51,6 +52,7 @@ public class SingleLabelGraphSageTrain extends GraphSageTrain {
         GraphSageTrainConfig config // TODO: Last trace of UI config in here--Once we attach Parameters to Models we can lose this too
     ) {
         super(progressTracker, terminationFlag);
+        this.log = log;
         this.graph = graph;
         this.parameters = parameters;
         this.executor = executor;
@@ -64,6 +66,7 @@ public class SingleLabelGraphSageTrain extends GraphSageTrain {
 
         var featureDimension = FeatureExtraction.featureCount(graph, parameters.featureProperties());
         var graphSageModel = new GraphSageModelTrainer(
+            log,
             parameters,
             featureDimension,
             executor,

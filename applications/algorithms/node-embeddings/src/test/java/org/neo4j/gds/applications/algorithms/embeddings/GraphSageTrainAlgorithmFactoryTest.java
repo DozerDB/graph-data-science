@@ -26,6 +26,7 @@ import org.neo4j.gds.embeddings.graphsage.TrainConfigTransformer;
 import org.neo4j.gds.embeddings.graphsage.algo.GraphSageTrainConfig;
 import org.neo4j.gds.embeddings.graphsage.algo.MultiLabelGraphSageTrain;
 import org.neo4j.gds.embeddings.graphsage.algo.SingleLabelGraphSageTrain;
+import org.neo4j.gds.logging.Log;
 
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class GraphSageTrainAlgorithmFactoryTest {
     @Test
     void shouldConstructMultiLabelAlgorithm() {
-        var factory = new GraphSageTrainAlgorithmFactory();
+        var factory = new GraphSageTrainAlgorithmFactory(Log.noOpLog());
 
         var rawInput = CypherMapWrapper.create(
             Map.of(
@@ -63,7 +64,7 @@ class GraphSageTrainAlgorithmFactoryTest {
 
     @Test
     void shouldConstructSingleLabelAlgorithm() {
-        var factory = new GraphSageTrainAlgorithmFactory();
+        var factory = new GraphSageTrainAlgorithmFactory(Log.noOpLog());
 
         var configuration = GraphSageTrainConfig.of(
             User.DEFAULT.getUsername(),

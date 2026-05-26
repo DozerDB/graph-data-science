@@ -44,6 +44,7 @@ import org.neo4j.gds.extension.Inject;
 import org.neo4j.gds.graphsampling.config.RandomWalkWithRestartsConfigImpl;
 import org.neo4j.gds.graphsampling.samplers.rw.rwr.RandomWalkWithRestarts;
 import org.neo4j.gds.logging.GdsTestLog;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.termination.TerminationFlag;
 import org.neo4j.gds.user.log.UserLogRegistry;
 
@@ -153,6 +154,7 @@ class GraphSampleConstructorTest {
         );
 
         var graphConstructor = new GraphSampleConstructor(
+            Log.noOpLog(),
             config,
             naturalGraphStore,
             new TestNodesSampler(originalIds),
@@ -211,6 +213,7 @@ class GraphSampleConstructorTest {
         );
 
         var graphConstructor = new GraphSampleConstructor(
+            Log.noOpLog(),
             config,
             undirectedGraphStore,
             new TestNodesSampler(originalIds),
@@ -276,6 +279,7 @@ class GraphSampleConstructorTest {
         );
 
         var graphConstructor = new GraphSampleConstructor(
+            Log.noOpLog(),
             config,
             naturalGraphStore,
             new TestNodesSampler(originalIds),
@@ -319,6 +323,7 @@ class GraphSampleConstructorTest {
         );
 
         var rwrGraphConstructor = new GraphSampleConstructor(
+            Log.noOpLog(),
             config,
             naturalGraphStore,
             rwr,

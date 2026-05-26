@@ -24,11 +24,16 @@ import org.neo4j.gds.beta.filter.expression.SemanticErrors;
 import org.neo4j.gds.config.GraphProjectFromGraphConfig;
 import org.neo4j.gds.core.utils.progress.tasks.ProgressTracker;
 import org.neo4j.gds.core.utils.progress.tasks.Task;
+import org.neo4j.gds.logging.Log;
 import org.opencypher.v9_0.parser.javacc.ParseException;
 
 import java.util.concurrent.ExecutorService;
 
 public class GraphStoreFilterService {
+    private final Log log;
+
+    public GraphStoreFilterService(Log log) {this.log = log;}
+
     public Task progressTask(GraphStore graphStore) {
         return GraphStoreFilter.progressTask(graphStore);
     }
@@ -43,7 +48,7 @@ public class GraphStoreFilterService {
         ProgressTracker progressTracker
     ) {
         try {
-            return GraphStoreFilter.filter(graphStore, configuration, executorService, progressTracker);
+            return GraphStoreFilter.filter(log, graphStore, configuration, executorService, progressTracker);
         } catch (ParseException | SemanticErrors e) {
             throw new IllegalArgumentException(e);
         }

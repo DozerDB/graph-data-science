@@ -55,6 +55,7 @@ import org.neo4j.gds.embeddings.graphsage.algo.SingleLabelGraphSageTrain;
 import org.neo4j.gds.extension.GdlExtension;
 import org.neo4j.gds.extension.GdlGraph;
 import org.neo4j.gds.extension.Inject;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.termination.TerminatedException;
 import org.neo4j.gds.termination.TerminationFlag;
 
@@ -150,6 +151,7 @@ class GraphSageTest {
             .build();
 
         var trainAlgo = new SingleLabelGraphSageTrain(
+            Log.noOpLog(),
             orphanGraph,
             TrainConfigTransformer.toParameters(trainConfig),
             DefaultPool.INSTANCE,
@@ -197,6 +199,7 @@ class GraphSageTest {
             .build();
 
         var graphSageTrain = new SingleLabelGraphSageTrain(
+            Log.noOpLog(),
             graph,
             TrainConfigTransformer.toParameters(trainConfig),
             DefaultPool.INSTANCE,
@@ -244,6 +247,7 @@ class GraphSageTest {
             .build();
 
         var graphSageTrain = new SingleLabelGraphSageTrain(
+            Log.noOpLog(),
             graph,
             TrainConfigTransformer.toParameters(trainConfig),
             DefaultPool.INSTANCE,
@@ -321,6 +325,7 @@ class GraphSageTest {
         doNothing().when(terminationFlag).assertRunning();
 
         var resultModel = new SingleLabelGraphSageTrain(
+            Log.noOpLog(),
             graph,
             TrainConfigTransformer.toParameters(trainConfig),
             DefaultPool.INSTANCE,

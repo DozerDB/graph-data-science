@@ -297,14 +297,14 @@ public final class NodeClassificationTrain implements PipelineTrainer<NodeClassi
         progressTracker.setSteps(outerSplit.trainSet().size());
         registerMetricScores(outerSplit.trainSet(), bestClassifier, features, trainingStatistics::addOuterTrainScore, progressTracker);
         var outerTrainMetrics = trainingStatistics.winningModelOuterTrainMetrics();
-        progressTracker.logInfo(formatWithLocale("Final model metrics on full train set: %s", outerTrainMetrics));
+        log.info(formatWithLocale("Final model metrics on full train set: %s", outerTrainMetrics));
         progressTracker.endSubTask("Evaluate on train data");
 
         progressTracker.beginSubTask("Evaluate on test data");
         progressTracker.setSteps(outerSplit.testSet().size());
         registerMetricScores(outerSplit.testSet(), bestClassifier, features, trainingStatistics::addTestScore, progressTracker);
         var testMetrics = trainingStatistics.winningModelTestMetrics();
-        progressTracker.logInfo(formatWithLocale("Final model metrics on test set: %s", testMetrics));
+        log.info(formatWithLocale("Final model metrics on test set: %s", testMetrics));
         progressTracker.endSubTask("Evaluate on test data");
     }
 

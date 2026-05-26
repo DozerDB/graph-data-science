@@ -44,7 +44,7 @@ import java.util.SortedSet;
 import static org.neo4j.gds.utils.StringFormatting.formatWithLocale;
 
 public class CrossValidation<MODEL_TYPE> {
-    private Log log;
+    private final Log log;
 
     private final ProgressTracker progressTracker;
 
@@ -112,7 +112,7 @@ public class CrossValidation<MODEL_TYPE> {
             terminationFlag.assertRunning();
 
             var modelParams = modelCandidates.next();
-            progressTracker.logInfo(formatWithLocale(
+            log.info(formatWithLocale(
                 "Method: %s, Parameters: %s",
                 modelParams.method(),
                 modelParams.toMap()
@@ -150,13 +150,13 @@ public class CrossValidation<MODEL_TYPE> {
             var trainStats = trainingStatistics.trainMetricsAvg(trial);
             double mainMetric = trainingStatistics.getMainMetric(trial);
 
-            progressTracker.logInfo(formatWithLocale(
+            log.info(formatWithLocale(
                 "Main validation metric (%s): %.4f",
                 trainingStatistics.evaluationMetric(),
                 mainMetric
             ));
-            progressTracker.logInfo(formatWithLocale("Validation metrics: %s", validationStats));
-            progressTracker.logInfo(formatWithLocale("Training metrics: %s", trainStats));
+            log.info(formatWithLocale("Validation metrics: %s", validationStats));
+            log.info(formatWithLocale("Training metrics: %s", trainStats));
 
             trial++;
 
@@ -165,7 +165,7 @@ public class CrossValidation<MODEL_TYPE> {
 
         int bestTrial = trainingStatistics.getBestTrialIdx() + 1;
         double bestTrialScore = trainingStatistics.getBestTrialScore();
-        progressTracker.logInfo(formatWithLocale(
+        log.info(formatWithLocale(
             "Best trial was Trial %d with main validation metric %.4f",
             bestTrial,
             bestTrialScore

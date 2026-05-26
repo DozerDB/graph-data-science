@@ -36,6 +36,7 @@ import org.neo4j.gds.dag.topologicalsort.TopologicalSortParameters;
 import org.neo4j.gds.dag.topologicalsort.TopologicalSortResult;
 import org.neo4j.gds.kspanningtree.KSpanningTree;
 import org.neo4j.gds.kspanningtree.KSpanningTreeParameters;
+import org.neo4j.gds.logging.Log;
 import org.neo4j.gds.maxflow.FlowResult;
 import org.neo4j.gds.maxflow.MaxFlow;
 import org.neo4j.gds.maxflow.MaxFlowParameters;
@@ -86,6 +87,9 @@ import java.util.stream.Stream;
  * Associated mode-specific validation is also done in layers above.
  */
 public class PathFindingAlgorithms {
+    private final Log log;
+
+    public PathFindingAlgorithms(Log log) {this.log = log;}
 
     Stream<AllShortestPathsStreamResult> allShortestPaths(
         Graph graph,
@@ -157,7 +161,7 @@ public class PathFindingAlgorithms {
         ExecutorService executorService,
         TerminationFlag terminationFlag
     ) {
-        var algorithm = DeltaStepping.of(graph, parameters, executorService, progressTracker,terminationFlag);
+        var algorithm = DeltaStepping.of(graph, parameters, executorService, progressTracker, terminationFlag);
 
         return algorithm.compute().pathFindingResult();
     }
@@ -224,7 +228,7 @@ public class PathFindingAlgorithms {
         ProgressTracker progressTracker,
         TerminationFlag terminationFlag
     ) {
-        var algorithm =  MaxFlow.create(
+        var algorithm = MaxFlow.create(
             graph,
             parameters,
             progressTracker,
@@ -245,10 +249,10 @@ public class PathFindingAlgorithms {
         TerminationFlag terminationFlag
     ) {
 
-        var graphOfFlows = graphStore.getGraph(nodeLabels,relTypes,capacityProperty);
-        var graphOfCosts = graphStore.getGraph(nodeLabels,relTypes,costProperty);
+        var graphOfFlows = graphStore.getGraph(nodeLabels, relTypes, capacityProperty);
+        var graphOfCosts = graphStore.getGraph(nodeLabels, relTypes, costProperty);
 
-        var algorithm =  MinCostMaxFlow.create(
+        var algorithm = MinCostMaxFlow.create(
             graphOfFlows,
             graphOfCosts,
             parameters,
@@ -267,6 +271,7 @@ public class PathFindingAlgorithms {
         ExecutorService executorService
     ) {
         var algorithm = RandomWalk.create(
+            log,
             graph,
             parameters.concurrency(),
             parameters.walkParameters(),
