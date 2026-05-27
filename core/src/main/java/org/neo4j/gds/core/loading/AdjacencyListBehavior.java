@@ -28,10 +28,11 @@ import org.neo4j.gds.core.compression.packed.PackedAdjacencyListBuilderFactory;
 import org.neo4j.gds.core.compression.packed.PackedCompressor;
 import org.neo4j.gds.core.compression.uncompressed.RawCompressor;
 import org.neo4j.gds.core.compression.uncompressed.UncompressedAdjacencyList;
+import org.neo4j.gds.core.compression.uncompressed.UncompressedAdjacencyListBuilder;
 import org.neo4j.gds.core.compression.uncompressed.UncompressedAdjacencyListBuilderFactory;
-import org.neo4j.gds.core.compression.varlong.CompressedAdjacencyList;
-import org.neo4j.gds.core.compression.varlong.CompressedAdjacencyListBuilderFactory;
-import org.neo4j.gds.core.compression.varlong.DeltaVarLongCompressor;
+import org.neo4j.gds.compression.varlong.CompressedAdjacencyList;
+import org.neo4j.gds.compression.varlong.CompressedAdjacencyListBuilderFactory;
+import org.neo4j.gds.compression.varlong.DeltaVarLongCompressor;
 import org.neo4j.gds.mem.MemoryEstimation;
 import org.neo4j.gds.mem.MemoryEstimations;
 import org.neo4j.gds.Aggregation;
@@ -83,7 +84,7 @@ public interface AdjacencyListBehavior {
     ) {
         return DeltaVarLongCompressor.factory(
             nodeCountSupplier,
-            CompressedAdjacencyListBuilderFactory.of(),
+            CompressedAdjacencyListBuilderFactory.of(UncompressedAdjacencyListBuilder::new),
             propertyMappings,
             aggregations,
             noAggregation,
@@ -132,7 +133,7 @@ public interface AdjacencyListBehavior {
         return MixedCompressor.factory(
             nodeCountSupplier,
             PackedAdjacencyListBuilderFactory.of(),
-            CompressedAdjacencyListBuilderFactory.of(),
+            CompressedAdjacencyListBuilderFactory.of(UncompressedAdjacencyListBuilder::new),
             propertyMappings,
             aggregations,
             noAggregation,

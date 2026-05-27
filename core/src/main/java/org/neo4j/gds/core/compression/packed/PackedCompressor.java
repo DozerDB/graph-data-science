@@ -36,7 +36,7 @@ import org.neo4j.gds.compression.packed.BlockAlignedTailPacker;
 import org.neo4j.gds.compression.packed.InlinedHeadPackedTailPacker;
 import org.neo4j.gds.compression.packed.PackedTailPacker;
 import org.neo4j.gds.compression.packed.VarLongTailPacker;
-import org.neo4j.gds.core.compression.common.AbstractAdjacencyCompressorFactory;
+import org.neo4j.gds.compression.common.AbstractAdjacencyCompressorFactory;
 import org.neo4j.gds.compression.api.MemoryTracker;
 import org.neo4j.gds.memory.access.Address;
 import org.neo4j.gds.Aggregation;

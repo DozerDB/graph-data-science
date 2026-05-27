@@ -45,10 +45,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.neo4j.gds.compression.varlong.CompressedAdjacencyList;
+
 import static org.neo4j.gds.api.AdjacencyCursor.NOT_FOUND;
-import static org.neo4j.gds.core.compression.varlong.AdjacencyDecompressingReader.CHUNK_SIZE;
 
 class TransientCsrListTest {
+
+    private static final int CHUNK_SIZE = CompressedAdjacencyList.decompressingReaderChunkSize();
+
 
     @ParameterizedTest
     @MethodSource("org.neo4j.gds.core.TestMethodRunner#adjacencyCompressions")

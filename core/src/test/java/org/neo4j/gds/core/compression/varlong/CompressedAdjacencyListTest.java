@@ -21,6 +21,7 @@ package org.neo4j.gds.core.compression.varlong;
 
 import org.junit.jupiter.api.Test;
 import org.neo4j.gds.collections.PageUtil;
+import org.neo4j.gds.compression.varlong.CompressedAdjacencyList;
 import org.neo4j.gds.collections.ha.HugeIntArray;
 import org.neo4j.gds.collections.ha.HugeLongArray;
 import org.neo4j.gds.core.GraphDimensions;
@@ -34,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.neo4j.gds.compression.common.BumpAllocator.PAGE_MASK;
 import static org.neo4j.gds.compression.common.BumpAllocator.PAGE_SHIFT;
-import static org.neo4j.gds.core.compression.varlong.CompressedAdjacencyList.computeAdjacencyByteSize;
+import static org.neo4j.gds.compression.varlong.CompressedAdjacencyList.computeAdjacencyByteSize;
 import static org.neo4j.gds.mem.BitUtil.ceilDiv;
 
 class CompressedAdjacencyListTest {

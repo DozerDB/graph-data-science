@@ -32,7 +32,7 @@ import org.neo4j.gds.compression.api.MemoryTracker;
 import org.neo4j.gds.compression.packed.AdjacencyPacking;
 import org.neo4j.gds.memory.access.Address;
 import org.neo4j.gds.core.compression.packed.PackedCompressor;
-import org.neo4j.gds.core.compression.varlong.DeltaVarLongCompressor;
+import org.neo4j.gds.compression.varlong.DeltaVarLongCompressor;
 import org.neo4j.gds.memory.info.ImmutableMemoryInfo;
 import org.neo4j.gds.memory.info.MemoryInfo;
 import org.neo4j.gds.Aggregation;

@@ -20,6 +20,7 @@ dependencies {
 
     implementation project(':annotations')
     implementation project(':compression')
+    implementation project(':compression-varlong')
     implementation project(':config-api')
     implementation project(':core-utils')
     implementation project(':gds-values')

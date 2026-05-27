@@ -17,9 +17,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.neo4j.gds.core.loading;
+package org.neo4j.gds.compression.common;
 
-// TODO: remove when Task 7 cleans up core.loading — prefer org.neo4j.gds.compression.common.MutableIntValue
 public abstract class MutableIntValue {
     public int value;
 }

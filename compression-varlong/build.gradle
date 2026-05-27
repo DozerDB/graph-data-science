@@ -2,29 +2,25 @@ plugins {
     id 'buildlogic-gds-java'
 }
 
-description = 'Neo4j Graph Data Science :: Compression Common'
+description = 'Neo4j Graph Data Science :: Compression :: Delta VarLong Codec'
 group = 'org.neo4j.gds'
 
 dependencies {
     annotationProcessor project(':annotations')
 
-    compileOnly(neo4j.unsafe) { transitive = false }
     compileOnly openGds.jetbrains.annotations
-    compileOnly openGds.immutables.value.annotations
 
     implementation project(':annotations')
     implementation project(':compression-api')
-    implementation project(':core-utils')
-    implementation project(':collections')
+    implementation project(':compression-common')
     implementation project(':core-api')
+    implementation project(':core-utils')
     implementation project(':graph-projection-api')
-    implementation project(':histogram')
+    implementation project(':collections')
     implementation project(':memory-access')
     implementation project(':memory-info')
     implementation project(':memory-usage')
     implementation openGds.commons.lang3
-    implementation openGds.hdrhistogram
-    implementation openGds.hppc
 
     testImplementation project(':test-utils')
 }

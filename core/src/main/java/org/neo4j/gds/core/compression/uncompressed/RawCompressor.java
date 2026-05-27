@@ -31,7 +31,7 @@ import org.neo4j.gds.collections.ha.HugeIntArray;
 import org.neo4j.gds.collections.ha.HugeLongArray;
 import org.neo4j.gds.compression.api.AdjacencyListBuilder;
 import org.neo4j.gds.compression.api.ModifiableSlice;
-import org.neo4j.gds.core.compression.common.AbstractAdjacencyCompressorFactory;
+import org.neo4j.gds.compression.common.AbstractAdjacencyCompressorFactory;
 import org.neo4j.gds.compression.api.MemoryTracker;
 import org.neo4j.gds.compression.common.AscendingLongComparator;
 import org.neo4j.gds.Aggregation;

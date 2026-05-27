@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.neo4j.gds.core.compression.varlong;
+package org.neo4j.gds.compression.varlong;
 
 import org.jetbrains.annotations.Nullable;
 import org.neo4j.gds.Aggregation;
@@ -34,7 +34,7 @@ import org.neo4j.gds.compression.api.ModifiableSlice;
 import org.neo4j.gds.compression.common.AdjacencyCompression;
 import org.neo4j.gds.compression.api.MemoryTracker;
 import org.neo4j.gds.compression.common.VarLongEncoding;
-import org.neo4j.gds.core.compression.common.AbstractAdjacencyCompressorFactory;
+import org.neo4j.gds.compression.common.AbstractAdjacencyCompressorFactory;
 
 import java.util.Arrays;
 import java.util.function.LongSupplier;
