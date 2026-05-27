@@ -25,7 +25,7 @@ import org.neo4j.gds.Orientation;
 import org.neo4j.gds.PropertyMappings;
 import org.neo4j.gds.RelationshipProjection;
 import org.neo4j.gds.core.ImmutableGraphDimensions;
-import org.neo4j.gds.compression.common.MemoryTracker;
+import org.neo4j.gds.compression.api.MemoryTracker;
 import org.neo4j.gds.core.compression.varlong.CompressedAdjacencyListBuilderFactory;
 import org.neo4j.gds.core.compression.varlong.DeltaVarLongCompressor;
 import org.neo4j.gds.core.concurrency.Concurrency;

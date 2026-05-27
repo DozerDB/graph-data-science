@@ -23,7 +23,7 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import org.neo4j.gds.compression.api.AdjacencyListBuilder;
 import org.neo4j.gds.compression.api.Slice;
 import org.neo4j.gds.compression.common.AdjacencyCompression;
-import org.neo4j.gds.compression.common.MemoryTracker;
+import org.neo4j.gds.compression.api.MemoryTracker;
 import org.neo4j.gds.mem.BitUtil;
 import org.neo4j.gds.memory.access.Address;
 import org.neo4j.gds.Aggregation;

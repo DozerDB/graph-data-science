@@ -21,8 +21,8 @@ package org.neo4j.gds.core.loading;
 
 import org.neo4j.gds.PropertyMappings;
 import org.neo4j.gds.RelationshipType;
-import org.neo4j.gds.api.compress.AdjacencyCompressorFactory;
-import org.neo4j.gds.compression.common.MemoryTracker;
+import org.neo4j.gds.compression.api.AdjacencyCompressorFactory;
+import org.neo4j.gds.compression.api.MemoryTracker;
 import org.neo4j.gds.core.compression.mixed.MixedCompressor;
 import org.neo4j.gds.core.compression.packed.PackedAdjacencyListBuilderFactory;
 import org.neo4j.gds.core.compression.packed.PackedCompressor;

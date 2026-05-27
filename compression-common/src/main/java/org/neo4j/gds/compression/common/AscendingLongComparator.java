@@ -17,11 +17,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.neo4j.gds.api.compress;
+package org.neo4j.gds.compression.common;
 
-import org.neo4j.gds.api.AdjacencyList;
-import org.neo4j.gds.api.AdjacencyProperties;
+import com.carrotsearch.hppc.sorting.IndirectComparator;
 
-import java.util.List;
+public class AscendingLongComparator implements IndirectComparator {
+    private final long[] array;
 
-public record AdjacencyListsWithProperties(AdjacencyList adjacency, long relationshipCount, List<AdjacencyProperties> properties) {}
+    public AscendingLongComparator(long[] array) {
+        this.array = array;
+    }
+
+    public int compare(int indexA, int indexB) {
+        long a = this.array[indexA];
+        long b = this.array[indexB];
+        if (a < b) {
+            return -1;
+        } else {
+            return a > b ? 1 : 0;
+        }
+    }
+}

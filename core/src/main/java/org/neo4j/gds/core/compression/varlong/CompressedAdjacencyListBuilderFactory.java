@@ -19,8 +19,8 @@
  */
 package org.neo4j.gds.core.compression.varlong;
 
-import org.neo4j.gds.api.compress.AdjacencyListBuilderFactory;
-import org.neo4j.gds.compression.common.MemoryTracker;
+import org.neo4j.gds.compression.api.AdjacencyListBuilderFactory;
+import org.neo4j.gds.compression.api.MemoryTracker;
 import org.neo4j.gds.core.compression.uncompressed.UncompressedAdjacencyList;
 import org.neo4j.gds.core.compression.uncompressed.UncompressedAdjacencyListBuilder;
 

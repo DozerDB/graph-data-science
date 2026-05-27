@@ -21,8 +21,6 @@ package org.neo4j.gds.compression.common;
 
 import com.carrotsearch.hppc.sorting.IndirectSort;
 import org.neo4j.gds.compression.api.AdjacencyCompressor;
-import org.neo4j.gds.compression.utilities.AscendingLongComparator;
-import org.neo4j.gds.compression.utilities.LongArrayBuffer;
 import org.neo4j.gds.Aggregation;
 
 import java.util.Arrays;
@@ -37,9 +35,9 @@ public final class AdjacencyCompression {
 
     /**
      * Decompress the given {@code array} into the given {@code into}.
-     * After this, {@link org.neo4j.gds.compression.utilities.LongArrayBuffer#length} will reflect the number of decompressed
+     * After this, {@link org.neo4j.gds.compression.common.LongArrayBuffer#length} will reflect the number of decompressed
      * values
-     * that are in the {@link org.neo4j.gds.compression.utilities.LongArrayBuffer#buffer}.
+     * that are in the {@link org.neo4j.gds.compression.common.LongArrayBuffer#buffer}.
      */
     public static void zigZagUncompressFrom(
         LongArrayBuffer into,

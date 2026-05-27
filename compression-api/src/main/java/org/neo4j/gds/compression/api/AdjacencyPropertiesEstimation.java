@@ -17,24 +17,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.neo4j.gds.compression.utilities;
+package org.neo4j.gds.compression.api;
 
-import com.carrotsearch.hppc.sorting.IndirectComparator;
+// Properties are always stored uncompressed regardless of codec.
+// Method body added in Task 7 once UncompressedAdjacencyList is in compression-uncompressed.
+public final class AdjacencyPropertiesEstimation {
 
-public class AscendingLongComparator implements IndirectComparator {
-    private final long[] array;
-
-    public AscendingLongComparator(long[] array) {
-        this.array = array;
-    }
-
-    public int compare(int indexA, int indexB) {
-        long a = this.array[indexA];
-        long b = this.array[indexB];
-        if (a < b) {
-            return -1;
-        } else {
-            return a > b ? 1 : 0;
-        }
-    }
+    private AdjacencyPropertiesEstimation() {}
 }

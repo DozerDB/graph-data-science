@@ -26,8 +26,10 @@ import org.neo4j.gds.compression.api.AdjacencyListBuilder;
 import org.neo4j.gds.compression.api.ModifiableSlice;
 import org.neo4j.gds.compression.api.Slice;
 import org.neo4j.gds.compression.common.BumpAllocator;
-import org.neo4j.gds.compression.common.MemoryTracker;
-import org.neo4j.gds.compression.utilities.MemoryInfoUtil;
+import org.neo4j.gds.compression.api.MemoryTracker;
+import org.neo4j.gds.compression.common.MemoryInfoUtil;
+import org.neo4j.gds.compression.common.PageReordering;
+import org.neo4j.gds.utils.GdsFeatureToggles;
 import org.neo4j.gds.mem.MemoryUsage;
 import org.neo4j.gds.memory.access.Address;
 import org.neo4j.gds.memory.info.MemoryInfo;
@@ -75,6 +77,13 @@ public final class PackedAdjacencyListBuilder implements AdjacencyListBuilder<Ad
         var memoryInfo = memoryInfo(allocationSizes, degrees, offsets);
 
         return new PackedAdjacencyList(pages, allocationSizes, degrees, offsets, memoryInfo);
+    }
+
+    @Override
+    public void reorder(Address[] pages, HugeLongArray offsets, HugeIntArray degrees) {
+        if (GdsFeatureToggles.USE_REORDERED_ADJACENCY_LIST.isEnabled() && pages.length > 0) {
+            PageReordering.reorder(pages, offsets, degrees);
+        }
     }
 
     private MemoryInfo memoryInfo(int[] allocationSizes, HugeIntArray degrees, HugeLongArray offsets) {

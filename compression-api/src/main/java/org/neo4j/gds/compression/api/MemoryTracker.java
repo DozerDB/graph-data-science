@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.neo4j.gds.compression.common;
+package org.neo4j.gds.compression.api;
 
 import org.HdrHistogram.ConcurrentHistogram;
 import org.neo4j.gds.histogram.ImmutableHistogram;

@@ -21,8 +21,6 @@ package org.neo4j.gds.compression.api;
 
 import org.neo4j.gds.collections.ha.HugeIntArray;
 import org.neo4j.gds.collections.ha.HugeLongArray;
-import org.neo4j.gds.compression.utilities.PageReordering;
-import org.neo4j.gds.utils.GdsFeatureToggles;
 
 public interface AdjacencyListBuilder<PAGE, T> {
 
@@ -48,10 +46,11 @@ public interface AdjacencyListBuilder<PAGE, T> {
         void close();
     }
 
-    default void reorder(PAGE[] pages, HugeLongArray offsets, HugeIntArray degrees) {
-        if (GdsFeatureToggles.USE_REORDERED_ADJACENCY_LIST.isEnabled() && pages.length > 0) {
-            PageReordering.reorder(pages, offsets, degrees);
-        }
-    }
+    /**
+     * Reorder pages to align with the node id space.
+     * Implementations should call {@code PageReordering.reorder(pages, offsets, degrees)}
+     * when {@code GdsFeatureToggles.USE_REORDERED_ADJACENCY_LIST} is enabled.
+     */
+    void reorder(PAGE[] pages, HugeLongArray offsets, HugeIntArray degrees);
 
 }

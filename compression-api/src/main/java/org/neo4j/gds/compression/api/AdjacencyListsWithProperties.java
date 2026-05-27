@@ -17,14 +17,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.neo4j.gds.api.compress;
+package org.neo4j.gds.compression.api;
 
-import org.neo4j.gds.compression.api.AdjacencyListBuilder;
-import org.neo4j.gds.compression.common.MemoryTracker;
+import org.neo4j.gds.api.AdjacencyList;
+import org.neo4j.gds.api.AdjacencyProperties;
 
-public interface AdjacencyListBuilderFactory<TARGET_PAGE, TARGET_TYPE, PROPERTY_PAGE, PROPERTY_TYPE> {
+import java.util.List;
 
-    AdjacencyListBuilder<TARGET_PAGE, TARGET_TYPE> newAdjacencyListBuilder(MemoryTracker memoryTracker);
-
-    AdjacencyListBuilder<PROPERTY_PAGE, PROPERTY_TYPE> newAdjacencyPropertiesBuilder(MemoryTracker memoryTracker);
-}
+public record AdjacencyListsWithProperties(AdjacencyList adjacency, long relationshipCount, List<AdjacencyProperties> properties) {}

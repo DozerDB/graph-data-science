@@ -23,7 +23,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.neo4j.gds.compression.common.AdjacencyCompression;
-import org.neo4j.gds.compression.utilities.LongArrayBuffer;
+import org.neo4j.gds.compression.common.LongArrayBuffer;
 import org.neo4j.gds.Aggregation;
 
 import java.util.Arrays;

@@ -20,7 +20,7 @@
 package org.neo4j.gds.core.loading;
 
 import com.carrotsearch.hppc.sorting.IndirectSort;
-import org.neo4j.gds.compression.utilities.AscendingLongComparator;
+import org.neo4j.gds.compression.common.AscendingLongComparator;
 import org.neo4j.gds.Aggregation;
 
 final class AdjacencyPreAggregation {

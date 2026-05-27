@@ -17,14 +17,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.neo4j.gds.compression.common;
+package org.neo4j.gds.compression.api;
 
-import org.neo4j.gds.compression.packed.AdjacencyPacking;
 import org.neo4j.gds.histogram.BoundedHistogram;
 import org.neo4j.gds.histogram.ImmutableHistogram;
 import org.neo4j.gds.mem.BitUtil;
 
 public final class BlockStatistics implements AutoCloseable {
+
+    // Matches AdjacencyPacking.BLOCK_SIZE — kept here to avoid a dependency on the packed module.
+    private static final int BLOCK_SIZE = 64;
 
     public static final BlockStatistics EMPTY = new BlockStatistics();
 
@@ -47,18 +49,18 @@ public final class BlockStatistics implements AutoCloseable {
 
     public BlockStatistics() {
         this.blockCount = 0;
-        this.bitsPerValue = new BoundedHistogram(AdjacencyPacking.BLOCK_SIZE);
-        this.stdDevBits = new BoundedHistogram(AdjacencyPacking.BLOCK_SIZE);
-        this.meanBits = new BoundedHistogram(AdjacencyPacking.BLOCK_SIZE);
-        this.medianBits = new BoundedHistogram(AdjacencyPacking.BLOCK_SIZE);
-        this.blockLengths = new BoundedHistogram(AdjacencyPacking.BLOCK_SIZE);
-        this.maxBits = new BoundedHistogram(AdjacencyPacking.BLOCK_SIZE);
-        this.minBits = new BoundedHistogram(AdjacencyPacking.BLOCK_SIZE);
-        this.indexOfMinValue = new BoundedHistogram(AdjacencyPacking.BLOCK_SIZE);
-        this.indexOfMaxValue = new BoundedHistogram(AdjacencyPacking.BLOCK_SIZE);
-        this.headTailDiffBits = new BoundedHistogram(AdjacencyPacking.BLOCK_SIZE);
-        this.bestMaxDiffBits = new BoundedHistogram(AdjacencyPacking.BLOCK_SIZE);
-        this.exceptions = new BoundedHistogram(AdjacencyPacking.BLOCK_SIZE);
+        this.bitsPerValue = new BoundedHistogram(BLOCK_SIZE);
+        this.stdDevBits = new BoundedHistogram(BLOCK_SIZE);
+        this.meanBits = new BoundedHistogram(BLOCK_SIZE);
+        this.medianBits = new BoundedHistogram(BLOCK_SIZE);
+        this.blockLengths = new BoundedHistogram(BLOCK_SIZE);
+        this.maxBits = new BoundedHistogram(BLOCK_SIZE);
+        this.minBits = new BoundedHistogram(BLOCK_SIZE);
+        this.indexOfMinValue = new BoundedHistogram(BLOCK_SIZE);
+        this.indexOfMaxValue = new BoundedHistogram(BLOCK_SIZE);
+        this.headTailDiffBits = new BoundedHistogram(BLOCK_SIZE);
+        this.bestMaxDiffBits = new BoundedHistogram(BLOCK_SIZE);
+        this.exceptions = new BoundedHistogram(BLOCK_SIZE);
     }
 
     public long blockCount() {
@@ -110,6 +112,9 @@ public final class BlockStatistics implements AutoCloseable {
     }
 
     public void record(long[] values, int start, int length) {
+        if (this == EMPTY) {
+            throw new IllegalStateException("BlockStatistics.EMPTY is a read-only sentinel and cannot be mutated");
+        }
         this.bitsPerValue.reset();
 
         this.blockCount++;
@@ -189,6 +194,9 @@ public final class BlockStatistics implements AutoCloseable {
     }
 
     public void mergeInto(BlockStatistics other) {
+        if (other == EMPTY) {
+            throw new IllegalStateException("BlockStatistics.EMPTY is a read-only sentinel and cannot be mutated");
+        }
         other.blockCount += this.blockCount;
         other.minBits.add(this.minBits);
         other.maxBits.add(this.maxBits);

@@ -2,33 +2,24 @@ plugins {
     id 'buildlogic-gds-java'
 }
 
-description = 'Neo4j Graph Data Science :: Compression (deprecated — use compression-api/compression-common)'
+description = 'Neo4j Graph Data Science :: Compression API'
 group = 'org.neo4j.gds'
 
 dependencies {
     annotationProcessor project(':annotations')
     annotationProcessor openGds.immutables.value
 
-    compileOnly(neo4j.common) { transitive = false }
-    compileOnly(neo4j.unsafe) { transitive = false }
     compileOnly openGds.jetbrains.annotations
     compileOnly openGds.immutables.value.annotations
 
-    implementation openGds.commons.lang3
-    implementation openGds.hdrhistogram
-    implementation openGds.hppc
-
     implementation project(':annotations')
-    api project(':compression-api')
-    api project(':compression-common')
-    implementation project(':collections')
     implementation project(':core-api')
     implementation project(':core-utils')
     implementation project(':graph-projection-api')
     implementation project(':histogram')
-    implementation project(':memory-access')
-    implementation project(':memory-info')
     implementation project(':memory-usage')
+    implementation project(':collections')
+    implementation openGds.hdrhistogram
 
     testImplementation project(':test-utils')
 }

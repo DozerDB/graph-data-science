@@ -17,11 +17,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.neo4j.gds.api.compress;
+package org.neo4j.gds.compression.api;
 
 import org.neo4j.gds.collections.ha.HugeIntArray;
 import org.neo4j.gds.collections.ha.HugeLongArray;
-import org.neo4j.gds.compression.api.AdjacencyCompressor;
 
 import java.util.concurrent.atomic.LongAdder;
 

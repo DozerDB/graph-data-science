@@ -17,26 +17,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.neo4j.gds.api.compress;
+package org.neo4j.gds.compression.common;
 
-import org.jetbrains.annotations.TestOnly;
-import org.neo4j.gds.compression.packed.AdjacencyPacking;
 import org.neo4j.gds.mem.BitUtil;
 
-public final class DoubleArrayBuffer {
+public final class LongArrayBuffer {
 
-    private static final double[] EMPTY_BUFFER = new double[0];
+    // Matches AdjacencyPacking.BLOCK_SIZE — kept here to avoid a dependency on the packed module.
+    private static final int BLOCK_SIZE = 64;
 
-    public double[] buffer;
+    private static final long[] EMPTY_BUFFER = new long[0];
+
+    public long[] buffer;
     public int length;
 
-    public DoubleArrayBuffer() {
+    public LongArrayBuffer() {
         this.buffer = EMPTY_BUFFER;
         this.length = 0;
     }
 
-    @TestOnly
-    public DoubleArrayBuffer(double[] buffer, int length) {
+    public LongArrayBuffer(long[] buffer, int length) {
         this.buffer = buffer;
         this.length = length;
     }
@@ -46,9 +46,9 @@ public final class DoubleArrayBuffer {
      * Throws existing data away.
      */
     public void ensureCapacity(int length) {
-        int alignedLength = (int) BitUtil.align(length, AdjacencyPacking.BLOCK_SIZE);
+        int alignedLength = (int) BitUtil.align(length, BLOCK_SIZE);
         if (this.buffer.length < alignedLength) {
-            this.buffer = new double[alignedLength];
+            this.buffer = new long[alignedLength];
         }
     }
 }

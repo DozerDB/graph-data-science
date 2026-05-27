@@ -20,7 +20,7 @@
 package org.neo4j.gds.core.compression.common;
 
 import org.junit.jupiter.api.Test;
-import org.neo4j.gds.compression.common.BlockStatistics;
+import org.neo4j.gds.compression.api.BlockStatistics;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -17,10 +17,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.neo4j.gds.compression.utilities;
+package org.neo4j.gds.compression.common;
 
-import org.neo4j.gds.compression.common.BlockStatistics;
-import org.neo4j.gds.compression.common.MemoryTracker;
+import org.neo4j.gds.compression.api.BlockStatistics;
+import org.neo4j.gds.compression.api.MemoryTracker;
 import org.neo4j.gds.memory.info.ImmutableMemoryInfo;
 
 import java.util.Optional;
