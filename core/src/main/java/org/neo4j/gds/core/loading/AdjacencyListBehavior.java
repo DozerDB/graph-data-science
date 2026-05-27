@@ -23,7 +23,7 @@ import org.neo4j.gds.PropertyMappings;
 import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.compression.api.AdjacencyCompressorFactory;
 import org.neo4j.gds.compression.api.MemoryTracker;
-import org.neo4j.gds.core.compression.mixed.MixedCompressor;
+import org.neo4j.gds.compression.mixed.MixedCompressor;
 import org.neo4j.gds.compression.packed.PackedAdjacencyListBuilderFactory;
 import org.neo4j.gds.compression.packed.PackedCompressor;
 import org.neo4j.gds.compression.uncompressed.RawCompressor;

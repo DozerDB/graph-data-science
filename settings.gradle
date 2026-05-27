@@ -128,6 +128,9 @@ project(':compression-packed').projectDir = file('compression-packed')
 include('compression-uncompressed')
 project(':compression-uncompressed').projectDir = file('compression-uncompressed')
 
+include('compression-mixed')
+project(':compression-mixed').projectDir = file('compression-mixed')
+
 include('concurrency')
 project(':concurrency').projectDir = file('concurrency')
 

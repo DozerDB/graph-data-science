@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.neo4j.gds.core.compression.mixed;
+package org.neo4j.gds.compression.mixed;
 
 import org.neo4j.gds.PropertyMappings;
 import org.neo4j.gds.api.AdjacencyList;

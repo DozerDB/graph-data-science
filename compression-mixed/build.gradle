@@ -1,0 +1,28 @@
+plugins {
+    id 'buildlogic-gds-java'
+}
+
+description = 'Neo4j Graph Data Science :: Compression :: Mixed Codec'
+group = 'org.neo4j.gds'
+
+dependencies {
+    annotationProcessor project(':annotations')
+
+    compileOnly openGds.jetbrains.annotations
+    compileOnly openGds.immutables.value.annotations
+
+    implementation project(':annotations')
+    implementation project(':compression-api')
+    implementation project(':compression-common')
+    implementation project(':compression-varlong')
+    implementation project(':compression-packed')
+    implementation project(':core-api')
+    implementation project(':collections')
+    implementation project(':graph-projection-api')
+    implementation project(':histogram')
+    implementation project(':memory-access')
+    implementation project(':memory-info')
+    implementation project(':memory-usage')
+
+    testImplementation project(':test-utils')
+}

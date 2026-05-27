@@ -23,6 +23,7 @@ dependencies {
     implementation project(':compression-uncompressed')
     implementation project(':compression-varlong')
     implementation project(':compression-packed')
+    implementation project(':compression-mixed')
     implementation project(':config-api')
     implementation project(':core-utils')
     implementation project(':gds-values')
