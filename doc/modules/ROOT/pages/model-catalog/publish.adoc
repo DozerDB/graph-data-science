@@ -2,11 +2,13 @@
 [[catalog-model-publish]]
 = Publishing models
 
-include::partial$/product-limitations/not-in-serverless.adoc[]
-
 By default, a trained model is visible only to the user that created it.
 Making a model accessible to other users can be achieved by publishing it.
 
+[NOTE]
+====
+Publishing a model via the xref:aura-graph-analytics/cypher.adoc[Cypher API for Aura Graph Analytics] will also xref:model-catalog/store.adoc[store] the model.
+====
 
 == Syntax
 
@@ -15,7 +17,7 @@ Making a model accessible to other users can be achieved by publishing it.
 .Publish a model from the catalog:
 [source, cypher, role=noplay]
 ----
-CALL gds.model.publish(modelName: String)
+CALL gds.model.publish([ sessionName: String or Map, ] modelName: String)
 YIELD
     modelName: String,
     modelType: String,
@@ -31,8 +33,9 @@ YIELD
 .Parameters
 [opts="header",cols="1,1,1m,1,4"]
 |===
-| Name          | Type   | Default | Optional | Description
-| modelName     | String | n/a     | no       | The name of a model stored in the catalog.
+| Name                                                  | Type   | Default | Optional | Description
+| sessionName label:serverless[Aura Graph Analytics]    | String or Map     | n/a     | no       | The name of the xref:aura-graph-analytics/index.adoc[GDS Session] from which the models are listed. Accepts the output of the helper function `sessionInfo`.
+| modelName                                             | String | n/a     | no       | The name of a model stored in the catalog.
 |===
 
 
