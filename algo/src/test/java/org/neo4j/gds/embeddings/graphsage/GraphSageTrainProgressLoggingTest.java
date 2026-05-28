@@ -86,14 +86,7 @@ class GraphSageTrainProgressLoggingTest {
         var progressTracker = progressTrackerWithLog.progressTracker();
         var log = progressTrackerWithLog.log();
 
-
-        graphSageTrain(
-            graph,
-            config,
-            params,
-            progressTracker,
-            TerminationFlag.RUNNING_TRUE
-        ).compute();
+        graphSageTrain(log, graph, config, params, progressTracker).compute();
 
         assertThat(log.getMessages(INFO))
             // avoid asserting on the thread id
@@ -115,14 +108,14 @@ class GraphSageTrainProgressLoggingTest {
                 "GraphSageTrain :: Train model :: Epoch 1 of 2 :: Iteration 1 of 2 50%",
                 "GraphSageTrain :: Train model :: Epoch 1 of 2 :: Iteration 1 of 2 75%",
                 "GraphSageTrain :: Train model :: Epoch 1 of 2 :: Iteration 1 of 2 100%",
-                "GraphSageTrain :: Train model :: Epoch 1 of 2 :: Iteration 1 of 2 :: Average loss per node: 26.52",
+                "Average loss per node: 26.52",
                 "GraphSageTrain :: Train model :: Epoch 1 of 2 :: Iteration 1 of 2 :: Finished",
                 "GraphSageTrain :: Train model :: Epoch 1 of 2 :: Iteration 2 of 2 :: Start",
                 "GraphSageTrain :: Train model :: Epoch 1 of 2 :: Iteration 2 of 2 25%",
                 "GraphSageTrain :: Train model :: Epoch 1 of 2 :: Iteration 2 of 2 50%",
                 "GraphSageTrain :: Train model :: Epoch 1 of 2 :: Iteration 2 of 2 75%",
                 "GraphSageTrain :: Train model :: Epoch 1 of 2 :: Iteration 2 of 2 100%",
-                "GraphSageTrain :: Train model :: Epoch 1 of 2 :: Iteration 2 of 2 :: Average loss per node: 22.35",
+                "Average loss per node: 22.35",
                 "GraphSageTrain :: Train model :: Epoch 1 of 2 :: Iteration 2 of 2 :: Finished",
                 "GraphSageTrain :: Train model :: Epoch 1 of 2 :: Finished",
                 "GraphSageTrain :: Train model :: Epoch 2 of 2 :: Start",
@@ -131,14 +124,14 @@ class GraphSageTrainProgressLoggingTest {
                 "GraphSageTrain :: Train model :: Epoch 2 of 2 :: Iteration 1 of 2 50%",
                 "GraphSageTrain :: Train model :: Epoch 2 of 2 :: Iteration 1 of 2 75%",
                 "GraphSageTrain :: Train model :: Epoch 2 of 2 :: Iteration 1 of 2 100%",
-                "GraphSageTrain :: Train model :: Epoch 2 of 2 :: Iteration 1 of 2 :: Average loss per node: 22.43",
+                "Average loss per node: 22.43",
                 "GraphSageTrain :: Train model :: Epoch 2 of 2 :: Iteration 1 of 2 :: Finished",
                 "GraphSageTrain :: Train model :: Epoch 2 of 2 :: Iteration 2 of 2 :: Start",
                 "GraphSageTrain :: Train model :: Epoch 2 of 2 :: Iteration 2 of 2 25%",
                 "GraphSageTrain :: Train model :: Epoch 2 of 2 :: Iteration 2 of 2 50%",
                 "GraphSageTrain :: Train model :: Epoch 2 of 2 :: Iteration 2 of 2 75%",
                 "GraphSageTrain :: Train model :: Epoch 2 of 2 :: Iteration 2 of 2 100%",
-                "GraphSageTrain :: Train model :: Epoch 2 of 2 :: Iteration 2 of 2 :: Average loss per node: 25.86",
+                "Average loss per node: 25.86",
                 "GraphSageTrain :: Train model :: Epoch 2 of 2 :: Iteration 2 of 2 :: Finished",
                 "GraphSageTrain :: Train model :: Epoch 2 of 2 :: Finished",
                 "GraphSageTrain :: Train model :: Finished",
@@ -147,33 +140,33 @@ class GraphSageTrainProgressLoggingTest {
     }
 
     private GraphSageTrain graphSageTrain(
+        Log log,
         Graph graph,
         GraphSageTrainConfig configuration,
         GraphSageTrainParameters parameters,
-        ProgressTracker progressTracker,
-        TerminationFlag terminationFlag
+        ProgressTracker progressTracker
     ) {
         var gdsVersion = GdsVersionInfoProvider.GDS_VERSION_INFO.gdsVersion();
 
         if (configuration.isMultiLabel()) return new MultiLabelGraphSageTrain(
-            Log.noOpLog(),
+            log,
             graph,
             parameters,
             configuration.projectedFeatureDimension().orElseThrow(),
             DefaultPool.INSTANCE,
             progressTracker,
-            terminationFlag,
+            TerminationFlag.RUNNING_TRUE,
             gdsVersion,
             configuration
         );
 
         return new SingleLabelGraphSageTrain(
-            Log.noOpLog(),
+            log,
             graph,
             parameters,
             DefaultPool.INSTANCE,
             progressTracker,
-            terminationFlag,
+            TerminationFlag.RUNNING_TRUE,
             gdsVersion,
             configuration
         );

@@ -94,10 +94,7 @@ import static org.neo4j.gds.ml.pipeline.PipelineExecutor.DatasetSplits.FEATURE_I
 import static org.neo4j.gds.ml.pipeline.PipelineExecutor.DatasetSplits.TEST;
 import static org.neo4j.gds.ml.pipeline.PipelineExecutor.DatasetSplits.TRAIN;
 
-final class LinkPredictionTrainPipelineExecutorTest {
-
-    String gdsVersion = "2.4.0";
-
+class LinkPredictionTrainPipelineExecutorTest {
     static Stream<Arguments> invalidSplits() {
         return Stream.of(
             Arguments.of(
@@ -436,22 +433,22 @@ final class LinkPredictionTrainPipelineExecutorTest {
                         "Link Prediction Train Pipeline :: Execute node property steps :: Id property step 100%",
                         "Link Prediction Train Pipeline :: Execute node property steps :: Id property step :: Finished",
                         "Link Prediction Train Pipeline :: Execute node property steps :: Finished",
-                        "Link Prediction Train Pipeline :: Train set size is 9",
-                        "Link Prediction Train Pipeline :: Test set size is 3",
+                        "Train set size is 9",
+                        "Test set size is 3",
                         "Link Prediction Train Pipeline :: Extract train features :: Start",
                         "Link Prediction Train Pipeline :: Extract train features 50%",
                         "Link Prediction Train Pipeline :: Extract train features 100%",
                         "Link Prediction Train Pipeline :: Extract train features :: Finished",
                         "Link Prediction Train Pipeline :: Select best model :: Start",
                         "Link Prediction Train Pipeline :: Select best model :: Trial 1 of 1 :: Start",
-                        "Link Prediction Train Pipeline :: Select best model :: Trial 1 of 1 :: Method: LogisticRegression, Parameters: {batchSize=100, minEpochs=1, patience=1, maxEpochs=100, tolerance=0.001, learningRate=0.001, penalty=1.0, focusWeight=0.0, classWeights=[]}",
+                        "Method: LogisticRegression, Parameters: {batchSize=100, minEpochs=1, patience=1, maxEpochs=100, tolerance=0.001, learningRate=0.001, penalty=1.0, focusWeight=0.0, classWeights=[]}",
                         "Link Prediction Train Pipeline :: Select best model :: Trial 1 of 1 50%",
                         "Link Prediction Train Pipeline :: Select best model :: Trial 1 of 1 100%",
-                        "Link Prediction Train Pipeline :: Select best model :: Trial 1 of 1 :: Main validation metric (AUCPR): 1.0000",
-                        "Link Prediction Train Pipeline :: Select best model :: Trial 1 of 1 :: Validation metrics: {AUCPR=1.0}",
-                        "Link Prediction Train Pipeline :: Select best model :: Trial 1 of 1 :: Training metrics: {AUCPR=1.0}",
+                        "Main validation metric (AUCPR): 1.0000",
+                        "Validation metrics: {AUCPR=1.0}",
+                        "Training metrics: {AUCPR=1.0}",
                         "Link Prediction Train Pipeline :: Select best model :: Trial 1 of 1 :: Finished",
-                        "Link Prediction Train Pipeline :: Select best model :: Best trial was Trial 1 with main validation metric 1.0000",
+                        "Best trial was Trial 1 with main validation metric 1.0000",
                         "Link Prediction Train Pipeline :: Select best model :: Finished",
                         "Link Prediction Train Pipeline :: Train best model :: Start",
                         "Link Prediction Train Pipeline :: Train best model :: Epoch 1 with loss 0.6474",
@@ -474,8 +471,8 @@ final class LinkPredictionTrainPipelineExecutorTest {
                         "Link Prediction Train Pipeline :: Evaluate on test data :: Compute test metrics 100%",
                         "Link Prediction Train Pipeline :: Evaluate on test data :: Compute test metrics :: Finished",
                         "Link Prediction Train Pipeline :: Evaluate on test data :: Finished",
-                        "Link Prediction Train Pipeline :: Final model metrics on test set: {AUCPR=1.0}",
-                        "Link Prediction Train Pipeline :: Final model metrics on full train set: {AUCPR=1.0000}",
+                        "Final model metrics on test set: {AUCPR=1.0}",
+                        "Final model metrics on full train set: {AUCPR=1.0000}",
                         "Link Prediction Train Pipeline :: Finished"
                     );
             });
@@ -581,30 +578,28 @@ final class LinkPredictionTrainPipelineExecutorTest {
                 .randomSeed(1337L)
                 .build();
 
-            assertThatThrownBy(() -> TestProcedureRunner.applyOnProcedure(db, TestProc.class, caller -> {
-                new LinkPredictionTrainPipelineExecutor(
-                    Log.noOpLog(),
-                    pipeline,
-                    config,
-                    caller.executionContext(),
-                    graphStore,
-                    ProgressTracker.NULL_TRACKER
-                ).compute();
-            }))
+            assertThatThrownBy(() -> TestProcedureRunner.applyOnProcedure(db, TestProc.class, caller -> new LinkPredictionTrainPipelineExecutor(
+                Log.noOpLog(),
+                pipeline,
+                config,
+                caller.executionContext(),
+                graphStore,
+                ProgressTracker.NULL_TRACKER
+            ).compute()
+            ))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Could not find the specified contextNodeLabels for step `assert step filter` of ['INVALID']. Available labels are ['N'].");
 
 
-            assertThatThrownBy(() -> TestProcedureRunner.applyOnProcedure(db, TestProc.class, caller -> {
-                new LinkPredictionTrainPipelineExecutor(
-                    Log.noOpLog(),
-                    pipeline2,
-                    config,
-                    caller.executionContext(),
-                    graphStore,
-                    ProgressTracker.NULL_TRACKER
-                ).compute();
-            }))
+            assertThatThrownBy(() -> TestProcedureRunner.applyOnProcedure(db, TestProc.class, caller -> new LinkPredictionTrainPipelineExecutor(
+                Log.noOpLog(),
+                pipeline2,
+                config,
+                caller.executionContext(),
+                graphStore,
+                ProgressTracker.NULL_TRACKER
+            ).compute()
+            ))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Could not find the specified contextRelationshipTypes for step `assert step filter` of ['INVALID']. Available relationship types are ['REL'].");
 

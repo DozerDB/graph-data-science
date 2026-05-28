@@ -323,7 +323,7 @@ class GraphSampleConstructorTest {
         );
 
         var rwrGraphConstructor = new GraphSampleConstructor(
-            Log.noOpLog(),
+            log,
             config,
             naturalGraphStore,
             rwr,
@@ -386,7 +386,7 @@ class GraphSampleConstructorTest {
                     "Random walk with restarts sampling :: Construct graph :: Filter relationship properties :: Relationship type 2 of 2 100%",
                     "Random walk with restarts sampling :: Construct graph :: Filter relationship properties :: Relationship type 2 of 2 :: Finished",
                     "Random walk with restarts sampling :: Construct graph :: Filter relationship properties :: Finished",
-                    "Random walk with restarts sampling :: Construct graph :: Sampled Graph: {nodes: {count: 8, propertyCount: 2, labelCount: 4}, relationships: {count: 4, typeCount: 1, propertyCount: 2}}",
+                    "Sampled Graph: {nodes: {count: 8, propertyCount: 2, labelCount: 4}, relationships: {count: 4, typeCount: 1, propertyCount: 2}}",
                     "Random walk with restarts sampling :: Construct graph :: Finished",
                     "Random walk with restarts sampling :: Finished"
                 );
@@ -435,7 +435,7 @@ class GraphSampleConstructorTest {
                     "Random walk with restarts sampling :: Construct graph :: Filter relationship properties :: Relationship type 2 of 2 100%",
                     "Random walk with restarts sampling :: Construct graph :: Filter relationship properties :: Relationship type 2 of 2 :: Finished",
                     "Random walk with restarts sampling :: Construct graph :: Filter relationship properties :: Finished",
-                    "Random walk with restarts sampling :: Construct graph :: Sampled Graph: {nodes: {count: 7, propertyCount: 2, labelCount: 2}, relationships: {count: 7, typeCount: 1, propertyCount: 2}}",
+                    "Sampled Graph: {nodes: {count: 7, propertyCount: 2, labelCount: 2}, relationships: {count: 7, typeCount: 1, propertyCount: 2}}",
                     "Random walk with restarts sampling :: Construct graph :: Finished",
                     "Random walk with restarts sampling :: Finished"
                 );
