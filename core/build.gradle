@@ -20,10 +20,11 @@ dependencies {
 
     implementation project(':annotations')
     implementation project(':compression')
+    implementation project(':compression-api')
     implementation project(':compression-uncompressed')
-    implementation project(':compression-varlong')
-    implementation project(':compression-packed')
-    implementation project(':compression-mixed')
+    runtimeOnly project(':compression-varlong')
+    runtimeOnly project(':compression-packed')
+    runtimeOnly project(':compression-mixed')
     implementation project(':config-api')
     implementation project(':core-utils')
     implementation project(':gds-values')
@@ -70,6 +71,9 @@ dependencies {
     testAnnotationProcessor project(':config-generator')
     testAnnotationProcessor openGds.immutables.value
 
+    testImplementation project(':compression-varlong')
+    testImplementation project(':compression-packed')
+    testImplementation project(':compression-mixed')
     testImplementation project(':gdl-graph')
     testImplementation project(':gdl-junit-extension')
     testImplementation project(':legacy-cypher-projection')

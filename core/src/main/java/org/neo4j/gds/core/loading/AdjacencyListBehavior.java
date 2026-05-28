@@ -22,24 +22,13 @@ package org.neo4j.gds.core.loading;
 import org.neo4j.gds.PropertyMappings;
 import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.compression.api.AdjacencyCompressorFactory;
-import org.neo4j.gds.compression.api.MemoryTracker;
-import org.neo4j.gds.compression.mixed.MixedCompressor;
-import org.neo4j.gds.compression.packed.PackedAdjacencyListBuilderFactory;
-import org.neo4j.gds.compression.packed.PackedCompressor;
-import org.neo4j.gds.compression.uncompressed.RawCompressor;
+import org.neo4j.gds.compression.api.CompressionKind;
 import org.neo4j.gds.compression.uncompressed.UncompressedAdjacencyList;
-import org.neo4j.gds.compression.uncompressed.UncompressedAdjacencyListBuilder;
-import org.neo4j.gds.compression.uncompressed.UncompressedAdjacencyListBuilderFactory;
-import org.neo4j.gds.compression.varlong.CompressedAdjacencyList;
-import org.neo4j.gds.compression.varlong.CompressedAdjacencyListBuilderFactory;
-import org.neo4j.gds.compression.varlong.DeltaVarLongCompressor;
 import org.neo4j.gds.mem.MemoryEstimation;
 import org.neo4j.gds.mem.MemoryEstimations;
 import org.neo4j.gds.Aggregation;
 import org.neo4j.gds.utils.GdsFeatureToggles;
 
-import java.util.Arrays;
-import java.util.function.BiFunction;
 import java.util.function.LongSupplier;
 
 import static org.neo4j.gds.RelationshipType.ALL_RELATIONSHIPS;
@@ -48,10 +37,15 @@ import static org.neo4j.gds.RelationshipType.ALL_RELATIONSHIPS;
  * Manages different configurations of adjacency list building,
  * i.e., compressed or uncompressed.
  */
-public interface AdjacencyListBehavior {
+public final class AdjacencyListBehavior {
+
+    private static final org.neo4j.gds.compression.api.AdjacencyListBehavior BEHAVIOR =
+        org.neo4j.gds.compression.api.AdjacencyListBehavior.fromServiceLoader();
+
+    private AdjacencyListBehavior() {}
 
     @FunctionalInterface
-    interface Factory {
+    public interface Factory {
         AdjacencyCompressorFactory create(
             LongSupplier nodeCountSupplier,
             PropertyMappings propertyMappings,
@@ -59,142 +53,58 @@ public interface AdjacencyListBehavior {
         );
     }
 
-    static AdjacencyCompressorFactory asConfigured(
+    private static CompressionKind resolveKind() {
+        if (GdsFeatureToggles.USE_PACKED_ADJACENCY_LIST.isEnabled())       return CompressionKind.PACKED;
+        if (GdsFeatureToggles.USE_MIXED_ADJACENCY_LIST.isEnabled())        return CompressionKind.MIXED;
+        if (GdsFeatureToggles.USE_UNCOMPRESSED_ADJACENCY_LIST.isEnabled()) return CompressionKind.UNCOMPRESSED;
+        return CompressionKind.DELTA_VAR_LONG;
+    }
+
+    public static AdjacencyCompressorFactory asConfigured(
         LongSupplier nodeCountSupplier,
         PropertyMappings propertyMappings,
         Aggregation[] aggregations
     ) {
-        var resolvedAggregations = Arrays.stream(aggregations).map(Aggregation::resolve).toArray(Aggregation[]::new);
-        var noAggregation = Arrays.stream(aggregations).map(Aggregation::resolve).allMatch(Aggregation::equivalentToNone);
-
-        return GdsFeatureToggles.USE_PACKED_ADJACENCY_LIST.isEnabled()
-            ? packed(nodeCountSupplier, propertyMappings, resolvedAggregations, noAggregation)
-            : GdsFeatureToggles.USE_MIXED_ADJACENCY_LIST.isEnabled()
-                ? mixed(nodeCountSupplier, propertyMappings, resolvedAggregations, noAggregation)
-                : GdsFeatureToggles.USE_UNCOMPRESSED_ADJACENCY_LIST.isEnabled()
-                    ? uncompressed(nodeCountSupplier, propertyMappings, resolvedAggregations, noAggregation)
-                    : compressed(nodeCountSupplier, propertyMappings, resolvedAggregations, noAggregation);
+        return BEHAVIOR.get(resolveKind(), nodeCountSupplier, propertyMappings, aggregations);
     }
 
-    static AdjacencyCompressorFactory compressed(
-        LongSupplier nodeCountSupplier,
-        PropertyMappings propertyMappings,
-        Aggregation[] aggregations,
-        boolean noAggregation
-    ) {
-        return DeltaVarLongCompressor.factory(
-            nodeCountSupplier,
-            CompressedAdjacencyListBuilderFactory.of(UncompressedAdjacencyListBuilder::new),
-            propertyMappings,
-            aggregations,
-            noAggregation,
-            MemoryTracker.create()
-        );
+    public static MemoryEstimation adjacencyListEstimation(long avgDegree, long nodeCount) {
+        return BEHAVIOR.adjacencyListEstimation(resolveKind(), avgDegree, nodeCount);
     }
 
-    static AdjacencyCompressorFactory uncompressed(
-        LongSupplier nodeCountSupplier,
-        PropertyMappings propertyMappings,
-        Aggregation[] aggregations,
-        boolean noAggregation
-    ) {
-        return RawCompressor.factory(
-            nodeCountSupplier,
-            UncompressedAdjacencyListBuilderFactory.of(),
-            propertyMappings,
-            aggregations,
-            noAggregation,
-            MemoryTracker.create()
-        );
+    public static MemoryEstimation adjacencyListEstimation(RelationshipType relationshipType, boolean undirected) {
+        return BEHAVIOR.adjacencyListEstimation(resolveKind(), relationshipType, undirected);
     }
 
-    static AdjacencyCompressorFactory packed(
-        LongSupplier nodeCountSupplier,
-        PropertyMappings propertyMappings,
-        Aggregation[] aggregations,
-        boolean noAggregation
-    ) {
-        return PackedCompressor.factory(
-            nodeCountSupplier,
-            PackedAdjacencyListBuilderFactory.of(),
-            propertyMappings,
-            aggregations,
-            noAggregation,
-            MemoryTracker.create()
-        );
-    }
-
-    static AdjacencyCompressorFactory mixed(
-        LongSupplier nodeCountSupplier,
-        PropertyMappings propertyMappings,
-        Aggregation[] aggregations,
-        boolean noAggregation
-    ) {
-        return MixedCompressor.factory(
-            nodeCountSupplier,
-            PackedAdjacencyListBuilderFactory.of(),
-            CompressedAdjacencyListBuilderFactory.of(UncompressedAdjacencyListBuilder::new),
-            propertyMappings,
-            aggregations,
-            noAggregation,
-            MemoryTracker.create()
-        );
-    }
-
-    static MemoryEstimation adjacencyListEstimation(long avgDegree, long nodeCount) {
-        return GdsFeatureToggles.USE_UNCOMPRESSED_ADJACENCY_LIST.isEnabled()
-            ? UncompressedAdjacencyList.adjacencyListEstimation(avgDegree, nodeCount)
-            : CompressedAdjacencyList.adjacencyListEstimation(avgDegree, nodeCount);
-    }
-
-    static MemoryEstimation adjacencyListEstimation(RelationshipType relationshipType, boolean undirected) {
-        return GdsFeatureToggles.USE_UNCOMPRESSED_ADJACENCY_LIST.isEnabled()
-            ? UncompressedAdjacencyList.adjacencyListEstimation(relationshipType, undirected)
-            : CompressedAdjacencyList.adjacencyListEstimation(relationshipType, undirected);
-    }
-
-    static MemoryEstimation adjacencyListsFromStarEstimation(boolean undirected) {
-        BiFunction<RelationshipType, Boolean, MemoryEstimation> estimationMethod = GdsFeatureToggles.USE_UNCOMPRESSED_ADJACENCY_LIST.isEnabled()
-            ? UncompressedAdjacencyList::adjacencyListEstimation
-            : CompressedAdjacencyList::adjacencyListEstimation;
-
+    public static MemoryEstimation adjacencyListsFromStarEstimation(boolean undirected) {
         return MemoryEstimations.setup("Adjacency Lists", dimensions -> {
             var builder = MemoryEstimations.builder();
-
             if (dimensions.relationshipCounts().isEmpty()) {
                 builder.add(adjacencyListEstimation(ALL_RELATIONSHIPS, undirected));
             } else {
-                dimensions
-                    .relationshipCounts()
-                    .forEach((type, count) -> builder.add(type.name, estimationMethod.apply(type, undirected)));
+                dimensions.relationshipCounts()
+                    .forEach((type, count) -> builder.add(type.name, adjacencyListEstimation(type, undirected)));
             }
-
             return builder.build();
         });
     }
 
-    static MemoryEstimation adjacencyPropertiesEstimation(RelationshipType relationshipType, boolean undirected) {
+    public static MemoryEstimation adjacencyPropertiesEstimation(RelationshipType relationshipType, boolean undirected) {
         return UncompressedAdjacencyList.adjacencyPropertiesEstimation(relationshipType, undirected);
     }
 
-    static MemoryEstimation adjacencyPropertiesFromStarEstimation(boolean undirected) {
+    public static MemoryEstimation adjacencyPropertiesFromStarEstimation(boolean undirected) {
         return MemoryEstimations.setup("", dimensions -> {
             var builder = MemoryEstimations.builder();
-
             if (dimensions.relationshipCounts().isEmpty()) {
                 builder.add(UncompressedAdjacencyList.adjacencyPropertiesEstimation(ALL_RELATIONSHIPS, undirected));
             } else {
-                dimensions
-                    .relationshipCounts()
+                dimensions.relationshipCounts()
                     .forEach((type, count) -> builder.add(
                         type.name,
-                        UncompressedAdjacencyList.adjacencyPropertiesEstimation(
-                            type,
-                            undirected
-                        )
+                        UncompressedAdjacencyList.adjacencyPropertiesEstimation(type, undirected)
                     ));
             }
-
             return builder.build();
         });
     }
