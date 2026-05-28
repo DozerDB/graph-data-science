@@ -19,8 +19,8 @@ dependencies {
     compileOnly project(':progress-tracking')
 
     implementation project(':annotations')
-    implementation project(':compression')
-    implementation project(':compression-api')
+    api project(':compression-api')
+    implementation project(':compression-common')
     implementation project(':compression-uncompressed')
     runtimeOnly project(':compression-varlong')
     runtimeOnly project(':compression-packed')

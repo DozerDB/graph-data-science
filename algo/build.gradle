@@ -31,7 +31,7 @@ dependencies {
     implementation project(':centrality-params')
     implementation project(':community-configs')
     implementation project(':community-params')
-    implementation project(':compression')
+    implementation project(':compression-common')
     implementation project(':config-api')
     implementation project(':core')
     implementation project(':core-utils')
