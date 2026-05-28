@@ -44,9 +44,10 @@ import static org.neo4j.gds.collections.PageUtil.pageIndex;
  * Builds instances of {@link UncompressedProperties} which implement {@link AdjacencyProperties}.
  * This is the properties-only counterpart to the full uncompressed adjacency list.
  */
-// Temporary properties-only builder extracted to avoid compression-varlong depending on
-// core's UncompressedAdjacencyListBuilder. Unify with UncompressedAdjacencyListBuilder
-// when Task 4 moves it to compression-uncompressed.
+// Temporary properties-only builder to avoid compression-varlong/compression-packed depending on
+// compression-uncompressed. Task 4 has moved UncompressedAdjacencyListBuilder to compression-uncompressed;
+// this class can be removed if varlong and packed are updated to depend on compression-uncompressed
+// and use UncompressedAdjacencyListBuilder directly. Leave this decision to Task 7 cleanup.
 public final class UncompressedPropertiesBuilder implements AdjacencyListBuilder<long[], AdjacencyProperties> {
 
     private final BumpAllocator<long[]> builder;

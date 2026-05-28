@@ -20,6 +20,7 @@ dependencies {
 
     implementation project(':annotations')
     implementation project(':compression')
+    implementation project(':compression-uncompressed')
     implementation project(':compression-varlong')
     implementation project(':compression-packed')
     implementation project(':config-api')

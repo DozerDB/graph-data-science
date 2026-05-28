@@ -28,7 +28,7 @@ import org.neo4j.gds.core.ImmutableGraphDimensions;
 import org.neo4j.gds.compression.api.MemoryTracker;
 import org.neo4j.gds.compression.varlong.CompressedAdjacencyListBuilderFactory;
 import org.neo4j.gds.compression.varlong.DeltaVarLongCompressor;
-import org.neo4j.gds.core.compression.uncompressed.UncompressedAdjacencyListBuilder;
+import org.neo4j.gds.compression.uncompressed.UncompressedAdjacencyListBuilder;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.utils.RawValues;
 import org.neo4j.gds.mem.MemoryTree;
