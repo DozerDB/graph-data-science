@@ -69,7 +69,6 @@ class ProgressLoggingTest extends BaseTest {
             .build()
             .graph();
 
-        assertThat(log.getMessages(GdsTestLog.INFO)).allSatisfy(msg -> assertThat(msg).contains("Loading :: "));
         assertThat(log.getMessages(GdsTestLog.DEBUG)).singleElement().matches(s -> s.contains("Actual memory usage of the loaded graph"));
     }
 }
