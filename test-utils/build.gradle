@@ -18,7 +18,7 @@ dependencies {
 
     implementation project(':algo-common')
     implementation project(':annotations')
-    implementation project(':compression')
+    implementation project(':compression-api')
     implementation project(':config-api')
     implementation project(':core')
     implementation project(':core-utils')

@@ -22,7 +22,7 @@ package org.neo4j.gds.core.compression.packed;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.junit.jupiter.api.Test;
 import org.neo4j.gds.compression.api.ModifiableSlice;
-import org.neo4j.gds.compression.common.MemoryTracker;
+import org.neo4j.gds.compression.api.MemoryTracker;
 import org.neo4j.gds.collections.ha.HugeIntArray;
 import org.neo4j.gds.collections.ha.HugeLongArray;
 import org.neo4j.gds.compression.packed.AdjacencyPacking;

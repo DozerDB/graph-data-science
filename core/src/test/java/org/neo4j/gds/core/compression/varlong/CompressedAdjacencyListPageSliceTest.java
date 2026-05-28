@@ -22,6 +22,7 @@ package org.neo4j.gds.core.compression.varlong;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.neo4j.gds.compression.varlong.CompressedAdjacencyList;
 import org.neo4j.gds.GdlSupport;
 import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.TestGraph;

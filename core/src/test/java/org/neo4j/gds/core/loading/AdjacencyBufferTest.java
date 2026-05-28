@@ -25,9 +25,10 @@ import org.neo4j.gds.Orientation;
 import org.neo4j.gds.PropertyMappings;
 import org.neo4j.gds.RelationshipProjection;
 import org.neo4j.gds.core.ImmutableGraphDimensions;
-import org.neo4j.gds.compression.common.MemoryTracker;
-import org.neo4j.gds.core.compression.varlong.CompressedAdjacencyListBuilderFactory;
-import org.neo4j.gds.core.compression.varlong.DeltaVarLongCompressor;
+import org.neo4j.gds.compression.api.MemoryTracker;
+import org.neo4j.gds.compression.varlong.CompressedAdjacencyListBuilderFactory;
+import org.neo4j.gds.compression.varlong.DeltaVarLongCompressor;
+import org.neo4j.gds.compression.uncompressed.UncompressedAdjacencyListBuilder;
 import org.neo4j.gds.core.concurrency.Concurrency;
 import org.neo4j.gds.core.utils.RawValues;
 import org.neo4j.gds.mem.MemoryTree;
@@ -51,7 +52,7 @@ class AdjacencyBufferTest {
         );
         var factory = DeltaVarLongCompressor.factory(
             () -> nodeCount,
-            CompressedAdjacencyListBuilderFactory.of(),
+            CompressedAdjacencyListBuilderFactory.of(UncompressedAdjacencyListBuilder::new),
             PropertyMappings.builder().build(),
             new Aggregation[]{Aggregation.NONE},
             true,

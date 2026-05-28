@@ -1,0 +1,133 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Neo4j is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.neo4j.gds.compression.varlong;
+
+import org.apache.commons.lang3.mutable.MutableLong;
+import org.neo4j.gds.collections.ha.HugeIntArray;
+import org.neo4j.gds.collections.ha.HugeLongArray;
+import org.neo4j.gds.compression.api.AdjacencyListBuilder;
+import org.neo4j.gds.compression.api.ModifiableSlice;
+import org.neo4j.gds.compression.api.Slice;
+import org.neo4j.gds.compression.common.BumpAllocator;
+import org.neo4j.gds.compression.common.MemoryInfoUtil;
+import org.neo4j.gds.compression.common.PageReordering;
+import org.neo4j.gds.compression.api.MemoryTracker;
+import org.neo4j.gds.utils.GdsFeatureToggles;
+import org.neo4j.gds.mem.MemoryUsage;
+import org.neo4j.gds.memory.info.MemoryInfo;
+
+import java.util.Optional;
+
+public final class CompressedAdjacencyListBuilder implements AdjacencyListBuilder<byte[], CompressedAdjacencyList> {
+
+    private final BumpAllocator<byte[]> builder;
+    private final MemoryTracker memoryTracker;
+
+    public CompressedAdjacencyListBuilder(MemoryTracker memoryTracker) {
+        this.builder = new BumpAllocator<>(Factory.INSTANCE);
+        this.memoryTracker = memoryTracker;
+    }
+
+    @Override
+    public Allocator newAllocator() {
+        return new Allocator(this.builder.newLocalAllocator(), this.memoryTracker);
+    }
+
+    @Override
+    public PositionalAllocator<byte[]> newPositionalAllocator() {
+        throw new UnsupportedOperationException("Compressed adjacency lists do not support positional allocation.");
+    }
+
+    @Override
+    public CompressedAdjacencyList build(
+        HugeIntArray degrees,
+        HugeLongArray offsets,
+        boolean allowReordering
+    ) {
+        byte[][] intoPages = builder.intoPages();
+        if (allowReordering) {
+            reorder(intoPages, offsets, degrees);
+        }
+        var memoryInfo = memoryInfo(intoPages, degrees, offsets);
+
+        return new CompressedAdjacencyList(intoPages, degrees, offsets, memoryInfo);
+    }
+
+    @Override
+    public void reorder(byte[][] pages, HugeLongArray offsets, HugeIntArray degrees) {
+        if (GdsFeatureToggles.USE_REORDERED_ADJACENCY_LIST.isEnabled() && pages.length > 0) {
+            PageReordering.reorder(pages, offsets, degrees);
+        }
+    }
+
+    private MemoryInfo memoryInfo(byte[][] pages, HugeIntArray degrees, HugeLongArray offsets) {
+        for (byte[] page : pages) {
+            this.memoryTracker.recordPageSize(page.length * Byte.BYTES);
+        }
+
+        var memoryInfoBuilder = MemoryInfoUtil
+            .builder(memoryTracker, Optional.empty())
+            .pages(pages.length)
+            .bytesOffHeap(0);
+
+        var sizeOnHeap = new MutableLong();
+        MemoryUsage.sizeOfObject(pages).ifPresent(sizeOnHeap::add);
+        MemoryUsage.sizeOfObject(degrees).ifPresent(sizeOnHeap::add);
+        MemoryUsage.sizeOfObject(offsets).ifPresent(sizeOnHeap::add);
+        memoryInfoBuilder.bytesOnHeap(sizeOnHeap.longValue());
+
+        return memoryInfoBuilder.build();
+    }
+
+    enum Factory implements BumpAllocator.Factory<byte[]> {
+        INSTANCE;
+
+        @Override
+        public byte[][] newEmptyPages() {
+            return new byte[0][];
+        }
+
+        @Override
+        public byte[] newPage(int length) {
+            return new byte[length];
+        }
+    }
+
+    public static final class Allocator implements AdjacencyListBuilder.Allocator<byte[]> {
+
+        private final BumpAllocator.LocalAllocator<byte[]> allocator;
+        private final MemoryTracker memoryTracker;
+
+        private Allocator(BumpAllocator.LocalAllocator<byte[]> allocator, MemoryTracker memoryTracker) {
+            this.allocator = allocator;
+            this.memoryTracker = memoryTracker;
+        }
+
+        @Override
+        public long allocate(int allocationSize, Slice<byte[]> into) {
+            this.memoryTracker.recordHeapAllocation(allocationSize);
+            return allocator.insertInto(allocationSize, (ModifiableSlice<byte[]>) into);
+        }
+
+        @Override
+        public void close() {
+        }
+    }
+}

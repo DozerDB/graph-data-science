@@ -24,8 +24,8 @@ import org.neo4j.gds.PropertyMapping;
 import org.neo4j.gds.RelationshipProjection;
 import org.neo4j.gds.RelationshipType;
 import org.neo4j.gds.compression.api.AdjacencyCompressor;
-import org.neo4j.gds.api.compress.AdjacencyCompressorFactory;
-import org.neo4j.gds.api.compress.AdjacencyListsWithProperties;
+import org.neo4j.gds.compression.api.AdjacencyCompressorFactory;
+import org.neo4j.gds.compression.api.AdjacencyListsWithProperties;
 import org.neo4j.gds.Aggregation;
 
 import java.util.Collection;

@@ -1,0 +1,30 @@
+plugins {
+    id 'buildlogic-gds-java'
+}
+
+description = 'Neo4j Graph Data Science :: Compression :: Packed Codec'
+group = 'org.neo4j.gds'
+
+dependencies {
+    annotationProcessor project(':annotations')
+
+    compileOnly(neo4j.common) { transitive = false }
+    compileOnly(neo4j.unsafe) { transitive = false }
+    compileOnly openGds.jetbrains.annotations
+
+    implementation openGds.commons.lang3
+
+    implementation project(':annotations')
+    implementation project(':compression-api')
+    implementation project(':compression-common')
+    implementation project(':compression-uncompressed')
+    implementation project(':core-api')
+    implementation project(':core-utils')
+    implementation project(':graph-projection-api')
+    implementation project(':collections')
+    implementation project(':memory-access')
+    implementation project(':memory-info')
+    implementation project(':memory-usage')
+
+    testImplementation project(':test-utils')
+}

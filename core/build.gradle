@@ -19,7 +19,12 @@ dependencies {
     compileOnly project(':progress-tracking')
 
     implementation project(':annotations')
-    implementation project(':compression')
+    api project(':compression-api')
+    implementation project(':compression-common')
+    implementation project(':compression-uncompressed')
+    runtimeOnly project(':compression-varlong')
+    runtimeOnly project(':compression-packed')
+    runtimeOnly project(':compression-mixed')
     implementation project(':config-api')
     implementation project(':core-utils')
     implementation project(':gds-values')
@@ -66,6 +71,9 @@ dependencies {
     testAnnotationProcessor project(':config-generator')
     testAnnotationProcessor openGds.immutables.value
 
+    testImplementation project(':compression-varlong')
+    testImplementation project(':compression-packed')
+    testImplementation project(':compression-mixed')
     testImplementation project(':gdl-graph')
     testImplementation project(':gdl-junit-extension')
     testImplementation project(':legacy-cypher-projection')
