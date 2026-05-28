@@ -103,7 +103,7 @@ class CondenseStep {
                 lambda.set(rightClusterId, fallingOutLambda);
                 size.set(rightClusterId - nodeCount, rightSize);
             }
-            progressTracker.logProgress();
+            progressTracker.onProgress();
         }
         progressTracker.endSubTask();
 

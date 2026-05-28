@@ -60,7 +60,7 @@ class LabellingStep {
                 : 1. / condensedTree.lambda(birthPoint);
             var sizeP = condensedTree.size(p);
             stabilities.addTo(birthPoint - nodeCount, sizeP * (lambdaP - lambdaBirth));
-            progressTracker.logProgress();
+            progressTracker.onProgress();
         }
         progressTracker.endSubTask();
         return stabilities;
@@ -87,7 +87,7 @@ class LabellingStep {
                 selectedClusters.set(adaptedPIndex);
                 // Selected clusters below `p` are implicitly unselected - they will be ignored during- `labeling`
             }
-            progressTracker.logProgress();
+            progressTracker.onProgress();
             if (p == condensedTreeRoot) {
                 continue;
             }
@@ -116,7 +116,7 @@ class LabellingStep {
                 clusters++;
                 treeLabels.set(adaptedIndex, adaptedIndex);
             }
-            progressTracker.logProgress();
+            progressTracker.onProgress();
         }
 
         long noisePoints=0;
@@ -126,7 +126,7 @@ class LabellingStep {
                 noisePoints++;
             }
             labels.set(n, label);
-            progressTracker.logProgress();
+            progressTracker.onProgress();
         }
         progressTracker.endSubTask();
 

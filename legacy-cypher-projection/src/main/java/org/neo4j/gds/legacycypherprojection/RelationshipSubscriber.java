@@ -178,7 +178,7 @@ class RelationshipSubscriber extends ErrorCachingQuerySubscriber {
             relationshipsBuilder.addFromInternal(sourceId, targetId, propertyValueBuffer);
         }
 
-        progressTracker.logProgress();
+        progressTracker.onProgress();
     }
 
     @Override

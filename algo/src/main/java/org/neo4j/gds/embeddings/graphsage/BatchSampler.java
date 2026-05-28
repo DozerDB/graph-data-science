@@ -58,7 +58,7 @@ final class BatchSampler {
                 var localSeed = Math.toIntExact(Math.floorDiv(batch.startNode(), graph.nodeCount())) + randomSeed;
                 long[] extendedBatch = sampleNeighborAndNegativeNodePerBatchNode(batch, searchDepth, localSeed);
 
-                progressTracker.logProgress();
+                progressTracker.onProgress();
 
                 return extendedBatch;
             }

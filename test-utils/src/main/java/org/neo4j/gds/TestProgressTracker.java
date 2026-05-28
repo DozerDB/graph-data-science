@@ -71,19 +71,19 @@ public final class TestProgressTracker implements ProgressTracker {
     }
 
     @Override
-    public void logProgress(long progress) {
+    public void onProgress(long progress) {
         progresses.getLast().addAndGet(progress);
-        delegate.logProgress(progress);
+        delegate.onProgress(progress);
     }
 
     @Override
-    public void logProgress(Function<Long, Long> valueCalculator) {
-        delegate.logProgress(valueCalculator);
+    public void onProgress(Function<Long, Long> valueCalculator) {
+        delegate.onProgress(valueCalculator);
     }
 
     @Override
-    public void logProgress(long value, String messageTemplate) {
-        delegate.logProgress(value, messageTemplate);
+    public void onProgress(long value, String messageTemplate) {
+        delegate.onProgress(value, messageTemplate);
     }
 
     @Override
@@ -170,7 +170,7 @@ public final class TestProgressTracker implements ProgressTracker {
             double progress = steps * volume / (double) delegate.currentTotalSteps + delegate.progressLeftOvers;
             long longProgress = (long) progress;
             delegate.progressLeftOvers = progress - longProgress;
-            logProgress(longProgress);
+            onProgress(longProgress);
         });
     }
 }

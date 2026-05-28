@@ -95,6 +95,6 @@ final class ComputeNodeToCommunityWeights implements Runnable {
             }
         });
 
-        progressTracker.logProgress(partition.nodeCount());
+        progressTracker.onProgress(partition.nodeCount());
     }
 }

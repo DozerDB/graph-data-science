@@ -176,7 +176,7 @@ public class Conductance extends Algorithm<ConductanceResult> {
                 }
             });
 
-            progressTracker.logProgress(endOffset - startOffset);
+            progressTracker.onProgress(endOffset - startOffset);
         });
 
         RunWithConcurrency.builder()
@@ -230,7 +230,7 @@ public class Conductance extends Algorithm<ConductanceResult> {
             globalConductanceSum.getAndAdd(conductanceSum);
             globalValidCommunities.addAndGet(validCommunities);
 
-            progressTracker.logProgress(endOffset - startOffset);
+            progressTracker.onProgress(endOffset - startOffset);
         });
 
         RunWithConcurrency.builder()
@@ -300,7 +300,7 @@ public class Conductance extends Algorithm<ConductanceResult> {
             internalCounts = internalCountsBuilder.build();
             externalCounts = externalCountsBuilder.build();
 
-            progressTracker.logProgress(partition.nodeCount());
+            progressTracker.onProgress(partition.nodeCount());
         }
 
 

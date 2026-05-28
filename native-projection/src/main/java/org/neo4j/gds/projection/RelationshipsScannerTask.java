@@ -181,7 +181,7 @@ final class RelationshipsScannerTask extends StatementAction implements RecordSc
                 }
                 int importedRels = RawValues.getHead(imported);
                 int importedWeights = RawValues.getTail(imported);
-                progressTracker.logProgress(importedRels);
+                progressTracker.onProgress(importedRels);
                 allImportedRels += importedRels;
                 allImportedWeights += importedWeights;
             }

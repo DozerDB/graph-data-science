@@ -166,7 +166,7 @@ public final class TaskProgressTracker implements ProgressTracker {
             double progress = steps * volume / (double) currentTotalSteps + progressLeftOvers;
             long longProgress = (long) progress;
             progressLeftOvers = progress - longProgress;
-            logProgress(longProgress);
+            onProgress(longProgress);
         });
     }
 
@@ -202,7 +202,7 @@ public final class TaskProgressTracker implements ProgressTracker {
     }
 
     @Override
-    public void logProgress(long value) {
+    public void onProgress(long value) {
         requireCurrentTask();
         currentTask.ifPresent(task -> {
             task.logProgress(value);
@@ -211,16 +211,16 @@ public final class TaskProgressTracker implements ProgressTracker {
     }
 
     @Override
-    public void logProgress(Function<Long, Long> valueCalculator) {
+    public void onProgress(Function<Long, Long> valueCalculator) {
         requireCurrentTask();
 
         var currentVolume = (long) currentTask.map(task -> task.getProgress().volume()).orElse(Task.UNKNOWN_VOLUME);
 
-        logProgress(valueCalculator.apply(currentVolume));
+        onProgress(valueCalculator.apply(currentVolume));
     }
 
     @Override
-    public void logProgress(long value, String messageTemplate) {
+    public void onProgress(long value, String messageTemplate) {
         requireCurrentTask();
         currentTask.ifPresent(task -> {
             task.logProgress(value);

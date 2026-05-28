@@ -103,7 +103,7 @@ public class KCoreDecomposition extends Algorithm<KCoreDecompositionResult> {
         );
         long rebuildLimit = (long) Math.ceil(REBUILD_CONSTANT * graph.nodeCount());
         AtomicLong remainingNodes = new AtomicLong(graph.nodeCount() - degreeZeroNodes.get());
-        progressTracker.logProgress(degreeZeroNodes.get());
+        progressTracker.onProgress(degreeZeroNodes.get());
 
         AtomicLong nodeIndex = new AtomicLong(0);
 

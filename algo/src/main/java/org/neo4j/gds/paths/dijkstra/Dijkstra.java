@@ -145,7 +145,7 @@ public final class Dijkstra extends Algorithm<PathFindingResult> {
             visited.set(node);
 
             // For disconnected graphs, this will not reach 100%.
-            progressTracker.logProgress(graph.degree(node));
+            progressTracker.onProgress(graph.degree(node));
 
             relationshipId.setValue(0);
             graph.forEachRelationship(

@@ -138,7 +138,7 @@ class NodeSubscriber extends ErrorCachingQuerySubscriber {
             nodesBuilder.addNode(neoId, properties, CypherNodeLabelTokens.of(labels));
         }
         rows++;
-        progressTracker.logProgress();
+        progressTracker.onProgress();
     }
 
     @Override

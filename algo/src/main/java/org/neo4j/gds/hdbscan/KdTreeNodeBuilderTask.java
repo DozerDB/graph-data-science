@@ -72,7 +72,7 @@ class KdTreeNodeBuilderTask implements Runnable {
         var treeNodeId = nodeIndex.getAndIncrement();
         if (nodeSize <= maxLeafSize) {
             createNode(true,treeNodeId,aabb);
-            progressTracker.logProgress(nodeSize);
+            progressTracker.onProgress(nodeSize);
         } else {
 
             int indexToSplit = aabb.mostSpreadDimension(); //step. 1: find the index to  dimension split

@@ -60,7 +60,7 @@ public final class TreeProducer {
                     degree.addTo(u,1);
                     degree.addTo(v,1);
                     relationshipsBuilder.addFromInternal(u,v,edgeCosts.get(edgeId));
-                    progressTracker.logProgress();
+                    progressTracker.onProgress();
             }
         }
         var singleTypeRelationships= relationshipsBuilder.build();

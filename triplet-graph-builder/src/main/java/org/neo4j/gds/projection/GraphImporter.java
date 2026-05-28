@@ -172,7 +172,7 @@ public final class GraphImporter {
             }
         }
 
-        progressTracker.logProgress();
+        progressTracker.onProgress();
     }
 
     private static void validateRelationshipProperties(

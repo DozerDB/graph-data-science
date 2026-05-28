@@ -140,7 +140,7 @@ public class BetweennessCentrality extends Algorithm<BetwennessCentralityResult>
                 }
 
                 // reset
-                progressTracker.logProgress();
+                progressTracker.onProgress();
 
                 clear();
                 forwardTraversor.clear();

@@ -41,7 +41,7 @@ public class ArrayScaler implements Scaler {
             result[offset + i] = elementScalers.get(i).scaleProperty(nodeId);
         }
         // -1 because we also count progress for the partition
-        progressTracker.logProgress(dimension() - 1);
+        progressTracker.onProgress(dimension() - 1);
     }
 
     @Override

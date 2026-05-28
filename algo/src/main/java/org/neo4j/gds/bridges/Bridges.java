@@ -122,7 +122,7 @@ public class Bridges extends Algorithm<BridgeResult> {
             var stackEvent = stack.get(stackIndex--);
             visitEvent(stackEvent, stack,onLastChildVisit);
         }
-        progressTracker.logProgress();
+        progressTracker.onProgress();
     }
 
     private void visitEvent(StackEvent event, HugeObjectArray<StackEvent> stack, BiConsumer<Long,Long> onLastChildVisit) {
@@ -137,7 +137,7 @@ public class Bridges extends Algorithm<BridgeResult> {
             if (lowTo > tinV) {
                 result.add(new Bridge(v, to, null));
             }
-            progressTracker.logProgress();
+            progressTracker.onProgress();
             return;
         }
 

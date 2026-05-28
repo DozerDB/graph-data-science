@@ -54,7 +54,7 @@ public class KmeansUniformSampler extends KmeansSampler {
             long nodeId = random.nextLong(nodeCount);
             if (!sampled.contains(nodeId)) {
                 sampled.add(nodeId);
-                progressTracker.logProgress(1);
+                progressTracker.onProgress();
             }
         }
         return new ArrayList<>(sampled);

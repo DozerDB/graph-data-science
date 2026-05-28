@@ -216,7 +216,7 @@ public final class NativeRelationshipExporter extends StatementApi implements Re
         private void writeWithoutProperty(long sourceNodeId, long targetNodeId, double property) throws
             KernelException {
             writeRelationship(sourceNodeId, targetNodeId);
-            progressTracker.logProgress();
+            progressTracker.onProgress();
         }
 
         private void writeWithProperty(
@@ -226,7 +226,7 @@ public final class NativeRelationshipExporter extends StatementApi implements Re
         ) throws KernelException {
             long relId = writeRelationship(sourceNodeId, targetNodeId);
             exportProperty(property, relId);
-            progressTracker.logProgress();
+            progressTracker.onProgress();
         }
 
         private long writeRelationship(long sourceNodeId, long targetNodeId) throws KernelException {

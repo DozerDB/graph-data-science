@@ -237,7 +237,7 @@ public final class RelationshipsFilter {
                     return true;
                 });
 
-                progressTracker.logProgress(relationshipIterator.degree(inputSource));
+                progressTracker.onProgress(relationshipIterator.degree(inputSource));
             });
         }
     }

@@ -45,7 +45,7 @@ public class TestAlgorithm extends Algorithm<TestAlgorithmResult> {
         if (throwInCompute) {
             throw new IllegalStateException("boo");
         }
-        progressTracker.logProgress(50);
+        progressTracker.onProgress(50);
 
         progressTracker.endSubTask();
 

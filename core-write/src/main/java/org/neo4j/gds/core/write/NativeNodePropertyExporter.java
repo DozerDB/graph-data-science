@@ -165,7 +165,7 @@ public class NativeNodePropertyExporter extends StatementApi implements NodeProp
             Write ops = stmt.dataWrite();
             for (long i = 0L; i < nodeCount; i++) {
                 writer.accept(ops, i);
-                progressTracker.logProgress();
+                progressTracker.onProgress();
                 if (++progress % TerminationFlag.RUN_CHECK_NODE_COUNT == 0) {
                     terminationFlag.assertRunning();
                 }
@@ -190,7 +190,7 @@ public class NativeNodePropertyExporter extends StatementApi implements NodeProp
                     Write ops = stmt.dataWrite();
                     for (long currentNode = start; currentNode < end; currentNode++) {
                         writer.accept(ops, currentNode);
-                        progressTracker.logProgress();
+                        progressTracker.onProgress();
 
                         if ((currentNode - start) % TerminationFlag.RUN_CHECK_NODE_COUNT == 0) {
                             terminationFlag.assertRunning();

@@ -212,7 +212,7 @@ final class SampledStrategy {
                 if (node % RUN_CHECK_NODE_COUNT == 0) {
                     terminationFlag.assertRunning();
                 }
-                progressTracker.logProgress(Math.min(NEIGHBOR_ROUNDS, graph.degree(node)));
+                progressTracker.onProgress(Math.min(NEIGHBOR_ROUNDS, graph.degree(node)));
             }
         }
 
@@ -315,7 +315,7 @@ final class SampledStrategy {
                     reset();
                     link(node);
 
-                    progressTracker.logProgress(degree - NEIGHBOR_ROUNDS);
+                    progressTracker.onProgress(degree - NEIGHBOR_ROUNDS);
                     if (node % RUN_CHECK_NODE_COUNT == 0) {
                         terminationFlag.assertRunning();
                     }

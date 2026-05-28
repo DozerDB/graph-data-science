@@ -181,7 +181,7 @@ class BinarizeTask implements Runnable {
             truncatedFeatures.set(nodeId, featureSet);
         });
 
-        progressTracker.logProgress(partition.nodeCount());
+        progressTracker.onProgress(partition.nodeCount());
     }
 
     private HugeAtomicBitSet round(float[] floatVector) {

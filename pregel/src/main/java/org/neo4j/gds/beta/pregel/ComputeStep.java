@@ -74,7 +74,7 @@ public interface ComputeStep<
                 computeFunction().compute(computeContext, messages);
             }
         });
-        progressTracker().logProgress(nodeBatch.nodeCount());
+        progressTracker().onProgress(nodeBatch.nodeCount());
     }
 
     @FunctionalInterface

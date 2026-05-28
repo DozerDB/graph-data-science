@@ -161,7 +161,7 @@ final class SwapForLocalImprovements implements Runnable {
 
         if (localChange.getValue()) change.set(true);
 
-        progressTracker.logProgress(partition.nodeCount());
+        progressTracker.onProgress(partition.nodeCount());
     }
 
     private byte bestCommunity(long nodeId, byte currentCommunity) {

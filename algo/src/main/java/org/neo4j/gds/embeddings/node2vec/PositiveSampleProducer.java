@@ -79,13 +79,13 @@ public class PositiveSampleProducer {
         int filteredWalkLength = filter(walk);
         boolean skipWalk = filteredWalkLength < 2;
         if (skipWalk){
-            progressTracker.logProgress(); //a walk has been sampled and ignored
+            progressTracker.onProgress(); //a walk has been sampled and ignored
         }
         return skipWalk;
     }
     private boolean nextWalk() {
         if (attemptedSamplingWalks){ //this means a walk has been exhausted
-            progressTracker.logProgress();
+            progressTracker.onProgress();
         }
         attemptedSamplingWalks = true; //this is because first time nextWalk() is called, it doesnt have any walk
 

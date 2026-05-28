@@ -150,7 +150,7 @@ class BFSTask implements Runnable {
             localNodes.add(CHUNK_SEPARATOR);
         }
 
-        progressTracker.logProgress(examined);
+        progressTracker.onProgress(examined);
     }
 
     void syncNextChunk() {

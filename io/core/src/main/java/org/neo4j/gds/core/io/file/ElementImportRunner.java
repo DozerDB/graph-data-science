@@ -49,7 +49,7 @@ final class ElementImportRunner<T extends InputEntityVisitor> implements Runnabl
             while (inputIterator.next(chunk)) {
                 while (chunk.next(visitor)) {
                     long progress = ((GraphStoreInput.LastProgress) chunk).lastProgress();
-                    progressTracker.logProgress(progress);
+                    progressTracker.onProgress(progress);
                 }
                 visitor.flush();
             }

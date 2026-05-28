@@ -208,7 +208,7 @@ class PlaceNodesRandomly {
                 cardinalities.addAndGet(i, localCardinalities[i]);
             }
 
-            progressTracker.logProgress(partition.nodeCount());
+            progressTracker.onProgress(partition.nodeCount());
         }
 
         private HugeLongArray shuffle(long minInclusive, long length) {

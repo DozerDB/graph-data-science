@@ -133,7 +133,7 @@ public class ScaleProperties extends Algorithm<ScalePropertiesResult> {
             graph.nodeCount(),
             partition -> (Runnable) () -> {
                 partition.consume(strategy);
-                progressTracker.logProgress(partition.nodeCount());
+                progressTracker.onProgress(partition.nodeCount());
             },
             Optional.empty()
         );

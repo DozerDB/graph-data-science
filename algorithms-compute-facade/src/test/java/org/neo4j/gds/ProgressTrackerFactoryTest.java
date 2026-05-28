@@ -53,7 +53,7 @@ class ProgressTrackerFactoryTest {
     private Progress progress;
 
     @Test
-    void shouldCreateTaskProgressTrackerWhenLogProgressTrue() {
+    void shouldCreateTaskProgressTracker() {
         var concurrency = new Concurrency(2);
         when(progress.volume()).thenReturn(10L);
         when(task.getProgress()).thenReturn(progress);
@@ -73,7 +73,7 @@ class ProgressTrackerFactoryTest {
     }
 
     @Test
-    void shouldCreateTaskTreeProgressTrackerWhenLogProgressFalse() {
+    void shouldCreateTaskTreeProgressTracker() {
         var concurrency = new Concurrency(4);
         when(progress.volume()).thenReturn(1L);
         when(task.getProgress()).thenReturn(progress);

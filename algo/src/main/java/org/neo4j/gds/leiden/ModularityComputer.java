@@ -131,7 +131,7 @@ public final class ModularityComputer {
                     }
                     return true;
                 });
-                progressTracker.logProgress();
+                progressTracker.onProgress();
             }
         }
     }

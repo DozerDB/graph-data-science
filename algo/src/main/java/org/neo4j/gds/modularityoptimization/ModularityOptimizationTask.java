@@ -140,6 +140,6 @@ final class ModularityOptimizationTask implements Runnable {
             relationshipsProcessed.add(degree);
         });
 
-        progressTracker.logProgress(relationshipsProcessed.longValue());
+        progressTracker.onProgress(relationshipsProcessed.longValue());
     }
 }

@@ -104,7 +104,7 @@ public class DagLongestPath extends Algorithm<PathFindingResult> {
                         return true;
                     }
                 );
-                progressTracker.logProgress();
+                progressTracker.onProgress();
             }
         );
         this.progressTracker.endSubTask("Initialization");
@@ -132,7 +132,7 @@ public class DagLongestPath extends Algorithm<PathFindingResult> {
                         parentsAndDistances.set(nodeId, nodeId, 0);
                     }
                     // Might not reach 100% if there are cycles in the graph
-                    progressTracker.logProgress();
+                    progressTracker.onProgress();
                 }
             );
 

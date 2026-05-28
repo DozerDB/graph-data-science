@@ -79,7 +79,7 @@ final class ClusterHierarchy {
 
             size.set(adaptedIndex, leftSize + rightSize);
 
-            progressTracker.logProgress();
+            progressTracker.onProgress();
         }
         progressTracker.endSubTask();;
         return new ClusterHierarchy(currentRoot, left, right, lambda, size, nodeCount);

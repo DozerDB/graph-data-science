@@ -152,7 +152,7 @@ public final class TriangleStream extends Algorithm<Stream<TriangleResult>> {
                     if (labelFilterChecker.check(node)) {
                         evaluateNode(node);
                     }
-                    progressTracker.logProgress();
+                    progressTracker.onProgress();
                 }
             } finally {
                 runningThreads.decrementAndGet();

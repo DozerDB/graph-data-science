@@ -295,7 +295,7 @@ public final class BoruvkaMST extends Algorithm<GeometricMSTResult> {
 
     void mergeComponents(long comp0, long comp1) {
         unionFind.union(comp0, comp1);
-        progressTracker.logProgress();
+        progressTracker.onProgress();
     }
 
 }

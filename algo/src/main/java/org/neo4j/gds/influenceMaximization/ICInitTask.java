@@ -106,7 +106,7 @@ final class ICInitTask implements Runnable {
                 nodeSpread += active.cardinality();
             }
             singleSpreadArray.set(nodeId, nodeSpread / monteCarloSimulations);
-            progressTracker.logProgress();
+            progressTracker.onProgress();
 
         }
 

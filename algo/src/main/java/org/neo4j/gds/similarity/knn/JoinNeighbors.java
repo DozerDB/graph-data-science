@@ -151,7 +151,7 @@ final class JoinNeighbors implements Runnable {
             // this isn't in the paper
             randomJoins(nodeCount, nodeId);
         }
-        progressTracker.logProgress(partition.nodeCount());
+        progressTracker.onProgress(partition.nodeCount());
     }
 
     private long joinNewNeighbors(

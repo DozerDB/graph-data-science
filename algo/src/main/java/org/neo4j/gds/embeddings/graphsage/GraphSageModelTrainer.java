@@ -324,7 +324,7 @@ public class GraphSageModelTrainer {
             localCtx.backward(lossFunction);
             weightGradients = weightVariables.stream().map(localCtx::gradient).collect(Collectors.toList());
 
-            progressTracker.logProgress();
+            progressTracker.onProgress();
         }
 
         public double loss() {

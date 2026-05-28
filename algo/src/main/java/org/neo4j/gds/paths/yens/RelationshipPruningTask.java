@@ -68,7 +68,7 @@ public final class RelationshipPruningTask implements Runnable {
             if (nodeIncluded.test(n)) {
                 double sCost = sourceCost.applyAsDouble(n);
                 graph.forEachRelationship(n, 1.0, (source, target, weight) -> {
-                    progressTracker.logProgress(1);
+                    progressTracker.onProgress();
                     if (nodeIncluded.test(target) && (target != sourceNode) && (cutoff >= weight + sCost + targetCost.applyAsDouble(target))) {
                         relationshipsBuilder.add(source, target, weight);
                     }

@@ -139,7 +139,7 @@ public class WeightedAllShortestPaths extends MSBFSASPAlgorithm {
                         throw new RuntimeException(e);
                     }
                 }
-                progressTracker.logProgress();
+                progressTracker.onProgress();
             }
         }
 

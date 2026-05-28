@@ -165,7 +165,7 @@ public final class IntersectingTriangleCount extends Algorithm<TriangleCountResu
                 } else {
                     triangleCounts.set(node, EXCLUDED_NODE_TRIANGLE_COUNT);
                 }
-                progressTracker.logProgress();
+                progressTracker.onProgress();
             }
         }
 

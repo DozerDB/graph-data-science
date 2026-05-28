@@ -64,16 +64,16 @@ public interface ProgressTracker {
         }
 
         @Override
-        public void logProgress(long value) {
+        public void onProgress(long value) {
         }
 
         @Override
-        public void logProgress(Function<Long, Long> valueCalculator) {
+        public void onProgress(Function<Long, Long> valueCalculator) {
 
         }
 
         @Override
-        public void logProgress(long value, String messageTemplate) {
+        public void onProgress(long value, String messageTemplate) {
 
         }
 
@@ -130,15 +130,15 @@ public interface ProgressTracker {
 
     void endSubTaskWithFailure(String expectedTaskDescription);
 
-    void logProgress(long value);
+    void onProgress(long value);
 
-    void logProgress(Function<Long, Long> valueCalculator);
+    void onProgress(Function<Long, Long> valueCalculator);
 
-    default void logProgress() {
-        logProgress(1);
+    default void onProgress() {
+        onProgress(1);
     }
 
-    void logProgress(long value, String messageTemplate);
+    void onProgress(long value, String messageTemplate);
 
     // prefer setting volume via factory method for leaves
     // to make root progress available from the start

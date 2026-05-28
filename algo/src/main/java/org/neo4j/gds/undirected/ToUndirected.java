@@ -213,7 +213,7 @@ public class ToUndirected extends Algorithm<SingleTypeRelationships> {
                     relationshipsBuilder.addFromInternal(target, source, property);
                     return true;
                 });
-                progressTracker.logProgress();
+                progressTracker.onProgress();
             }
         }
     }
@@ -244,7 +244,7 @@ public class ToUndirected extends Algorithm<SingleTypeRelationships> {
                     relationshipsBuilder.addFromInternal(target, source, properties);
                     return true;
                 });
-                progressTracker.logProgress();
+                progressTracker.onProgress();
             }
         }
     }

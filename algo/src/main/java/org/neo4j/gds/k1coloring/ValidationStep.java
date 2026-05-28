@@ -72,6 +72,6 @@ final class ValidationStep implements Runnable {
             }
         });
 
-        progressTracker.logProgress(validatedNodes.longValue());
+        progressTracker.onProgress(validatedNodes.longValue());
     }
 }

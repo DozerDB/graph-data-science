@@ -83,18 +83,18 @@ public abstract class ProgressTrackerAdapter implements ProgressTracker {
     }
 
     @Override
-    public void logProgress(long value) {
-        delegate.logProgress(value);
+    public void onProgress(long value) {
+        delegate.onProgress(value);
     }
 
     @Override
-    public void logProgress(long value, String messageTemplate) {
-        delegate.logProgress(value, messageTemplate);
+    public void onProgress(long value, String messageTemplate) {
+        delegate.onProgress(value, messageTemplate);
     }
 
     @Override
-    public void logProgress(Function<Long, Long> valueCalculator) {
-        delegate.logProgress(valueCalculator);
+    public void onProgress(Function<Long, Long> valueCalculator) {
+        delegate.onProgress(valueCalculator);
     }
 
     @Override

@@ -204,7 +204,7 @@ public class InverseRerouter extends ReroutingAlgorithm {
             if (bestAlternative.get(nodeId) != PRUNED) { //add to the priority Queue
                 priorityQueue.add(nodeId, gain);
             }
-            progressTracker.logProgress();
+            progressTracker.onProgress();
         }
         double prunedSoFar = 0;
         while (!priorityQueue.isEmpty()) {

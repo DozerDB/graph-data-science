@@ -81,7 +81,7 @@ final class RandomWalkTask implements Runnable {
             if (nodeId == NextNodeSupplier.NO_MORE_NODES) break;
 
             if (graph.degree(nodeId) == 0) {
-                progressTracker.logProgress();
+                progressTracker.onProgress();
                 continue;
             }
             sampler.prepareForNewNode(nodeId);
@@ -93,7 +93,7 @@ final class RandomWalkTask implements Runnable {
                     break;
                 }
             }
-            progressTracker.logProgress();
+            progressTracker.onProgress();
         }
         flushBuffer(bufferLength);
     }

@@ -343,7 +343,7 @@ public final class Knn extends Algorithm<KnnResult> {
             reverseNeighbors(nodeId, allNewNeighbors, reverseNewNeighbors);
 
             if ((nodeId + 1) % logBatchSize == 0) {
-                progressTracker.logProgress(logBatchSize);
+                progressTracker.onProgress(logBatchSize);
             }
         }
     }

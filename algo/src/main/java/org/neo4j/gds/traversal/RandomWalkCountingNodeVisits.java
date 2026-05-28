@@ -255,7 +255,7 @@ public final class RandomWalkCountingNodeVisits extends Algorithm<HugeAtomicLong
                 if (nodeId == NextNodeSupplier.NO_MORE_NODES) break;
 
                 if (graph.degree(nodeId) == 0) {
-                    progressTracker.logProgress();
+                    progressTracker.onProgress();
                     continue;
                 }
                 sampler.prepareForNewNode(nodeId);
@@ -266,7 +266,7 @@ public final class RandomWalkCountingNodeVisits extends Algorithm<HugeAtomicLong
                         result.getAndAdd(n, 1);
                     }
                 }
-                progressTracker.logProgress();
+                progressTracker.onProgress();
             }
         }
 

@@ -132,7 +132,7 @@ public class GraphSageEmbeddingsGenerator {
                 result.set(nodeId, embeddings.getRow(partitionIdx));
             }
 
-            progressTracker.logProgress(partitionNodeCount);
+            progressTracker.onProgress(partitionNodeCount);
         };
     }
 }

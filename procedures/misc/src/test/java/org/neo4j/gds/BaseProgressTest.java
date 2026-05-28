@@ -90,7 +90,7 @@ public abstract class BaseProgressTest extends BaseTest {
             );
             taskProgressTracker.beginSubTask();
             taskProgressTracker.beginSubTask();
-            taskProgressTracker.logProgress(1);
+            taskProgressTracker.onProgress();
             return Stream.empty();
         }
 

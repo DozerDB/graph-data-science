@@ -100,7 +100,7 @@ public class Prim extends Algorithm<SpanningTree> {
 
                 return true;
             });
-            progressTracker.logProgress(graph.degree(node));
+            progressTracker.onProgress(graph.degree(node));
         }
         this.spanningTree = new SpanningTree(
             startNodeId,

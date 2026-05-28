@@ -358,7 +358,7 @@ public class Leiden extends Algorithm<LeidenResult> {
         }
         rootGraph.forEachNode(nodeId -> {
             long communityId = initialCommunities.get(nodeId);
-            progressTracker.logProgress();
+            progressTracker.onProgress();
             communityVolumes.addTo(communityId, nodeVolumes.get(nodeId));
             return true;
         });
