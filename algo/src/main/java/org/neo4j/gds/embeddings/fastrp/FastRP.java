@@ -347,7 +347,7 @@ public class FastRP extends Algorithm<FastRPResult> {
                 embeddingB.set(nodeId, randomVector);
                 embeddingA.set(nodeId, new float[embeddingDimension]);
             });
-            progressTracker.logProgress(partition.nodeCount());
+            progressTracker.onProgress(partition.nodeCount());
         }
 
         private float[] computeRandomVector(long nodeId, Random random, float entryValue, float scaling) {
@@ -401,7 +401,7 @@ public class FastRP extends Algorithm<FastRPResult> {
         float adjustedL2Norm = l2Norm < EPSILON ? 1f : l2Norm;
         addWeightedInPlace(embeddings.get(nodeId), initialVector, nodeSelfInfluence.floatValue() / adjustedL2Norm);
 
-        progressTracker.logProgress(1);
+        progressTracker.onProgress();
     }
 
     private final class PropagateEmbeddingsTask implements PartitionConsumer<DegreePartition> {
@@ -455,7 +455,7 @@ public class FastRP extends Algorithm<FastRPResult> {
                 // Update the result embedding
                 addWeightedInPlace(embedding, currentEmbedding, safeInvL2Norm * iterationWeight);
             });
-            progressTracker.logProgress(partition.relationshipCount());
+            progressTracker.onProgress(partition.relationshipCount());
         }
     }
 

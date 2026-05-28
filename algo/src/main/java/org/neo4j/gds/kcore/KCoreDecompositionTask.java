@@ -132,7 +132,7 @@ class KCoreDecompositionTask implements Runnable {
 
         }
         remainingNodes.addAndGet(-nodesExamined);
-        progressTracker.logProgress(nodesExamined);
+        progressTracker.onProgress(nodesExamined);
     }
 
     private void relax(long nodeId) {

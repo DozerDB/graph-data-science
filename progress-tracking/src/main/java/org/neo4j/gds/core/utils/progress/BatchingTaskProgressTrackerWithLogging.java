@@ -46,9 +46,9 @@ final class BatchingTaskProgressTrackerWithLogging extends ProgressTrackerAdapte
     }
 
     @Override
-    public void logProgress() {
+    public void onProgress() {
         if (++rowCounter == batchSize) {
-            super.logProgress(batchSize);
+            super.onProgress(batchSize);
             rowCounter = 0;
         }
     }

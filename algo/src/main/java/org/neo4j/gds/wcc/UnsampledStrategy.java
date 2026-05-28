@@ -121,7 +121,7 @@ final class UnsampledStrategy {
                     terminationFlag.assertRunning();
                 }
 
-                progressTracker.logProgress(graph.degree(node));
+                progressTracker.onProgress(graph.degree(node));
             }
         }
 

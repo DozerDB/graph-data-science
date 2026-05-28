@@ -155,7 +155,7 @@ final class RefinementPhase {
             if (maximumCommunityId.longValue() < refinedId) {
                 maximumCommunityId.setValue(refinedId);
             }
-            progressTracker.logProgress();
+            progressTracker.onProgress();
             return true;
 
         });

@@ -92,7 +92,7 @@ public class DFS extends Algorithm<HugeLongArray> {
 
 
             // For disconnected graphs or early termination, this will not reach 100
-            progressTracker.logProgress(graph.degree(node));
+            progressTracker.onProgress(graph.degree(node));
 
             //If there is a maximum depth, and node is already at it, do not waste time with its neighborhood
             if (maxDepth == TraversalParameters.NO_MAX_DEPTH || weight < maxDepth) {

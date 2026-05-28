@@ -107,7 +107,7 @@ public class TopologicalSort extends Algorithm<TopologicalSortResult> {
                         return true;
                     }
                 );
-                progressTracker.logProgress();
+                progressTracker.onProgress();
             }
         );
         this.progressTracker.endSubTask("Initialization");
@@ -143,7 +143,7 @@ public class TopologicalSort extends Algorithm<TopologicalSortResult> {
                     tasks.add(taskProducer.apply(nodeId));
                 }
                 // Might not reach 100% if there are cycles in the graph
-                progressTracker.logProgress();
+                progressTracker.onProgress();
             });
 
             for (ForkJoinTask<Void> task : tasks) {

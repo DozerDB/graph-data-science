@@ -172,16 +172,16 @@ class ListProgressProcTest extends BaseProgressTest {
             taskProgressTracker.beginSubTask(taskName);
 
             taskProgressTracker.beginSubTask("bar");
-            taskProgressTracker.logProgress(1);
-            taskProgressTracker.logProgress(1);
-            taskProgressTracker.logProgress(1);
+            taskProgressTracker.onProgress(1);
+            taskProgressTracker.onProgress(1);
+            taskProgressTracker.onProgress(1);
 
             taskProgressTracker.endSubTask("bar");
 
             taskProgressTracker.beginSubTask("foo");
-            taskProgressTracker.logProgress(1);
-            taskProgressTracker.logProgress(1);
-            taskProgressTracker.logProgress(1);
+            taskProgressTracker.onProgress(1);
+            taskProgressTracker.onProgress(1);
+            taskProgressTracker.onProgress(1);
 
             taskProgressTracker.endSubTask("foo");
 

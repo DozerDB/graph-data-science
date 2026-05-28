@@ -149,6 +149,6 @@ final class SplitOldAndNewNeighbors implements BiLongConsumer {
                 newNeighbors.add(neighborNode);
             }
         }
-        progressTracker.logProgress(end - start);
+        progressTracker.onProgress(end - start);
     }
 }

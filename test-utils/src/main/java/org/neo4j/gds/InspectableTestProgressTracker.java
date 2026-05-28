@@ -82,18 +82,18 @@ public final class InspectableTestProgressTracker implements ProgressTracker {
     }
 
     @Override
-    public void logProgress(long progress) {
-        delegate.logProgress(progress);
+    public void onProgress(long progress) {
+        delegate.onProgress(progress);
     }
 
     @Override
-    public void logProgress(Function<Long, Long> valueCalculator) {
-        delegate.logProgress(valueCalculator);
+    public void onProgress(Function<Long, Long> valueCalculator) {
+        delegate.onProgress(valueCalculator);
     }
 
     @Override
-    public void logProgress(long value, String messageTemplate) {
-        delegate.logProgress(value, messageTemplate);
+    public void onProgress(long value, String messageTemplate) {
+        delegate.onProgress(value, messageTemplate);
     }
 
     @Override

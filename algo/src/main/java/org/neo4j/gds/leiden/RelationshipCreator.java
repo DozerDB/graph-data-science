@@ -113,7 +113,7 @@ final class RelationshipCreator implements Runnable {
                 updateRelationships(currentCommunity, encountereCommunitiesCounter);
             }
             previousCommunity = currentCommunity;
-            progressTracker.logProgress();
+            progressTracker.onProgress();
         }
 
     }

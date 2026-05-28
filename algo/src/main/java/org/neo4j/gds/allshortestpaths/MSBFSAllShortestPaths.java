@@ -113,7 +113,7 @@ public class MSBFSAllShortestPaths extends MSBFSASPAlgorithm {
                                 throw new RuntimeException(e);
                             }
                         }
-                        progressTracker.logProgress();
+                        progressTracker.onProgress();
                     },
                 Optional.empty(),
                 terminationFlag

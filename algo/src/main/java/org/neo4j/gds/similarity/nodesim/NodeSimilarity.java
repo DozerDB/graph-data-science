@@ -228,7 +228,7 @@ public class NodeSimilarity extends Algorithm<NodeSimilarityResult> {
             degreeComputer.reset();
             vectorComputer.reset(degree);
 
-            progressTracker.logProgress(graph.degree(node));
+            progressTracker.onProgress(graph.degree(node));
             if (degreeFilter.apply(degree)) {
                 if (sourceNodeFilter.test(node)) {
                     sourceNodes.set(node);
@@ -437,13 +437,13 @@ public class NodeSimilarity extends Algorithm<NodeSimilarityResult> {
             sourceNodeWeights,
             targetNodeWeights
         );
-        progressTracker.logProgress();
+        progressTracker.onProgress();
         return similarity;
     }
 
     private double computeSimilarity(long[] sourceNodeNeighbors, long[] targetNodeNeighbors) {
         double similarity = similarityComputer.computeSimilarity(sourceNodeNeighbors, targetNodeNeighbors);
-        progressTracker.logProgress();
+        progressTracker.onProgress();
         return similarity;
     }
 

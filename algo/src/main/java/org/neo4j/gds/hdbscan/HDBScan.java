@@ -109,7 +109,7 @@ public class HDBScan extends Algorithm<Labels> {
             nodeCount, concurrency, terminationFlag,
             (nodeId) -> {
                 neighbours.set(nodeId, kdTree.neighbours(nodeId, samples));
-                progressTracker.logProgress();
+                progressTracker.onProgress();
             }
         );
         progressTracker.endSubTask();

@@ -50,7 +50,7 @@ public abstract class AggregatesComputer implements Runnable {
                 compute(propertyValue);
             }
         }
-        progressTracker.logProgress(partition.nodeCount());
+        progressTracker.onProgress(partition.nodeCount());
     }
 
     long nodeCountOmittingMissingValues() {

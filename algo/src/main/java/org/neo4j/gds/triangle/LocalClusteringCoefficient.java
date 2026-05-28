@@ -122,7 +122,7 @@ public class LocalClusteringCoefficient extends Algorithm<LocalClusteringCoeffic
                 );
                 localClusteringCoefficients.set(nodeId, localClusteringCoefficient);
                 localClusteringCoefficientSum.add(localClusteringCoefficient);
-                progressTracker.logProgress();
+                progressTracker.onProgress();
             });
         }
 

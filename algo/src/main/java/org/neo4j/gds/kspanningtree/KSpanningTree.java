@@ -142,7 +142,7 @@ public class KSpanningTree extends Algorithm<SpanningTree> {
         progressTracker.beginSubTask(graph.nodeCount());
         while (!priorityQueue.isEmpty()) {
             long node = priorityQueue.top();
-            progressTracker.logProgress();
+            progressTracker.onProgress();
             double associatedCost = priorityQueue.cost(node);
             priorityQueue.pop();
             long nodeParent = parent.get(node);

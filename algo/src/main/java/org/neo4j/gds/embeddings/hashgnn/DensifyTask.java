@@ -142,6 +142,6 @@ class DensifyTask implements Runnable {
             denseFeatures.set(nodeId, denseVector);
         });
 
-        progressTracker.logProgress(partition.nodeCount());
+        progressTracker.onProgress(partition.nodeCount());
     }
 }

@@ -62,7 +62,7 @@ public final class ProgressTrackerExecutionMonitor implements Monitor {
     @Override
     public void percentageCompleted(int percentage) {
         long progress = (long) (this.total * (percentage / 100.0));
-        this.progressTracker.logProgress(progress);
+        this.progressTracker.onProgress(progress);
     }
 
     @Override

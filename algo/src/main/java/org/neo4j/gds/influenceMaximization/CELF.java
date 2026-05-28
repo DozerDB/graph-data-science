@@ -175,7 +175,7 @@ public class CELF extends Algorithm<CELFResult> {
             seedSetNodes.put(highestNode, highestScore);
             gain += highestScore;
             independentCascade.incrementSeedNode(highestNode);
-            progressTracker.logProgress();
+            progressTracker.onProgress();
         }
         progressTracker.endSubTask();
     }

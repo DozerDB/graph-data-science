@@ -95,7 +95,7 @@ public final class NodesScannerTask extends StatementAction implements RecordSca
                 );
                 int batchImportedNodes = RawValues.getHead(imported);
                 int batchImportedProperties = RawValues.getTail(imported);
-                progressTracker.logProgress(batchImportedNodes);
+                progressTracker.onProgress(batchImportedNodes);
                 nodesImported += batchImportedNodes;
                 propertiesImported += batchImportedProperties;
             }

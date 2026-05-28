@@ -109,11 +109,11 @@ class TaskProgressTrackerTest {
     }
 
     @Test
-    void shouldLogProgress() {
+    void shouldUpdateProgress() {
         var task = Tasks.leaf("leaf");
         var progressTracker = progressTracker(task);
         progressTracker.beginSubTask();
-        progressTracker.logProgress(42);
+        progressTracker.onProgress(42);
         assertThat(task.getProgress().progress()).isEqualTo(42);
     }
 
@@ -186,7 +186,7 @@ class TaskProgressTrackerTest {
                 UserLogRegistry.EMPTY
             );
             progressTracker.beginSubTask();
-            progressTracker.logProgress(1);
+            progressTracker.onProgress();
 
             assertThat(log.getMessages(TestLog.INFO)).contains(
                 "[our request correlation id] [test] leaf :: Start",
@@ -219,7 +219,7 @@ class TaskProgressTrackerTest {
 
             progressTracker.beginSubTask("root");
             progressTracker.beginSubTask("leaf");
-            progressTracker.logProgress(1);
+            progressTracker.onProgress();
             progressTracker.endSubTask("leaf");
             progressTracker.endSubTask("root");
 
@@ -265,13 +265,13 @@ class TaskProgressTrackerTest {
 
         progressTracker.beginSubTask();
         progressTracker.setSteps(13);
-        progressTracker.logProgress(3);
+        progressTracker.onProgress(3);
         progressTracker.logSteps(1);
         double expectedDoubleProgressFromFirstStep = 100.0 / 13.0;
         long progressAfterFirstStep = leafTask.getProgress().progress();
         assertThat(progressAfterFirstStep).isEqualTo((long) expectedDoubleProgressFromFirstStep + 3);
 
-        progressTracker.logProgress(1);
+        progressTracker.onProgress();
         progressTracker.logSteps(4);
         assertThat(leafTask.getProgress().progress()).isEqualTo(3 + 1 + (long) (100.0 * 5.0 / 13));
     }

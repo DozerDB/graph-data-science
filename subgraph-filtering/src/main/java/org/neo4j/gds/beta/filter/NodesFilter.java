@@ -140,7 +140,7 @@ public final class NodesFilter {
                 filteredNode -> {
                     var inputNode = inputMapping.toMappedNodeId(filteredIdMap.toOriginalNodeId(filteredNode));
                     nodePropertiesBuilder.accept(inputNode, filteredNode);
-                    progressTracker.logProgress();
+                    progressTracker.onProgress();
                 }
             );
 
@@ -302,7 +302,7 @@ public final class NodesFilter {
                     var labels = NodeLabelTokens.of(idMap.nodeLabels(node));
                     nodesBuilder.addNode(originalId, labels);
                 }
-                progressTracker.logProgress();
+                progressTracker.onProgress();
             });
         }
     }

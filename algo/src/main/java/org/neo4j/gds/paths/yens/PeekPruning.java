@@ -118,7 +118,7 @@ public final class PeekPruning {
     public static BitSet nodeFilter(ProgressTracker progressTracker, long nodeCount, FoundPathCosts found, double cutoff) {
         BitSet nodeIncluded = new BitSet(nodeCount);
         for (long n = 0; n < found.count; n++) {
-            progressTracker.logProgress(1);
+            progressTracker.onProgress();
             var cd = found.paths.get(n);
             if (cd.value <= cutoff) {
                 nodeIncluded.set(cd.nodeId);

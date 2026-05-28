@@ -123,7 +123,7 @@ public class TopKMapComputer extends Algorithm<KGEPredictResult> {
                     }
                 );
             }
-            progressTracker.logProgress();
+            progressTracker.onProgress();
         }
 
         progressTracker.endSubTask();

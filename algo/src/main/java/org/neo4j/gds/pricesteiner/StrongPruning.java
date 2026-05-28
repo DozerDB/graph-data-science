@@ -92,7 +92,7 @@ public class StrongPruning {
                 double prizeOfNextLeaf = prizes.applyAsDouble(nextLeaf);
                 dp.addTo(nextLeaf, prizeOfNextLeaf);
                 degrees.set(nextLeaf, 0);
-                progressTracker.logProgress();
+                progressTracker.onProgress();
 
                 sumOfPrizes +=  prizeOfNextLeaf;
                 tree.forEachRelationship(nextLeaf, 1.0, (s, t, w) -> {
@@ -164,7 +164,7 @@ public class StrongPruning {
 
         while (currentPosition < position.get()){
             var currentNode = helpingArray.get(currentPosition++);
-            progressTracker.logProgress();
+            progressTracker.onProgress();
 
             parents.set(currentNode, PrizeSteinerTreeResult.PRUNED);
             effectiveNodeCount--;

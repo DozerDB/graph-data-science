@@ -149,7 +149,7 @@ public class Scc extends Algorithm<HugeLongArray> {
                 visited.set(element);
             } while (element != nodeId);
         }
-        progressTracker.logProgress();
+        progressTracker.onProgress();
     }
 
 

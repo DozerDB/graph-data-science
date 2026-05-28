@@ -116,7 +116,7 @@ final class Node2VecRandomWalkTask implements Runnable {
             if (nodeId == NextNodeSupplier.NO_MORE_NODES) break;
 
             if (graph.degree(nodeId) == 0) {
-                progressTracker.logProgress();
+                progressTracker.onProgress();
                 continue;
             }
             sampler.prepareForNewNode(nodeId);
@@ -127,7 +127,7 @@ final class Node2VecRandomWalkTask implements Runnable {
                     break;
                 }
             }
-            progressTracker.logProgress();
+            progressTracker.onProgress();
         }
     }
 

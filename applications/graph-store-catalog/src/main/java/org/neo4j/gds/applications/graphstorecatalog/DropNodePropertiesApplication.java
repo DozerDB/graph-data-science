@@ -90,7 +90,7 @@ public class DropNodePropertiesApplication {
         nodeProperties.forEach(propertyKey -> {
             removedPropertiesCount.add(graphStore.nodeProperty(propertyKey).values().nodeCount());
             graphStore.removeNodeProperty(propertyKey);
-            progressTracker.logProgress();
+            progressTracker.onProgress();
         });
 
         progressTracker.endSubTask();

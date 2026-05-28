@@ -72,7 +72,7 @@ final class ComputeStep implements Step {
         while (nodeIds.hasNext()) {
             long nodeId = nodeIds.nextLong();
             didChange = compute(nodeId, didChange);
-            progressTracker.logProgress(graph.degree(nodeId));
+            progressTracker.onProgress(graph.degree(nodeId));
         }
         return didChange;
     }

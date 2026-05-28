@@ -382,7 +382,7 @@ public final class CliqueCounting extends Algorithm<CliqueCountingResult> {
                 long[][] feasibleNeighborhoods = computeIntersections(positiveNeighborhood);
                 recursiveSctCliqueCount(positiveNeighborhood, feasibleNeighborhoods, cliqueNodes, sizeFrequencies);
 
-               progressTracker.logProgress();
+               progressTracker.onProgress();
             }
             cliqueCountsHandler.giveBack(sizeFrequencies);
         }
@@ -417,7 +417,7 @@ public final class CliqueCounting extends Algorithm<CliqueCountingResult> {
                 }
                 long[][] feasibleNeighborhoods = computeIntersections(subset);
                 recursiveSctCliqueCount(subset, feasibleNeighborhoods, cliqueNodes, sizeFrequencies);
-                progressTracker.logProgress();
+                progressTracker.onProgress();
             }
         }
     }

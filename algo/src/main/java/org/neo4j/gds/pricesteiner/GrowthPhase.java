@@ -83,7 +83,7 @@ class GrowthPhase {
             if (Double.compare(clusterEventTime, edgeEventTime) <= 0) {
                 moat = clusterEventTime;
                 deactivateCluster(moat, clusterEventsPriorityQueue.topCluster());
-                progressTracker.logProgress();
+                progressTracker.onProgress();
             } else {
                 moat = edgeEventTime;
 
@@ -118,7 +118,7 @@ class GrowthPhase {
                 double r = edgeCosts.get(edgeId) - uClusterSum - vClusterSum;
                 if (Double.compare(r, 0) <= 0 || Double.compare(r, EPS) <= 0) {
                     mergeClusters(moat, uCluster, vCluster, edgeId);
-                    progressTracker.logProgress();
+                    progressTracker.onProgress();
                 } else {
                     generateNewEdgeEvents(
                         moat,
@@ -182,7 +182,7 @@ class GrowthPhase {
                 }
                 return false;
             });
-            progressTracker.logProgress(graph.degree(u));
+            progressTracker.onProgress(graph.degree(u));
         }
         edgeEventsQueue.performInitialAssignment(clusterStructure.maxActiveCluster(),clusterStructure.active());
     }

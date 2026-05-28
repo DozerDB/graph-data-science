@@ -150,7 +150,7 @@ public class StreamNodePropertiesApplication {
                     var originalId = idMap.toOriginalNodeId(nodeId);
 
                     return nodePropertyKeysAndValues.stream().map(propertyKeyAndValues -> {
-                            progressTracker.logProgress();
+                            progressTracker.onProgress();
 
                             return outputMarshaller.produce(
                                 originalId,

@@ -118,7 +118,7 @@ public final class ArticulationPoints extends Algorithm<ArticulationPointsResult
         } else {
             articulationPoints.clear(node);
         }
-        progressTracker.logProgress();
+        progressTracker.onProgress();
     }
 
     private void visitEvent(StackEvent event,
@@ -154,7 +154,7 @@ public final class ArticulationPoints extends Algorithm<ArticulationPointsResult
                 childrenOfRoot.increment();
             }
 
-            progressTracker.logProgress();
+            progressTracker.onProgress();
             return;
         }
 

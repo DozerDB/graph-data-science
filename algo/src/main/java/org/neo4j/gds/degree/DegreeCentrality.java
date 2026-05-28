@@ -88,7 +88,7 @@ public class DegreeCentrality extends Algorithm<DegreeCentralityResult> {
     private DegreeFunction computeUnweighted() {
         switch (orientation) {
             case NATURAL:
-                progressTracker.logProgress(graph.nodeCount());
+                progressTracker.onProgress(graph.nodeCount());
                 return graph::degree;
             case REVERSE:
                 return computeDegreeAtomic((partition, degrees) -> new ReverseDegreeTask(
@@ -236,7 +236,7 @@ public class DegreeCentrality extends Algorithm<DegreeCentralityResult> {
                 );
                 result.set(nodeId, nodeWeight.doubleValue());
             });
-            progressTracker.logProgress(partition.nodeCount());
+            progressTracker.onProgress(partition.nodeCount());
         }
     }
 
@@ -262,7 +262,7 @@ public class DegreeCentrality extends Algorithm<DegreeCentralityResult> {
         @Override
         public void run() {
             partition.consume(node -> graph.forEachRelationship(node, DEFAULT_WEIGHT, consumer));
-            progressTracker.logProgress(partition.nodeCount());
+            progressTracker.onProgress(partition.nodeCount());
         }
     }
 
@@ -298,7 +298,7 @@ public class DegreeCentrality extends Algorithm<DegreeCentralityResult> {
                     return true;
                 });
             });
-            progressTracker.logProgress(partition.nodeCount());
+            progressTracker.onProgress(partition.nodeCount());
         }
     }
 
@@ -337,7 +337,7 @@ public class DegreeCentrality extends Algorithm<DegreeCentralityResult> {
                 }));
                 degrees.getAndAdd(node, nodeWeight.doubleValue());
             });
-            progressTracker.logProgress(partition.nodeCount());
+            progressTracker.onProgress(partition.nodeCount());
         }
     }
 }

@@ -198,7 +198,7 @@ public final class SteinerBasedDeltaStepping extends Algorithm<PathFindingResult
         metTerminals.increment();
         unvisitedTerminal.flip(terminalId);
 
-        progressTracker.logProgress();
+        progressTracker.onProgress();
 
         if (metTerminals.longValue() == numOfTerminals) { //if we have found paths to all terminals,  terminate early
             return true;

@@ -73,7 +73,7 @@ final class InitStep implements Step {
                     ? maxLabelId + graph.toOriginalNodeId(nodeId) + 1L
                     : existingLabelValue;
             existingLabels.set(nodeId, existingLabel);
-            progressTracker.logProgress(graph.degree(nodeId));
+            progressTracker.onProgress(graph.degree(nodeId));
         }
     }
 

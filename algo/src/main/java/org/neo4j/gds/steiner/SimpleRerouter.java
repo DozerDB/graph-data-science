@@ -101,7 +101,7 @@ public class SimpleRerouter extends ReroutingAlgorithm {
                     return true;
                 });
             }
-            progressTracker.logProgress();
+            progressTracker.onProgress();
             return true;
         });
         if (didReroutes.isTrue()) {

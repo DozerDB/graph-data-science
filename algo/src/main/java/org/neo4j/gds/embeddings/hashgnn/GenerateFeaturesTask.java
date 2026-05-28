@@ -115,7 +115,7 @@ class GenerateFeaturesTask implements Runnable {
             output.set(nodeId, generatedFeatures);
         });
 
-        progressTracker.logProgress(partition.nodeCount());
+        progressTracker.onProgress(partition.nodeCount());
     }
 
     public long totalFeatureCount() {

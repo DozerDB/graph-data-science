@@ -128,7 +128,7 @@ public final class Yens extends Algorithm<PathFindingResult> {
                 .tasks(tasks)
                 .executor(DefaultPool.INSTANCE)
                 .run();
-            progressTracker.logProgress();
+            progressTracker.onProgress();
 
             if (candidatePathsQueue.isEmpty()) {
                 break;

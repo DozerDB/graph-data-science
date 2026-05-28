@@ -65,7 +65,7 @@ class KmeansPlusPlusSampler extends KmeansSampler {
 
         BitSet bitSet = new BitSet(nodeCount);
         assignToCluster(bitSet, 0, firstId);
-        progressTracker.logProgress(1);
+        progressTracker.onProgress();
         for (int selectionClusterId = 1; selectionClusterId < k; ++selectionClusterId) {
 
             RunWithConcurrency.builder()
@@ -106,7 +106,7 @@ class KmeansPlusPlusSampler extends KmeansSampler {
                 } while (bitSet.get(nextNode));
             }
             assignToCluster(bitSet, selectionClusterId, nextNode);
-            progressTracker.logProgress(1);
+            progressTracker.onProgress();
         }
         //nowe we have k clusters and distanceFromClusterAlso for each node closest communit in 0...k-2
         RunWithConcurrency.builder()  //now run one last time just to save  have the vest community in 0...k-1

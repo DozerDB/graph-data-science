@@ -72,6 +72,6 @@ final class ComputeCost implements Runnable {
             ));
         cost.getAndAdd(localCost.doubleValue());
 
-        progressTracker.logProgress(partition.nodeCount());
+        progressTracker.onProgress(partition.nodeCount());
     }
 }

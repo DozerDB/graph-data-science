@@ -131,7 +131,7 @@ class RawFeaturesTask implements Runnable {
             features.set(nodeId, nodeFeatures);
         });
 
-        progressTracker.logProgress(partition.nodeCount());
+        progressTracker.onProgress(partition.nodeCount());
     }
 
     public long totalFeatureCount() {

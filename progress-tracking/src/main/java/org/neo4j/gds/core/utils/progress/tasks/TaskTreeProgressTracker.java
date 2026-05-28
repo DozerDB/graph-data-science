@@ -112,17 +112,17 @@ public final class TaskTreeProgressTracker implements ProgressTracker {
     }
 
     @Override
-    public void logProgress(long value) {
+    public void onProgress(long value) {
         // NOOP
     }
 
     @Override
-    public void logProgress(Function<Long, Long> valueCalculator) {
+    public void onProgress(Function<Long, Long> valueCalculator) {
         // NOOP
     }
 
     @Override
-    public void logProgress(long value, String messageTemplate) {
+    public void onProgress(long value, String messageTemplate) {
         // NOOP
     }
 

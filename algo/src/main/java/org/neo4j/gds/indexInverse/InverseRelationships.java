@@ -203,7 +203,7 @@ public class InverseRelationships extends Algorithm<Map<RelationshipType, Single
                     relationshipsBuilder.addFromInternal(target, source, property);
                     return true;
                 });
-                progressTracker.logProgress();
+                progressTracker.onProgress();
             }
         }
     }
@@ -234,7 +234,7 @@ public class InverseRelationships extends Algorithm<Map<RelationshipType, Single
                     relationshipsBuilder.addFromInternal(target, source, properties);
                     return true;
                 });
-                progressTracker.logProgress();
+                progressTracker.onProgress();
             }
         }
     }

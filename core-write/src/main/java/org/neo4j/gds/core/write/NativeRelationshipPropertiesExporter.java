@@ -188,7 +188,7 @@ public class NativeRelationshipPropertiesExporter extends StatementApi implement
                 );
             }
 
-            progressTracker.logProgress();
+            progressTracker.onProgress();
         }
     }
 }
