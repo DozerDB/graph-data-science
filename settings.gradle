@@ -113,6 +113,18 @@ project(':community-params').projectDir = file('algo-params/community-params')
 include('compression')
 project(':compression').projectDir = file('compression')
 
+include('compression-api')
+project(':compression-api').projectDir = file('compression-api')
+
+include('compression-common')
+project(':compression-common').projectDir = file('compression-common')
+
+include('compression-varlong')
+project(':compression-varlong').projectDir = file('compression-varlong')
+
+include('compression-packed')
+project(':compression-packed').projectDir = file('compression-packed')
+
 include('concurrency')
 project(':concurrency').projectDir = file('concurrency')
 

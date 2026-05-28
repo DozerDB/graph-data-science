@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.neo4j.gds.core.compression.packed;
+package org.neo4j.gds.compression.packed;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.Nullable;
@@ -32,10 +32,6 @@ import org.neo4j.gds.collections.ha.HugeLongArray;
 import org.neo4j.gds.compression.api.AdjacencyListBuilder;
 import org.neo4j.gds.compression.api.ModifiableSlice;
 import org.neo4j.gds.compression.common.AdjacencyCompression;
-import org.neo4j.gds.compression.packed.BlockAlignedTailPacker;
-import org.neo4j.gds.compression.packed.InlinedHeadPackedTailPacker;
-import org.neo4j.gds.compression.packed.PackedTailPacker;
-import org.neo4j.gds.compression.packed.VarLongTailPacker;
 import org.neo4j.gds.compression.common.AbstractAdjacencyCompressorFactory;
 import org.neo4j.gds.compression.api.MemoryTracker;
 import org.neo4j.gds.memory.access.Address;
