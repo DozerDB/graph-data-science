@@ -26,7 +26,7 @@ import org.neo4j.gds.compression.api.AdjacencyCompressorFactory;
 import org.neo4j.gds.compression.api.AdjacencyCompressorProvider;
 import org.neo4j.gds.compression.api.CompressionKind;
 import org.neo4j.gds.compression.api.MemoryTracker;
-import org.neo4j.gds.compression.common.UncompressedPropertiesBuilder;
+import org.neo4j.gds.compression.uncompressed.UncompressedAdjacencyListBuilder;
 import org.neo4j.gds.compression.varlong.CompressedAdjacencyList;
 import org.neo4j.gds.compression.varlong.CompressedAdjacencyListBuilderFactory;
 import org.neo4j.gds.compression.packed.PackedAdjacencyListBuilderFactory;
@@ -54,7 +54,7 @@ public final class MixedCompressorProvider implements AdjacencyCompressorProvide
         return MixedCompressor.factory(
             nodeCountSupplier,
             PackedAdjacencyListBuilderFactory.of(),
-            CompressedAdjacencyListBuilderFactory.of(UncompressedPropertiesBuilder::new),
+            CompressedAdjacencyListBuilderFactory.of(UncompressedAdjacencyListBuilder::new),
             propertyMappings,
             aggregations,
             noAggregation,

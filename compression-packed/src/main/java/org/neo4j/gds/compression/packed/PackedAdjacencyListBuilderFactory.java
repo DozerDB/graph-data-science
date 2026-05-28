@@ -23,7 +23,7 @@ import org.neo4j.gds.api.AdjacencyProperties;
 import org.neo4j.gds.compression.api.AdjacencyListBuilder;
 import org.neo4j.gds.compression.api.AdjacencyListBuilderFactory;
 import org.neo4j.gds.compression.api.MemoryTracker;
-import org.neo4j.gds.compression.common.UncompressedPropertiesBuilder;
+import org.neo4j.gds.compression.uncompressed.UncompressedAdjacencyListBuilder;
 import org.neo4j.gds.memory.access.Address;
 
 import java.util.function.Function;
@@ -32,11 +32,8 @@ public final class PackedAdjacencyListBuilderFactory implements AdjacencyListBui
 
     private final Function<MemoryTracker, AdjacencyListBuilder<long[], AdjacencyProperties>> propertiesBuilderFactory;
 
-    /**
-     * Creates a factory using {@link UncompressedPropertiesBuilder} from compression-common for the properties builder.
-     */
     public static PackedAdjacencyListBuilderFactory of() {
-        return of(UncompressedPropertiesBuilder::new);
+        return of(UncompressedAdjacencyListBuilder::new);
     }
 
     /**

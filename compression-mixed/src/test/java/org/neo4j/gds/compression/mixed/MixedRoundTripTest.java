@@ -20,7 +20,7 @@
 package org.neo4j.gds.compression.mixed;
 
 import org.junit.jupiter.api.Test;
-import org.neo4j.gds.compression.common.UncompressedPropertiesBuilder;
+import org.neo4j.gds.compression.uncompressed.UncompressedAdjacencyListBuilder;
 import org.neo4j.gds.compression.varlong.CompressedAdjacencyListBuilderFactory;
 import org.neo4j.gds.compression.packed.PackedAdjacencyListBuilderFactory;
 
@@ -30,7 +30,7 @@ class MixedRoundTripTest {
 
     @Test
     void mixedCompressorUsesVarlongAndPackedBuilders() {
-        var dvlFactory = CompressedAdjacencyListBuilderFactory.of(UncompressedPropertiesBuilder::new);
+        var dvlFactory = CompressedAdjacencyListBuilderFactory.of(UncompressedAdjacencyListBuilder::new);
         var packedFactory = PackedAdjacencyListBuilderFactory.of();
         assertThat(dvlFactory).isNotNull();
         assertThat(packedFactory).isNotNull();

@@ -32,8 +32,7 @@ public final class CompressedAdjacencyListBuilderFactory implements AdjacencyLis
 
     /**
      * Creates a factory that delegates property builder creation to the provided function.
-     * Callers supply any {@link AdjacencyListBuilder} implementation for properties
-     * (e.g., {@link org.neo4j.gds.compression.common.UncompressedPropertiesBuilder}).
+     * Callers supply any {@link AdjacencyListBuilder} implementation for properties.
      */
     @SuppressWarnings("unchecked")
     public static CompressedAdjacencyListBuilderFactory of(

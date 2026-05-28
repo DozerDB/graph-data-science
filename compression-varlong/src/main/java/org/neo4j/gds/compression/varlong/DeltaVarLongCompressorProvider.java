@@ -26,7 +26,7 @@ import org.neo4j.gds.compression.api.AdjacencyCompressorFactory;
 import org.neo4j.gds.compression.api.AdjacencyCompressorProvider;
 import org.neo4j.gds.compression.api.CompressionKind;
 import org.neo4j.gds.compression.api.MemoryTracker;
-import org.neo4j.gds.compression.common.UncompressedPropertiesBuilder;
+import org.neo4j.gds.compression.uncompressed.UncompressedAdjacencyListBuilder;
 import org.neo4j.gds.mem.MemoryEstimation;
 
 import java.util.Arrays;
@@ -50,7 +50,7 @@ public final class DeltaVarLongCompressorProvider implements AdjacencyCompressor
             .allMatch(Aggregation::equivalentToNone);
         return DeltaVarLongCompressor.factory(
             nodeCountSupplier,
-            CompressedAdjacencyListBuilderFactory.of(UncompressedPropertiesBuilder::new),
+            CompressedAdjacencyListBuilderFactory.of(UncompressedAdjacencyListBuilder::new),
             propertyMappings,
             aggregations,
             noAggregation,

@@ -13,6 +13,7 @@ dependencies {
     implementation project(':annotations')
     implementation project(':compression-api')
     implementation project(':compression-common')
+    implementation project(':compression-uncompressed')
     implementation project(':core-api')
     implementation project(':core-utils')
     implementation project(':graph-projection-api')
