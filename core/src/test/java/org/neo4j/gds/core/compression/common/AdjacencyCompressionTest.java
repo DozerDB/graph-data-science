@@ -52,8 +52,9 @@ class AdjacencyCompressionTest {
 
         long[][] sortedProperties = new long[unsortedProperties.length][targetNodeIds.length];
 
-        AdjacencyCompression.applyDeltaEncoding(
-            data,
+        data.length = AdjacencyCompression.applyDeltaEncoding(
+            data.buffer,
+            data.length,
             new long[][]{
                 unsortedProperties[0], unsortedProperties[1]
             },

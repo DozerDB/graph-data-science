@@ -20,16 +20,14 @@
 package org.neo4j.gds.compression.common;
 
 import com.carrotsearch.hppc.sorting.IndirectSort;
-import org.neo4j.gds.compression.api.AdjacencyCompressor;
 import org.neo4j.gds.Aggregation;
+import org.neo4j.gds.compression.api.AdjacencyCompressor;
 
 import java.util.Arrays;
 
 import static org.neo4j.gds.compression.common.VarLongDecoding.decodeDeltaVLongs;
-import static org.neo4j.gds.compression.common.VarLongDecoding.unsafeDecodeDeltaVLongs;
 import static org.neo4j.gds.compression.common.VarLongDecoding.unsafeDecodeVLongs;
 import static org.neo4j.gds.compression.common.VarLongEncoding.encodeVLongs;
-import static org.neo4j.gds.compression.common.VarLongEncoding.encodedVLongsSize;
 
 public final class AdjacencyCompression {
 
@@ -61,31 +59,9 @@ public final class AdjacencyCompression {
         return ZigZagLongDecoding.zigZagUncompress(targets, limit, into, mapper);
     }
 
-    public static int applyDeltaEncoding(LongArrayBuffer data, Aggregation aggregation) {
-        return data.length = applyDeltaEncoding(data.buffer, data.length, aggregation);
-    }
-
     public static int applyDeltaEncoding(long[] data, int length, Aggregation aggregation) {
         Arrays.sort(data, 0, length);
         return deltaEncodeSortedValues(data, 0, length, aggregation);
-    }
-
-    // TODO: requires lots of additional memory ... inline indirect sort to make reuse of - to be created - buffers
-    public static int applyDeltaEncoding(
-        LongArrayBuffer data,
-        long[][] weights,
-        long[][] sortedWeights,
-        Aggregation[] aggregations,
-        boolean noAggregation
-    ) {
-        return data.length = applyDeltaEncoding(
-            data.buffer,
-            data.length,
-            weights,
-            sortedWeights,
-            aggregations,
-            noAggregation
-        );
     }
 
     // TODO: requires lots of additional memory ... inline indirect sort to make reuse of - to be created - buffers
@@ -117,18 +93,6 @@ public final class AdjacencyCompression {
         return length;
     }
 
-    public static byte[] ensureBufferSize(LongArrayBuffer data, byte[] out) {
-        return ensureBufferSize(data.buffer, out, data.length);
-    }
-
-    private static byte[] ensureBufferSize(long[] data, byte[] out, int length) {
-        var requiredBytes = encodedVLongsSize(data, length);
-        if (requiredBytes > out.length) {
-            return new byte[requiredBytes];
-        }
-        return out;
-    }
-
     public static int compress(LongArrayBuffer data, byte[] out) {
         return compress(data.buffer, out, data.length);
     }
@@ -157,16 +121,6 @@ public final class AdjacencyCompression {
         long[] out = new long[numberOfValues];
         decodeDeltaVLongs(0L, compressed, 0, numberOfValues, out);
         return out;
-    }
-
-    public static long decompressAndPrefixSum(
-        int numberOfValues,
-        long previousValue,
-        long ptr,
-        long[] into,
-        int offset
-    ) {
-        return unsafeDecodeDeltaVLongs(numberOfValues, previousValue, ptr, into, offset);
     }
 
     public static long decompress(int numberOfValues, long ptr, long[] into, int offset) {
@@ -245,14 +199,6 @@ public final class AdjacencyCompression {
         }
 
         return first;
-    }
-
-    public static void prefixSumDeltaEncodedValues(long[] values, int length) {
-        length = Math.min(values.length, length);
-        long value = values[0];
-        for (int idx = 1; idx < length; ++idx) {
-            value = values[idx] += value;
-        }
     }
 
     /**
